@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repositorio de aplicaciones educativas</title>
+  <meta name="description" content="Repositorio personal de aplicaciones educativas estáticas creadas con Vibe coding y enfoque DUA.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      /* Estilo Oscuro Elegante Original */
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #0f172a 100%);
+      --surface: rgba(30, 41, 59, 0.7);
+      --surface-card: rgba(255, 255, 255, 0.05);
+      --surface-card-hover: rgba(255, 255, 255, 0.08);
+      --border-color: rgba(255, 255, 255, 0.12);
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-light: rgba(99, 102, 241, 0.15);
+      
+      --accent: #14b8a6;
+      --accent-light: rgba(20, 184, 166, 0.15);
+      
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      
+      --font-main: 'Outfit', sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+      
+      --base-font-size: 16px;
+    }
+
+    body.high-contrast {
+      --bg-gradient: #000000;
+      --surface: #111111;
+      --surface-card: #1a1a1a;
+      --surface-card-hover: #262626;
+      --border-color: #ffffff;
+      --text-main: #ffffff;
+      --text-muted: #e5e5e5;
+      --primary: #818cf8;
+      --accent: #2dd4bf;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: var(--base-font-size);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    /* Barra DUA de Accesibilidad */
+    .dua-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .dua-brand {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dua-controls {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .btn-dua {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-dua:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-dua.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #0f172a;
+    }
+
+    /* Layout Principal */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 40px 0 24px 0;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary-light);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      padding: 6px 16px;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* Panel de Búsqueda y Filtros */
+    .filter-panel {
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-top: 24px;
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      backdrop-filter: blur(12px);
+    }
+
+    /* Buscador en Tiempo Real */
+    .search-group {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-group i {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px 16px 14px 48px;
+      color: var(--text-main);
+      font-size: 1.05rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    /* Filtros Desplegables / Categorías */
+    .filters-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .select-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .select-wrapper label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-select {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      color: var(--text-main);
+      font-size: 0.98rem;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .filter-select:focus {
+      border-color: var(--primary);
+    }
+
+    .filter-select option {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    /* Grid de Aplicaciones */
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    /* Tarjeta de Aplicación */
+    .app-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .app-card:hover {
+      background: var(--surface-card-hover);
+      transform: translateY(-6px);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .card-badges {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge-level {
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-subject {
+      background: var(--primary-light);
+      color: #a5b4fc;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .card-desc {
+      font-size: 0.93rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex-grow: 1;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+
+    .btn-launch {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-launch:hover {
+      opacity: 0.95;
+      transform: translateY(-2px);
+    }
+
+    /* Estado Vacío */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    /* Optimización Móvil */
+    @media (max-width: 640px) {
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+      .filter-panel {
+        padding: 16px;
+      }
+      .apps-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra DUA de Accesibilidad -->
+  <header class="dua-toolbar" aria-label="Herramientas de Accesibilidad DUA">
+    <div class="dua-brand">
+      <i class="fa-solid fa-folder-open"></i> Repositorio Educativo
+    </div>
+    <div class="dua-controls">
+      <button class="btn-dua" id="btn-font-sub" title="Disminuir letra">A-</button>
+      <button class="btn-dua" id="btn-font-reset" title="Restablecer letra">A</button>
+      <button class="btn-dua" id="btn-font-add" title="Aumentar letra">A+</button>
+      <button class="btn-dua" id="btn-contrast" title="Alto Contraste"><i class="fa-solid fa-circle-half-stroke"></i> Contraste</button>
+    </div>
+  </header>
+
+  <div class="container">
+    
+    <!-- Hero Header -->
+    <header class="hero">
+      <div class="hero-badge">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Mediadores Pedagógicos
+      </div>
+      <h1><i class="fa-solid fa-laptop-code"></i> Repositorio de aplicaciones educativas</h1>
+      <p style="font-weight: 600; font-size: 1.15rem; margin-bottom: 6px;">Creadas con Vibe coding</p>
+      <p style="font-size: 0.88rem; color: var(--text-muted); max-width: 750px; margin: 0 auto; font-style: italic;">(es una metodología de desarrollo asistido por Inteligencia Artificial que permite diseñar y crear aplicaciones educativas interactivas utilizando lenguaje natural sin necesidad de tener conocimientos previos de programación)</p>
+    </header>
+
+    <!-- Panel de Búsqueda y Filtros Dinámicos -->
+    <section class="filter-panel" aria-label="Búsqueda y Filtros">
+      
+      <!-- Buscador en tiempo real -->
+      <div class="search-group">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input 
+          type="text" 
+          id="search-input" 
+          class="search-input" 
+          placeholder="Buscar por título, contenido, materia o palabras clave (ej: DUA, Socrático)..."
+          aria-label="Buscar aplicaciones"
+        >
+      </div>
+
+      <!-- Filtros por Categoría -->
+      <div class="filters-row">
+        <div class="select-wrapper">
+          <label for="filter-level">Nivel Educativo</label>
+          <select id="filter-level" class="filter-select" aria-label="Filtrar por Nivel Educativo">
+            <option value="todos">Todos los Niveles</option>
+            <option value="Primaria">Primaria</option>
+            <option value="Secundaria">Secundaria</option>
+            <option value="Universidad">Universidad / Superior</option>
+          </select>
+        </div>
+
+        <div class="select-wrapper">
+          <label for="filter-subject">Materia / Área</label>
+          <select id="filter-subject" class="filter-select" aria-label="Filtrar por Materia">
+            <option value="todas">Todas las Materias</option>
+            <option value="Matemática">Matemática</option>
+            <option value="Ciencias Naturales">Ciencias Naturales</option>
+            <option value="Formación Docente">Formación Docente</option>
+          </select>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Grid de Aplicaciones -->
+    <main class="apps-grid" id="apps-grid" aria-label="Catálogo de Aplicaciones">
+      <!-- Las tarjetas se generan dinámicamente desde el array JavaScript de abajo -->
+    </main>
+
+  </div>
+
+  <script>
+    /* ==========================================================================
+       ESTRUCTURA DE DATOS EDITABLE (ARRAY DE OBJETOS EN JAVASCRIPT)
+       ==========================================================================
+       INSTRUCCIONES PARA EDITAR O AGREGAR NUEVAS APLICACIONES:
+       
+       Para agregar una nueva aplicación, simplemente copia un bloque dentro de
+       la lista REPOSITORIO_APPS entre comillas o llaves {...}, separado por una coma.
+       
+       Campos requeridos:
+       - id: Un identificador único (ej: "app-3")
+       - titulo: Nombre visible de la app
+       - autor: Nombre del autor/a
+       - descripcion: Resumen breve de qué hace o qué aprenden los alumnos
+       - nivel: "Primaria", "Secundaria", o "Universidad"
+       - materia: Nombre de la materia (ej: "Matemática", "Biología")
+       - url: Archivo HTML o enlace donde está la app (ej: "mi-nueva-app.html")
+       - tags: Lista de etiquetas entre corchetes ["DUA", "Interactiva", "Juego"]
+       ========================================================================== */
+
+    const REPOSITORIO_APPS = [
+      {
+        id: "app-1",
+        titulo: "Mediador Didáctico: Regla de Ruffini (DUA)",
+        autor: "Silvina Busto",
+        descripcion: "Aplicación interactiva que andamia la división de polinomios casilla a casilla mediante impulsos socráticos, pistas graduadas y apoyos DUA (A+/A-, Lectura en Voz Alta y Contraste).",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        url: "app-ruffini-dua.htm",
+        tags: ["DUA", "Socrático", "Matemática", "Pistas", "Res. 860/25"]
+      },
+      {
+        id: "app-2",
+        titulo: "Calculadora y Algoritmo de Ruffini",
+        autor: "Silvina Busto",
+        descripcion: "Herramienta de cálculo paso a paso para resolver divisiones polinómicas por el método tradicional de Ruffini con reconstrucción del cociente y resto.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        url: "Ruffini.htm",
+        tags: ["Algoritmo", "Matemática", "Paso a Paso", "Polinomios"]
+      }
+
+      /* === PARA AGREGAR UNA NUEVA APP, DESCOMENTA Y COMPLETA ESTE MODELO: ===
+      ,{
+        id: "app-3",
+        titulo: "Título de la Nueva Aplicación",
+        autor: "Nombre del Autor",
+        descripcion: "Descripción breve del contenido o la propuesta pedagógica.",
+        nivel: "Secundaria", // Opción: "Primaria", "Secundaria", "Universidad"
+        materia: "Ciencias Naturales",
+        url: "nombre_de_tu_archivo.html",
+        tags: ["Tag1", "Tag2", "Tag3"]
+      }
+      ====================================================================== */
+    ];
+
+
+    // --- LÓGICA DE FILTRADO Y BUSCADOR EN TIEMPO REAL ---
+    const appsGrid = document.getElementById('apps-grid');
+    const searchInput = document.getElementById('search-input');
+    const filterLevel = document.getElementById('filter-level');
+    const filterSubject = document.getElementById('filter-subject');
+
+    // Función principal para renderizar las tarjetas
+    function renderApps() {
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      const selectedLevel = filterLevel.value;
+      const selectedSubject = filterSubject.value;
+
+      // Filtrar el array de apps
+      const filtradas = REPOSITORIO_APPS.filter(app => {
+        // Coincidencia con buscador (título, descripción, autor o etiquetas)
+        const matchSearch = 
+          app.titulo.toLowerCase().includes(searchTerm) ||
+          (app.autor && app.autor.toLowerCase().includes(searchTerm)) ||
+          app.descripcion.toLowerCase().includes(searchTerm) ||
+          app.materia.toLowerCase().includes(searchTerm) ||
+          app.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+
+        // Coincidencia con filtro de nivel
+        const matchLevel = (selectedLevel === 'todos') || (app.nivel === selectedLevel);
+
+        // Coincidencia con filtro de materia
+        const matchSubject = (selectedSubject === 'todas') || (app.materia === selectedSubject);
+
+        return matchSearch && matchLevel && matchSubject;
+      });
+
+      // Limpiar contenedor
+      appsGrid.innerHTML = '';
+
+      // Mostrar mensaje de estado vacío si no hay coincidencias
+      if (filtradas.length === 0) {
+        appsGrid.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-folder-open"></i>
+            <h3>No se encontraron aplicaciones</h3>
+            <p>Intenta con otros términos de búsqueda o selecciona otros filtros.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Renderizar cada tarjeta
+      filtradas.forEach(app => {
+        const card = document.createElement('article');
+        card.className = 'app-card';
+
+        const tagsHTML = app.tags.map(t => `<span class="tag">#${t}</span>`).join('');
+        const autorHTML = app.autor ? `<div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-top: -6px; margin-bottom: 10px;"><i class="fa-solid fa-user-pen"></i> por: ${app.autor}</div>` : '';
+
+        card.innerHTML = `
+          <div>
+            <div class="card-badges">
+              <span class="badge-level">${app.nivel}</span>
+              <span class="badge-subject">${app.materia}</span>
+            </div>
+            <h2 class="card-title" style="margin-bottom: 6px;">${app.titulo}</h2>
+            ${autorHTML}
+            <p class="card-desc">${app.descripcion}</p>
+            <div class="card-tags">${tagsHTML}</div>
+          </div>
+          <a href="${app.url}" class="btn-launch" target="_blank" aria-label="Abrir aplicación ${app.titulo}">
+            <i class="fa-solid fa-rocket"></i> Abrir App
+          </a>
+        `;
+
+        appsGrid.appendChild(card);
+      });
+    }
+
+    // Escuchadores de eventos para filtrado dinámico en tiempo real
+    searchInput.addEventListener('input', renderApps);
+    filterLevel.addEventListener('change', renderApps);
+    filterSubject.addEventListener('change', renderApps);
+
+    // --- HERRAMIENTAS DUA ACCESIBILIDAD ---
+    let baseFontSize = 16;
+    const btnFontAdd = document.getElementById('btn-font-add');
+    const btnFontSub = document.getElementById('btn-font-sub');
+    const btnFontReset = document.getElementById('btn-font-reset');
+    const btnContrast = document.getElementById('btn-contrast');
+
+    btnFontAdd.addEventListener('click', () => {
+      if (baseFontSize < 24) {
+        baseFontSize += 2;
+        document.documentElement.style.fontSize = baseFontSize + 'px';
+      }
+    });
+
+    btnFontSub.addEventListener('click', () => {
+      if (baseFontSize > 12) {
+        baseFontSize -= 2;
+        document.documentElement.style.fontSize = baseFontSize + 'px';
+      }
+    });
+
+    btnFontReset.addEventListener('click', () => {
+      baseFontSize = 16;
+      document.documentElement.style.fontSize = '16px';
+    });
+
+    btnContrast.addEventListener('click', () => {
+      document.body.classList.toggle('high-contrast');
+      btnContrast.classList.toggle('active');
+    });
+
+    // Carga inicial
+    renderApps();
+  </script>
+</body>
+</html>
