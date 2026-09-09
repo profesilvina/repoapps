@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aprende Present Simple - Inglés 1.º Año</title>
+  <style>
+    :root {
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --primary: #4a90e2;
+      --primary-hover: #357abd;
+      --text-main: #2c3e50;
+      --success-bg: #e8f8f5;
+      --success-border: #2ecc71;
+      --error-bg: #fdf2e9;
+      --error-border: #e67e22;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 650px;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+    }
+
+    .exercise-card {
+      background-color: #fafafa;
+      border: 2px solid #e1e8ed;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .sentence {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    input[type="text"] {
+      padding: 10px 14px;
+      font-size: 1.1rem;
+      border: 2px solid #bdc3c7;
+      border-radius: 8px;
+      width: 140px;
+      text-align: center;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 16px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .feedback {
+      margin-top: 15px;
+      padding: 12px 15px;
+      border-radius: 8px;
+      display: none;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    .feedback.correct {
+      display: block;
+      background-color: var(--success-bg);
+      border-left: 5px solid var(--success-border);
+    }
+
+    .feedback.incorrect {
+      display: block;
+      background-color: var(--error-bg);
+      border-left: 5px solid var(--error-border);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>English: Present Simple Practice</h1>
+
+  <form id="quiz-form">
+    <!-- Oración 1 -->
+    <div class="exercise-card">
+      <div class="sentence">1. She <input type="text" id="q1" autocomplete="off"> (play) soccer on Saturdays.</div>
+      <div id="fb1" class="feedback"></div>
+    </div>
+
+    <!-- Oración 2 -->
+    <div class="exercise-card">
+      <div class="sentence">2. They <input type="text" id="q2" autocomplete="off"> (eat) pizza every Friday.</div>
+      <div id="fb2" class="feedback"></div>
+    </div>
+
+    <!-- Oración 3 -->
+    <div class="exercise-card">
+      <div class="sentence">3. He <input type="text" id="q3" autocomplete="off"> (watch) TV in the evening.</div>
+      <div id="fb3" class="feedback"></div>
+    </div>
+
+    <!-- Oración 4 -->
+    <div class="exercise-card">
+      <div class="sentence">4. I <input type="text" id="q4" autocomplete="off"> (like) to study English.</div>
+      <div id="fb4" class="feedback"></div>
+    </div>
+
+    <!-- Oración 5 -->
+    <div class="exercise-card">
+      <div class="sentence">5. My brother <input type="text" id="q5" autocomplete="off"> (study) for his exams.</div>
+      <div id="fb5" class="feedback"></div>
+    </div>
+
+    <button type="button" class="btn" onclick="checkAnswers()">Comprobar respuestas</button>
+  </form>
+</div>
+
+<script>
+  const data = [
+    { id: 'q1', fb: 'fb1', answers: ['plays'], exp: '<b>Respuesta: plays.</b> Al usar <i>She</i> (tercera persona), debemos agregar una <b>-s</b> al verbo.' },
+    { id: 'q2', fb: 'fb2', answers: ['eat'], exp: '<b>Respuesta: eat.</b> Con el sujeto <i>They</i>, el verbo se mantiene en su forma base.' },
+    { id: 'q3', fb: 'fb3', answers: ['watches'], exp: '<b>Respuesta: watches.</b> Para <i>He</i>, si el verbo termina en "-ch", agregamos <b>-es</b>.' },
+    { id: 'q4', fb: 'fb4', answers: ['like'], exp: '<b>Respuesta: like.</b> Con la primera persona <i>I</i>, el verbo no cambia.' },
+    { id: 'q5', fb: 'fb5', answers: ['studies'], exp: '<b>Respuesta: studies.</b> <i>My brother</i> equivale a <i>He</i>. Cuando un verbo termina en consonante + y, cambiamos la "y" por <b>-ies</b>.' }
+  ];
+
+  function checkAnswers() {
+    data.forEach(item => {
+      const input = document.getElementById(item.id);
+      const feedback = document.getElementById(item.fb);
+      const userAnswer = input.value.trim().toLowerCase();
+
+      if (item.answers.includes(userAnswer)) {
+        feedback.className = 'feedback correct';
+        feedback.innerHTML = `✓ ¡Correcto! ${item.exp}`;
+      } else {
+        feedback.className = 'feedback incorrect';
+        feedback.innerHTML = `✗ Inténtalo de nuevo. ${item.exp}`;
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorador del Compás y la Música</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --primary-color: #3498db;
+            --primary-hover: #2980b9;
+            --secondary-color: #2ecc71;
+            --accent-color: #e67e22;
+            --border-color: #bdc3c7;
+            --font-size-base: 18px;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Modo Alto Contraste */
+        body.high-contrast {
+            --bg-color: #000000;
+            --card-bg: #1a1a1a;
+            --text-color: #ffff00;
+            --primary-color: #00ffff;
+            --primary-hover: #ffffff;
+            --secondary-color: #00ff00;
+            --accent-color: #ff9900;
+            --border-color: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 2px solid var(--border-color);
+        }
+
+        /* Barra de Accesibilidad */
+        .accessibility-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .btn-acc {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .btn-acc:hover, .btn-acc:focus {
+            background-color: var(--primary-hover);
+            outline: 3px solid var(--accent-color);
+        }
+
+        body.high-contrast .btn-acc {
+            color: #000000;
+        }
+
+        /* Indicador de Progreso */
+        .progress-bar {
+            width: 100%;
+            background-color: var(--border-color);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--secondary-color);
+            width: 33%;
+            transition: width 0.4s ease;
+        }
+
+        /* Estructura del Desafío */
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        h1, h2 {
+            margin-top: 0;
+        }
+
+        .info-box {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left: 5px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        /* Contenedor del Compás */
+        .measure-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background: rgba(0,0,0,0.03);
+            padding: 20px;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            margin: 20px 0;
+            min-height: 120px;
+            flex-wrap: wrap;
+        }
+
+        .time-signature {
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            padding: 5px 10px;
+            border: 2px solid var(--text-color);
+            border-radius: 4px;
+        }
+
+        .notes-list {
+            display: flex;
+            gap: 10px;
+            font-size: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .note-card {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+
+        .note-card span.symbol {
+            font-size: 2rem;
+        }
+
+        /* Opciones y Controles */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-option {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            color: var(--text-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-option:hover, .btn-option:focus {
+            border-color: var(--primary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .btn-option.selected {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        body.high-contrast .btn-option.selected {
+            color: black;
+        }
+
+        /* Zona de Ayudas y Feedback */
+        .scaffold-section {
+            margin-top: 20px;
+        }
+
+        .btn-help {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        body.high-contrast .btn-help {
+            color: black;
+        }
+
+        .feedback-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .feedback-box.visible {
+            display: block;
+        }
+
+        .feedback-prompt {
+            background-color: rgba(230, 126, 34, 0.15);
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .feedback-success {
+            background-color: rgba(46, 204, 113, 0.15);
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        /* Botones Principales */
+        .btn-action {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .btn-action:hover {
+            opacity: 0.9;
+        }
+
+        body.high-contrast .btn-action {
+            color: black;
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" role="main">
+    <!-- Panel de Accesibilidad -->
+    <div class="accessibility-bar" aria-label="Herramientas de accesibilidad">
+        <div>
+            <button class="btn-acc" onclick="changeFontSize(1)" aria-label="Aumentar tamaño de letra">A +</button>
+            <button class="btn-acc" onclick="changeFontSize(-1)" aria-label="Disminuir tamaño de letra">A -</button>
+            <button class="btn-acc" onclick="toggleContrast()" aria-label="Cambiar modo de contraste">Alto Contraste</button>
+        </div>
+        <div>
+            <button class="btn-acc" onclick="toggleTTS()" id="tts-btn" aria-label="Escuchar lectura del texto en voz alta">🔊 Escuchar Texto</button>
+        </div>
+    </div>
+
+    <!-- Indicador de Progreso -->
+    <div class="progress-bar" aria-label="Progreso de la actividad">
+        <div class="progress-fill" id="progress"></div>
+    </div>
+
+    <!-- ETAPA 1 -->
+    <div id="step-1" class="step active">
+        <h1>Paso 1: Explorando la Capacidad del Compás</h1>
+        
+        <div class="info-box">
+            <p><strong>Recuerda:</strong> El número de arriba en el compás indica cuántos tiempos entran. La Negra (♩) vale 1 tiempo.</p>
+        </div>
+
+        <p>Observa el siguiente compás de <strong>2/4</strong>. Queremos completarlo para que sume exactamente <strong>2 tiempos</strong>.</p>
+        <p>Actualmente tenemos:</p>
+
+        <div class="measure-container">
+            <div class="time-signature"><span>2</span><span>4</span></div>
+            <div class="notes-list">
+                <div class="note-card">
+                    <span class="symbol">♩</span>
+                    <span>Negra (1 t.)</span>
+                </div>
+                <span>+</span>
+                <div class="note-card" style="border-style: dashed;">
+                    <span class="symbol">?</span>
+                    <span>¿Qué falta?</span>
+                </div>
+            </div>
+        </div>
+
+        <p><strong>Consigna:</strong> ¿Qué figura o grupo de figuras necesitas agregar para completar exactamente los 2 tiempos sin que falte ni sobre espacio?</p>
+
+        <div class="options-grid">
+            <button class="btn-option" onclick="selectOption(1, 'A', this)">𝄺 Blanca (2 tiempos)</button>
+            <button class="btn-option" onclick="selectOption(1, 'B', this)">♩ Negra (1 tiempo)</button>
+            <button class="btn-option" onclick="selectOption(1, 'C', this)">♫ Dos Corcheas (1 tiempo)</button>
+            <button class="btn-option" onclick="selectOption(1, 'D', this)">𝄻 Redonda (4 tiempos)</button>
+        </div>
+
+        <div class="scaffold-section">
+            <button class="btn-help" onclick="showHint(1)">💡 Necesito una pista (Ayuda progresiva)</button>
+            <div id="hint-box-1" class="feedback-box feedback-prompt"></div>
+        </div>
+
+        <div id="feedback-1" class="feedback-box"></div>
+
+        <button class="btn-action" onclick="checkStep(1)">Comprobar mi idea</button>
+    </div>
+
+    <!-- ETAPA 2 -->
+    <div id="step-2" class="step">
+        <h1>Paso 2: Construyendo un Compás de 4/4</h1>
+        
+        <div class="info-box">
+            <p>Un compás de <strong>4/4</strong> necesita completarse con un total de <strong>4 tiempos</strong>.</p>
+        </div>
+
+        <p>Observa el contenido actual del compás:</p>
+
+        <div class="measure-container">
+            <div class="time-signature"><span>4</span><span>4</span></div>
+            <div class="notes-list">
+                <div class="note-card">
+                    <span class="symbol">♩</span>
+                    <span>1 t.</span>
+                </div>
+                <div class="note-card">
+                    <span class="symbol">♫</span>
+                    <span>1 t.</span>
+                </div>
+                <span>+</span>
+                <div class="note-card" style="border-style: dashed;">
+                    <span class="symbol">?</span>
+                    <span>¿Qué falta?</span>
+                </div>
+            </div>
+        </div>
+
+        <p><strong>Consigna:</strong> Ya tenemos 2 tiempos cargados (1 Negra + 2 Corcheas). ¿Cuál de estas opciones completa el compás para llegar justo a 4 tiempos?</p>
+
+        <div class="options-grid">
+            <button class="btn-option" onclick="selectOption(2, 'A', this)">𝄺 Una Blanca (2 tiempos)</button>
+            <button class="btn-option" onclick="selectOption(2, 'B', this)">♩ Una Negra (1 tiempo)</button>
+            <button class="btn-option" onclick="selectOption(2, 'C', this)">♩ ♩ ♩ Tres Negras (3 tiempos)</button>
+        </div>
+
+        <div class="scaffold-section">
+            <button class="btn-help" onclick="showHint(2)">💡 Necesito una pista (Ayuda progresiva)</button>
+            <div id="hint-box-2" class="feedback-box feedback-prompt"></div>
+        </div>
+
+        <div id="feedback-2" class="feedback-box"></div>
+
+        <button class="btn-action" onclick="checkStep(2)">Comprobar mi idea</button>
+    </div>
+
+    <!-- ETAPA 3: METACOGNICIÓN Y CIERRE -->
+    <div id="step-3" class="step">
+        <h1>Paso 3: Reflexiona sobre tu Aprendizaje</h1>
+        
+        <div class="info-box">
+            <p>¡Has explorado la estructura de los compases! Para finalizar, piensa en cómo resolviste los desafíos.</p>
+        </div>
+
+        <p><strong>1. ¿Qué estrategia te ayudó a descubrir cuántos tiempos faltaban en cada compás?</strong></p>
+        <textarea id="meta-1" placeholder="Por ejemplo: Contar los tiempos con los dedos, sumar el valor de cada figura..."></textarea>
+
+        <p><strong>2. ¿Qué aprendiste hoy sobre el espacio que hay dentro de un compás?</strong></p>
+        <textarea id="meta-2" placeholder="Escribe aquí tu conclusión..."></textarea>
+
+        <button class="btn-action" onclick="finishActivity()">Finalizar Experiencia</button>
+
+        <div id="final-message" class="feedback-box feedback-success" style="margin-top: 20px;">
+            <h3>🎉 ¡Excelente trabajo de investigación musical!</h3>
+            <p>Tus reflexiones demuestran que estás comprendiendo cómo se organiza el tiempo en la música. Muestra esta pantalla a tu docente para compartir tus estrategias.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ESTADO DE LA APLICACIÓN
+    let currentStep = 1;
+    let selectedOptions = { 1: null, 2: null };
+    let hintLevels = { 1: 0, 2: 0 };
+    let fontSizeLevel = 18;
+    let isSpeaking = false;
+
+    // SISTEMA DE ACCESIBILIDAD: TAMAÑO DE FUENTE
+    function changeFontSize(direction) {
+        fontSizeLevel += direction * 2;
+        if (fontSizeLevel < 14) fontSizeLevel = 14;
+        if (fontSizeLevel > 26) fontSizeLevel = 26;
+        document.documentElement.style.setProperty('--font-size-base', fontSizeLevel + 'px');
+    }
+
+    // SISTEMA DE ACCESIBILIDAD: ALTO CONTRASTE
+    function toggleContrast() {
+        document.body.classList.toggle('high-contrast');
+    }
+
+    // SISTEMA DE ACCESIBILIDAD: TEXT-TO-SPEECH (LECTURA EN VOZ ALTA)
+    function toggleTTS() {
+        const btn = document.getElementById('tts-btn');
+        if ('speechSynthesis' in window) {
+            if (speechSynthesis.speaking || isSpeaking) {
+                speechSynthesis.cancel();
+                isSpeaking = false;
+                btn.innerText = "🔊 Escuchar Texto";
+            } else {
+                const activeStepElem = document.querySelector('.step.active');
+                const textToRead = activeStepElem.innerText;
+                const utterance = new SpeechSynthesisUtterance(textToRead);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9;
+                
+                utterance.onend = function() {
+                    isSpeaking = false;
+                    btn.innerText = "🔊 Escuchar Texto";
+                };
+
+                speechSynthesis.speak(utterance);
+                isSpeaking = true;
+                btn.innerText = "⏹️ Detener Lectura";
+            }
+        } else {
+            alert("La función de lectura en voz alta no está soportada en este navegador.");
+        }
+    }
+
+    // SELECCIÓN DE OPCIONES
+    function selectOption(step, optionId, btnElement) {
+        selectedOptions[step] = optionId;
+        const parent = btnElement.parentElement;
+        const buttons = parent.querySelectorAll('.btn-option');
+        buttons.forEach(b => b.classList.remove('selected'));
+        btnElement.classList.add('selected');
+    }
+
+    // PISTAS GRADUADAS (ANDAMIAJE SOCIO-PEDAGÓGICO)
+    const hintsStep1 = [
+        "PISTA 1: Recuerda que la indicación 2/4 nos dice que en el compás entran MÁXIMO 2 tiempos de Negra.",
+        "PISTA 2: Si ya tienes una Negra (1 tiempo), ¿cuántos tiempos te faltan para llegar a 2? Busca opciones que sumen exactamente esa cantidad.",
+        "PISTA 3: Observa que hay MÁS DE UNA opción válida. Una sola figura de 1 tiempo o un grupo de figuras que sumen 1 tiempo pueden servir."
+    ];
+
+    const hintsStep2 = [
+        "PISTA 1: Suma lo que ya está dentro del compás: 1 Negra (1 tiempo) + 2 Corcheas (1 tiempo). ¿Cuántos tiempos tienes hasta ahora?",
+        "PISTA 2: Si el compás es de 4/4, necesitas llegar a 4 tiempos. Si ya tienes 2 tiempos ocupados, ¿cuántos tiempos faltan para completar la capacidad?",
+        "PISTA 3: Busca la opción que equivalga exactamente a los 2 tiempos que quedan libres."
+    ];
+
+    function showHint(step) {
+        const hintBox = document.getElementById(`hint-box-${step}`);
+        const hints = step === 1 ? hintsStep1 : hintsStep2;
+        
+        if (hintLevels[step] < hints.length) {
+            hintBox.innerHTML += `<p>${hints[hintLevels[step]]}</p>`;
+            hintLevels[step]++;
+            hintBox.classList.add('visible');
+        }
+    }
+
+    // VERIFICACIÓN FORMANTIVA Y SOCRÁTICA (SIN SOLUCIONISMO DIRECTO)
+    function checkStep(step) {
+        const selected = selectedOptions[step];
+        const feedbackBox = document.getElementById(`feedback-${step}`);
+        feedbackBox.classList.add('visible');
+
+        if (!selected) {
+            feedbackBox.className = "feedback-box feedback-prompt";
+            feedbackBox.innerHTML = "<p>🔍 Selecciona una opción para poner a prueba tu deducción.</p>";
+            return;
+        }
+
+        if (step === 1) {
+            if (selected === 'B' || selected === 'C') {
+                feedbackBox.className = "feedback-box feedback-success";
+                feedbackBox.innerHTML = `
+                    <p><strong>¡Excelente deducción!</strong></p>
+                    <p>Había 1 tiempo ocupado y lograste sumar exactamente el tiempo que faltaba para completar los 2 tiempos del compás. ¡Tanto una Negra como dos Corcheas eran soluciones correctas!</p>
+                `;
+                setTimeout(() => enableNextStep(2), 1500);
+            } else if (selected === 'A') {
+                feedbackBox.className = "feedback-box feedback-prompt";
+                feedbackBox.innerHTML = `
+                    <p><strong>Pensemos juntos:</strong></p>
+                    <p>Si agregas una Blanca (2 tiempos) a la Negra que ya teníamos (1 tiempo)... ¿Cuántos tiempos sumarías en total? ¿Te pasarías del límite de 2 tiempos del compás de 2/4? Revisa tus cuentas.</p>
+                `;
+            } else if (selected === 'D') {
+                feedbackBox.className = "feedback-box feedback-prompt";
+                feedbackBox.innerHTML = `
+                    <p><strong>Analicemos la capacidad:</strong></p>
+                    <p>La Redonda dura 4 tiempos entera. Si el compás de 2/4 solo permite 2 tiempos en total... ¿Crees que la Redonda cabría dentro de este compás?</p>
+                `;
+            }
+        } else if (step === 2) {
+            if (selected === 'A') {
+                feedbackBox.className = "feedback-box feedback-success";
+                feedbackBox.innerHTML = `
+                    <p><strong>¡Gran razonamiento!</strong></p>
+                    <p>Tenías 2 tiempos ocupados (1 + 1). Al sumar una Blanca (2 tiempos), lograste completar exactamente los 4 tiempos de la estructura del 4/4.</p>
+                `;
+                setTimeout(() => enableNextStep(3), 1500);
+            } else if (selected === 'B') {
+                feedbackBox.className = "feedback-box feedback-prompt";
+                feedbackBox.innerHTML = `
+                    <p><strong>Un paso más de reflexión:</strong></p>
+                    <p>Tenías 2 tiempos ocupados. Si agregas 1 Negra (1 tiempo), llegarías a 3 tiempos en total. ¿El compás de 4/4 estaría lleno o todavía quedaría un espacio vacío?</p>
+                `;
+            } else if (selected === 'C') {
+                feedbackBox.className = "feedback-box feedback-prompt";
+                feedbackBox.innerHTML = `
+                    <p><strong>Cuenta los tiempos:</strong></p>
+                    <p>Ya contábamos con 2 tiempos dentro del compás. Si agregamos 3 Negras (3 tiempos)... ¿Cuántos tiempos tendríamos en total? ¿Superaría el límite de 4 tiempos?</p>
+                `;
+            }
+        }
+    }
+
+    function enableNextStep(nextStep) {
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        currentStep = nextStep;
+        document.getElementById(`step-${currentStep}`).classList.add('active');
+        
+        // Actualizar barra de progreso
+        const progressFill = document.getElementById('progress');
+        if (currentStep === 2) progressFill.style.width = '66%';
+        if (currentStep === 3) progressFill.style.width = '100%';
+
+        // Detener lectura en voz alta si estaba activa
+        if (isSpeaking) {
+            speechSynthesis.cancel();
+            isSpeaking = false;
+            document.getElementById('tts-btn').innerText = "🔊 Escuchar Texto";
+        }
+    }
+
+    function finishActivity() {
+        const meta1 = document.getElementById('meta-1').value.trim();
+        const meta2 = document.getElementById('meta-2').value.trim();
+
+        if (meta1 === "" || meta2 === "") {
+            alert("Por favor, responde a las dos preguntas de reflexión antes de finalizar.");
+            return;
+        }
+
+        document.getElementById('final-message').style.display = 'block';
+        document.getElementById('final-message').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
