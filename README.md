@@ -14,6 +14,8 @@ Este repositorio contiene una colección de aplicaciones web interactivas y medi
 3. **Ruffini.htm**: Calculadora y algoritmo interactivo paso a paso para la división de polinomios por la Regla de Ruffini.
 4. **Aprende Present Simple (Inglés 1.º Año)** (Silvina Valla): Aplicación interactiva con feedback explicativo inmediato de reglas verbales en inglés.
 5. **Explorador del Compás y la Música (DUA)** (Fernando Vater): Laboratorio sonoro interactivo con Web Audio API, desafíos secuenciados de compás y panel de accesibilidad DUA.
+6. **Educación Ciudadana Digital: Dilema Digital (DUA)** (Mariana Lagomarsino): Simulador interactivo con dilemas sobre ciberbullying, sexting, grooming, desinformación y derecho a la imagen con pistas formativas, retroalimentación y adaptaciones DUA.
+7. **Ciberseguridad y Sistemas de Información (DUA)** (Iris Dree): Simulador de auditoría y respuesta ante incidentes (Ransomware, Phishing e Ingeniería Social) con pistas socráticas, síntesis de voz (TTS) y ajuste tipográfico DUA.
 
 ---
 
