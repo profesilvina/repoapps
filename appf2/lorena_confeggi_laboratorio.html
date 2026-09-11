@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Laboratorio Color DUA</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen p-3 text-xs">
+
+  <header class="max-w-xl mx-auto bg-white border border-slate-200 rounded-xl p-3 shadow-sm mb-3 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="text-xl">🎨</span>
+      <div>
+        <h1 class="font-bold text-amber-600 text-xs sm:text-sm">Laboratorio Color DUA</h1>
+        <p class="text-[10px] text-slate-500">5° Primaria • (&lt;10 KB)</p>
+      </div>
+    </div>
+    <div class="flex gap-1">
+      <button onclick="sz(1)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded font-bold">A+</button>
+      <button onclick="sz(-1)" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded font-bold">A-</button>
+      <button onclick="speechSynthesis.speak(new SpeechSynthesisUtterance(document.querySelector('section:not(.hidden)').innerText))" class="px-2 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded" title="Leer">🔊</button>
+    </div>
+  </header>
+
+  <main class="max-w-xl mx-auto space-y-3">
+    <!-- Barra -->
+    <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm">
+      <div class="flex justify-between font-bold mb-1.5">
+        <span id="st" class="text-amber-600">Estación 1 de 3</span>
+        <span id="sn" class="text-slate-600">Termómetro Cromático</span>
+      </div>
+      <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+        <div id="pb" class="bg-amber-600 h-full w-[33%] transition-all"></div>
+      </div>
+    </div>
+
+    <!-- Estación 1 -->
+    <section id="s1" class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm space-y-2">
+      <div class="flex justify-between items-center">
+        <h2 class="font-bold text-amber-600">🧪 Estación 1: Termómetro</h2>
+        <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded">Interactiva</span>
+      </div>
+      <p class="text-slate-600">Toca 2 sectores para analizar su temperatura:</p>
+      
+      <div class="flex flex-col sm:flex-row items-center justify-around gap-3 my-2">
+        <div class="w-28 h-28 relative">
+          <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
+            <path d="M50,50 L100,50 A50,50 0 0,1 75,93 Z" fill="#ef4444" class="cursor-pointer hover:opacity-80" onclick="ic('#ef4444','Rojo','cálido','Calor e intensidad.')"/>
+            <path d="M50,50 L75,93 A50,50 0 0,1 25,93 Z" fill="#f97316" class="cursor-pointer hover:opacity-80" onclick="ic('#f97316','Naranja','cálido','Verano y alegría.')"/>
+            <path d="M50,50 L25,93 A50,50 0 0,1 0,50 Z" fill="#eab308" class="cursor-pointer hover:opacity-80" onclick="ic('#eab308','Amarillo','cálido','Luz solar directa.')"/>
+            <path d="M50,50 L0,50 A50,50 0 0,1 25,7 Z" fill="#22c55e" class="cursor-pointer hover:opacity-80" onclick="ic('#22c55e','Verde','transición','Color natural mixto.')"/>
+            <path d="M50,50 L25,7 A50,50 0 0,1 75,7 Z" fill="#0284c7" class="cursor-pointer hover:opacity-80" onclick="ic('#0284c7','Azul','frío','Agua e hielo.')"/>
+            <path d="M50,50 L75,7 A50,50 0 0,1 100,50 Z" fill="#a855f7" class="cursor-pointer hover:opacity-80" onclick="ic('#a855f7','Violeta','frío','Sombras frías.')"/>
+            <circle cx="50" cy="50" r="12" fill="#fff"/>
+          </svg>
+        </div>
+        <div id="ib" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-2 text-center text-slate-500 text-[11px]">
+          Toca el círculo cromático.
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-slate-100">
+        <button id="n1" onclick="nv(2)" disabled class="px-3 py-1 bg-amber-600 hover:bg-amber-700 disabled:opacity-40 text-white font-semibold rounded transition">Siguiente ➔</button>
+      </div>
+    </section>
+
+    <!-- Estación 2 -->
+    <section id="s2" class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm space-y-2 hidden">
+      <div class="flex justify-between items-center">
+        <h2 class="font-bold text-amber-600">🎨 Estación 2: Pintor</h2>
+        <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded">Simulador</span>
+      </div>
+      <p class="text-slate-600">Pinta el paisaje para <b>VERANO CALUROSO</b> (mínimo 2 zonas cálidas):</p>
+      
+      <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200 flex-wrap">
+        <span class="font-bold">Pincel:</span>
+        <button onclick="br('#ef4444','Rojo','cálido')" class="w-5 h-5 rounded-full bg-red-500 border"></button>
+        <button onclick="br('#f97316','Naranja','cálido')" class="w-5 h-5 rounded-full bg-orange-500 border"></button>
+        <button onclick="br('#eab308','Amarillo','cálido')" class="w-5 h-5 rounded-full bg-yellow-400 border"></button>
+        <button onclick="br('#0284c7','Azul','frío')" class="w-5 h-5 rounded-full bg-sky-600 border"></button>
+        <span id="bl" class="text-amber-600 ml-auto">Ninguno</span>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center gap-3">
+        <div class="w-full sm:w-48 h-28 bg-slate-800 rounded-xl overflow-hidden border">
+          <svg viewBox="0 0 200 100" class="w-full h-full">
+            <rect id="p1" x="0" y="0" width="200" height="60" fill="#cbd5e1" class="cursor-pointer" onclick="pr('p1')"/>
+            <circle id="p2" cx="160" cy="20" r="12" fill="#94a3b8" class="cursor-pointer" onclick="pr('p2')"/>
+            <polygon id="p3" points="0,60 60,25 130,60" fill="#64748b" class="cursor-pointer" onclick="pr('p3')"/>
+            <rect id="p4" x="0" y="60" width="200" height="40" fill="#94a3b8" class="cursor-pointer" onclick="pr('p4')"/>
+          </svg>
+        </div>
+        <div id="pf" class="flex-1 bg-slate-50 border rounded-xl p-2.5 text-[11px]">
+          Elige color y haz clic en el paisaje.
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-slate-100">
+        <button id="n2" onclick="nv(3)" disabled class="px-3 py-1 bg-amber-600 hover:bg-amber-700 disabled:opacity-40 text-white font-semibold rounded transition">Siguiente ➔</button>
+      </div>
+    </section>
+
+    <!-- Estación 3 -->
+    <section id="s3" class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm space-y-2 hidden">
+      <div class="flex justify-between items-center">
+        <h2 class="font-bold text-purple-600">🎓 Estación 3: Diario</h2>
+        <span class="text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded">Reflexión</span>
+      </div>
+      <p class="text-slate-600">Escribe tu conclusión breve para obtener la insignia:</p>
+      
+      <div>
+        <label class="block font-bold mb-1">¿Qué te ayudó más a distinguir colores?</label>
+        <textarea id="j1" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs focus:ring-1 focus:ring-amber-500" placeholder="Escribe aquí..."></textarea>
+      </div>
+
+      <button onclick="fin()" class="w-full py-2 bg-gradient-to-r from-amber-600 to-purple-600 text-white font-bold rounded-xl transition">✨ Obtener Insignia</button>
+
+      <div id="bc" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 text-center space-y-1">
+        <span class="text-2xl animate-bounce">🥇</span>
+        <h3 class="font-bold text-amber-700 text-xs">¡Insignia de Explorador Obtenida!</h3>
+        <p id="so" class="text-left text-[11px] text-slate-600"></p>
+        <button onclick="window.print()" class="mt-1 px-3 py-1 bg-slate-900 text-white rounded text-[11px]">🖨️ Imprimir</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const st = { fs: 13, e: 0, b: null, p: {} };
+    const sz = d => { st.fs = Math.min(16, Math.max(11, st.fs + d)); document.body.style.fontSize = st.fs + 'px'; };
+    const nv = n => {
+      for (let i = 1; i <= 3; i++) document.getElementById('s' + i).classList.add('hidden');
+      document.getElementById('s' + n).classList.remove('hidden');
+      document.getElementById('pb').style.width = (n * 33) + '%';
+      document.getElementById('st').innerText = 'Estación ' + n + ' de 3';
+      document.getElementById('sn').innerText = ['Termómetro Cromático', 'Pintor de Climas', 'Diario del Artista'][n - 1];
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    const ic = (h, n, t, d) => {
+      st.e++;
+      document.getElementById('ib').innerHTML = `<b style="color:${h}">${n} (${t.toUpperCase()})</b><br>${d}`;
+      if (st.e >= 2) document.getElementById('n1').disabled = false;
+    };
+    const br = (h, n, t) => {
+      st.b = { h, n, t };
+      const l = document.getElementById('bl');
+      l.innerText = n; l.style.color = h;
+    };
+    const pr = id => {
+      if (!st.b) {
+        document.getElementById('pf').innerHTML = '<span class="text-red-500 font-bold">⚠️ Elige un pincel.</span>';
+        return;
+      }
+      document.getElementById(id).setAttribute('fill', st.b.h);
+      st.p[id] = st.b;
+      if (Object.values(st.p).filter(x => x.t === 'cálido').length >= 2) {
+        document.getElementById('pf').innerHTML = '<span class="text-emerald-600 font-bold">☀️ ¡Verano cálido logrado!</span>';
+        document.getElementById('n2').disabled = false;
+      } else {
+        document.getElementById('pf').innerHTML = '<span class="text-sky-600">Añade más tonos cálidos.</span>';
+      }
+    };
+    const fin = () => {
+      const t = document.getElementById('j1').value.trim();
+      if (!t) return;
+      document.getElementById('bc').classList.remove('hidden');
+      document.getElementById('so').innerText = 'Reflexión: ' + t;
+    };
+  </script>
+</body>
+</html>

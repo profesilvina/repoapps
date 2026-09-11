@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Aplicación educativa accesible para practicar clasificación y nomenclatura de compuestos inorgánicos.">
+  <title>Misión Fórmula | Química 5.º año</title>
+  <style>
+    :root{--ink:#10283b;--muted:#536675;--paper:#f4f8fa;--card:#fff;--blue:#006a83;--blue2:#004d61;--lime:#d9f99d;--line:#cbdbe2;--good:#087344;--bad:#a23420;--focus:#ffb000;--base:17px}
+    *{box-sizing:border-box}html{font-size:var(--base)}body{margin:0;background:linear-gradient(135deg,#e9f5f8 0,#f9fbfc 55%,#eef8dc 100%);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55;min-height:100vh}
+    button,textarea{font:inherit}button{cursor:pointer}button:focus-visible,textarea:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
+    .skip{position:absolute;left:-9999px}.skip:focus{left:1rem;top:1rem;background:#fff;padding:.7rem;z-index:10}
+    header{background:#073b4c;color:#fff;padding:1rem max(1rem,calc((100% - 1100px)/2));display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .brand{display:flex;gap:.8rem;align-items:center}.mark{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--lime);color:#173c21;font-weight:900;font-size:1.25rem}.brand h1{font-size:1.25rem;margin:0}.brand p{margin:0;color:#c8e8ef;font-size:.88rem}
+    .tools{display:flex;gap:.45rem;flex-wrap:wrap}.tool{border:1px solid #80b3bf;background:#fff;color:#073b4c;border-radius:9px;padding:.5rem .7rem;font-weight:700}.tool[aria-pressed="true"]{background:var(--lime);color:#173c21}
+    main{width:min(1100px,calc(100% - 2rem));margin:1.4rem auto 2.5rem}.intro{display:grid;grid-template-columns:1.25fr .75fr;gap:1rem}.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:clamp(1rem,2vw,1.5rem);box-shadow:0 10px 28px #17465c12}
+    h2,h3{line-height:1.2;margin-top:0}.eyebrow{color:var(--blue2);font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.78rem}.goal{font-size:1.06rem}.mini{display:flex;gap:.6rem;align-items:flex-start;margin:.7rem 0}.mini b{display:grid;place-items:center;min-width:30px;height:30px;border-radius:9px;background:#dff2f6}
+    .start{border:0;border-radius:11px;background:var(--blue);color:#fff;font-weight:800;padding:.8rem 1.05rem;box-shadow:0 4px 0 var(--blue2)}.start:hover{background:#005b72}.note{color:var(--muted);font-size:.9rem}
+    #practice{margin-top:1rem}.hidden{display:none!important}.topline{display:flex;gap:1rem;justify-content:space-between;align-items:center;flex-wrap:wrap}.progress{height:12px;background:#dce8ed;border-radius:20px;overflow:hidden;flex:1;min-width:180px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),#75a900);transition:width .35s}
+    .case{margin-top:1rem;border-top:1px solid var(--line);padding-top:1.2rem}.formula{font-family:Georgia,serif;font-size:clamp(2.4rem,8vw,4.8rem);margin:.35rem 0;color:#073b4c}.context{background:#edf6f8;border-left:5px solid var(--blue);padding:.8rem 1rem;border-radius:0 10px 10px 0}
+    fieldset{border:0;padding:0;margin:1.1rem 0}legend{font-weight:800;margin-bottom:.7rem}.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}.choice{background:#fff;border:2px solid #a9c2cc;border-radius:12px;padding:.8rem;text-align:left;font-weight:700}.choice:hover{border-color:var(--blue);background:#eef9fb}.choice.selected{border-color:var(--blue);background:#dff5fa}.choice.correct{border-color:var(--good);background:#e1f7ec}.choice.wrong{border-color:var(--bad);background:#ffebe7}
+    .actions{display:flex;gap:.65rem;flex-wrap:wrap}.secondary{border:2px solid var(--blue);color:var(--blue2);background:#fff;border-radius:10px;padding:.65rem .9rem;font-weight:750}.secondary:hover{background:#e9f7fa}.feedback,.hint{margin-top:1rem;border-radius:12px;padding:.9rem 1rem}.feedback{background:#eef4f6}.feedback.good{background:#dff7e9;color:#075b36}.feedback.try{background:#fff0ec;color:#7f2c1c}.hint{background:#fff8d9;border:1px solid #e8cd5a}.feedback:empty,.hint:empty{display:none}
+    .summary-grid{display:grid;grid-template-columns:.7fr 1.3fr;gap:1rem}.score{display:grid;place-items:center;text-align:center;background:#eaf7fa;border-radius:16px;padding:1rem}.score strong{font-size:3rem;color:var(--blue2)}label{font-weight:750;display:block;margin:.85rem 0 .35rem}textarea{width:100%;min-height:90px;border:2px solid #9bb6c0;border-radius:10px;padding:.7rem;color:var(--ink);background:#fff}.saved{color:var(--good);font-weight:700}
+    footer{width:min(1100px,calc(100% - 2rem));margin:0 auto 2rem;color:var(--muted);font-size:.84rem}
+    body.contrast{--ink:#fff;--muted:#e7f5ff;--paper:#000;--card:#000;--line:#fff;--blue:#ffe600;--blue2:#ffe600;--lime:#ffe600;--good:#7dff91;--bad:#ff937f;background:#000;color:#fff}body.contrast header{background:#000;border-bottom:2px solid #fff}body.contrast .panel,body.contrast .choice,body.contrast textarea,body.contrast .secondary{background:#000;color:#fff}body.contrast .start{color:#000}body.contrast .context,body.contrast .feedback{background:#151515}body.contrast .hint{background:#2b2500;color:#fff}body.contrast .formula{color:#fff}body.contrast .choice.selected{background:#243800}body.contrast .score{background:#151515}
+    @media(max-width:760px){.intro,.summary-grid{grid-template-columns:1fr}.options{grid-template-columns:1fr}.tools{width:100%}.tool{flex:1}.formula{text-align:center}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <header>
+    <div class="brand"><div class="mark" aria-hidden="true">Fe</div><div><h1>Misión Fórmula</h1><p>Química · 5.º año · Nivel secundario GCBA</p></div></div>
+    <nav class="tools" aria-label="Herramientas de accesibilidad">
+      <button class="tool" id="smaller" aria-label="Disminuir tamaño del texto">A−</button>
+      <button class="tool" id="larger" aria-label="Aumentar tamaño del texto">A+</button>
+      <button class="tool" id="contrast" aria-pressed="false">Contraste</button>
+      <button class="tool" id="speak" aria-pressed="false">🔊 Leer</button>
+    </nav>
+  </header>
+  <main id="main">
+    <section id="welcome" class="intro" aria-labelledby="welcome-title">
+      <article class="panel">
+        <p class="eyebrow">Desafío de laboratorio</p>
+        <h2 id="welcome-title">¿Qué cuenta una fórmula química?</h2>
+        <p class="goal">Analizá seis sustancias, reconocé su familia inorgánica y justificá tus decisiones. Podés equivocarte, revisar y pedir ayudas graduadas.</p>
+        <button class="start" id="start">Comenzar la misión</button>
+        <p class="note">No se registra ningún dato. Funciona sin conexión.</p>
+      </article>
+      <aside class="panel" aria-label="Cómo trabajar">
+        <h3>Tu recorrido</h3>
+        <div class="mini"><b>1</b><span>Observá la fórmula y su uso cotidiano.</span></div>
+        <div class="mini"><b>2</b><span>Elegí una familia y explicá qué indicio usaste.</span></div>
+        <div class="mini"><b>3</b><span>Revisá la devolución o activá una pista.</span></div>
+      </aside>
+    </section>
+
+    <section id="practice" class="panel hidden" aria-labelledby="case-title">
+      <div class="topline"><strong id="counter">Caso 1 de 6</strong><div class="progress" role="progressbar" aria-label="Progreso" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0"><div class="bar" id="bar"></div></div></div>
+      <article class="case">
+        <p class="eyebrow" id="tag"></p><h2 id="case-title">Analizá la sustancia</h2>
+        <div class="formula" id="formula" aria-label="Fórmula química"></div>
+        <p class="context" id="context"></p>
+        <fieldset><legend>¿A qué familia pertenece?</legend><div class="options" id="options"></div></fieldset>
+        <label for="reason">¿Qué parte de la fórmula orientó tu decisión? <span class="note">(respuesta breve)</span></label>
+        <textarea id="reason" placeholder="Por ejemplo: observé que…"></textarea>
+        <div class="actions">
+          <button class="start" id="check">Comprobar mi razonamiento</button>
+          <button class="secondary" id="hint">Pedir pista <span id="hintLevel">1/3</span></button>
+        </div>
+        <div class="hint" id="hintBox" role="status"></div><div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+        <button class="start hidden" id="next">Siguiente caso</button>
+      </article>
+    </section>
+
+    <section id="summary" class="panel hidden" aria-labelledby="summary-title">
+      <p class="eyebrow">Cierre metacognitivo</p><h2 id="summary-title">Misión completada</h2>
+      <div class="summary-grid"><div class="score"><span>Decisiones logradas</span><strong id="score">0/6</strong><span>El error también fue información para aprender.</span></div>
+      <div><label for="strategy">¿Qué estrategia te ayudó más a reconocer las familias?</label><textarea id="strategy" placeholder="Contá qué observaste o comparaste…"></textarea><label for="learning">¿Qué diferencia comprendés ahora mejor?</label><textarea id="learning" placeholder="Explicalo con tus palabras…"></textarea><div class="actions"><button class="start" id="saveReflection">Guardar reflexión en este dispositivo</button><button class="secondary" id="restart">Volver a practicar</button></div><p id="saved" class="saved" role="status"></p></div></div>
+    </section>
+  </main>
+  <footer>Prototipo educativo elaborado por Gustavo Maximiliano Kocsis · La devolución orienta el proceso y no reemplaza la intervención docente.</footer>
+  <script>
+  (()=>{
+    const families=['Óxido','Hidróxido','Ácido','Sal'];
+    const cases=[
+      {f:'Fe₂O₃',tag:'Herrumbre y pigmentos',ctx:'Este compuesto aparece en procesos de oxidación del hierro y también se usa como pigmento.',a:'Óxido',why:'Está formado por hierro y oxígeno. Es un óxido metálico; en nomenclatura Stock: óxido de hierro (III).',h:['Buscá cuántos elementos diferentes aparecen.','¿Reconocés el símbolo O del oxígeno?','Metal + oxígeno orienta hacia la familia de los óxidos.']},
+      {f:'Ca(OH)₂',tag:'Construcción y tratamiento de agua',ctx:'Se conoce como cal apagada y puede utilizarse para regular la acidez.',a:'Hidróxido',why:'Contiene el grupo OH unido a un metal. Se nombra hidróxido de calcio.',h:['Observá si hay un grupo de átomos entre paréntesis.','El grupo OH se denomina hidroxilo.','Metal + grupo OH orienta hacia un hidróxido.']},
+      {f:'H₂SO₄',tag:'Baterías y producción industrial',ctx:'Es una sustancia corrosiva presente, en solución, en algunas baterías.',a:'Ácido',why:'La fórmula comienza con hidrógeno y contiene un oxoanión. Se denomina ácido sulfúrico.',h:['Mirá qué elemento aparece primero.','En muchos ácidos inorgánicos, la fórmula comienza con H.','H al inicio y un grupo con oxígeno orientan hacia un oxoácido.']},
+      {f:'NaCl',tag:'Alimentos y soluciones',ctx:'Se usa en la cocina y para preparar solución fisiológica en una concentración adecuada.',a:'Sal',why:'Está formada por un catión metálico y un anión sin H inicial ni OH. Se nombra cloruro de sodio.',h:['Compará la fórmula con las que tienen O, H inicial u OH.','Na es un metal y Cl forma un anión.','Metal + anión derivado de un ácido orienta hacia una sal.']},
+      {f:'CO₂',tag:'Respiración y combustión',ctx:'Es un gas que exhalamos y también se produce en combustiones completas.',a:'Óxido',why:'Está formado por carbono y oxígeno. Es un óxido no metálico: dióxido de carbono.',h:['Solo aparecen dos elementos.','Uno de ellos es el oxígeno.','No metal + oxígeno también forma un óxido.']},
+      {f:'Na₂CO₃',tag:'Limpieza y fabricación de vidrio',ctx:'Se conoce como carbonato de sodio y se utiliza en procesos industriales y productos de limpieza.',a:'Sal',why:'Combina el catión sodio con el anión carbonato. Se nombra carbonato de sodio.',h:['No clasifiques solo por ver oxígeno: mirá la fórmula completa.','Identificá el metal Na y el grupo CO₃.','Un catión metálico unido a un oxoanión forma una sal.']}
+    ];
+    let i=0,selected='',score=0,hints=0,answered=false,spoken=false,font=17;
+    const $=id=>document.getElementById(id);
+    function render(){const c=cases[i];$('counter').textContent=`Caso ${i+1} de ${cases.length}`;$('bar').style.width=`${i/cases.length*100}%`;$('practice').querySelector('.progress').setAttribute('aria-valuenow',i);$('tag').textContent=c.tag;$('formula').textContent=c.f;$('formula').setAttribute('aria-label',c.f.replaceAll('₂',' dos ').replaceAll('₃',' tres '));$('context').textContent=c.ctx;$('reason').value='';$('feedback').textContent='';$('feedback').className='feedback';$('hintBox').textContent='';$('next').classList.add('hidden');$('check').classList.remove('hidden');selected='';hints=0;answered=false;updateHint();$('options').innerHTML='';families.forEach(x=>{const b=document.createElement('button');b.className='choice';b.textContent=x;b.type='button';b.onclick=()=>{if(answered)return;selected=x;document.querySelectorAll('.choice').forEach(n=>n.classList.remove('selected'));b.classList.add('selected')};$('options').appendChild(b)})}
+    function updateHint(){$('hintLevel').textContent=`${Math.min(hints+1,3)}/3`;$('hint').disabled=hints>=3||answered}
+    $('start').onclick=()=>{$('welcome').classList.add('hidden');$('practice').classList.remove('hidden');render();$('practice').focus?.()};
+    $('hint').onclick=()=>{if(hints<3){$('hintBox').textContent=`Pista ${hints+1}: ${cases[i].h[hints]}`;hints++;updateHint()}};
+    $('check').onclick=()=>{if(!selected){$('feedback').textContent='Elegí una familia antes de comprobar. Si lo necesitás, pedí una pista.';$('feedback').className='feedback try';return}answered=true;const ok=selected===cases[i].a;if(ok)score++;document.querySelectorAll('.choice').forEach(b=>{if(b.textContent===cases[i].a)b.classList.add('correct');else if(b.textContent===selected)b.classList.add('wrong')});$('feedback').textContent=(ok?'Tu clasificación es adecuada. ':'Revisaste una hipótesis. La clasificación correcta es '+cases[i].a+'. ')+cases[i].why+($('reason').value.trim()?' Tu explicación queda como evidencia de tu proceso.':' Antes de seguir, explicá oralmente qué indicio usarías la próxima vez.');$('feedback').className='feedback '+(ok?'good':'try');$('check').classList.add('hidden');$('next').classList.remove('hidden');$('hint').disabled=true};
+    $('next').onclick=()=>{i++;if(i<cases.length){render();$('case-title').scrollIntoView({behavior:'smooth'})}else{finish()}};
+    function finish(){$('practice').classList.add('hidden');$('summary').classList.remove('hidden');$('score').textContent=`${score}/${cases.length}`;$('bar').style.width='100%';speechSynthesis.cancel()}
+    $('restart').onclick=()=>{i=0;score=0;$('summary').classList.add('hidden');$('practice').classList.remove('hidden');render();scrollTo({top:0,behavior:'smooth'})};
+    $('saveReflection').onclick=()=>{localStorage.setItem('misionFormulaReflexion',JSON.stringify({estrategia:$('strategy').value,aprendizaje:$('learning').value}));$('saved').textContent='Reflexión guardada en este navegador.'};
+    try{const r=JSON.parse(localStorage.getItem('misionFormulaReflexion'));if(r){$('strategy').value=r.estrategia||'';$('learning').value=r.aprendizaje||''}}catch(e){}
+    $('larger').onclick=()=>{font=Math.min(22,font+1);document.documentElement.style.setProperty('--base',font+'px')};$('smaller').onclick=()=>{font=Math.max(15,font-1);document.documentElement.style.setProperty('--base',font+'px')};
+    $('contrast').onclick=()=>{const on=document.body.classList.toggle('contrast');$('contrast').setAttribute('aria-pressed',on)};
+    $('speak').onclick=()=>{if(spoken){speechSynthesis.cancel();spoken=false;$('speak').textContent='🔊 Leer';$('speak').setAttribute('aria-pressed','false');return}const target=$('summary').classList.contains('hidden')?($('practice').classList.contains('hidden')?$('welcome'):$('practice')):$('summary');const u=new SpeechSynthesisUtterance(target.innerText);u.lang='es-AR';u.onend=()=>{spoken=false;$('speak').textContent='🔊 Leer';$('speak').setAttribute('aria-pressed','false')};speechSynthesis.speak(u);spoken=true;$('speak').textContent='⏸ Pausar';$('speak').setAttribute('aria-pressed','true')};
+  })();
+  </script>
+</body>
+</html>
