@@ -16,6 +16,8 @@ Este repositorio contiene una colección de aplicaciones web interactivas y medi
 5. **Explorador del Compás y la Música (DUA)** (Fernando Vater): Laboratorio sonoro interactivo con Web Audio API, desafíos secuenciados de compás y panel de accesibilidad DUA.
 6. **Educación Ciudadana Digital: Dilema Digital (DUA)** (Mariana Lagomarsino): Simulador interactivo con dilemas sobre ciberbullying, sexting, grooming, desinformación y derecho a la imagen con pistas formativas, retroalimentación y adaptaciones DUA.
 7. **Ciberseguridad y Sistemas de Información (DUA)** (Iris Dree): Simulador de auditoría y respuesta ante incidentes (Ransomware, Phishing e Ingeniería Social) con pistas socráticas, síntesis de voz (TTS) y ajuste tipográfico DUA.
+8. **Laboratorio Color DUA (5.° Primaria)** (Lorena Confeggi): Secuencia didáctica interactiva en 3 estaciones (Termómetro Cromático, Pintor de Climas y Diario del Artista) con síntesis de voz (TTS), ajuste de fuentes e insignia final.
+9. **Misión Fórmula: Química Inorgánica (DUA)** (Gustavo Maximiliano Kocsis): Laboratorio interactivo para 5.° año de secundaria para clasificación de óxidos, hidróxidos, ácidos y sales con pistas graduadas, metacognición, alto contraste y lectura en voz alta.
 
 ---
 
