@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bailemos juntos - Aprendiendo Posiciones de Ballet (DUA)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts: Comic Neue & Inter for optimal readability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base typography and DUA Font sizing dynamic system */
+        :root {
+            --font-scale: 1rem;
+            --bg-primary: #FFF5F7;
+            --bg-card: #FFFFFF;
+            --text-main: #2D3748;
+            --accent-pink: #EC4899;
+            --accent-purple: #8B5CF6;
+            --border-color: #FBCFE8;
+        }
+
+        /* High Contrast Theme Override */
+        body.high-contrast {
+            --bg-primary: #000000;
+            --bg-card: #1A1A1A;
+            --text-main: #FFFFFF;
+            --accent-pink: #FFFF00;
+            --accent-purple: #00FFFF;
+            --border-color: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Comic Neue', 'Inter', cursive, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-size: var(--font-scale);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Card Flip Animations */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Accessible Focus Outline */
+        button:focus-visible, div[role="button"]:focus-visible {
+            outline: 4px solid #8B5CF6;
+            outline-offset: 3px;
+        }
+
+        /* Gentle bounce animation for mascot */
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .animate-mascot {
+            animation: gentle-bounce 3s infinite ease-in-out;
+        }
+
+        /* Custom pulse highlight for hints */
+        @keyframes hint-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7); }
+            50% { box-shadow: 0 0 0 12px rgba(236, 72, 153, 0); }
+        }
+
+        .hint-active {
+            animation: hint-glow 1.5s infinite;
+        }
+
+        /* Responsive & Accessible SVG Text Styling */
+        svg text {
+            font-family: 'Comic Neue', 'Inter', sans-serif;
+            user-select: none;
+        }
+    </style>
+</head>
+
+<body class="min-h-full flex flex-col justify-between selection:bg-pink-200 selection:text-pink-900">
+
+    <header class="bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b-4 border-pink-300 dark:border-pink-600 sticky top-0 z-40 px-4 py-3 shadow-md">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center gap-3">
+                <span class="text-3xl md:text-4xl" aria-hidden="true">🩰</span>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-pink-600 dark:text-pink-400 tracking-wide flex items-center gap-2">
+                        Bailemos juntos
+                        <span class="text-xs bg-pink-100 text-pink-800 font-semibold px-2 py-0.5 rounded-full border border-pink-300">Escuela Primaria</span>
+                    </h1>
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300">Aprende las 5 posiciones básicas de pies y brazos</p>
+                </div>
+            </div>
+
+            <!-- DUA Accessibility Toolbar -->
+            <div class="flex flex-wrap items-center justify-center gap-2 bg-pink-50 dark:bg-gray-800 p-2 rounded-2xl border-2 border-pink-200 dark:border-gray-700" role="toolbar" aria-label="Herramientas de Accesibilidad DUA">
+                
+                <!-- Font Size Controls -->
+                <div class="flex items-center bg-white dark:bg-gray-700 rounded-xl border border-pink-200 dark:border-gray-600 px-1">
+                    <button id="btn-font-down" onclick="adjustFontSize(-0.1)" class="p-2 text-gray-700 dark:text-gray-200 hover:text-pink-600 font-bold text-sm" title="Disminuir tamaño de letra" aria-label="Disminuir tamaño de letra">
+                        <i class="fa-solid font-bold">A-</i>
+                    </button>
+                    <span class="text-xs font-semibold px-1 text-gray-500 dark:text-gray-400" id="font-size-indicator">100%</span>
+                    <button id="btn-font-up" onclick="adjustFontSize(0.1)" class="p-2 text-gray-700 dark:text-gray-200 hover:text-pink-600 font-bold text-base" title="Aumentar tamaño de letra" aria-label="Aumentar tamaño de letra">
+                        <i class="fa-solid font-bold">A+</i>
+                    </button>
+                </div>
+
+                <!-- Text to Speech Toggle -->
+                <button id="btn-tts-toggle" onclick="toggleTTS()" class="flex items-center gap-1.5 px-3 py-1.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-xl text-xs md:text-sm font-bold border border-purple-300 hover:bg-purple-200 transition" aria-pressed="true" title="Activar/Desactivar lectura en voz alta">
+                    <i id="tts-icon" class="fa-solid fa-volume-high text-sm"></i>
+                    <span id="tts-label">Voz: SI</span>
+                </button>
+
+                <!-- High Contrast Toggle -->
+                <button id="btn-contrast-toggle" onclick="toggleContrast()" class="flex items-center gap-1.5 px-3 py-1.5 bg-yellow-100 dark:bg-yellow-900 text-yellow-900 dark:text-yellow-100 rounded-xl text-xs md:text-sm font-bold border border-yellow-300 hover:bg-yellow-200 transition" title="Cambiar a Alto Contraste">
+                    <i class="fa-solid fa-circle-half-stroke text-sm"></i>
+                    <span>Contraste</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full">
+        
+        <!-- Navigation Menu -->
+        <nav class="flex flex-wrap justify-center gap-2 mb-6" aria-label="Navegación principal">
+            <button onclick="switchTab('explore')" id="tab-explore" class="tab-btn px-4 py-2.5 rounded-2xl font-bold text-sm md:text-base flex items-center gap-2 bg-pink-600 text-white shadow-md transition transform active:scale-95">
+                <i class="fa-solid fa-book-open"></i>
+                <span>1. Explorar y Aprender</span>
+            </button>
+            <button onclick="switchTab('game-feet')" id="tab-game-feet" class="tab-btn px-4 py-2.5 rounded-2xl font-bold text-sm md:text-base flex items-center gap-2 bg-white text-pink-700 border-2 border-pink-300 hover:bg-pink-50 shadow-sm transition transform active:scale-95">
+                <i class="fa-solid fa-shoe-prints"></i>
+                <span>2. Memotest: Pies</span>
+            </button>
+            <button onclick="switchTab('game-arms')" id="tab-game-arms" class="tab-btn px-4 py-2.5 rounded-2xl font-bold text-sm md:text-base flex items-center gap-2 bg-white text-pink-700 border-2 border-pink-300 hover:bg-pink-50 shadow-sm transition transform active:scale-95">
+                <i class="fa-solid fa-hand"></i>
+                <span>3. Memotest: Brazos</span>
+            </button>
+            <button onclick="switchTab('game-mix')" id="tab-game-mix" class="tab-btn px-4 py-2.5 rounded-2xl font-bold text-sm md:text-base flex items-center gap-2 bg-white text-purple-700 border-2 border-purple-300 hover:bg-purple-50 shadow-sm transition transform active:scale-95">
+                <i class="fa-solid fa-star"></i>
+                <span>4. Gran Desafío Mixto</span>
+            </button>
+        </nav>
+
+        <section id="sec-explore" class="space-y-6">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-3xl border-3 border-pink-200 dark:border-gray-700 shadow-lg">
+                
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-6 pb-4 border-b border-pink-100 dark:border-gray-700">
+                    <div>
+                        <h2 class="text-2xl font-bold text-pink-700 dark:text-pink-300 flex items-center gap-2">
+                            <i class="fa-solid fa-compass"></i> Guía Interactiva de Posiciones
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-300 mt-1">
+                            Haz clic en cada tarjeta para escuchar su secreto mágico y observar la posición.
+                        </p>
+                    </div>
+
+                    <!-- Category Switcher -->
+                    <div class="flex bg-pink-100 dark:bg-gray-700 p-1 rounded-2xl gap-1">
+                        <button id="btn-explore-feet" onclick="setExploreCategory('feet')" class="px-4 py-2 rounded-xl text-sm font-bold bg-white dark:bg-gray-800 text-pink-700 dark:text-pink-300 shadow-sm">
+                            🩰 Posiciones de Pies
+                        </button>
+                        <button id="btn-explore-arms" onclick="setExploreCategory('arms')" class="px-4 py-2 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-pink-600">
+                            💪 Posiciones de Brazos
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive Cards Grid -->
+                <div id="explore-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+        </section>
+
+        <section id="sec-game" class="hidden space-y-6">
+            
+            <!-- Game Header & Scoreboard -->
+            <div class="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-4 md:p-6 rounded-3xl shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                    <h2 id="game-title" class="text-2xl font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-puzzle-piece"></i> Memotest de Posiciones
+                    </h2>
+                    <p class="text-pink-100 text-sm mt-0.5">Encuentra la pareja uniendo el NOMBRE de la posición con su IMAGEN correspondiente.</p>
+                </div>
+
+                <!-- Stats Badges -->
+                <div class="flex items-center gap-3 bg-white/20 backdrop-blur px-4 py-2 rounded-2xl">
+                    <div class="text-center px-2">
+                        <span class="block text-xs uppercase font-semibold text-pink-200">Parejas</span>
+                        <span id="stat-matches" class="text-xl md:text-2xl font-black">0 / 5</span>
+                    </div>
+                    <div class="h-8 w-0.5 bg-pink-300/40"></div>
+                    <div class="text-center px-2">
+                        <span class="block text-xs uppercase font-semibold text-pink-200">Intentos</span>
+                        <span id="stat-attempts" class="text-xl md:text-2xl font-black">0</span>
+                    </div>
+                    <div class="h-8 w-0.5 bg-pink-300/40"></div>
+                    <button onclick="resetCurrentGame()" class="p-2 bg-white text-pink-600 rounded-xl hover:bg-pink-100 font-bold transition shadow-sm" title="Reiniciar Juego" aria-label="Reiniciar Juego">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mascot & Hint Banner -->
+            <div id="mascot-box" class="bg-white dark:bg-gray-800 border-2 border-purple-200 dark:border-purple-800 p-4 md:p-5 rounded-3xl shadow-md flex flex-col sm:flex-row items-center gap-4 relative overflow-hidden">
+                <div class="w-16 h-16 md:w-20 md:h-20 bg-pink-100 dark:bg-pink-900/50 rounded-full flex items-center justify-center text-3xl md:text-4xl flex-shrink-0 animate-mascot border-2 border-pink-300">
+                    🩰
+                </div>
+                <div class="flex-grow text-center sm:text-left">
+                    <div class="flex items-center justify-between gap-2 mb-1">
+                        <h3 class="font-bold text-purple-800 dark:text-purple-300 text-base md:text-lg flex items-center gap-2">
+                            <span>Maia la Bailarina</span>
+                            <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-normal">Guía Mágica</span>
+                        </h3>
+                        <!-- Audio Button -->
+                        <button onclick="speakGuidePrompt()" class="text-purple-600 dark:text-purple-300 hover:text-purple-800 p-1 text-lg" title="Escuchar consejo en voz alta" aria-label="Escuchar consejo">
+                            <i class="fa-solid fa-circle-play"></i>
+                        </button>
+                    </div>
+                    <p id="guide-text" class="text-gray-700 dark:text-gray-200 text-sm md:text-base leading-relaxed">
+                        ¡Hola! Selecciona dos cartas. Si necesitas una pista, usa el botón mágico de abajo.
+                    </p>
+                </div>
+
+                <!-- Action Button for Hint -->
+                <div class="flex-shrink-0">
+                    <button id="btn-hint" onclick="giveHint()" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold px-4 py-2.5 rounded-2xl text-sm shadow-md flex items-center gap-2 transition active:scale-95 border border-amber-300">
+                        <i class="fa-solid fa-lightbulb text-yellow-900"></i>
+                        <span>Pedir Pista</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Memotest Grid -->
+            <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4 min-h-[360px]">
+                <!-- Memotest Cards JS Generated -->
+            </div>
+        </section>
+
+    </main>
+
+    <div id="victory-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-lg w-full p-6 md:p-8 text-center space-y-5 border-4 border-pink-400 shadow-2xl transform transition-all scale-95 opacity-0" id="victory-card">
+            
+            <div class="w-24 h-24 bg-pink-100 dark:bg-pink-900 mx-auto rounded-full flex items-center justify-center text-5xl shadow-inner border-2 border-pink-300">
+                🏆
+            </div>
+
+            <div class="space-y-2">
+                <h3 class="text-2xl md:text-3xl font-black text-pink-600 dark:text-pink-400">¡Fantástico Trabajo!</h3>
+                <p id="victory-message" class="text-gray-600 dark:text-gray-300 text-sm md:text-base">
+                    Has demostrado una gran memoria y comprensión de la danza clásica.
+                </p>
+            </div>
+
+            <!-- Performance Badges -->
+            <div class="bg-pink-50 dark:bg-gray-700 p-4 rounded-2xl flex justify-around text-center border border-pink-200">
+                <div>
+                    <span class="block text-xs text-gray-500 dark:text-gray-300 uppercase font-semibold">Intentos</span>
+                    <span id="modal-attempts" class="text-xl font-bold text-pink-700 dark:text-pink-300">8</span>
+                </div>
+                <div>
+                    <span class="block text-xs text-gray-500 dark:text-gray-300 uppercase font-semibold">Pistas Usadas</span>
+                    <span id="modal-hints" class="text-xl font-bold text-purple-700 dark:text-purple-300">1</span>
+                </div>
+                <div>
+                    <span class="block text-xs text-gray-500 dark:text-gray-300 uppercase font-semibold">Logro</span>
+                    <span class="text-xl font-bold text-amber-500">⭐⭐⭐</span>
+                </div>
+            </div>
+
+            <!-- Formative Reflection Question -->
+            <div class="bg-purple-50 dark:bg-purple-950/40 p-4 rounded-2xl border border-purple-200 dark:border-purple-800 text-left">
+                <p class="text-xs font-bold text-purple-800 dark:text-purple-300 uppercase flex items-center gap-1 mb-1">
+                    <i class="fa-solid fa-brain"></i> Pregunta para Pensar:
+                </p>
+                <p id="victory-reflection" class="text-sm text-gray-700 dark:text-gray-200">
+                    ¿Cuál de estas posiciones sintió tu cuerpo como la más estable o equilibrada?
+                </p>
+            </div>
+
+            <!-- Modal Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button onclick="closeVictoryModal(); resetCurrentGame();" class="flex-1 py-3 bg-pink-600 hover:bg-pink-700 text-white font-bold rounded-2xl shadow-lg transition active:scale-95">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Jugar de Nuevo
+                </button>
+                <button onclick="closeVictoryModal(); switchTab('explore');" class="flex-1 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 text-gray-800 dark:text-gray-200 font-bold rounded-2xl shadow transition active:scale-95">
+                    <i class="fa-solid fa-book-open mr-1"></i> Repasar Guía
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Zoom / Lupa Mágica Modal -->
+    <div id="image-zoom-modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" onclick="closeImageZoomModal(event)">
+        <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-lg w-full p-5 md:p-6 text-center space-y-4 border-4 border-pink-400 shadow-2xl transform transition-all scale-95 opacity-0 relative" id="zoom-card" onclick="event.stopPropagation()">
+            
+            <!-- Close Button -->
+            <button onclick="closeImageZoomModal()" class="absolute top-3 right-3 text-gray-500 hover:text-pink-600 dark:text-gray-300 w-10 h-10 rounded-full bg-pink-100 dark:bg-gray-700 flex items-center justify-center font-bold text-xl transition" title="Cerrar vista ampliada" aria-label="Cerrar vista ampliada">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Title & Badge -->
+            <div>
+                <span id="zoom-type-badge" class="text-xs bg-pink-100 text-pink-800 font-bold px-3 py-1 rounded-full uppercase tracking-wider">Posición</span>
+                <h3 id="zoom-title" class="text-2xl font-black text-pink-700 dark:text-pink-300 mt-2">1ª Posición</h3>
+            </div>
+
+            <!-- Magnified SVG Display Container -->
+            <div id="zoom-svg-container" class="w-full h-64 md:h-80 bg-pink-50/80 dark:bg-gray-700/80 rounded-2xl p-4 flex items-center justify-center shadow-inner border-2 border-pink-200 dark:border-gray-600">
+                <!-- Large SVG injected dynamically -->
+            </div>
+
+            <!-- Description & Prompt Box -->
+            <div class="bg-purple-50 dark:bg-purple-950/40 p-3.5 rounded-2xl border border-purple-200 dark:border-purple-800 text-left space-y-1">
+                <p id="zoom-desc" class="text-xs md:text-sm font-bold text-purple-900 dark:text-purple-200"></p>
+                <p id="zoom-prompt" class="text-xs md:text-sm text-gray-700 dark:text-gray-200 leading-relaxed"></p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-2 pt-1">
+                <button id="zoom-speak-btn" onclick="speakZoomContent()" class="flex-1 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-2xl shadow flex items-center justify-center gap-2 transition active:scale-95">
+                    <i class="fa-solid fa-volume-high text-lg"></i>
+                    <span>Escuchar Explicación</span>
+                </button>
+                <button onclick="closeImageZoomModal()" class="py-3 px-5 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 text-gray-800 dark:text-gray-200 font-bold rounded-2xl transition">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white dark:bg-gray-900 border-t border-pink-200 dark:border-gray-800 py-4 px-4 text-center text-xs text-gray-500 dark:text-gray-400">
+        <p>Software Educativo Inclusivo DUA • Escuela Primaria (6-10 años) • Danza Clásica</p>
+    </footer>
+
+    <script>
+        // Global Application State Variables
+        let currentExploreCategory = 'feet';
+        let currentTab = 'explore';
+        let ttsEnabled = true;
+        let fontScale = 1.0;
+        let highContrast = false;
+
+        let flippedCards = [];
+        let matchedPairsCount = 0;
+        let attemptsCount = 0;
+        let hintsUsedCount = 0;
+        let isProcessingFlip = false;
+        let totalPairs = 5;
+        let activeCardsData = [];
+
+        // Dynamic Vector SVG Generators for Visual & Accessible Clarity
+        const SVG_POSITIONS = {
+            feet: {
+                1: `<svg viewBox="0 0 120 100" class="w-full h-full">
+                    <!-- Visual Legend with Larger Text -->
+                    <g transform="translate(6, 6)">
+                        <circle cx="6" cy="6" r="5" fill="#BE185D"/>
+                        <text x="14" y="9" font-size="10" font-weight="bold" fill="#831843">Talón (Atrás)</text>
+                        <rect x="68" y="2" width="10" height="8" rx="2" fill="#E11D48"/>
+                        <text x="81" y="9" font-size="10" font-weight="bold" fill="#831843">Punta (Frente)</text>
+                    </g>
+                    <!-- Left Foot -->
+                    <g transform="translate(60, 60) scale(-1, 1)">
+                        <path d="M 0,-8 C 15,-10 35,-12 42,-6 C 47,-2 47,2 42,6 C 35,12 15,10 0,8 C -4,5 -4,-5 0,-8 Z" fill="#F472B6" stroke="#9D174D" stroke-width="2"/>
+                        <line x1="15" y1="-9" x2="25" y2="9" stroke="#DB2777" stroke-width="1.5"/>
+                        <line x1="25" y1="-9" x2="15" y2="9" stroke="#DB2777" stroke-width="1.5"/>
+                        <path d="M 38,-7 C 45,-4 45,4 38,7 Z" fill="#E11D48"/>
+                        <circle cx="2" cy="0" r="5" fill="#BE185D" stroke="#FFF" stroke-width="1"/>
+                    </g>
+                    <!-- Right Foot -->
+                    <g transform="translate(60, 60)">
+                        <path d="M 0,-8 C 15,-10 35,-12 42,-6 C 47,-2 47,2 42,6 C 35,12 15,10 0,8 C -4,5 -4,-5 0,-8 Z" fill="#F472B6" stroke="#9D174D" stroke-width="2"/>
+                        <line x1="15" y1="-9" x2="25" y2="9" stroke="#DB2777" stroke-width="1.5"/>
+                        <line x1="25" y1="-9" x2="15" y2="9" stroke="#DB2777" stroke-width="1.5"/>
+                        <path d="M 38,-7 C 45,-4 45,4 38,7 Z" fill="#E11D48"/>
+                        <circle cx="2" cy="0" r="5" fill="#BE185D" stroke="#FFF" stroke-width="1"/>
+                    </g>
+                    <circle cx="60" cy="60" r="9" fill="none" stroke="#BE185D" stroke-width="2" stroke-dasharray="2,2"/>
+                    <text x="60" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#831843">1ª: Talones Toca-Toca</text>
+                </svg>`,
+
+                2: `<svg viewBox="0 0 120 100" class="w-full h-full">
+                    <g transform="translate(6, 6)">
+                        <circle cx="6" cy="6" r="5" fill="#BE185D"/>
+                        <text x="14" y="9" font-size="10" font-weight="bold" fill="#831843">Talón</text>
+                        <rect x="52" y="2" width="10" height="8" rx="2" fill="#E11D48"/>
+                        <text x="65" y="9" font-size="10" font-weight="bold" fill="#831843">Punta</text>
+                    </g>
+                    <!-- Left Foot -->
+                    <g transform="translate(42, 60) scale(-1, 1)">
+                        <path d="M 0,-8 C 12,-10 28,-12 35,-6 C 40,-2 40,2 35,6 C 28,12 12,10 0,8 C -4,5 -4,-5 0,-8 Z" fill="#F472B6" stroke="#9D174D" stroke-width="2"/>
+                        <line x1="12" y1="-8" x2="20" y2="8" stroke="#DB2777" stroke-width="1.5"/>
+                        <line x1="20" y1="-8" x2="12" y2="8" stroke="#DB2777" stroke-width="1.5"/>
+                        <path d="M 31,-6 C 38,-3 38,3 31,6 Z" fill="#E11D48"/>
+                        <circle cx="2" cy="0" r="5" fill="#BE185D" stroke="#FFF" stroke-width="1"/>
+                    </g>
+                    <!-- Right Foot -->
+                    <g transform="translate(78, 60)">
+                        <path d="M 0,-8 C 12,-10 28,-12 35,-6 C 40,-2 40,2 35,6 C 28,12 12,10 0,8 C -4,5 -4,-5 0,-8 Z" fill="#F472B6" stroke="#9D174D" stroke-width="2"/>
+                        <line x1="12" y1="-8" x2="20" y2="8" stroke="#DB2777" stroke-width="1.5"/>
+                        <line x1="20" y1="-8" x2="12" y2="8" stroke="#DB2777" stroke-width="1.5"/>
+                        <path d="M 31,-6 C 38,-3 38,3 31,6 Z" fill="#E11D48"/>
+                        <circle cx="2" cy="0" r="5" fill="#BE185D" stroke="#FFF" stroke-width="1"/>
+                    </g>
+                    <line x1="42" y1="60" x2="78" y2="60" stroke="#9333EA" stroke-width="2" stroke-dasharray="3,3"/>
+                    <path d="M 45,57 L 41,60 L 45,63 M 75,57 L 79,60 L 75,63" fill="none" stroke="#9333EA" stroke-width="2"/>
+                    <text x="60" y="52" text-anchor="middle" font-size="10" font-weight="bold" fill="#6B21A8">Espacio libre</text>
+                    <text x="60" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#831843">2ª: Talones Separados</text>
+                </svg>`,
+
+                3: `<svg viewBox="0 0 120 100" class="w-full h-full">
+                    <g transform="translate(6, 6)">
+                        <circle cx="6" cy="6" r="5" fill="#BE185D"/>
+                        <text x="14" y="9" font-size="10" font-weight="bold" fill="#831843">Talón</text>
+                        <rect x="52" y="2" width="10" height="8" rx="2" fill="#E11D48"/>
+                        <text x="65" y="9" font-size="10" font-weight="bold" fill="#831843">Punta</text>
+                    </g>
+                    <!-- Back Foot (pointing left) -->
+                    <g transform="translate(75, 66) scale(-1, 1)">
+                        <path d="M 0,-7 C 12,-9 28,-10 35,-5 C 40,-2 40,2 35,5 C 28,10 12,9 0,7 C -3,4 -3,-4 0,-7 Z" fill="#F472B6" stroke="#9D174D" stroke-width="2"/>
+                        <line x1="10" y1="-7" x2="18" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <line x1="18" y1="-7" x2="10" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <path d="M 31,-5 C 38,-2 38,2 31,5 Z" fill="#E11D48"/>
+                        <circle cx="2" cy="0" r="5" fill="#BE185D" stroke="#FFF" stroke-width="1"/>
+                    </g>
+                    <!-- Front Foot -->
+                    <g transform="translate(55, 52)">
+                        <path d="M 0,-7 C 12,-9 28,-10 35,-5 C 40,-2 40,2 35,5 C 28,10 12,9 0,7 C -3,4 -3,-4 0,-7 Z" fill="#FB7185" stroke="#9D174D" stroke-width="2"/>
+                        <line x1="10" y1="-7" x2="18" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <line x1="18" y1="-7" x2="10" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <path d="M 31,-5 C 38,-2 38,2 31,5 Z" fill="#E11D48"/>
+                        <circle cx="2" cy="0" r="5" fill="#BE185D" stroke="#FFF" stroke-width="1"/>
+                    </g>
+                    <circle cx="58" cy="53" r="6" fill="none" stroke="#BE185D" stroke-width="2" stroke-dasharray="2,2"/>
+                    <text x="60" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#831843">3ª: Talón al Arco del Pie</text>
+                </svg>`,
+
+                4: `<svg viewBox="0 0 120 100" class="w-full h-full">
+                    <g transform="translate(6, 6)">
+                        <circle cx="6" cy="6" r="5" fill="#BE185D"/>
+                        <text x="14" y="9" font-size="10" font-weight="bold" fill="#831843">Talón</text>
+                        <rect x="52" y="2" width="10" height="8" rx="2" fill="#E11D48"/>
+                        <text x="65" y="9" font-size="10" font-weight="bold" fill="#831843">Punta</text>
+                    </g>
+                    <!-- Back Foot -->
+                    <g transform="translate(68, 72) scale(-1, 1)">
+                        <path d="M 0,-7 C 12,-9 28,-10 35,-5 C 40,-2 40,2 35,5 C 28,10 12,9 0,7 C -3,4 -3,-4 0,-7 Z" fill="#F472B6" stroke="#9D174D" stroke-width="2"/>
+                        <line x1="10" y1="-7" x2="18" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <line x1="18" y1="-7" x2="10" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <path d="M 31,-5 C 38,-2 38,2 31,5 Z" fill="#E11D48"/>
+                        <circle cx="2" cy="0" r="5" fill="#BE185D" stroke="#FFF" stroke-width="1"/>
+                    </g>
+                    <!-- Front Foot -->
+                    <g transform="translate(32, 42)">
+                        <path d="M 0,-7 C 12,-9 28,-10 35,-5 C 40,-2 40,2 35,5 C 28,10 12,9 0,7 C -3,4 -3,-4 0,-7 Z" fill="#FB7185" stroke="#9D174D" stroke-width="2"/>
+                        <line x1="10" y1="-7" x2="18" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <line x1="18" y1="-7" x2="10" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <path d="M 31,-5 C 38,-2 38,2 31,5 Z" fill="#E11D48"/>
+                        <circle cx="2" cy="0" r="5" fill="#BE185D" stroke="#FFF" stroke-width="1"/>
+                    </g>
+                    <line x1="20" y1="42" x2="20" y2="72" stroke="#9333EA" stroke-width="2" stroke-dasharray="3,3"/>
+                    <path d="M 17,45 L 20,41 L 23,45 M 17,69 L 20,73 L 23,69" fill="none" stroke="#9333EA" stroke-width="2"/>
+                    <text x="11" y="58" text-anchor="middle" font-size="9" font-weight="bold" fill="#6B21A8" transform="rotate(-90, 11, 58)">1 Paso</text>
+                    <text x="60" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#831843">4ª: Un Paso Adelante (Rotados)</text>
+                </svg>`,
+
+                5: `<svg viewBox="0 0 120 100" class="w-full h-full">
+                    <g transform="translate(6, 6)">
+                        <circle cx="6" cy="6" r="5" fill="#BE185D"/>
+                        <text x="14" y="9" font-size="10" font-weight="bold" fill="#831843">Talón</text>
+                        <rect x="52" y="2" width="10" height="8" rx="2" fill="#E11D48"/>
+                        <text x="65" y="9" font-size="10" font-weight="bold" fill="#831843">Punta</text>
+                    </g>
+                    <!-- Back Foot -->
+                    <g transform="translate(32, 68)">
+                        <path d="M 0,-7 C 12,-9 28,-10 35,-5 C 40,-2 40,2 35,5 C 28,10 12,9 0,7 C -3,4 -3,-4 0,-7 Z" fill="#F472B6" stroke="#9D174D" stroke-width="2"/>
+                        <line x1="10" y1="-7" x2="18" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <line x1="18" y1="-7" x2="10" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <path d="M 31,-5 C 38,-2 38,2 31,5 Z" fill="#E11D48"/>
+                        <circle cx="2" cy="0" r="5" fill="#BE185D" stroke="#FFF" stroke-width="1"/>
+                    </g>
+                    <!-- Front Foot -->
+                    <g transform="translate(72, 52) scale(-1, 1)">
+                        <path d="M 0,-7 C 12,-9 28,-10 35,-5 C 40,-2 40,2 35,5 C 28,10 12,9 0,7 C -3,4 -3,-4 0,-7 Z" fill="#FB7185" stroke="#9D174D" stroke-width="2"/>
+                        <line x1="10" y1="-7" x2="18" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <line x1="18" y1="-7" x2="10" y2="7" stroke="#DB2777" stroke-width="1.5"/>
+                        <path d="M 31,-5 C 38,-2 38,2 31,5 Z" fill="#E11D48"/>
+                        <circle cx="2" cy="0" r="5" fill="#BE185D" stroke="#FFF" stroke-width="1"/>
+                    </g>
+                    <circle cx="32" cy="60" r="6" fill="none" stroke="#BE185D" stroke-width="2" stroke-dasharray="2,2"/>
+                    <circle cx="72" cy="60" r="6" fill="none" stroke="#BE185D" stroke-width="2" stroke-dasharray="2,2"/>
+                    <text x="60" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#831843">5ª: Cruzados y Bloqueados</text>
+                </svg>`
+            },
+            arms: {
+                1: `<svg viewBox="0 0 120 110" class="w-full h-full">
+                    <circle cx="60" cy="16" r="8" fill="#5B21B6"/>
+                    <circle cx="60" cy="16" r="10" fill="none" stroke="#F472B6" stroke-width="1.5"/>
+                    <circle cx="60" cy="27" r="10" fill="#FDBA74"/>
+                    <path d="M 56 27 Q 58 29 60 27 M 60 27 Q 62 29 64 27" fill="none" stroke="#78350F" stroke-width="1.2" stroke-linecap="round"/>
+                    <path d="M 57 36 L 57 43 L 63 43 L 63 36 Z" fill="#FDBA74"/>
+                    <path d="M 42 45 Q 60 49 78 45 L 71 78 Q 60 82 49 78 Z" fill="#EC4899"/>
+                    <path d="M 45 45 Q 60 53 75 45" fill="none" stroke="#FBCFE8" stroke-width="2"/>
+                    <ellipse cx="60" cy="65" rx="24" ry="14" fill="none" stroke="#DB2777" stroke-width="1.5" stroke-dasharray="2,2"/>
+                    <path d="M 42 45 C 20 56, 30 72, 53 66" fill="none" stroke="#FDBA74" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 53 66 C 56 65, 57 68, 54 70 C 51 71, 50 67, 53 66 Z" fill="#FDBA74"/>
+                    <path d="M 78 45 C 100 56, 90 72, 67 66" fill="none" stroke="#FDBA74" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 67 66 C 64 65, 63 68, 66 70 C 69 71, 70 67, 67 66 Z" fill="#FDBA74"/>
+                    <circle cx="42" cy="45" r="3" fill="#E11D48"/>
+                    <circle cx="78" cy="45" r="3" fill="#E11D48"/>
+                    <text x="60" y="102" text-anchor="middle" font-size="12" font-weight="bold" fill="#831843">1ª: Círculo al Ombligo</text>
+                </svg>`,
+
+                2: `<svg viewBox="0 0 120 110" class="w-full h-full">
+                    <circle cx="60" cy="16" r="8" fill="#5B21B6"/>
+                    <circle cx="60" cy="16" r="10" fill="none" stroke="#F472B6" stroke-width="1.5"/>
+                    <circle cx="60" cy="27" r="10" fill="#FDBA74"/>
+                    <path d="M 56 27 Q 58 29 60 27 M 60 27 Q 62 29 64 27" fill="none" stroke="#78350F" stroke-width="1.2" stroke-linecap="round"/>
+                    <path d="M 57 36 L 57 43 L 63 43 L 63 36 Z" fill="#FDBA74"/>
+                    <path d="M 42 45 Q 60 49 78 45 L 71 78 Q 60 82 49 78 Z" fill="#EC4899"/>
+                    <path d="M 45 45 Q 60 53 75 45" fill="none" stroke="#FBCFE8" stroke-width="2"/>
+                    <line x1="8" y1="56" x2="112" y2="56" stroke="#DB2777" stroke-width="1" stroke-dasharray="2,2"/>
+                    <path d="M 42 45 C 28 47, 16 50, 8 55" fill="none" stroke="#FDBA74" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 8 55 C 4 56, 3 53, 6 51 C 9 50, 10 53, 8 55 Z" fill="#FDBA74"/>
+                    <path d="M 78 45 C 92 47, 104 50, 112 55" fill="none" stroke="#FDBA74" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 112 55 C 116 56, 117 53, 114 51 C 111 50, 110 53, 112 55 Z" fill="#FDBA74"/>
+                    <circle cx="42" cy="45" r="3" fill="#E11D48"/>
+                    <circle cx="78" cy="45" r="3" fill="#E11D48"/>
+                    <text x="60" y="102" text-anchor="middle" font-size="12" font-weight="bold" fill="#831843">2ª: Abiertos a los Lados</text>
+                </svg>`,
+
+                3: `<svg viewBox="0 0 120 110" class="w-full h-full">
+                    <circle cx="60" cy="16" r="8" fill="#5B21B6"/>
+                    <circle cx="60" cy="16" r="10" fill="none" stroke="#F472B6" stroke-width="1.5"/>
+                    <circle cx="60" cy="27" r="10" fill="#FDBA74"/>
+                    <path d="M 56 27 Q 58 29 60 27 M 60 27 Q 62 29 64 27" fill="none" stroke="#78350F" stroke-width="1.2" stroke-linecap="round"/>
+                    <path d="M 57 36 L 57 43 L 63 43 L 63 36 Z" fill="#FDBA74"/>
+                    <path d="M 42 45 Q 60 49 78 45 L 71 78 Q 60 82 49 78 Z" fill="#EC4899"/>
+                    <path d="M 45 45 Q 60 53 75 45" fill="none" stroke="#FBCFE8" stroke-width="2"/>
+                    <path d="M 42 45 C 18 28, 24 8, 52 10" fill="none" stroke="#FDBA74" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 52 10 C 55 8, 57 11, 54 13 C 51 14, 50 11, 52 10 Z" fill="#FDBA74"/>
+                    <path d="M 78 45 C 92 47, 104 50, 112 55" fill="none" stroke="#FDBA74" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 112 55 C 116 56, 117 53, 114 51 C 111 50, 110 53, 112 55 Z" fill="#FDBA74"/>
+                    <circle cx="42" cy="45" r="3" fill="#E11D48"/>
+                    <circle cx="78" cy="45" r="3" fill="#E11D48"/>
+                    <text x="60" y="102" text-anchor="middle" font-size="12" font-weight="bold" fill="#831843">3ª: Arriba y al Lado</text>
+                </svg>`,
+
+                4: `<svg viewBox="0 0 120 110" class="w-full h-full">
+                    <circle cx="60" cy="16" r="8" fill="#5B21B6"/>
+                    <circle cx="60" cy="16" r="10" fill="none" stroke="#F472B6" stroke-width="1.5"/>
+                    <circle cx="60" cy="27" r="10" fill="#FDBA74"/>
+                    <path d="M 56 27 Q 58 29 60 27 M 60 27 Q 62 29 64 27" fill="none" stroke="#78350F" stroke-width="1.2" stroke-linecap="round"/>
+                    <path d="M 57 36 L 57 43 L 63 43 L 63 36 Z" fill="#FDBA74"/>
+                    <path d="M 42 45 Q 60 49 78 45 L 71 78 Q 60 82 49 78 Z" fill="#EC4899"/>
+                    <path d="M 45 45 Q 60 53 75 45" fill="none" stroke="#FBCFE8" stroke-width="2"/>
+                    <path d="M 42 45 C 18 28, 24 8, 52 10" fill="none" stroke="#FDBA74" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 52 10 C 55 8, 57 11, 54 13 C 51 14, 50 11, 52 10 Z" fill="#FDBA74"/>
+                    <path d="M 78 45 C 100 56, 90 72, 67 66" fill="none" stroke="#FDBA74" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 67 66 C 64 65, 63 68, 66 70 C 69 71, 70 67, 67 66 Z" fill="#FDBA74"/>
+                    <circle cx="42" cy="45" r="3" fill="#E11D48"/>
+                    <circle cx="78" cy="45" r="3" fill="#E11D48"/>
+                    <text x="60" y="102" text-anchor="middle" font-size="12" font-weight="bold" fill="#831843">4ª: Arriba y al Frente</text>
+                </svg>`,
+
+                5: `<svg viewBox="0 0 120 110" class="w-full h-full">
+                    <circle cx="60" cy="16" r="8" fill="#5B21B6"/>
+                    <circle cx="60" cy="16" r="10" fill="none" stroke="#F472B6" stroke-width="1.5"/>
+                    <circle cx="60" cy="27" r="10" fill="#FDBA74"/>
+                    <path d="M 56 27 Q 58 29 60 27 M 60 27 Q 62 29 64 27" fill="none" stroke="#78350F" stroke-width="1.2" stroke-linecap="round"/>
+                    <path d="M 57 36 L 57 43 L 63 43 L 63 36 Z" fill="#FDBA74"/>
+                    <path d="M 42 45 Q 60 49 78 45 L 71 78 Q 60 82 49 78 Z" fill="#EC4899"/>
+                    <path d="M 45 45 Q 60 53 75 45" fill="none" stroke="#FBCFE8" stroke-width="2"/>
+                    <ellipse cx="60" cy="18" rx="26" ry="14" fill="none" stroke="#DB2777" stroke-width="1.5" stroke-dasharray="2,2"/>
+                    <path d="M 42 45 C 18 28, 24 8, 52 10" fill="none" stroke="#FDBA74" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 52 10 C 55 8, 57 11, 54 13 C 51 14, 50 11, 52 10 Z" fill="#FDBA74"/>
+                    <path d="M 78 45 C 102 28, 96 8, 68 10" fill="none" stroke="#FDBA74" stroke-width="5" stroke-linecap="round"/>
+                    <path d="M 68 10 C 65 8, 63 11, 66 13 C 69 14, 70 11, 68 10 Z" fill="#FDBA74"/>
+                    <circle cx="42" cy="45" r="3" fill="#E11D48"/>
+                    <circle cx="78" cy="45" r="3" fill="#E11D48"/>
+                    <text x="60" y="102" text-anchor="middle" font-size="12" font-weight="bold" fill="#831843">5ª: Corona sobre la Cabeza</text>
+                </svg>`
+            }
+        };
+
+        // Complete Educational Dataset with Formative Guidance & Feedback
+        const BALLET_DATA = [
+            // FEET POSITIONS
+            {
+                id: 'feet_1',
+                type: 'feet',
+                number: 1,
+                name: '1ª Posición de Pies',
+                shortDesc: 'Talones juntos, puntas hacia afuera en abanico.',
+                guidePrompt: 'En la primera posición, los talones se hacen un abrazo apretado como hermanitos, y las puntas se abren como las alas de una mariposa. ¿Ves cómo forman una línea o abanico?',
+                hint: 'Busca la imagen donde los dos talones están tocándose en el centro.',
+                feedbackSuccess: '¡Excelente! Recordaste que la 1ª posición une los talones.',
+                reflection: '¿Te diste cuenta de cómo se siente el equilibrio cuando los talones se tocan?'
+            },
+            {
+                id: 'feet_2',
+                type: 'feet',
+                number: 2,
+                name: '2ª Posición de Pies',
+                shortDesc: 'Pies separados a los lados a la distancia de un pie.',
+                guidePrompt: 'Si das un pequeño paso hacia el lado sin cambiar las puntas, dejas un espacio libre entre los pies. ¿Podría pasar un perrito por ese espacio?',
+                hint: 'Esta imagen muestra una distancia o espacio entre ambos pies.',
+                feedbackSuccess: '¡Muy bien! En la 2ª posición hay una ventana de espacio entre los pies.',
+                reflection: '¿Sientes tu base más firme cuando separas los pies?'
+            },
+            {
+                id: 'feet_3',
+                type: 'feet',
+                number: 3,
+                name: '3ª Posición de Pies',
+                shortDesc: 'El talón de un pie se apoya en el centro del otro pie.',
+                guidePrompt: 'Imagina que el talón de adelante le quiere susurrar un secreto al centro del otro pie. ¿En qué parte del pie se apoya?',
+                hint: 'Mira bien: un talón toca justo la mitad o arco del otro pie.',
+                feedbackSuccess: '¡Logrado! La 3ª posición coloca un talón en la mitad del otro pie.',
+                reflection: '¿Qué pie preferirías poner adelante si fueras a bailar?'
+            },
+            {
+                id: 'feet_4',
+                type: 'feet',
+                number: 4,
+                name: '4ª Posición de Pies',
+                shortDesc: 'Un pie adelante del otro con un paso de distancia.',
+                guidePrompt: 'Si das un paso hacia adelante como un soldadito pero manteniendo los pies rotados hacia afuera, ¿cuánta distancia queda entre el pie de adelante y el de atrás?',
+                hint: 'En esta posición hay un pie claramente ubicado enfrente del otro.',
+                feedbackSuccess: '¡Genial! La 4ª posición da un paso al frente manteniendo la rotación.',
+                reflection: '¿Te resulta fácil mantener la espalda recta en esta posición?'
+            },
+            {
+                id: 'feet_5',
+                type: 'feet',
+                number: 5,
+                name: '5ª Posición de Pies',
+                shortDesc: 'Un pie pegado totalmente delante del otro.',
+                guidePrompt: 'Los dos pies se cruzan completamente, ¡como si fueran una sola línea donde el talón de adelante toca el dedito gordo de atrás!',
+                hint: 'Busca la imagen donde los dos pies están súper pegados e interconectados.',
+                feedbackSuccess: '¡Maravilloso! La 5ª posición requiere que ambos pies estén bien entrelazados.',
+                reflection: 'Esta es una de las posiciones más usadas en ballet, ¿por qué crees que es tan importante?'
+            },
+
+            // ARMS POSITIONS
+            {
+                id: 'arms_1',
+                type: 'arms',
+                number: 1,
+                name: '1ª Posición de Brazos',
+                shortDesc: 'Brazos redondeados al frente del ombligo.',
+                guidePrompt: 'Imagina que sostienes una pelota gigante y suave a la altura de tu ombligo. ¿Cómo pondrías tus brazos sin aplastarla?',
+                hint: 'Busca los brazos formando un círculo redondo frente al cuerpo.',
+                feedbackSuccess: '¡Correcto! En la 1ª posición de brazos sostenemos la pelota redonda.',
+                reflection: '¿Sientes relajados los hombros mientras mantienes ese círculo?'
+            },
+            {
+                id: 'arms_2',
+                type: 'arms',
+                number: 2,
+                name: '2ª Posición de Brazos',
+                shortDesc: 'Brazos abiertos a los lados, suavemente curvados.',
+                guidePrompt: 'Abre tus brazos como las alas de un ave que planea en el viento. ¿Tus codos están caídos o se mantienen flotando?',
+                hint: 'Busca la imagen con los brazos extendidos hacia los laterales.',
+                feedbackSuccess: '¡Estupendo! En la 2ª posición los brazos abrazan el espacio lateral.',
+                reflection: '¿Cómo respiras mejor: con los brazos abiertos o cerrados?'
+            },
+            {
+                id: 'arms_3',
+                type: 'arms',
+                number: 3,
+                name: '3ª Posición de Brazos',
+                shortDesc: 'Un brazo en arco arriba y el otro abierto a un lado.',
+                guidePrompt: 'Un brazo sube hacia el cielo en forma de arco y el otro se queda saludando a un lado. ¿Qué figura forma esta asimetría?',
+                hint: 'Esta posición combina un brazo arriba y un brazo al lado.',
+                feedbackSuccess: '¡Fantástico! La 3ª posición combina la altura y la apertura.',
+                reflection: '¿Qué sientes cuando un brazo busca la altura y el otro la anchura?'
+            },
+            {
+                id: 'arms_4',
+                type: 'arms',
+                number: 4,
+                name: '4ª Posición de Brazos',
+                shortDesc: 'Un brazo en arco arriba y el otro en curva al frente.',
+                guidePrompt: 'Un brazo se eleva hacia la corona arriba de tu cabeza y el otro mantiene la pelota frente al ombligo. ¿Se parecen?',
+                hint: 'Observa la combinación: un brazo sobre la cabeza y el otro frente al ombligo.',
+                feedbackSuccess: '¡Súper! Uniste correctamente el nombre con el dibujo de la 4ª posición de brazos.',
+                reflection: '¿Notas cómo ambos brazos están redondeados aunque estén a diferente altura?'
+            },
+            {
+                id: 'arms_5',
+                type: 'arms',
+                number: 5,
+                name: '5ª Posición de Brazos',
+                shortDesc: 'Ambos brazos redondeados formando una corona arriba.',
+                guidePrompt: 'Eleva ambos brazos por encima de tu cabeza como si te pusieras una gran corona real, ¡sin subir tus hombros a las orejas!',
+                hint: 'Busca la imagen donde ambos brazos están arriba enmarcando la cabeza.',
+                feedbackSuccess: '¡Brillante! La 5ª posición forma una hermosa corona sobre la cabeza.',
+                reflection: '¿Verdad que te hace sentir más alto y elegante?'
+            }
+        ];
+
+        
+        // Simple Synthesizer using Web Audio API for feedback sounds
+        const AudioFX = {
+            ctx: null,
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+            playFlip() {
+                this.init();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.08);
+            },
+            playSuccess() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.08);
+                    osc.stop(now + idx * 0.08 + 0.3);
+                });
+            },
+            playMismatch() {
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.exponentialRampToValueAtTime(160, now + 0.25);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+        };
+
+        // Text To Speech (DUA Accessibility)
+        function speakText(text) {
+            if (!ttsEnabled || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel(); // Stop prior audio
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.9; // Slightly slower for primary school children
+            utterance.pitch = 1.1; // Friendly pitch
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function toggleTTS() {
+            ttsEnabled = !ttsEnabled;
+            const btn = document.getElementById('btn-tts-toggle');
+            const icon = document.getElementById('tts-icon');
+            const label = document.getElementById('tts-label');
+
+            if (ttsEnabled) {
+                btn.setAttribute('aria-pressed', 'true');
+                btn.classList.replace('bg-gray-200', 'bg-purple-100');
+                icon.className = 'fa-solid fa-volume-high text-sm';
+                label.innerText = 'Voz: SI';
+                speakText('Lectura por voz activada.');
+            } else {
+                window.speechSynthesis.cancel();
+                btn.setAttribute('aria-pressed', 'false');
+                btn.classList.replace('bg-purple-100', 'bg-gray-200');
+                icon.className = 'fa-solid fa-volume-xmark text-sm';
+                label.innerText = 'Voz: NO';
+            }
+        }
+
+        // Accessibility Font Resizer
+        function adjustFontSize(delta) {
+            fontScale = Math.min(Math.max(fontScale + delta, 0.8), 1.4);
+            document.documentElement.style.setProperty('--font-scale', `${fontScale}rem`);
+            document.getElementById('font-size-indicator').innerText = `${Math.round(fontScale * 100)}%`;
+        }
+
+        // High Contrast Toggle
+        function toggleContrast() {
+            highContrast = !highContrast;
+            document.body.classList.toggle('high-contrast', highContrast);
+            speakText(highContrast ? 'Modo contraste alto activado' : 'Modo visual normal activado');
+        }
+
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update Tab UI styles
+            const tabs = ['explore', 'game-feet', 'game-arms', 'game-mix'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    btn.className = "tab-btn px-4 py-2.5 rounded-2xl font-bold text-sm md:text-base flex items-center gap-2 bg-pink-600 text-white shadow-md transition transform active:scale-95";
+                } else {
+                    btn.className = "tab-btn px-4 py-2.5 rounded-2xl font-bold text-sm md:text-base flex items-center gap-2 bg-white text-pink-700 border-2 border-pink-300 hover:bg-pink-50 shadow-sm transition transform active:scale-95";
+                }
+            });
+
+            // Show relevant section
+            const secExplore = document.getElementById('sec-explore');
+            const secGame = document.getElementById('sec-game');
+
+            if (tab === 'explore') {
+                secExplore.classList.remove('hidden');
+                secGame.classList.add('hidden');
+                renderExploreGrid();
+                speakText('Modo explorar. Elige una tarjeta para aprender sobre las posiciones.');
+            } else {
+                secExplore.classList.add('hidden');
+                secGame.classList.remove('hidden');
+                initGameMode(tab);
+            }
+        }
+
+        function setExploreCategory(cat) {
+            currentExploreCategory = cat;
+            const btnFeet = document.getElementById('btn-explore-feet');
+            const btnArms = document.getElementById('btn-explore-arms');
+
+            if (cat === 'feet') {
+                btnFeet.className = "px-4 py-2 rounded-xl text-sm font-bold bg-white dark:bg-gray-800 text-pink-700 dark:text-pink-300 shadow-sm";
+                btnArms.className = "px-4 py-2 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-pink-600";
+            } else {
+                btnArms.className = "px-4 py-2 rounded-xl text-sm font-bold bg-white dark:bg-gray-800 text-pink-700 dark:text-pink-300 shadow-sm";
+                btnFeet.className = "px-4 py-2 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-300 hover:text-pink-600";
+            }
+            renderExploreGrid();
+        }
+
+        function renderExploreGrid() {
+            const grid = document.getElementById('explore-cards-grid');
+            grid.innerHTML = '';
+
+            const items = BALLET_DATA.filter(item => item.type === currentExploreCategory);
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-pink-50/60 dark:bg-gray-700/50 border-2 border-pink-200 dark:border-gray-600 rounded-2xl p-4 flex flex-col items-center justify-between hover:shadow-lg transition cursor-pointer group";
+
+                card.innerHTML = `
+                    <div class="w-full h-32 bg-white dark:bg-gray-800 rounded-xl p-2 mb-2 shadow-inner flex items-center justify-center relative hover:bg-pink-50/80 transition" onclick="openImageZoomModal('${item.id}')" title="Haz clic para ampliar en la Lupa Mágica">
+                        ${SVG_POSITIONS[item.type][item.number]}
+                        <span class="absolute top-2 right-2 bg-pink-100 dark:bg-gray-700 text-pink-700 dark:text-pink-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-pink-300 shadow-sm flex items-center gap-1 opacity-80 group-hover:opacity-100 transition">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Lupa
+                        </span>
+                    </div>
+                    <h3 class="font-bold text-pink-800 dark:text-pink-300 text-center text-base mb-1 group-hover:scale-105 transition-transform">
+                        ${item.name}
+                    </h3>
+                    <p class="text-xs text-gray-600 dark:text-gray-300 text-center mb-3">
+                        ${item.shortDesc}
+                    </p>
+                    <div class="w-full flex gap-1.5">
+                        <button onclick="event.stopPropagation(); openImageZoomModal('${item.id}')" class="flex-1 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-800 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar
+                        </button>
+                        <button onclick="event.stopPropagation(); AudioFX.playFlip(); speakText('${item.name}. ${item.guidePrompt}');" class="flex-1 py-1.5 bg-pink-100 hover:bg-pink-200 text-pink-800 text-xs font-bold rounded-xl flex items-center justify-center gap-1 transition">
+                            <i class="fa-solid fa-volume-high"></i> Secreto
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        
+        function initGameMode(mode) {
+            flippedCards = [];
+            matchedPairsCount = 0;
+            attemptsCount = 0;
+            hintsUsedCount = 0;
+            isProcessingFlip = false;
+
+            document.getElementById('stat-matches').innerText = `0 / 5`;
+            document.getElementById('stat-attempts').innerText = `0`;
+
+            let selectedData = [];
+            if (mode === 'game-feet') {
+                document.getElementById('game-title').innerHTML = `<i class="fa-solid fa-shoe-prints"></i> Memotest: Posiciones de Pies`;
+                selectedData = BALLET_DATA.filter(d => d.type === 'feet');
+                totalPairs = 5;
+            } else if (mode === 'game-arms') {
+                document.getElementById('game-title').innerHTML = `<i class="fa-solid fa-hand"></i> Memotest: Posiciones de Brazos`;
+                selectedData = BALLET_DATA.filter(d => d.type === 'arms');
+                totalPairs = 5;
+            } else if (mode === 'game-mix') {
+                document.getElementById('game-title').innerHTML = `<i class="fa-solid fa-star"></i> Gran Desafío Mixto`;
+                const feetShuffled = [...BALLET_DATA.filter(d => d.type === 'feet')].sort(() => 0.5 - Math.random()).slice(0, 3);
+                const armsShuffled = [...BALLET_DATA.filter(d => d.type === 'arms')].sort(() => 0.5 - Math.random()).slice(0, 2);
+                selectedData = [...feetShuffled, ...armsShuffled];
+                totalPairs = 5;
+            }
+
+            document.getElementById('stat-matches').innerText = `0 / ${totalPairs}`;
+
+            // Create cards: Pair of (Text Card + Image Card) for each dataset item
+            let cardsArr = [];
+            selectedData.forEach(item => {
+                // Card A: Text / Name Card
+                cardsArr.push({
+                    uid: `${item.id}_text`,
+                    pairId: item.id,
+                    cardType: 'text',
+                    data: item
+                });
+                // Card B: SVG Image Card
+                cardsArr.push({
+                    uid: `${item.id}_img`,
+                    pairId: item.id,
+                    cardType: 'img',
+                    data: item
+                });
+            });
+
+            // Shuffle cards
+            activeCardsData = cardsArr.sort(() => Math.random() - 0.5);
+
+            updateGuideBox(
+                `¡Bienvenido al desafío! Haz clic en dos cartas para unir la tarjeta con el NOMBRE con la IMAGEN correspondiente.`,
+                true
+            );
+
+            renderGameGrid();
+        }
+
+        function renderGameGrid() {
+            const grid = document.getElementById('game-grid');
+            grid.innerHTML = '';
+
+            activeCardsData.forEach((cardObj, idx) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = "perspective-1000 h-36 md:h-44 cursor-pointer select-none";
+                cardEl.id = `card-${idx}`;
+                cardEl.setAttribute('role', 'button');
+                cardEl.setAttribute('tabindex', '0');
+                cardEl.setAttribute('aria-label', `Carta número ${idx + 1}`);
+
+                cardEl.onclick = () => handleCardClick(idx);
+                cardEl.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleCardClick(idx);
+                    }
+                };
+
+                const isImage = cardObj.cardType === 'img';
+
+                cardEl.innerHTML = `
+                    <div class="card-inner w-full h-full">
+                        <!-- FRONT OF CARD (FACE DOWN) -->
+                        <div class="card-front bg-gradient-to-br from-pink-400 to-purple-500 text-white border-4 border-white dark:border-gray-700 shadow-md flex flex-col items-center justify-center p-2 rounded-2xl hover:scale-102 transition-transform">
+                            <i class="fa-solid fa-sparkles text-2xl mb-1 text-pink-200"></i>
+                            <span class="text-xs font-bold tracking-wider text-pink-100 uppercase">Bailemos juntos</span>
+                            <span class="text-lg font-black mt-1 bg-white/20 px-3 py-0.5 rounded-full">${idx + 1}</span>
+                        </div>
+
+                        <!-- BACK OF CARD (FACE UP) -->
+                        <div class="card-back bg-white dark:bg-gray-800 border-3 border-pink-300 dark:border-pink-600 rounded-2xl p-3 shadow-lg flex flex-col items-center justify-center relative">
+                            ${isImage ? `
+                                <button onclick="event.stopPropagation(); openImageZoomModal('${cardObj.data.id}')" class="absolute top-1.5 right-1.5 bg-pink-100 hover:bg-pink-200 dark:bg-gray-700 text-pink-700 dark:text-pink-300 text-[10px] font-bold px-1.5 py-0.5 rounded-lg border border-pink-300 shadow-sm flex items-center gap-1 z-10" title="Ver en Lupa Mágica">
+                                    <i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar
+                                </button>
+                                <div class="w-full h-24 md:h-28 bg-pink-50/50 dark:bg-gray-700 rounded-xl p-1 flex items-center justify-center">
+                                    ${SVG_POSITIONS[cardObj.data.type][cardObj.data.number]}
+                                </div>
+                                <span class="text-[10px] font-semibold text-pink-600 dark:text-pink-300 mt-1 uppercase tracking-wider">Imagen</span>
+                            ` : `
+                                <div class="flex flex-col items-center justify-center h-full text-center px-1">
+                                    <span class="text-xs font-bold text-purple-600 dark:text-purple-300 uppercase mb-1">Nombre</span>
+                                    <h4 class="text-sm md:text-base font-extrabold text-pink-700 dark:text-pink-300 leading-tight">
+                                        ${cardObj.data.name}
+                                    </h4>
+                                    <p class="text-[11px] text-gray-500 dark:text-gray-300 mt-1 line-clamp-2">
+                                        ${cardObj.data.shortDesc}
+                                    </p>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(cardEl);
+            });
+        }
+
+
+        function handleCardClick(index) {
+            if (isProcessingFlip) return;
+            const cardEl = document.getElementById(`card-${index}`);
+            
+            // Check if already flipped or matched
+            if (cardEl.classList.contains('card-flipped') || cardEl.classList.contains('matched')) {
+                return;
+            }
+
+            AudioFX.playFlip();
+            cardEl.classList.add('card-flipped');
+            flippedCards.push({ index, data: activeCardsData[index] });
+
+            const clickedCard = activeCardsData[index];
+            if (clickedCard.cardType === 'text') {
+                speakText(clickedCard.data.name);
+            } else {
+                speakText(`Imagen de ${clickedCard.data.name}`);
+            }
+
+            if (flippedCards.length === 2) {
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            isProcessingFlip = true;
+            attemptsCount++;
+            document.getElementById('stat-attempts').innerText = attemptsCount;
+
+            const [card1, card2] = flippedCards;
+            const isPairMatch = card1.data.pairId === card2.data.pairId && card1.data.uid !== card2.data.uid;
+
+            if (isPairMatch) {
+                // MATCH FOUND
+                AudioFX.playSuccess();
+                matchedPairsCount++;
+                document.getElementById('stat-matches').innerText = `${matchedPairsCount} / ${totalPairs}`;
+
+                const el1 = document.getElementById(`card-${card1.index}`);
+                const el2 = document.getElementById(`card-${card2.index}`);
+
+                el1.classList.add('matched');
+                el2.classList.add('matched');
+
+                // Green glow effect
+                el1.querySelector('.card-back').classList.add('border-emerald-500', 'bg-emerald-50');
+                el2.querySelector('.card-back').classList.add('border-emerald-500', 'bg-emerald-50');
+
+                // Formative Feedback
+                const posInfo = card1.data.data;
+                updateGuideBox(`¡Excelente combinación! ${posInfo.feedbackSuccess} ${posInfo.guidePrompt}`, true);
+
+                flippedCards = [];
+                isProcessingFlip = false;
+
+                // Check victory condition
+                if (matchedPairsCount === totalPairs) {
+                    setTimeout(() => {
+                        triggerVictoryModal();
+                    }, 1200);
+                }
+
+            } else {
+                // MISMATCH
+                AudioFX.playMismatch();
+                
+                const data1 = card1.data.data;
+                const data2 = card2.data.data;
+
+                // Formative Prompt instead of direct wrong answer
+                let feedback = '';
+                if (data1.type === data2.type) {
+                    feedback = `¡Casi! Has volteado dos cartas de ${data1.type === 'feet' ? 'Pies' : 'Brazos'}, pero una es la ${data1.number}ª posición y la otra es la ${data2.number}ª. ¿En qué se diferencian sus formas?`;
+                } else {
+                    feedback = `¡Atención! Una carta es de ${data1.type === 'feet' ? 'Pies' : 'Brazos'} y la otra es de ${data2.type === 'feet' ? 'Pies' : 'Brazos'}. ¡Recuerda unir pies con pies o brazos con brazos!`;
+                }
+
+                updateGuideBox(feedback, true);
+
+                // Delay before flipping back
+                setTimeout(() => {
+                    document.getElementById(`card-${card1.index}`).classList.remove('card-flipped');
+                    document.getElementById(`card-${card2.index}`).classList.remove('card-flipped');
+                    flippedCards = [];
+                    isProcessingFlip = false;
+                }, 2200);
+            }
+        }
+
+
+        function updateGuideBox(text, speak = false) {
+            const guideBox = document.getElementById('guide-text');
+            guideBox.innerText = text;
+            if (speak && ttsEnabled) {
+                speakText(text);
+            }
+        }
+
+        function speakGuidePrompt() {
+            const text = document.getElementById('guide-text').innerText;
+            speakText(text);
+        }
+
+        function giveHint() {
+            hintsUsedCount++;
+            
+            // Find an unmatched card
+            const unmatchedIndices = activeCardsData
+                .map((c, i) => ({ ...c, originalIndex: i }))
+                .filter((c, i) => {
+                    const el = document.getElementById(`card-${i}`);
+                    return !el.classList.contains('matched') && !el.classList.contains('card-flipped');
+                });
+
+            if (unmatchedIndices.length === 0) return;
+
+            // Pick one unmatched card and give a clue
+            const randomCard = unmatchedIndices[Math.floor(Math.random() * unmatchedIndices.length)];
+            const posData = randomCard.data;
+
+            const hintMessage = `💡 Pista Mágica para la ${posData.name}: ${posData.hint}`;
+            updateGuideBox(hintMessage, true);
+
+            // Highlight the card briefly
+            const cardEl = document.getElementById(`card-${randomCard.originalIndex}`);
+            cardEl.classList.add('hint-active');
+            setTimeout(() => {
+                cardEl.classList.remove('hint-active');
+            }, 3000);
+        }
+
+        function resetCurrentGame() {
+            switchTab(currentTab);
+        }
+
+        // Lupa Mágica: Full-Screen Image Zoom Modal Controls
+        let currentZoomItem = null;
+
+        function openImageZoomModal(id) {
+            const item = BALLET_DATA.find(d => d.id === id);
+            if (!item) return;
+            currentZoomItem = item;
+
+            document.getElementById('zoom-type-badge').innerText = item.type === 'feet' ? 'Posición de Pies' : 'Posición de Brazos';
+            document.getElementById('zoom-title').innerText = item.name;
+            document.getElementById('zoom-svg-container').innerHTML = SVG_POSITIONS[item.type][item.number];
+            document.getElementById('zoom-desc').innerText = item.shortDesc;
+            document.getElementById('zoom-prompt').innerText = item.guidePrompt;
+
+            const modal = document.getElementById('image-zoom-modal');
+            const card = document.getElementById('zoom-card');
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 50);
+
+            AudioFX.playFlip();
+            speakText(`${item.name}. ${item.guidePrompt}`);
+        }
+
+        function closeImageZoomModal(event) {
+            if (event && event.target !== document.getElementById('image-zoom-modal')) return;
+            const modal = document.getElementById('image-zoom-modal');
+            const card = document.getElementById('zoom-card');
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        function speakZoomContent() {
+            if (currentZoomItem) {
+                speakText(`${currentZoomItem.name}. ${currentZoomItem.guidePrompt}`);
+            }
+        }
+
+        function triggerVictoryModal() {
+            // Launch Confetti
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+
+            document.getElementById('modal-attempts').innerText = attemptsCount;
+            document.getElementById('modal-hints').innerText = hintsUsedCount;
+
+            // Pick a reflection question
+            const reflections = [
+                "¿Qué posición te pareció la más divertida de realizar con tu cuerpo?",
+                "¿Recordabas mejor las posiciones de los brazos o la de los pies?",
+                "¿Cómo le explicarías la 1ª posición a un amigo que nunca ha bailado?"
+            ];
+            const randomReflection = reflections[Math.floor(Math.random() * reflections.length)];
+            document.getElementById('victory-reflection').innerText = randomReflection;
+
+            const modal = document.getElementById('victory-modal');
+            card = document.getElementById('victory-card');
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 50);
+
+            speakText(`¡Fantástico Trabajo! Has completado el juego en ${attemptsCount} intentos. ${randomReflection}`);
+        }
+
+        function closeVictoryModal() {
+            const modal = document.getElementById('victory-modal');
+            const card = document.getElementById('victory-card');
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+
+        window.onload = function() {
+            // Render initial exploration tab
+            renderExploreGrid();
+            
+            // Welcome voice greeting after short delay
+            setTimeout(() => {
+                if (ttsEnabled) {
+                    speakText("¡Bienvenidos a Bailemos juntos! Explora las posiciones o juega al memotest.");
+                }
+            }, 600);
+        };
+    </script>
+</body>
+</html>
