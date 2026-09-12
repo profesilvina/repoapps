@@ -18,6 +18,7 @@ Este repositorio contiene una colección de aplicaciones web interactivas y medi
 7. **Ciberseguridad y Sistemas de Información (DUA)** (Iris Dree): Simulador de auditoría y respuesta ante incidentes (Ransomware, Phishing e Ingeniería Social) con pistas socráticas, síntesis de voz (TTS) y ajuste tipográfico DUA.
 8. **Laboratorio Color DUA (5.° Primaria)** (Lorena Confeggi): Secuencia didáctica interactiva en 3 estaciones (Termómetro Cromático, Pintor de Climas y Diario del Artista) con síntesis de voz (TTS), ajuste de fuentes e insignia final.
 9. **Misión Fórmula: Química Inorgánica (DUA)** (Gustavo Maximiliano Kocsis): Laboratorio interactivo para 5.° año de secundaria para clasificación de óxidos, hidróxidos, ácidos y sales con pistas graduadas, metacognición, alto contraste y lectura en voz alta.
+10. **Bailemos juntos: Posiciones de Ballet (DUA)** (Florencia Guglielmotti): Entorno lúdico de Danza para Primaria con guía interactiva de las 5 posiciones básicas, secretos auditivos, 3 modalidades de Memotest (pies, brazos y mixto), pistas con mascota animada y panel DUA.
 
 ---
 
