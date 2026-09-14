@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detective de Imágenes - Sala de 5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --font-scale: 1;
+            --bg-main: #f0f9ff; /* sky-50 */
+            --bg-card: #ffffff;
+            --text-main: #0f172a; /* slate-900 */
+            --border-color: #cbd5e1; /* slate-300 */
+            --btn-primary: #3b82f6; /* blue-500 */
+            --btn-secondary: #f59e0b; /* amber-500 */
+            --btn-text: #ffffff;
+            --accent: #ec4899; /* pink-500 */
+            --focus-ring: #3b82f6;
+        }
+
+        /* Modo Alto Contraste para Accesibilidad Visual */
+        body.high-contrast {
+            --bg-main: #000000;
+            --bg-card: #000000;
+            --text-main: #ffff00; /* Amarillo sobre negro es óptimo para baja visión */
+            --border-color: #ffff00;
+            --btn-primary: #ffff00;
+            --btn-secondary: #00ffff;
+            --btn-text: #000000;
+            --accent: #00ffff;
+            --focus-ring: #ffffff;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-size: calc(16px * var(--font-scale));
+            transition: all 0.3s ease;
+            /* Texto en mayúscula por defecto para alfabetización inicial (Sala de 5) */
+            text-transform: uppercase; 
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 4px solid var(--border-color);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .high-contrast .card {
+            box-shadow: none;
+            border-width: 6px;
+        }
+
+        button {
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:focus-visible {
+            outline: 4px dashed var(--focus-ring);
+            outline-offset: 4px;
+        }
+
+        /* Composiciones visuales adaptadas para fotografías reales */
+        .img-composition {
+            position: relative;
+            width: 100%;
+            height: 350px; /* Altura ampliada para ver bien las fotos */
+            background-color: #e2e8f0; /* Fondo neutro para las fotos */
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 4px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .img-composition img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Asegura que la foto completa sea visible sin recortarse */
+        }
+
+        .high-contrast .img-composition {
+            background: #000;
+            border: 4px solid #ffff00;
+        }
+
+        .emoji-sprite {
+            position: absolute;
+            font-size: 5rem;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+        }
+
+        /* Animaciones amigables */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8">
+
+    <nav class="w-full max-w-4xl flex flex-wrap justify-between items-center bg-white p-4 rounded-2xl border-4 shadow-sm mb-6 z-10" style="background-color: var(--bg-card); border-color: var(--border-color);">
+        <div class="flex items-center gap-2 mb-2 sm:mb-0">
+            <span class="text-3xl" aria-hidden="true">🕵️‍♀️</span>
+            <h1 class="text-xl sm:text-2xl font-black text-[var(--text-main)] tracking-wide">
+                DETECTIVES DIGITALES
+            </h1>
+        </div>
+        
+        <!-- Controles de Accesibilidad -->
+        <div class="flex gap-2" role="group" aria-label="Controles de accesibilidad">
+            <button onclick="changeFontSize(-0.1)" class="p-2 sm:p-3 rounded-xl border-4 font-black" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);" aria-label="Achicar letra">
+                A-
+            </button>
+            <button onclick="changeFontSize(0.1)" class="p-2 sm:p-3 rounded-xl border-4 font-black" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);" aria-label="Agrandar letra">
+                A+
+            </button>
+            <button onclick="toggleContrast()" class="p-2 sm:p-3 rounded-xl border-4 font-black flex items-center gap-2" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);" aria-label="Cambiar contraste">
+                <span aria-hidden="true">🌓</span> CONTRASTE
+            </button>
+        </div>
+    </nav>
+
+    <div id="screen-welcome" class="card w-full max-w-4xl p-8 flex flex-col items-center text-center">
+        <div class="text-8xl mb-6 animate-float">🦉</div>
+        <h2 class="text-3xl sm:text-5xl font-black mb-6">¡HOLA DETECTIVE!</h2>
+        
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8 bg-[var(--bg-main)] border-4 border-[var(--border-color)] rounded-2xl p-6 w-full">
+            <button onclick="playTTS('HOY VAMOS A APRENDER QUE NO TODO LO QUE VEMOS ES DE VERDAD. ALGUNAS IMÁGENES SON CREADAS POR LA INTELIGENCIA ARTIFICIAL, QUE ES COMO UN PINCEL MÁGICO DE LA COMPUTADORA. ¿ME AYUDAS A DESCUBRIR CUÁLES SON REALES Y CUÁLES INVENTÓ LA COMPUTADORA?')" class="text-5xl p-6 bg-[var(--accent)] text-white rounded-full hover:scale-110 active:scale-95 transition-transform shrink-0" aria-label="Escuchar consigna inicial en voz alta">
+                🔊
+            </button>
+            <p class="text-xl sm:text-2xl font-bold max-w-2xl leading-relaxed text-center sm:text-left">
+                HOY VAMOS A APRENDER QUE NO TODO LO QUE VEMOS ES DE VERDAD.<br><br>
+                ALGUNAS IMÁGENES SON CREADAS POR LA "INTELIGENCIA ARTIFICIAL", QUE ES COMO UN PINCEL MÁGICO DE LA COMPUTADORA.<br><br>
+                ¿ME AYUDAS A DESCUBRIR CUÁLES SON REALES Y CUÁLES INVENTÓ LA COMPUTADORA?
+            </p>
+        </div>
+
+        <button onclick="startGame()" class="text-2xl sm:text-4xl font-black px-10 py-6 rounded-2xl border-b-8 active:border-b-0 active:translate-y-2 flex items-center gap-4" style="background-color: var(--btn-primary); color: var(--btn-text); border-color: #2563eb;">
+            <span aria-hidden="true">🔎</span> ¡EMPEZAR A JUGAR!
+        </button>
+    </div>
+
+    <div id="screen-game" class="card w-full max-w-4xl p-6 sm:p-8 flex-col items-center hidden relative">
+        
+        <!-- Progreso visual -->
+        <div class="w-full flex justify-between items-center mb-6">
+            <div class="text-lg font-bold" id="progress-text">NIVEL 1 DE 3</div>
+            <div class="flex gap-2" id="progress-dots">
+                <!-- Puntos dinámicos -->
+            </div>
+        </div>
+
+        <!-- Área de la Imagen / Composición Visual -->
+        <div id="image-container" class="img-composition mb-8" aria-label="Imagen para analizar">
+            <!-- Los emojis se inyectan dinámicamente aquí -->
+        </div>
+
+        <!-- Área de Pregunta y Mediación (Lectura en voz alta integrada) -->
+        <div class="w-full bg-[var(--bg-main)] border-4 border-[var(--border-color)] rounded-2xl p-6 mb-8 flex flex-col sm:flex-row items-center gap-6">
+            <button onclick="playTTS(currentLevelData.question)" class="text-5xl p-4 bg-[var(--accent)] text-white rounded-full hover:scale-110 active:scale-95 transition-transform shrink-0" aria-label="Escuchar pregunta en voz alta">
+                🔊
+            </button>
+            <p id="question-text" class="text-2xl sm:text-3xl font-black text-center sm:text-left leading-snug">
+                ¿ESTA IMAGEN ES DE VERDAD O LA DIBUJÓ LA COMPUTADORA?
+            </p>
+        </div>
+
+        <div class="w-full flex flex-col sm:flex-row justify-center gap-6 relative">
+            
+            <!-- Botón de Pista (Andamiaje cognitivo voluntario) -->
+            <button onclick="showHint()" class="sm:absolute left-0 top-0 bottom-0 text-xl font-bold p-4 border-4 rounded-2xl flex flex-col items-center justify-center gap-2" style="background-color: var(--btn-secondary); color: var(--btn-text); border-color: #d97706;" aria-label="Pedir una pista">
+                <span class="text-4xl animate-float" aria-hidden="true">🔍</span>
+                PISTA
+            </button>
+
+            <!-- Opciones principales -->
+            <div class="flex flex-col sm:flex-row gap-6 w-full justify-center sm:ml-[120px]">
+                <button onclick="checkAnswer('REAL')" class="flex-1 text-2xl font-black p-6 border-b-8 rounded-2xl flex flex-col items-center gap-4 active:border-b-0 active:translate-y-2" style="background-color: #10b981; color: white; border-color: #047857;">
+                    <span class="text-6xl" aria-hidden="true">🌳</span>
+                    ES REAL
+                </button>
+                <button onclick="checkAnswer('IA')" class="flex-1 text-2xl font-black p-6 border-b-8 rounded-2xl flex flex-col items-center gap-4 active:border-b-0 active:translate-y-2" style="background-color: #8b5cf6; color: white; border-color: #5b21b6;">
+                    <span class="text-6xl" aria-hidden="true">🤖</span>
+                    ES COMPUTADORA
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="feedback-modal" class="fixed inset-0 modal-overlay flex items-center justify-center hidden z-50 p-4">
+        <div class="card max-w-2xl w-full p-8 flex flex-col items-center text-center relative border-8">
+            <div id="modal-icon" class="text-7xl mb-4">💡</div>
+            <h3 id="modal-title" class="text-3xl font-black mb-4">¡PENSEMOS JUNTOS!</h3>
+            
+            <div class="flex items-center gap-4 bg-[var(--bg-main)] p-4 rounded-2xl border-4 border-[var(--border-color)] mb-8 w-full">
+                <button id="modal-tts-btn" class="text-4xl p-3 bg-[var(--accent)] text-white rounded-full shrink-0" aria-label="Escuchar pista en voz alta">
+                    🔊
+                </button>
+                <p id="modal-message" class="text-xl sm:text-2xl font-bold text-left"></p>
+            </div>
+
+            <button id="modal-action-btn" class="text-2xl font-black px-8 py-4 rounded-xl border-b-4 flex items-center gap-2" style="background-color: var(--btn-primary); color: var(--btn-text); border-color: #2563eb;">
+                VOLVER A MIRAR
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- BASE DE DATOS DIDÁCTICA ---
+        // Los escenarios están diseñados para contrastar algo cotidiano vs algo absurdo
+        const levels = [
+            {
+                id: 1,
+                type: "REAL",
+                imageUrl: "https://i.postimg.cc/W3PLRnd6/mono.jpg",
+                question: "MIRA A ESTE MONITO USANDO UNA HOJA PARA NO MOJARSE. ¿ES DE VERDAD O LO INVENTÓ LA COMPUTADORA?",
+                hints: [
+                    "MIRA LA LLUVIA Y LA CARA DEL MONITO. SE ESTÁ PROTEGIENDO.",
+                    "ALGUNOS ANIMALES SON MUY INTELIGENTES Y USAN COSAS DE LA NATURALEZA, COMO LAS HOJAS, PARA AYUDARSE. ¿SABÍAS ESO?"
+                ],
+                socraticWrong: "PARECE DE PELÍCULA, ¿CIERTO? PERO LOS MONOS SON ANIMALES MUY INTELIGENTES. SI LLUEVE MUCHO, ¿CREES QUE PODRÍAN AGARRAR UNA HOJA GRANDE PARA TAPARSE? VAMOS A MIRAR DE NUEVO.",
+                socraticCorrect: "¡GENIAL, DETECTIVE! ES UNA FOTO REAL. MUCHOS ANIMALES, COMO ESTE MONITO, SON SÚPER INTELIGENTES Y USAN LO QUE ENCUENTRAN EN LA NATURALEZA."
+            },
+            {
+                id: 2,
+                type: "IA",
+                imageUrl: "https://i.postimg.cc/mDGfxwPj/gato.jpg",
+                question: "MIRA A ESTE GATITO CON PARAGUAS. ¿ES UNA FOTO DE VERDAD O LA INVENTÓ LA COMPUTADORA?",
+                hints: [
+                    "MIRA CÓMO CAMINA EL GATITO Y LO QUE LLEVA EN LA PATA.",
+                    "¿LOS GATOS PUEDEN SOSTENER UN PARAGUAS Y CAMINAR EN DOS PATAS COMO LAS PERSONAS?"
+                ],
+                socraticWrong: "¡QUÉ DIVERTIDO SERÍA! PERO PENSEMOS JUNTOS... ¿ALGUNA VEZ VISTE A UN GATITO LLEVANDO UN PARAGUAS CON SUS PATITAS? VAMOS A MIRAR LA FOTO OTRA VEZ.",
+                socraticCorrect: "¡EXCELENTE DETECTIVE! TE DISTE CUENTA DE QUE ESTO ES IMPOSIBLE. LA COMPUTADORA PUEDE DIBUJAR COSAS MUY DIVERTIDAS QUE NO EXISTEN EN LA VIDA REAL."
+            },
+            {
+                id: 3,
+                type: "REAL",
+                imageUrl: "https://i.postimg.cc/nztb8kXT/cerdo.webp",
+                question: "MIRA A ESTE CERDO PASEANDO CON CORREA. ¿ES DE VERDAD O LO INVENTÓ LA COMPUTADORA?",
+                hints: [
+                    "MIRA DÓNDE ESTÁ CAMINANDO Y QUIÉN LO LLEVA.",
+                    "AUNQUE NO ES TAN COMÚN COMO UN PERRO, ¿EXISTEN LAS PERSONAS QUE TIENEN CERDOS COMO MASCOTAS?"
+                ],
+                socraticWrong: "ES RARO VER UN CERDO EN LA CALLE, ¿VERDAD? PERO MIRA BIEN... LAS PERSONAS A VECES TIENEN MASCOTAS DIFERENTES. ¿PODRÍA SER UNA FOTO DE ALGUIEN PASEANDO A SU MASCOTA? PENSEMOS JUNTOS.",
+                socraticCorrect: "¡MUY BIEN! AUNQUE ES POCO COMÚN, ES UNA FOTO DE VERDAD. ALGUNAS PERSONAS TIENEN CERDOS COMO MASCOTAS Y LOS SACAN A PASEAR."
+            }
+        ];
+
+        // --- ESTADO DE LA APLICACIÓN ---
+        let currentLevelIndex = 0;
+        let currentLevelData = null;
+        let hintClickCount = 0;
+        let ttsActive = false;
+        let utterance = null;
+
+        // Elementos del DOM
+        const screenWelcome = document.getElementById('screen-welcome');
+        const screenGame = document.getElementById('screen-game');
+        const imageContainer = document.getElementById('image-container');
+        const questionText = document.getElementById('question-text');
+        const progressText = document.getElementById('progress-text');
+        const progressDots = document.getElementById('progress-dots');
+        const modal = document.getElementById('feedback-modal');
+        const modalMessage = document.getElementById('modal-message');
+        const modalTitle = document.getElementById('modal-title');
+        const modalIcon = document.getElementById('modal-icon');
+        const modalActionBtn = document.getElementById('modal-action-btn');
+        const modalTtsBtn = document.getElementById('modal-tts-btn');
+
+        // --- FUNCIONES DE ACCESIBILIDAD (DUA) ---
+        function changeFontSize(change) {
+            const root = document.documentElement;
+            let currentScale = parseFloat(getComputedStyle(root).getPropertyValue('--font-scale')) || 1;
+            let newScale = Math.max(0.8, Math.min(1.5, currentScale + change));
+            root.style.setProperty('--font-scale', newScale);
+            playTTS(change > 0 ? "LETRA MÁS GRANDE" : "LETRA MÁS CHICA", true);
+        }
+
+        function toggleContrast() {
+            document.body.classList.toggle('high-contrast');
+            const isHighContrast = document.body.classList.contains('high-contrast');
+            playTTS(isHighContrast ? "MODO DE ALTO CONTRASTE ACTIVADO" : "MODO NORMAL ACTIVADO", true);
+        }
+
+        // --- SÍNTESIS DE VOZ (TEXT-TO-SPEECH) ---
+        function playTTS(text, force = false) {
+            if (!window.speechSynthesis) return;
+            
+            window.speechSynthesis.cancel(); // Detener audio anterior
+            
+            utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-AR'; // Español de Argentina (o genérico si no está instalado)
+            utterance.rate = 0.9; // Un poco más lento para nivel inicial
+            utterance.pitch = 1.2; // Voz un poco más aguda/amigable
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Detener audio al desmontar/cerrar modal
+        function stopTTS() {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        // --- LÓGICA DEL JUEGO (ANDAMIAJE) ---
+        function startGame() {
+            // Iniciar TTS para desbloquear política de navegadores
+            playTTS("¡COMENCEMOS LA AVENTURA!", true);
+            screenWelcome.classList.add('hidden');
+            screenGame.classList.remove('hidden');
+            screenGame.classList.add('flex');
+            loadLevel(0);
+        }
+
+        function loadLevel(index) {
+            if (index >= levels.length) {
+                showFinalScreen();
+                return;
+            }
+
+            currentLevelIndex = index;
+            currentLevelData = levels[index];
+            hintClickCount = 0; // Reiniciar pistas
+
+            // Actualizar UI
+            progressText.innerText = `NIVEL ${index + 1} DE ${levels.length}`;
+            updateProgressDots();
+            
+            imageContainer.innerHTML = `<img src="${currentLevelData.imageUrl}" alt="Imagen a analizar como detective" onerror="this.onerror=null; this.src='https://placehold.co/800x400/e2e8f0/0f172a?text=FALTA+LA+IMAGEN+%0A(${currentLevelData.imageUrl})';" />`;
+
+            questionText.innerText = currentLevelData.question;
+            playTTS(currentLevelData.question); // Leer automáticamente al cargar el nivel
+        }
+
+        function updateProgressDots() {
+            progressDots.innerHTML = '';
+            for (let i = 0; i < levels.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = `w-4 h-4 rounded-full border-2 ${i <= currentLevelIndex ? 'bg-[var(--btn-primary)] border-[var(--btn-primary)]' : 'bg-transparent border-[var(--border-color)]'}`;
+                progressDots.appendChild(dot);
+            }
+        }
+
+        function checkAnswer(selectedType) {
+            stopTTS();
+            const isCorrect = (selectedType === currentLevelData.type);
+            
+            if (isCorrect) {
+                // Respuesta Correcta: Refuerzo positivo y explicación
+                showModal(
+                    "¡EXCELENTE TRABAJO!", 
+                    "🌟", 
+                    currentLevelData.socraticCorrect, 
+                    "SIGUIENTE NIVEL", 
+                    () => {
+                        closeModal();
+                        loadLevel(currentLevelIndex + 1);
+                    },
+                    "#10b981"
+                );
+            } else {
+                // Respuesta Incorrecta (Andamiaje): Pregunta Socrática, NO dar la respuesta directa
+                showModal(
+                    "¡PENSEMOS JUNTOS!", 
+                    "🤔", 
+                    currentLevelData.socraticWrong, 
+                    "VOLVER A MIRAR", 
+                    () => closeModal(),
+                    "#f59e0b"
+                );
+            }
+        }
+
+        // Sistema de Pistas Graduadas
+        function showHint() {
+            stopTTS();
+            let hintText = "";
+            if (hintClickCount < currentLevelData.hints.length) {
+                hintText = currentLevelData.hints[hintClickCount];
+                hintClickCount++;
+            } else {
+                // Si ya vio todas las pistas, repite la última
+                hintText = currentLevelData.hints[currentLevelData.hints.length - 1];
+            }
+            
+            showModal(
+                "PISTA DEL DETECTIVE", 
+                "🔍", 
+                hintText, 
+                "ENTENDIDO", 
+                () => closeModal(),
+                "var(--btn-secondary)"
+            );
+        }
+
+        // Controlador del Modal Dinámico
+        function showModal(title, icon, message, btnText, actionCallback, color) {
+            modalTitle.innerText = title;
+            modalIcon.innerText = icon;
+            modalMessage.innerText = message;
+            
+            modalActionBtn.innerText = btnText;
+            modalActionBtn.onclick = actionCallback;
+            
+            modalTitle.style.color = document.body.classList.contains('high-contrast') ? 'var(--text-main)' : color;
+
+            // Configurar botón de audio del modal
+            modalTtsBtn.onclick = () => playTTS(message);
+
+            modal.classList.remove('hidden');
+            
+            // Leer el mensaje del modal automáticamente
+            playTTS(`${title}. ${message}`);
+        }
+
+        function closeModal() {
+            stopTTS();
+            modal.classList.add('hidden');
+        }
+
+        // Pantalla Final
+        function showFinalScreen() {
+            screenGame.innerHTML = `
+                <div class="flex flex-col items-center text-center py-10 w-full">
+                    <div class="text-8xl mb-6 animate-float">🎓</div>
+                    <h2 class="text-4xl sm:text-5xl font-black mb-6 text-[var(--btn-primary)]">¡FELICITACIONES!</h2>
+                    <p class="text-2xl font-bold mb-8 max-w-2xl leading-relaxed">
+                        TE HAS CONVERTIDO EN UN GRAN DETECTIVE DIGITAL.<br><br>
+                        AHORA SABES QUE DEBEMOS MIRAR MUY BIEN LAS IMÁGENES Y HACERNOS PREGUNTAS PORQUE LA COMPUTADORA PUEDE INVENTAR COSAS QUE NO SON REALES.
+                    </p>
+                    <button onclick="location.reload()" class="text-2xl font-black px-10 py-6 rounded-2xl border-b-8 active:border-b-0 active:translate-y-2 flex items-center gap-4" style="background-color: var(--btn-primary); color: var(--btn-text); border-color: #2563eb;">
+                        <span aria-hidden="true">🔄</span> JUGAR DE NUEVO
+                    </button>
+                </div>
+            `;
+            playTTS("¡FELICITACIONES! TE HAS CONVERTIDO EN UN GRAN DETECTIVE DIGITAL. AHORA SABES QUE DEBEMOS MIRAR MUY BIEN LAS IMÁGENES PORQUE LA COMPUTADORA PUEDE INVENTAR COSAS. ¡GRACIAS POR JUGAR!");
+        }
+
+    </script>
+</body>
+</html>

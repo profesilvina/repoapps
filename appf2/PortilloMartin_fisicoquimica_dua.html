@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio de Reactivos y Cambios Químicos - Socio Cognitivo DUA</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --accent-color: #0d9488;
+            --border-color: #cbd5e1;
+            --font-scale: 1;
+        }
+
+        body.dark-mode {
+            --bg-color: #0f172a;
+            --text-color: #f1f5f9;
+            --card-bg: #1e293b;
+            --primary-color: #3b82f6;
+            --primary-hover: #60a5fa;
+            --accent-color: #14b8a6;
+            --border-color: #475569;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            font-size: calc(16px * var(--font-scale));
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 1.8em;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 0.95em;
+            opacity: 0.85;
+            margin-bottom: 15px;
+        }
+
+        /* Toolbar DUA */
+        .dua-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            background-color: rgba(37, 99, 235, 0.05);
+            border-radius: 8px;
+            align-items: center;
+        }
+
+        .dua-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .dua-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Main Content */
+        .card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .case-title {
+            font-size: 1.3em;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .case-description {
+            background-color: rgba(0, 0, 0, 0.03);
+            padding: 15px;
+            border-left: 4px solid var(--accent-color);
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .option-btn {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 2px solid var(--border-color);
+            padding: 14px;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.15);
+        }
+
+        /* Scaffold & Feedback Section */
+        .scaffold-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .hint-btn {
+            background-color: #f59e0b;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .hint-btn:hover {
+            background-color: #d97706;
+        }
+
+        .feedback-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .feedback-info {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+
+        .feedback-hint {
+            background-color: #fef3c7;
+            border: 1px solid #fde68a;
+            color: #92400e;
+        }
+
+        .feedback-success {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        body.dark-mode .feedback-info { background-color: #1e3a8a; color: #dbeafe; border-color: #1e40af; }
+        body.dark-mode .feedback-hint { background-color: #78350f; color: #fef3c7; border-color: #92400e; }
+        body.dark-mode .feedback-success { background-color: #14532d; color: #dcfce7; border-color: #166534; }
+
+        .progress-bar {
+            height: 10px;
+            background-color: var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 33%;
+            transition: width 0.3s;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        /* Metacognition Panel */
+        .metacognition-panel {
+            display: none;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            margin-top: 10px;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🧪 Lab Quirúrgico de Reacciones Químicas</h1>
+        <p class="subtitle">3° Año Secundaria CABA - Físico-Química (Socio Cognitivo DUA)</p>
+        
+        <!-- Herramientas Accesibles DUA -->
+        <div class="dua-toolbar" aria-label="Herramientas de Accesibilidad DUA">
+            <span><strong>Herramientas DUA:</strong></span>
+            <button class="dua-btn" onclick="changeFontSize(0.1)" title="Aumentar tamaño de letra">A+</button>
+            <button class="dua-btn" onclick="changeFontSize(-0.1)" title="Disminuir tamaño de letra">A-</button>
+            <button class="dua-btn" onclick="toggleContrast()" title="Cambiar Contraste / Modo Oscuro">🌓 Modo Lectura</button>
+            <button class="dua-btn" onclick="readAloud()" title="Lectura en voz alta del caso actual">🔊 Escuchar Texto</button>
+        </div>
+    </header>
+
+    <div class="progress-bar" aria-label="Progreso del taller">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- Contenedor del Caso Activo -->
+    <main id="appContent">
+        <div class="card">
+            <div class="case-title">
+                <span id="caseNumber">Caso 1 de 3</span>: <span id="caseName">Fenómeno en el Laboratorio</span>
+            </div>
+
+            <div class="case-description" id="caseDescription">
+                Cargando caso...
+            </div>
+
+            <p style="margin-bottom: 10px;"><strong>¿Qué evidencia nos indica qué tipo de transformación ocurrió aquí?</strong></p>
+            
+            <div class="options-grid" id="optionsContainer">
+                <!-- Opciones dinámicas -->
+            </div>
+
+            <div class="scaffold-section">
+                <button class="hint-btn" onclick="showHint(1)">💡 Pista 1: Enfoque Microscópico</button>
+                <button class="hint-btn" onclick="showHint(2)">💡 Pista 2: Evidencia Macroscópica</button>
+                <button class="dua-btn" style="background-color: var(--accent-color);" onclick="submitAnswer()">🔍 Analizar Respuesta</button>
+            </div>
+
+            <div id="feedbackBox" class="feedback-box"></div>
+
+            <div class="nav-buttons">
+                <button class="dua-btn" id="prevBtn" onclick="navigate(-1)" disabled>⬅️ Anterior</button>
+                <button class="dua-btn" id="nextBtn" onclick="navigate(1)">Siguiente ➡️</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Panel Final de Metacognición -->
+    <div class="card metacognition-panel" id="metacognitionPanel">
+        <h2 style="color: var(--primary-color); margin-bottom: 15px;">🧠 Cierre Metacognitivo DUA</h2>
+        <p>¡Has explorado los tres escenarios químicos! Para consolidar tu aprendizaje, reflexiona brevemente sobre tu proceso:</p>
+        
+        <div style="margin-top: 15px;">
+            <label for="reflect1"><strong>1. ¿Qué pista o deducción te ayudó a diferenciar una reacción química de un cambio físico?</strong></label>
+            <textarea id="reflect1" placeholder="Escribe aquí tu pensamiento..."></textarea>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <label for="reflect2"><strong>2. ¿Qué señal visible (efervescencia, precipitado, color, temperatura) te resultó más clara para identificar que surgieron sustancias nuevas?</strong></label>
+            <textarea id="reflect2" placeholder="Escribe tu observación..."></textarea>
+        </div>
+
+        <button class="dua-btn" style="margin-top: 15px; width: 100%; justify-content: center;" onclick="finishSession()">✅ Finalizar y Guardar Reflexión</button>
+    </div>
+</div>
+
+<script>
+    // Datos de los Casos Didácticos
+    const cases = [
+        {
+            title: "El efervescente misterio en el vaso",
+            description: "Colocamos una pastilla efervescente en un vaso con agua. Inmediatamente comienzan a subirse burbujas de gas de forma intensa, la temperatura del agua baja ligeramente y la pastilla desaparece. La masa total del gas liberado junto a la solución final equivale a los reactivos iniciales.",
+            options: [
+                { text: "Es una reacción química porque surgieron nuevas sustancias (gas dióxido de carbono) con propiedades distintas a la pastilla original.", correct: true },
+                { text: "Es solo un cambio físico (disolución) porque si evaporamos el agua recuperaremos la pastilla intacta.", correct: false },
+                { text: "Es una mezcla física, ya que las moléculas de la pastilla no cambiaron su estructura atómica.", correct: false },
+                { text: "Es una reacción química únicamente porque la temperatura cambió, sin importar el gas formado.", correct: false }
+            ],
+            hints: [
+                "Pista 1 (Microscópica): En una reacción química, los enlaces atómicos de los reactivos se rompen y se reordenan para formar productos nuevos con enlaces diferentes.",
+                "Pista 2 (Macroscópica): La aparición irrumpiendo de un gas (efervescencia) cuando antes no existía suele ser una evidencia clave de que se formó un producto químico nuevo."
+            ],
+            socraticFeedback: {
+                correct: "¡Excelente deducción! Identificaste la efervescencia como indicadora de la formación de un nuevo producto gaseoso. Reorganizaste los reactivos en productos.",
+                incorrect: "Observa nuevamente: ¿El gas liberated estaba atrapado mecánicamente o se produjo mediante el contacto del ácido y el bicarbonato al disolverse?"
+            }
+        },
+        {
+            title: "La oxidación de la clavadora de hierro",
+            description: "Un conjunto de clavos de hierro limpios se dejan a la intemperie en el patio del colegio durante semanas. Con el tiempo, adquieren una capa rugosa de color rojizo/marrón (óxido de hierro) que se desmorona al tacto.",
+            options: [
+                { text: "Es una transformación física, el hierro solo cambió de color por la humedad.", correct: false },
+                { text: "Es una reacción química (oxidación) donde el hierro (Fe) reacciona con el oxígeno (O₂) ambiental formando una sustancia nueva (Fe₂O₃).", correct: true },
+                { text: "Es un cambio de estado de la materia causado por la temperatura del sol.", correct: false },
+                { text: "Es un proceso biológico que no altera las moléculas del hierro original.", correct: false }
+            ],
+            hints: [
+                "Pista 1 (Microscópica): El hierro metálico puro combinó sus átomos con el oxígeno presente en el aire. ¿Mantiene el óxido rojizo las mismas propiedades del metal brillante?",
+                "Pista 2 (Macroscópica): La diferencia en el color, textura y fragilidad indica que la sustancia resultante ya no se comporta como el hierro inicial."
+            ],
+            socraticFeedback: {
+                correct: "¡Exacto! La combinación del Hierro y Oxígeno genera trióxido de dihierro, un compuesto completamente diferente en propiedades mecánicas y químicas.",
+                incorrect: "Pregunta socrática: Si acercas un imán al óxido formado, ¿se comportará igual que el clavo original? ¿Por qué cambió el color de manera irreversible?"
+            }
+        },
+        {
+            title: "Hervir agua para el té",
+            description: "Colocamos un recipiente con agua tibia sobre la hornalla encendida. Al cabo de unos minutos, el agua alcanza los 100°C, burbujea fuertemente y despide vapor visible de agua.",
+            options: [
+                { text: "Es una reacción química porque la alta temperatura destruye las moléculas de agua separando el Hidrógeno del Óxigeno.", correct: false },
+                { text: "Es un cambio físico (cambio de estado). Las moléculas siguen siendo H₂O tanto en estado líquido como en estado gaseoso.", correct: true },
+                { text: "Es una reacción endotérmica que destruye los reactivos para siempre.", correct: false },
+                { text: "Es un fenómeno mixto donde desaparece el agua original.", correct: false }
+            ],
+            hints: [
+                "Pista 1 (Microscópica): Si colocas una tapa fría sobre el vapor, las gotas formadas vuelven a ser agua líquida. ¿Cambiaron los enlaces de la molécula H₂O?",
+                "Pista 2 (Macroscópica): Los cambios de estado (evaporación, fusión) alteran el distanciamiento molecular y la energía, pero no la identidad de la sustancia."
+            ],
+            socraticFeedback: {
+                correct: "¡Muy bien analizado! La ebullición cambia la fase (líquido a gas), pero la composición química (H₂O) permanece inalterada.",
+                incorrect: "Reflexiona: Si condensamos ese vapor en un recipiente frío, obtenemos agua otra vez. ¿Ocurrió entonces una reorganización de átomos en sustancias distintas?"
+            }
+        }
+    ];
+
+    let currentCaseIndex = 0;
+    let selectedOptionIndex = null;
+    let fontScale = 1;
+
+    function renderCase() {
+        selectedOptionIndex = null;
+        const c = cases[currentCaseIndex];
+        
+        document.getElementById("caseNumber").innerText = `Caso ${currentCaseIndex + 1} de ${cases.length}`;
+        document.getElementById("caseName").innerText = c.title;
+        document.getElementById("caseDescription").innerText = c.description;
+
+        const optionsContainer = document.getElementById("optionsContainer");
+        optionsContainer.innerHTML = "";
+
+        c.options.forEach((opt, idx) => {
+            const btn = document.createElement("button");
+            btn.className = "option-btn";
+            btn.innerText = `${String.fromCharCode(65 + idx)}) ${opt.text}`;
+            btn.onclick = () => selectOption(idx, btn);
+            optionsContainer.appendChild(btn);
+        });
+
+        // Hide feedback
+        const fb = document.getElementById("feedbackBox");
+        fb.style.display = "none";
+        fb.className = "feedback-box";
+
+        // Navigation state
+        document.getElementById("prevBtn").disabled = currentCaseIndex === 0;
+        document.getElementById("nextBtn").innerText = currentCaseIndex === cases.length - 1 ? "Ir al Cierre 🧠" : "Siguiente ➡️";
+
+        // Progress bar
+        document.getElementById("progressFill").style.width = `${((currentCaseIndex + 1) / cases.length) * 100}%`;
+    }
+
+    function selectOption(idx, btnElement) {
+        selectedOptionIndex = idx;
+        const allBtns = document.querySelectorAll(".option-btn");
+        allBtns.forEach(b => b.classList.remove("selected"));
+        btnElement.classList.add("selected");
+    }
+
+    function showHint(hintNumber) {
+        const c = cases[currentCaseIndex];
+        const fb = document.getElementById("feedbackBox");
+        fb.style.display = "block";
+        fb.className = "feedback-box feedback-hint";
+        fb.innerHTML = `<strong>💡 Pista ${hintNumber}:</strong> ${c.hints[hintNumber - 1]}`;
+    }
+
+    function submitAnswer() {
+        if (selectedOptionIndex === null) {
+            alert("Por favor, selecciona una opción antes de analizar.");
+            return;
+        }
+
+        const c = cases[currentCaseIndex];
+        const isCorrect = c.options[selectedOptionIndex].correct;
+        const fb = document.getElementById("feedbackBox");
+        fb.style.display = "block";
+
+        if (isCorrect) {
+            fb.className = "feedback-box feedback-success";
+            fb.innerHTML = `<strong>🎉 ¡Análisis Acertado!</strong><br>${c.socraticFeedback.correct}`;
+        } else {
+            fb.className = "feedback-box feedback-info";
+            fb.innerHTML = `<strong>🤔 Pregunta Orientadora / Andamiaje:</strong><br>${c.socraticFeedback.incorrect}`;
+        }
+    }
+
+    function navigate(direction) {
+        if (direction === 1 && currentCaseIndex === cases.length - 1) {
+            // Ir a metacognición
+            document.getElementById("appContent").style.display = "none";
+            document.getElementById("metacognitionPanel").style.display = "block";
+            return;
+        }
+
+        currentCaseIndex += direction;
+        if (currentCaseIndex < 0) currentCaseIndex = 0;
+        if (currentCaseIndex >= cases.length) currentCaseIndex = cases.length - 1;
+        
+        renderCase();
+    }
+
+    // Funciones DUA Accesibles
+    function changeFontSize(delta) {
+        fontScale += delta;
+        if (fontScale < 0.8) fontScale = 0.8;
+        if (fontScale > 1.4) fontScale = 1.4;
+        document.body.style.setProperty('--font-scale', fontScale);
+    }
+
+    function toggleContrast() {
+        document.body.classList.toggle("dark-mode");
+    }
+
+    function readAloud() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const c = cases[currentCaseIndex];
+            const textToRead = `${c.title}. ${c.description}`;
+            const utterance = new SpeechSynthesisUtterance(textToRead);
+            utterance.lang = 'es-AR';
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert("La lectura en voz alta no está soportada en este navegador.");
+        }
+    }
+
+    function finishSession() {
+        alert("¡Felicitaciones! Has completado la actividad reflexiva de Físico-Química. Guarda tu archivo local para compartirlo.");
+    }
+
+    // Inicialización
+    renderCase();
+</script>
+
+</body>
+</html>

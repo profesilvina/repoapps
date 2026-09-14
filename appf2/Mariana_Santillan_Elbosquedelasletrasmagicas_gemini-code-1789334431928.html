@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Bosque de las Letras Mágicas - Taller de Lectoescritura</title>
+    <!-- Tailwind CSS para diseño moderno y accesible -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Iconos de Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts amigables y legibles (Fredoka y Quicksand) -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+        }
+        h1, h2, h3, .font-título {
+            font-family: 'Fredoka', cursive;
+        }
+    </style>
+</head>
+<body class="bg-amber-50 text-slate-800 min-h-screen flex flex-col select-none">
+
+    <!-- BARRA DE ACCESIBILIDAD Y AUDIO (DUA) -->
+    <header class="bg-white shadow-md py-3 px-6 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center space-x-3">
+            <span class="text-3xl">🌳</span>
+            <h1 class="text-2xl font-bold text-emerald-600 tracking-wide">El Bosque de las Letras Mágicas</h1>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button onclick="toggleAudioAsistencia()" id="btnAudio" class="flex items-center space-x-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 px-3 py-2 rounded-full font-semibold transition shadow-sm cursor-pointer" title="Escuchar texto en voz alta">
+                <i data-lucide="volume-2" class="w-5 h-5"></i>
+                <span class="text-sm hidden sm:inline">Leer en voz alta</span>
+            </button>
+            <button onclick="alternarFuenteDyslexia()" class="bg-amber-100 hover:bg-amber-200 text-amber-900 px-3 py-2 rounded-full font-semibold transition shadow-sm cursor-pointer text-sm" title="Alternar accesibilidad visual">
+                👁️‍🗨️ Apoyo Visual
+            </button>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
+
+        <!-- VISTA 1: BIENVENIDA Y SELECCIÓN DE MISIÓN (NIVELES) -->
+        <div id="vista-menu" class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 border-4 border-emerald-200 text-center">
+            <div class="mb-6">
+                <span class="inline-block animate-bounce text-6xl mb-2">🦊</span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-emerald-700 mb-2">¡Hola, explorador o exploradora!</h2>
+                <p class="text-lg text-slate-600 max-w-xl mx-auto">
+                    Ayuda a nuestro amigo el zorro a descubrir los secretos del bosque completando los desafíos de palabras, rimas y oraciones. ¡Cada desafío te dará una estrella mágica! ⭐
+                </p>
+            </div>
+
+            <!-- Panel de Misiones -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <!-- Misión 1 -->
+                <div onclick="iniciarMision(1)" class="bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-300 rounded-2xl p-5 cursor-pointer transition transform hover:-translate-y-1 shadow-sm flex flex-col items-center">
+                    <span class="text-4xl mb-2">🍎</span>
+                    <h3 class="font-bold text-emerald-800 text-lg">Misión 1: Las Sílabas</h3>
+                    <p class="text-xs text-slate-600 text-center mt-1">Completa palabras eligiendo la sílaba correcta que falta.</p>
+                </div>
+                <!-- Misión 2 -->
+                <div onclick="iniciarMision(2)" class="bg-sky-50 hover:bg-sky-100 border-2 border-sky-300 rounded-2xl p-5 cursor-pointer transition transform hover:-translate-y-1 shadow-sm flex flex-col items-center">
+                    <span class="text-4xl mb-2">🧩</span>
+                    <h3 class="font-bold text-sky-800 text-lg">Misión 2: Familias de Palabras</h3>
+                    <p class="text-xs text-slate-600 text-center mt-1">Agrupa palabras por su forma y descubre qué tienen en común.</p>
+                </div>
+                <!-- Misión 3 -->
+                <div onclick="iniciarMision(3)" class="bg-amber-50 hover:bg-amber-100 border-2 border-amber-300 rounded-2xl p-5 cursor-pointer transition transform hover:-translate-y-1 shadow-sm flex flex-col items-center">
+                    <span class="text-4xl mb-2">📝</span>
+                    <h3 class="font-bold text-amber-800 text-lg">Misión 3: El Cuentacuentos</h3>
+                    <p class="text-xs text-slate-600 text-center mt-1">Ordena oraciones y crea tu propia historia corta guiada.</p>
+                </div>
+            </div>
+
+            <div id="progreso-global" class="text-sm font-semibold text-emerald-600 bg-emerald-50 py-2 px-4 rounded-xl inline-block">
+                Estrellas conseguidas: <span id="contador-estrellas">0</span> / 3 ⭐
+            </div>
+        </div>
+
+        <!-- VISTA 2: ÁREA DE JUEGO / TALLER (DINÁMICA) -->
+        <div id="vista-juego" class="hidden bg-white rounded-3xl shadow-xl p-6 sm:p-8 border-4 border-emerald-200 relative">
+            <!-- Botón Volver -->
+            <button onclick="volverMenu()" class="absolute top-4 left-4 text-slate-500 hover:text-slate-800 font-semibold flex items-center space-x-1 cursor-pointer">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                <span class="text-sm">Menú</span>
+            </button>
+
+            <!-- Cabecera del Juego -->
+            <div class="text-center mt-4 mb-6">
+                <span id="juego-icono" class="text-5xl"></span>
+                <h2 id="juego-titulo" class="text-2xl font-bold text-emerald-700 mt-2"></h2>
+                <p id="juego-instruccion" class="text-slate-600 text-sm sm:text-base mt-1 max-w-lg mx-auto"></p>
+            </div>
+
+            <!-- Contenido Dinámico de la Actividad -->
+            <div id="juego-contenido" class="my-4">
+                <!-- Se inyecta mediante JS según la misión activa -->
+            </div>
+
+            <!-- Feedback / Pista Pedagógica DUA -->
+            <div class="mt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+                <button onclick="mostrarPista()" id="btnPista" class="bg-amber-100 hover:bg-amber-200 text-amber-800 text-sm px-4 py-2 rounded-xl font-semibold flex items-center space-x-2 transition cursor-pointer">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                    <span>💡 Necesito una pista</span>
+                </button>
+                <div id="feedback-mensaje" class="text-center font-bold text-base min-h-[30px]"></div>
+                <button onclick="verificarRespuesta()" id="btnVerificar" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl shadow-md transition cursor-pointer">
+                    Comprobar respuesta ✨
+                </button>
+            </div>
+        </div>
+
+        <!-- VISTA 3: PANTALLA DE LOGRO / CELEBRACIÓN -->
+        <div id="vista-logro" class="hidden bg-white rounded-3xl shadow-xl p-8 border-4 border-amber-300 text-center">
+            <span class="text-7xl inline-block animate-bounce mb-3">🎉🏆</span>
+            <h2 class="text-3xl font-bold text-amber-700 mb-2">¡Excelente Trabajo!</h2>
+            <p id="mensaje-logro" class="text-slate-600 text-lg mb-6">Has completado esta misión con éxito y ayudado a la comunidad del bosque.</p>
+            <button onclick="volverMenu()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg transition cursor-pointer">
+                Elegir otra misión 🌟
+            </button>
+        </div>
+
+    </main>
+
+    <!-- PIE DE PÁGINA EDUCATIVO -->
+    <footer class="text-center py-4 text-xs text-slate-500">
+        Taller de Lectoescritura adaptado con Enfoque Socio-Pedagógico y DUA • 2.° Año Primario
+    </footer>
+
+    <!-- SCRIPT DE LÓGICA INTERACTIVA -->
+    <script>
+        // Inicializar iconos de Lucide
+        lucide.createIcons();
+
+        // Estado Global de la Aplicación
+        let estrellas = 0;
+        let misionActual = null;
+        let pasoActividad = 0;
+        let audioActivo = false;
+
+        // Datos pedagógicos con palabras limpias sin guiones y enfocados en sílabas
+        const misionesData = {
+            1: {
+                titulo: "Misión 1: Completando con Sílabas",
+                icono: "🍎",
+                instruccion: "Observa la palabra incompleta y selecciona la sílaba correcta que falta.",
+                preguntas: [
+                    { palabra: "PE  _  TA", opciones: ["LO", "MA", "SA"], correcta: "LO", pista: "Es un objeto redondo con el que jugamos en la plaza." },
+                    { palabra: "LI  _", opciones: ["BRO", "PA", "TA"], correcta: "BRO", pista: "Tiene páginas con historias y dibujos para leer." },
+                    { palabra: "MA  _  POSA", opciones: ["RI", "LE", "SO"], correcta: "RI", pista: "Insecto de alas coloridas que vuela entre las flores." },
+                    { palabra: "SO  _", opciones: ["PA", "LA", "TO"], correcta: "PA", pista: "Comida calentita y rica que comemos en plato con cuchara." }
+                ]
+            },
+            2: {
+                titulo: "Misión 2: Familias de Palabras",
+                icono: "🧩",
+                instruccion: "Encuentra la palabra intrusa que NO pertenece a la misma familia o campo semántico.",
+                preguntas: [
+                    { tema: "Útiles Escolares", opciones: ["Lápiz", "Cuaderno", "Zapatilla", "Goma"], correcta: "Zapatilla", pista: "Piensa en qué cosas llevas en la mochila para estudiar." },
+                    { tema: "Animales de la granja", opciones: ["Vaca", "Gallina", "Tiburón", "Cerdo"], correcta: "Tiburón", pista: "Uno de ellos vive en el mar profundo y no en el campo." }
+                ]
+            },
+            3: {
+                titulo: "Misión 3: El Cuentacuentos (Oraciones)",
+                icono: "📝",
+                instruccion: "Ordena las palabras sueltas para formar una oración correcta que tenga sentido.",
+                preguntas: [
+                    { palabrasDesordenadas: ["El", "perro", "corre", "alegre"], correcta: ["El", "perro", "corre", "alegre"], pista: "Empieza con artículo ('El') y termina con la acción y cómo lo hace." },
+                    { palabrasDesordenadas: ["La", "mariposa", "vuela", "alto"], correcta: ["La", "mariposa", "vuela", "alto"], pista: "Busca quién realiza la acción de volar." }
+                ]
+            }
+        };
+
+        let indicePreguntaActual = 0;
+        let respuestaSeleccionada = null;
+
+        function iniciarMision(id) {
+            misionActual = id;
+            indicePreguntaActual = 0;
+            document.getElementById('vista-menu').classList.add('hidden');
+            document.getElementById('vista-juego').classList.remove('hidden');
+            document.getElementById('vista-logro').classList.add('hidden');
+            
+            cargarPregunta();
+        }
+
+        function cargarPregunta() {
+            const data = misionesData[misionActual];
+            document.getElementById('juego-icono').innerText = data.icono;
+            document.getElementById('juego-titulo').innerText = data.titulo;
+            document.getElementById('juego-instruccion').innerText = data.instruccion;
+            document.getElementById('feedback-mensaje').innerHTML = '';
+            respuestaSeleccionada = null;
+
+            const contenedor = document.getElementById('juego-contenido');
+            contenedor.innerHTML = '';
+
+            const preguntaObj = data.preguntas[indicePreguntaActual];
+
+            if (misionActual === 1 || misionActual === 2) {
+                // Renderizar opciones de selección múltiple con formato limpio sin guiones
+                let html = `<div class="text-center mb-6"><span class="text-3xl sm:text-4xl font-extrabold bg-emerald-100 text-emerald-800 px-6 py-3 rounded-2xl tracking-widest inline-block">${preguntaObj.palabra || preguntaObj.tema}</span></div>`;
+                html += `<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-lg mx-auto">`;
+                preguntaObj.opciones.forEach(op => {
+                    html += `<button onclick="seleccionarOpcion('${op}', this)" class="opcion-btn bg-slate-100 hover:bg-emerald-50 border-2 border-slate-300 hover:border-emerald-400 text-slate-800 font-bold py-3 rounded-xl transition text-lg cursor-pointer shadow-sm">${op}</button>`;
+                });
+                html += `</div>`;
+                contenedor.innerHTML = html;
+            } else if (misionActual === 3) {
+                let palabrasMezcladas = [...preguntaObj.palabrasDesordenadas].sort(() => Math.random() - 0.5);
+                let html = `<p class="text-center text-sm text-slate-500 mb-3">Haz clic en las palabras en orden para armar la oración:</p>`;
+                html += `<div id="palabras-mezcladas" class="flex flex-wrap justify-center gap-2 mb-4">`;
+                palabrasMezcladas.forEach((pal, idx) => {
+                    html += `<button onclick="seleccionarPalabraOracion('${pal}', this)" class="pal-btn bg-amber-50 border-2 border-amber-300 hover:bg-amber-100 text-amber-900 font-bold px-4 py-2 rounded-xl transition cursor-pointer">${pal}</button>`;
+                });
+                html += `</div>`;
+                html += `<div class="p-4 bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl min-h-[60px] flex items-center justify-center gap-2" id="oracion-armada"><span class="text-slate-400 text-sm">Tu oración aparecerá aquí...</span></div>`;
+                contenedor.innerHTML = html;
+                respuestaSeleccionada = [];
+            }
+        }
+
+        function seleccionarOpcion(op, elemento) {
+            document.querySelectorAll('.opcion-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-500', 'text-white', 'border-emerald-600');
+                btn.classList.add('bg-slate-100', 'text-slate-800');
+            });
+            elemento.classList.remove('bg-slate-100', 'text-slate-800');
+            elemento.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+            respuestaSeleccionada = op;
+        }
+
+        let palabrasFormadas = [];
+        function seleccionarPalabraOracion(pal, elemento) {
+            elemento.style.display = 'none';
+            palabrasFormadas.push(pal);
+            respuestaSeleccionada = palabrasFormadas;
+
+            const contenedorArmada = document.getElementById('oracion-armada');
+            contenedorArmada.innerHTML = palabrasFormadas.map(p => `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg font-bold">${p}</span>`).join(' ');
+        }
+
+        function verificarRespuesta() {
+            const data = misionesData[misionActual];
+            const preguntaObj = data.preguntas[indicePreguntaActual];
+            const feedback = document.getElementById('feedback-mensaje');
+
+            if (respuestaSeleccionada === null || (Array.isArray(respuestaSeleccionada) && respuestaSeleccionada.length === 0)) {
+                feedback.innerHTML = `<span class="text-amber-600">⚠️ Por favor, selecciona o arma una respuesta antes de comprobar.</span>`;
+                return;
+            }
+
+            let esCorrecta = false;
+            if (misionActual === 1 || misionActual === 2) {
+                esCorrecta = (respuestaSeleccionada === preguntaObj.correcta);
+            } else if (misionActual === 3) {
+                esCorrecta = (JSON.stringify(respuestaSeleccionada) === JSON.stringify(preguntaObj.correcta));
+            }
+
+            if (esCorrecta) {
+                feedback.innerHTML = `<span class="text-emerald-600 font-bold text-lg animate-pulse">¡Muy bien! ¡Respuesta correcta! 🎉</span>`;
+                setTimeout(() => {
+                    indicePreguntaActual++;
+                    palabrasFormadas = [];
+                    if (indicePreguntaActual < data.preguntas.length) {
+                        cargarPregunta();
+                    } else {
+                        estrellas++;
+                        document.getElementById('contador-estrellas').innerText = estrellas;
+                        document.getElementById('vista-juego').classList.add('hidden');
+                        document.getElementById('vista-logro').classList.remove('hidden');
+                    }
+                }, 1500);
+            } else {
+                feedback.innerHTML = `<span class="text-rose-600 font-bold">Casi lo logras. Inténtalo de nuevo o pide una pista. 🔍</span>`;
+                if(misionActual === 3) {
+                    palabrasFormadas = [];
+                    setTimeout(() => cargarPregunta(), 1500);
+                }
+            }
+        }
+
+        function mostrarPista() {
+            const data = misionesData[misionActual];
+            const preguntaObj = data.preguntas[indicePreguntaActual];
+            const feedback = document.getElementById('feedback-mensaje');
+            feedback.innerHTML = `<span class="text-sky-700 bg-sky-50 px-3 py-1 rounded-xl border border-sky-200 inline-block">💡 Pista pedagógica: ${preguntaObj.pista}</span>`;
+        }
+
+        function volverMenu() {
+            document.getElementById('vista-menu').classList.remove('hidden');
+            document.getElementById('vista-juego').classList.add('hidden');
+            document.getElementById('vista-logro').classList.add('hidden');
+            palabrasFormadas = [];
+        }
+
+        function toggleAudioAsistencia() {
+            if ('speechSynthesis' in window) {
+                if (window.speechSynthesis.speaking) {
+                    window.speechSynthesis.cancel();
+                    return;
+                }
+                const textoInstruccion = document.getElementById('juego-instruccion').innerText || "Bienvenido al taller de lectoescritura del bosque mágico. Elige una misión.";
+                const utterance = new SpeechSynthesisUtterance(textoInstruccion);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Tu navegador no soporta la función de lectura en voz alta.");
+            }
+        }
+
+        let fuenteAlternativa = false;
+        function alternarFuenteDyslexia() {
+            fuenteAlternativa = !fuenteAlternativa;
+            if (fuenteAlternativa) {
+                document.body.style.letterSpacing = '0.05em';
+                document.body.style.lineHeight = '1.8';
+                alert("Se ha ajustado el espaciado y legibilidad visual.");
+            } else {
+                document.body.style.letterSpacing = 'normal';
+                document.body.style.lineHeight = 'normal';
+                alert("Formato visual restablecido.");
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Los Agregados Obreros: Diplomacia y Batalla Cultural (1946-1955)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Special+Elite&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-paper: #f7f2e7;
+            --card-paper: #fffef9;
+            --ink-black: #1d1b18;
+            --peronist-celeste: #3a8bbd;
+            --vintage-gold: #c69214;
+            --stamp-red: #a82a2a;
+            --sepia-border: #d4c5a9;
+        }
+
+        /* High Contrast Theme Variables Override */
+        .high-contrast {
+            --bg-paper: #000000 !important;
+            --card-paper: #121212 !important;
+            --ink-black: #ffffff !important;
+            --peronist-celeste: #64b5f6 !important;
+            --vintage-gold: #ffd54f !important;
+            --stamp-red: #ff5252 !important;
+            --sepia-border: #ffffff !important;
+        }
+
+        body {
+            background-color: var(--bg-paper);
+            color: var(--ink-black);
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .font-vintage-title {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .font-typewriter {
+            font-family: 'Special Elite', monospace;
+        }
+
+        /* Vintage Paper Texture and Border Effect */
+        .vintage-card {
+            background-color: var(--card-paper);
+            border: 2px solid var(--sepia-border);
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.08);
+            border-radius: 8px;
+        }
+
+        .stamp-badge {
+            border: 3px dashed var(--stamp-red);
+            color: var(--stamp-red);
+            font-family: 'Special Elite', monospace;
+            transform: rotate(-3deg);
+            display: inline-block;
+            padding: 4px 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* DUA Accessibility focus ring */
+        a:focus, button:focus, textarea:focus, select:focus {
+            outline: 3px solid var(--peronist-celeste) !important;
+            outline-offset: 2px;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-paper);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--sepia-border);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-200">
+
+    <!-- Accessibility Control Bar (DUA) -->
+    <header class="bg-slate-900 text-amber-50 py-2 px-4 sticky top-0 z-50 shadow-md">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center text-sm gap-2">
+            <div class="flex items-center space-x-2 font-semibold">
+                <i class="fa-solid font-bold fa-universal-access text-sky-400 text-lg" aria-hidden="true"></i>
+                <span>Herramientas DUA / Accesibilidad</span>
+            </div>
+            
+            <div class="flex items-center flex-wrap gap-3">
+                <!-- Font size controls -->
+                <div class="flex items-center bg-slate-800 rounded px-2 py-1 border border-slate-700">
+                    <span class="mr-2 text-xs text-slate-300">Texto:</span>
+                    <button onclick="adjustFontSize(-1)" class="px-2 py-0.5 hover:bg-slate-700 rounded font-bold" title="Disminuir tamaño de letra" aria-label="Disminuir tamaño de letra">A-</button>
+                    <button onclick="resetFontSize()" class="px-2 py-0.5 hover:bg-slate-700 rounded text-xs" title="Restablecer letra" aria-label="Restablecer tamaño de letra">100%</button>
+                    <button onclick="adjustFontSize(1)" class="px-2 py-0.5 hover:bg-slate-700 rounded font-bold" title="Aumentar tamaño de letra" aria-label="Aumentar tamaño de letra">A+</button>
+                </div>
+
+                <!-- High Contrast Toggle -->
+                <button onclick="toggleHighContrast()" class="bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded border border-slate-700 flex items-center space-x-1" aria-label="Alternar alto contraste">
+                    <i class="fa-solid fa-circle-half-stroke text-amber-400"></i>
+                    <span class="text-xs">Alto Contraste</span>
+                </button>
+
+                <!-- Text-to-Speech Toggle -->
+                <button id="ttsBtn" onclick="toggleTextToSpeech()" class="bg-sky-900 hover:bg-sky-800 text-sky-100 px-3 py-1 rounded border border-sky-700 flex items-center space-x-1" aria-label="Lectura de voz en alto">
+                    <i class="fa-solid fa-volume-high text-sky-300"></i>
+                    <span class="text-xs" id="ttsStatus">Lectura Accesible: OFF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Header / Newspaper Style Banner -->
+    <div class="max-w-6xl mx-auto w-full px-4 pt-6 pb-2">
+        <div class="vintage-card p-6 text-center relative overflow-hidden">
+            <div class="absolute top-2 left-4 hidden md:block">
+                <span class="stamp-badge">AÑO 1946 - 1955</span>
+            </div>
+            <div class="absolute top-2 right-4 hidden md:block">
+                <span class="text-xs font-typewriter tracking-widest text-slate-500">CANCILLERÍA ARGENTINA</span>
+            </div>
+            
+            <h1 class="text-3xl md:text-5xl font-extrabold font-vintage-title tracking-tight mb-2 text-sky-900 dark:text-sky-400">
+                EL AGREGADO OBRERO
+            </h1>
+            <p class="text-sm md:text-lg font-typewriter italic text-slate-700 dark:text-slate-300 max-w-3xl mx-auto">
+                "La diplomacia deja de ser un privilegio aristocrático para convertirse en la voz del pueblo trabajador en el mundo."
+            </p>
+            <div class="mt-4 pt-3 border-t border-amber-900/20 flex flex-wrap justify-between items-center text-xs text-slate-600 dark:text-slate-400 font-semibold">
+                <span><i class="fa-solid fa-graduation-cap text-amber-700"></i> Historia Argentina • 3.º Año Secundaria</span>
+                <span><i class="fa-solid fa-earth-americas text-sky-700"></i> Contexto de Guerra Fría y Tercera Posición</span>
+                <span><i class="fa-solid fa-brain text-emerald-700"></i> Método Socrático con Pistas Graduadas</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main id="mainContent" class="max-w-6xl mx-auto w-full px-4 py-4 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Column: Context Primer & Navigation (4 Cols) -->
+        <aside class="lg:col-span-4 space-y-6">
+            
+            <!-- Quick Historical Brief Box -->
+            <div class="vintage-card p-5">
+                <h2 class="text-xl font-bold font-vintage-title text-amber-900 dark:text-amber-400 border-b pb-2 mb-3 flex items-center">
+                    <i class="fa-solid fa-book-bookmark mr-2 text-sky-700"></i> ¿Qué fue el Agregado Obrero?
+                </h2>
+                <p class="text-sm leading-relaxed mb-3">
+                    En 1946, el gobierno de Juan Domingo Perón creó por decreto la figura diplomática del <strong>Agregado Obrero</strong>. Dirigentes sindicales capacitados pasaron a integrar las embajadas argentinas en todo el mundo.
+                </p>
+                <div class="bg-amber-100/60 dark:bg-slate-800 p-3 rounded border border-amber-200 text-xs space-y-2">
+                    <p><strong><i class="fa-solid fa-bullseye text-red-700"></i> Objetivos clave:</strong></p>
+                    <ul class="list-disc pl-4 space-y-1">
+                        <li>Difundir los Derechos del Trabajador (1947).</li>
+                        <li>Crear lazos entre sindicatos internacionales.</li>
+                        <li>Impulsar la <em>Tercera Posición</em> diplomática.</li>
+                        <li>Dar inicio a una inédita <strong>Batalla Cultural</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Case Navigation Menu -->
+            <div class="vintage-card p-5">
+                <h2 class="text-lg font-bold font-vintage-title text-slate-800 dark:text-slate-200 mb-3 flex items-center">
+                    <i class="fa-solid fa-folder-open mr-2 text-amber-700"></i> Casos Históricos de Análisis
+                </h2>
+                <p class="text-xs text-slate-600 dark:text-slate-400 mb-4">
+                    Seleccioná un caso para analizar el conflicto histórico y responder las preguntas reflexivas:
+                </p>
+
+                <div class="space-y-3">
+                    <!-- Case 1 Button -->
+                    <button onclick="loadCase(1)" id="btnCase1" class="w-full text-left p-3 rounded border border-amber-300 transition-all flex items-start space-x-3 hover:bg-amber-100/50 bg-amber-50/80">
+                        <span class="bg-amber-800 text-amber-100 font-mono font-bold text-xs px-2 py-1 rounded">01</span>
+                        <div>
+                            <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100">El 'Descamisado' en el Salón de Gala</h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-400">Ginebra / Londres (1947) • El choque cultural en la diplomacia tradicional.</p>
+                        </div>
+                    </button>
+
+                    <!-- Case 2 Button -->
+                    <button onclick="loadCase(2)" id="btnCase2" class="w-full text-left p-3 rounded border border-amber-300 transition-all flex items-start space-x-3 hover:bg-amber-100/50 bg-amber-50/80">
+                        <span class="bg-amber-800 text-amber-100 font-mono font-bold text-xs px-2 py-1 rounded">02</span>
+                        <div>
+                            <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100">Ni Washington ni Moscú</h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-400">Río / Washington (1948) • La Tercera Posición y la Guerra Fría.</p>
+                        </div>
+                    </button>
+
+                    <!-- Case 3 Button -->
+                    <button onclick="loadCase(3)" id="btnCase3" class="w-full text-left p-3 rounded border border-amber-300 transition-all flex items-start space-x-3 hover:bg-amber-100/50 bg-amber-50/80">
+                        <span class="bg-amber-800 text-amber-100 font-mono font-bold text-xs px-2 py-1 rounded">03</span>
+                        <div>
+                            <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100">La Batalla en la Prensa y los Salones</h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-400">Buenos Aires / Roma (1951) • Resistencia oligárquica y disputa simbólica.</p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Student Achievement / Stamp Collection Widget -->
+            <div class="vintage-card p-4 text-center">
+                <span class="text-xs font-mono tracking-widest text-slate-500 uppercase block mb-2">Tu Avance Diplomático</span>
+                <div class="flex justify-around items-center" id="stampsContainer">
+                    <div id="stamp1" class="opacity-30 grayscale transition-all text-center">
+                        <i class="fa-solid fa-stamp text-2xl text-amber-700"></i>
+                        <span class="block text-[10px] font-typewriter mt-1">Caso 1</span>
+                    </div>
+                    <div id="stamp2" class="opacity-30 grayscale transition-all text-center">
+                        <i class="fa-solid fa-stamp text-2xl text-amber-700"></i>
+                        <span class="block text-[10px] font-typewriter mt-1">Caso 2</span>
+                    </div>
+                    <div id="stamp3" class="opacity-30 grayscale transition-all text-center">
+                        <i class="fa-solid fa-stamp text-2xl text-amber-700"></i>
+                        <span class="block text-[10px] font-typewriter mt-1">Caso 3</span>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Right Column: Interactive Case Study & Socratic Mechanics (8 Cols) -->
+        <section class="lg:col-span-8 space-y-6">
+            
+            <div id="caseDisplayCard" class="vintage-card p-6 relative">
+                <!-- Case Header Badge -->
+                <div class="flex flex-wrap justify-between items-center border-b border-amber-900/20 pb-3 mb-4 gap-2">
+                    <span id="caseTag" class="stamp-badge text-xs">CASO 01 • DIPLOMACIA Y SOCIEDAD</span>
+                    <button onclick="readActiveCaseText()" class="text-xs bg-amber-200/70 hover:bg-amber-300 text-amber-900 font-semibold px-3 py-1 rounded flex items-center space-x-1" title="Escuchar relato del caso">
+                        <i class="fa-solid fa-volume-low"></i>
+                        <span>Escuchar Caso</span>
+                    </button>
+                </div>
+
+                <!-- Case Title -->
+                <h2 id="caseTitle" class="text-2xl md:text-3xl font-bold font-vintage-title text-sky-950 dark:text-sky-300 mb-3">
+                    Cargando caso histórico...
+                </h2>
+
+                <!-- Narrative Text Box -->
+                <div id="caseNarrative" class="prose max-w-none text-slate-800 dark:text-slate-200 text-sm md:text-base leading-relaxed space-y-3 mb-6 bg-amber-50/50 dark:bg-slate-900/40 p-4 rounded border border-amber-200/60">
+                    <!-- Historical Context injected via JS -->
+                </div>
+
+                <!-- Socratic Question Box -->
+                <div class="bg-amber-100/80 dark:bg-slate-800 p-5 rounded-lg border-l-4 border-amber-800 mb-6 shadow-sm">
+                    <div class="flex items-center space-x-2 text-amber-900 dark:text-amber-300 font-bold mb-2">
+                        <i class="fa-solid fa-comments text-lg"></i>
+                        <span class="font-vintage-title text-lg">Pregunta de Reflexión Socrática:</span>
+                    </div>
+                    <p id="socraticQuestion" class="text-base md:text-lg font-semibold text-slate-900 dark:text-slate-100">
+                        ...
+                    </p>
+                </div>
+
+                <!-- Progressive Hints System (Pistas Graduadas DUA) -->
+                <div class="mb-6 border-t border-b border-amber-200 py-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold font-mono text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                            <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Asistencia Pedagógica: Pistas Graduadas
+                        </span>
+                        <span class="text-xs text-slate-500" id="hintCounter">Pistas reveladas: 0 / 3</span>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <button id="btnHint1" onclick="revealHint(1)" class="bg-amber-200 hover:bg-amber-300 text-amber-900 font-semibold text-xs px-3 py-2 rounded transition-colors flex items-center">
+                            <i class="fa-solid fa-magnifying-glass mr-1.5"></i> Pista 1: Contexto
+                        </button>
+                        <button id="btnHint2" onclick="revealHint(2)" class="bg-amber-200 hover:bg-amber-300 text-amber-900 font-semibold text-xs px-3 py-2 rounded transition-colors flex items-center opacity-60 cursor-not-allowed" disabled>
+                            <i class="fa-solid fa-scale-balanced mr-1.5"></i> Pista 2: Conflicto Político
+                        </button>
+                        <button id="btnHint3" onclick="revealHint(3)" class="bg-amber-200 hover:bg-amber-300 text-amber-900 font-semibold text-xs px-3 py-2 rounded transition-colors flex items-center opacity-60 cursor-not-allowed" disabled>
+                            <i class="fa-solid fa-key mr-1.5"></i> Pista 3: Batalla Cultural
+                        </button>
+                    </div>
+
+                    <!-- Hint Box Display -->
+                    <div id="hintBoxContainer" class="hidden bg-white dark:bg-slate-900 p-4 rounded border border-amber-300 text-xs md:text-sm space-y-2">
+                        <!-- Dynamic hints will appear here -->
+                    </div>
+                </div>
+
+                <!-- Socratic Options / Trivia Buttons -->
+                <div class="space-y-3 mb-6">
+                    <label class="block text-xs font-bold font-mono text-slate-700 dark:text-slate-300 uppercase">
+                        Seleccioná la perspectiva analítica más adecuada y argumentá:
+                    </label>
+
+                    <div id="optionsContainer" class="space-y-2">
+                        <!-- Dynamic Buttons injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Pedagogical Feedback Response (Socratic evaluation without straightforward right/wrong spoilers) -->
+                <div id="feedbackContainer" class="hidden p-4 rounded-lg mb-6 transition-all border">
+                    <!-- Injected dynamically -->
+                </div>
+
+                <!-- Student Reflection Journal (Cuaderno de Bitácora) -->
+                <div class="bg-amber-50/80 dark:bg-slate-900/60 p-4 rounded-lg border border-amber-200">
+                    <label for="studentReflection" class="block font-bold text-sm font-vintage-title text-slate-800 dark:text-slate-200 mb-2 flex items-center">
+                        <i class="fa-solid fa-pen-nib mr-2 text-amber-800"></i> Tu Bitácora Diplomática (Síntesis Personal):
+                    </label>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 mb-2">
+                        Escribí con tus palabras: ¿Qué impacto tuvo este caso en la Batalla Cultural de la Argentina de los años 50?
+                    </p>
+                    <textarea id="studentReflection" rows="3" class="w-full p-3 rounded border border-amber-300 text-sm bg-white dark:bg-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-sky-500 font-sans" placeholder="Escribí aquí tu argumento reflexivo..."></textarea>
+                    
+                    <div class="mt-2 flex justify-between items-center">
+                        <button onclick="saveStudentReflection()" class="bg-amber-800 hover:bg-amber-900 text-amber-50 text-xs font-bold px-4 py-2 rounded flex items-center transition-colors">
+                            <i class="fa-solid fa-floppy-disk mr-1.5"></i> Guardar en Bitácora
+                        </button>
+                        <span id="saveStatus" class="text-xs text-emerald-700 font-semibold opacity-0 transition-opacity">¡Guardado con éxito!</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Synthesis & Final Accreditation Section Modal (Triggered on all cases complete) -->
+    <div id="summaryModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="vintage-card bg-amber-50 dark:bg-slate-900 max-w-2xl w-full p-6 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeSummaryModal()" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 font-bold text-lg" aria-label="Cerrar modal">&times;</button>
+            
+            <div class="text-center mb-6">
+                <span class="stamp-badge mb-2">ACREDITACIÓN PEDAGÓGICA</span>
+                <h2 class="text-3xl font-bold font-vintage-title text-amber-950 dark:text-amber-200">¡Completaste la Misión Diplomática!</h2>
+                <p class="text-xs font-typewriter text-slate-600 dark:text-slate-400 mt-1">Repasaste la historia del Agregado Obrero y la Batalla Cultural.</p>
+            </div>
+
+            <div class="space-y-4 text-sm text-slate-800 dark:text-slate-200">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded border border-amber-200 space-y-2">
+                    <h3 class="font-bold text-sky-900 dark:text-sky-300"><i class="fa-solid fa-check-double text-emerald-600 mr-1"></i> Resumen de Aprendizajes Clave:</h3>
+                    <ul class="list-disc pl-5 space-y-1 text-xs md:text-sm">
+                        <li><strong>Inclusión Social:</strong> Por primera vez, obreros de fábrica, metalúrgicos o ferroviarios representaron oficialmente al país en el extranjero.</li>
+                        <li><strong>Guerra Fría y Tercera Posición:</strong> Argentina no se alineó ciegamente con el capitalismo estadounidense ni con el comunismo soviético, promoviendo la justicia social internacional.</li>
+                        <li><strong>Batalla Cultural:</strong> Rompió el monopolio aristocrático de la cancillería, desafiando prejuicios de clase sobre quién "está capacitado" para hablar por la nación.</li>
+                    </ul>
+                </div>
+
+                <div id="savedReflectionsSummary" class="bg-amber-100/60 dark:bg-slate-800 p-4 rounded border border-amber-300 text-xs">
+                    <h4 class="font-bold text-amber-900 dark:text-amber-300 mb-2 font-vintage-title">Tus Anotaciones Registradas:</h4>
+                    <div id="summaryReflectionsContent" class="space-y-2 italic">
+                        <!-- Student notes inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 text-center">
+                <button onclick="closeSummaryModal()" class="bg-sky-900 hover:bg-sky-800 text-white font-bold px-6 py-2 rounded text-sm shadow">
+                    Entendido, Volver a la App
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-4 px-4 text-center border-t border-slate-800 mt-8">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
+            <p>© Recursos Didácticos de Historia Argentina • Material diseñado bajo principios DUA / UDL.</p>
+            <p class="font-typewriter text-amber-400">"Los trabajadores son los mejores embajadores de la Patria."</p>
+        </div>
+    </footer>
+
+    <script>
+        /* Historical Cases Data with Socratic Questions and Graduated Hints */
+        const historicalCases = [
+            {
+                id: 1,
+                tag: "CASO 01 • DIPLOMACIA Y SOCIEDAD (GINEBRA 1947)",
+                title: "El 'Descamisado' en el Salón de Gala",
+                narrative: `
+                    <p>En 1947, un sindicalista metalúrgico y obrero del calzado llega a la Embajada Argentina en Ginebra (Suiza) para incorporarse como <strong>Agregado Obrero</strong> durante la Conferencia Internacional del Trabajo (OIT).</p>
+                    <p>Hasta ese momento, las embajadas eran habitadas exclusivamente por diplomáticos de carrera pertenecientes a la elite agroexportadora y aristocrática porteña, educados en Europa y de modales refinados.</p>
+                    <p>Al llegar el obrero con su traje sencillo, los diplomáticos tradicionales lo relegan a una oficina secundaria y critican su forma de hablar en los banquetes. Sin embargo, en el recinto de debate, el Agregado Obrero logra dialogar directamente en el idioma cotidiano de las delegaciones de trabajadores europeos y latinoamericanos.</p>
+                `,
+                socraticQuestion: "¿Por qué enviar a un obrero de fábrica a una embajada representaba un verdadero cimbronazo a la 'Batalla Cultural' y no un simple nombramiento administrativo?",
+                hints: [
+                    "<strong>Pista 1 (Contexto Social):</strong> Pensá en quiénes monopolizaban el representación del país antes de 1946. La diplomacia tradicional exigía apellidos patricios y linaje aristocrático.",
+                    "<strong>Pista 2 (Conflicto Político):</strong> Al nombrar trabajadores, el gobierno peronista buscaba mostrar que la soberanía popular no se ejercía solo votando, sino ocupando los puestos más prestigiosos del Estado.",
+                    "<strong>Pista 3 (Batalla Cultural):</strong> El ataque violento de la oligarquía local no era por la capacidad técnica del obrero, sino porque su mera presencia desarmaba el mito de que 'solo la elite letrada sabe gobernar y representar al país'."
+                ],
+                options: [
+                    {
+                        text: "Porque ponía en tensión la idea de que la cultura, la elegancia y el derecho a representar al país pertenecían solo a las clases altas.",
+                        type: "deeper",
+                        feedback: "<strong>¡Excelente análisis reflexivo!</strong> Efectivamente. La Batalla Cultural comenzó allí: en desafiar el prejuicio de clase. Mostrar a un obrero portando rango diplomático desarticulaba la jerarquía social tradicional donde el trabajador solo debía 'obedecer y producir'."
+                    },
+                    {
+                        text: "Porque los obreros sabían más idiomas y derecho internacional que los diplomáticos de carrera.",
+                        type: "partial",
+                        feedback: "<strong>Reflexionemos un momento:</strong> Los agregados obreros recibían capacitación rápida en el Instituto del Servicio Exterior, pero su fuerte no era el dominio enciclopédico del derecho. Lo revolucionario era su <em>origen de clase</em> y su contacto real con el mundo del trabajo. ¿Qué impacto causaba ese origen social en los salones diplomáticos?"
+                    },
+                    {
+                        text: "Porque era una medida puramente decorativa para viajar por el mundo sin impacto político real.",
+                        type: "guided",
+                        feedback: "<strong>Analicemos más a fondo:</strong> Si hubiese sido algo superficial, ¿por qué causó tanta indignación en los periódicos de la elite conservadora? La furia de los sectores aristocráticos demuestra que la medida tocaba una fibra muy sensible del poder simbólico."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                tag: "CASO 02 • GUERRA FRÍA Y RELACIONES INTERNACIONALES (1948)",
+                title: "Ni Washington ni Moscú: La Tercera Posición Sindical",
+                narrative: `
+                    <p>En el punto más tenso de la <strong>Guerra Fría</strong> (1948), el mundo se dividía de manera implacable: o estabas alineado con el capitalismo norteamericano (AFL-CIO) o con el comunismo soviético (FSM).</p>
+                    <p>Los Agregados Obreros argentinos son enviados a América Latina y Europa con la misión de difundir la <strong>'Tercera Posición'</strong> e impulsar la ATLAS (Agrupación de Trabajadores Latinoamericanos Sindicalistas).</p>
+                    <p>En una conferencia sindical en Río de Janeiro, el Agregado Obrero argentino es acosado tanto por diplomáticos norteamericanos (que lo acusan de 'fascista/demagogo') como por delegados soviéticos (que lo acusan de 'colaborador burgués'). El diplomático obrero responde distribuyendo los <em>Derechos del Trabajador</em> traducidos a tres idiomas.</p>
+                `,
+                socraticQuestion: "¿Por qué la figura del Agregado Obrero resultaba tan incómoda e inaceptable TANTO para la hegemonía estadounidense COMO para la soviética?",
+                hints: [
+                    "<strong>Pista 1 (Contexto de Guerra Fría):</strong> Ambos bloques exigían subordinación total. No aceptaban que países del 'Tercer Mundo' propusieran doctrina propia.",
+                    "<strong>Pista 2 (Conflicto Político):</strong> El modelo peronista proponía la alianza entre el Estado nacional y los sindicatos, rechazando tanto la explotación capitalista sin freno como la dictadura del partido único soviético.",
+                    "<strong>Pista 3 (Batalla Cultural):</strong> Para Washington, un sindicato poderoso con apoyo estatal era un 'peligro socialista'. Para Moscú, que los trabajadores tuvieran mejoras de vida sin hacer la revolución comunista desarmaba su dogma teórico."
+                ],
+                options: [
+                    {
+                        text: "Porque proponía un sindicalismo con soberanía nacional y justicia social que no dependía de ninguna de las dos superpotencias de la Guerra Fría.",
+                        type: "deeper",
+                        feedback: "<strong>¡Perspicaz deducción!</strong> La Tercera Posición en el plano laboral rompía el binomio obligatorio de la Guerra Fría. Mostraba que los países periféricos podían construir su propio modelo de desarrollo y derechos laborales sin pedirle permiso ni a Washington ni a Moscú."
+                    },
+                    {
+                        text: "Porque Argentina quería declarar la guerra económica a Estados Unidos y la URSS al mismo tiempo.",
+                        type: "partial",
+                        feedback: "<strong>Ajustemos la mirada histórica:</strong> Argentina no buscaba una confrontación bélica ni comercial abierta, sino autonomía diplomática. La meta de los agregados obreros era la solidaridad continental entre trabajadores. ¿Cómo se relaciona esto con la 'Tercera Posición'?"
+                    },
+                    {
+                        text: "Porque los agregados obreros no entendían las reglas de la política internacional de la época.",
+                        type: "guided",
+                        feedback: "<strong>Repensemos la situación:</strong> Los agregados obreros actuaban bajo directivas de la Cancillería. Su resistencia a alinearse con EE.UU. o la URSS no era 'ignorancia', sino una postura ideológica deliberada. Revisa la Pista 2."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                tag: "CASO 03 • RESISTENCIA SIMBÓLICA Y MEDIOS (1951)",
+                title: "La Batalla en la Prensa y los Salones",
+                narrative: `
+                    <p>Hacia 1951, existían más de 100 Agregados Obreros destacados en embajadas y consulados argentinos en los cinco continentes. Muchos eran antiguos delegados de fábrica, carpinteros, ferroviarios o enfermeras.</p>
+                    <p>En Buenos Aires, pasquines de la oposición oligárquica y diarios extranjeros publicaban caricaturas burlándose de los agregados obreros: los dibujaban usando ropa de etiqueta mal entallada, comiendo con los cubiertos equivocados o usando modales 'de barriada' en cenas de gala en Roma o París.</p>
+                    <p>A pesar de la campaña de ridículo, los Agregados Obreros lograron concretar acuerdos bilaterales de migración laboral, ayuda humanitaria a la Europa de posguerra y la difusión de la legislación social argentina.</p>
+                `,
+                socraticQuestion: "¿Por qué la prensa opositora concentraba sus ataques en la 'vestimenta y modales' de los agregados obreros antes que en sus logros o gestiones reales?",
+                hints: [
+                    "<strong>Pista 1 (Contexto Cultural):</strong> Cuando no se puede refutar un derecho social o un logro concreto, el poder recurre a la descalificación de clase y la burla estética.",
+                    "<strong>Pista 2 (Conflicto de Poder):</strong> El 'capital cultural' (saber cómo vestir, cómo hablar 'fino') era el último bastión de superioridad que la elite sentía mantener frente a la masa trabajadora.",
+                    "<strong>Pista 3 (Batalla Cultural):</strong> Ridiculizar al obrero en la embajada era un intento de reinstalar en la sociedad la idea de que 'cada uno debe quedarse en su lugar': el obrero en la fábrica y el patricio en el gobierno."
+                ],
+                options: [
+                    {
+                        text: "Porque atacar los modales era una estrategia clasista para estigmatizar al trabajador y convencer a la sociedad de que los sectores populares no estaban capacitados para gobernar.",
+                        type: "deeper",
+                        feedback: "<strong>¡Brillante comprensión socrática!</strong> Exacto. La Batalla Cultural opera fuertemente en el plano simbólico. Burlarse de la vestimenta del 'descamisado' en Europa intentaba restituir el prejuicio de que la política alta es solo para la aristocracia, ocultando los éxitos reales de la gestión obrera."
+                    },
+                    {
+                        text: "Porque realmente cometían errores diplomáticos graves que ponían en riesgo la seguridad nacional.",
+                        type: "partial",
+                        feedback: "<strong>Observación crítica:</strong> Los informes históricos muestran que los agregados cumplían tareas administrativas e institucionales formales. Las críticas de la prensa de época casi nunca mencionaban decretos o acuerdos, sino la 'falta de finura'. ¿Por qué crees que enfatizaban eso?"
+                    },
+                    {
+                        text: "Porque en los años 50 la diplomacia prohibía expresamente que trabajara gente sin título universitario.",
+                        type: "guided",
+                        feedback: "<strong>Atención con el dato histórico:</strong> Fue justamente el gobierno argentino quien modificó las leyes de la cancillería en 1946 para crear legalmente el cargo de Agregado Obrero. El conflicto no era legal, era de prejuicio social. Revisa la Pista 1."
+                    }
+                ]
+            }
+        ];
+
+        /* App State Management */
+        let currentCaseId = 1;
+        let revealedHintsCount = { 1: 0, 2: 0, 3: 0 };
+        let caseCompleted = { 1: false, 2: false, 3: false };
+        let studentNotes = { 1: "", 2: "", 3: "" };
+        let fontSizeLevel = 100;
+        let isHighContrast = false;
+        let isTtsActive = false;
+
+        // Initialize App on DOM Load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCase(1);
+            setupAudioSpeechSynthesis();
+        });
+
+        // Function to load a specific historical case into the workspace
+        function loadCase(caseId) {
+            currentCaseId = caseId;
+            const caseData = historicalCases.find(c => c.id === caseId);
+            if (!caseData) return;
+
+            // Update Active Navigation Button Styling
+            [1, 2, 3].forEach(id => {
+                const btn = document.getElementById(`btnCase${id}`);
+                if (id === caseId) {
+                    btn.classList.add('bg-amber-200/90', 'border-amber-700', 'shadow-sm');
+                    btn.classList.remove('bg-amber-50/80');
+                } else {
+                    btn.classList.remove('bg-amber-200/90', 'border-amber-700', 'shadow-sm');
+                    btn.classList.add('bg-amber-50/80');
+                }
+            });
+
+            // Populate Case Display Content
+            document.getElementById('caseTag').innerText = caseData.tag;
+            document.getElementById('caseTitle').innerText = caseData.title;
+            document.getElementById('caseNarrative').innerHTML = caseData.narrative;
+            document.getElementById('socraticQuestion').innerText = caseData.socraticQuestion;
+
+            // Reset or Restore Hints
+            updateHintsUI();
+
+            // Render Options / Trivia Buttons
+            renderOptions(caseData.options);
+
+            // Hide previous feedback
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            feedbackContainer.classList.add('hidden');
+
+            // Restore student reflection
+            const reflectionTextarea = document.getElementById('studentReflection');
+            reflectionTextarea.value = studentNotes[caseId] || "";
+
+            // Speech synthesis read if active
+            if (isTtsActive) {
+                speakText(`${caseData.title}. ${caseData.socraticQuestion}`);
+            }
+        }
+
+        // Render Socratic Trivia Buttons
+        function renderOptions(options) {
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = "";
+
+            options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-3.5 rounded-lg border-2 border-amber-300 hover:border-sky-600 hover:bg-sky-50 dark:hover:bg-slate-800 transition-all text-xs md:text-sm font-medium flex items-start space-x-3 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-sky-500";
+                btn.onclick = () => selectSocraticOption(opt, idx);
+                btn.innerHTML = `
+                    <span class="bg-amber-100 dark:bg-slate-800 text-amber-900 dark:text-amber-300 font-bold px-2 py-0.5 rounded text-xs border border-amber-300">${String.fromCharCode(65 + idx)}</span>
+                    <span class="flex-grow">${opt.text}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        // Handle Socratic Option Selection
+        function selectSocraticOption(option, idx) {
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            feedbackContainer.classList.remove('hidden', 'bg-amber-50', 'bg-emerald-50', 'bg-blue-50', 'border-amber-400', 'border-emerald-400', 'border-blue-400');
+
+            let badgeText = "Reflexión Pedagógica";
+            let colorClasses = "bg-amber-50 border-amber-400 text-amber-950 dark:bg-slate-800 dark:text-amber-200";
+
+            if (option.type === "deeper") {
+                badgeText = "¡Análisis Crítico Profundo!";
+                colorClasses = "bg-emerald-50 border-emerald-500 text-emerald-950 dark:bg-slate-800 dark:text-emerald-200";
+                
+                // Mark case as completed & unlock stamp
+                caseCompleted[currentCaseId] = true;
+                updateStampsDisplay();
+            } else if (option.type === "partial") {
+                badgeText = "Punto de Vista Parcial";
+                colorClasses = "bg-sky-50 border-sky-400 text-sky-950 dark:bg-slate-800 dark:text-sky-200";
+            }
+
+            feedbackContainer.className = `p-4 rounded-lg mb-6 border-l-4 ${colorClasses} shadow-sm`;
+            feedbackContainer.innerHTML = `
+                <div class="flex items-center space-x-2 font-bold text-xs uppercase tracking-wider mb-1">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>${badgeText}</span>
+                </div>
+                <p class="text-xs md:text-sm leading-relaxed">${option.feedback}</p>
+            `;
+
+            if (isTtsActive) {
+                speakText(feedbackContainer.innerText);
+            }
+
+            // Check if all cases completed
+            checkAllCasesComplete();
+        }
+
+        function revealHint(hintLevel) {
+            const caseData = historicalCases.find(c => c.id === currentCaseId);
+            if (!caseData) return;
+
+            if (hintLevel > revealedHintsCount[currentCaseId] + 1) return; // Must unlock in order
+
+            revealedHintsCount[currentCaseId] = Math.max(revealedHintsCount[currentCaseId], hintLevel);
+            updateHintsUI();
+
+            // Speak hint if TTS active
+            if (isTtsActive) {
+                speakText(`Pista ${hintLevel}: ${caseData.hints[hintLevel - 1]}`);
+            }
+        }
+
+        function updateHintsUI() {
+            const count = revealedHintsCount[currentCaseId];
+            const caseData = historicalCases.find(c => c.id === currentCaseId);
+            const hintBoxContainer = document.getElementById('hintBoxContainer');
+            const hintCounter = document.getElementById('hintCounter');
+
+            hintCounter.innerText = `Pistas reveladas: ${count} / 3`;
+
+            // Update buttons state
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`btnHint${i}`);
+                if (i <= count + 1) {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-60', 'cursor-not-allowed');
+                } else {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-60', 'cursor-not-allowed');
+                }
+
+                if (i <= count) {
+                    btn.classList.add('bg-amber-700', 'text-white');
+                    btn.classList.remove('bg-amber-200', 'text-amber-900');
+                } else {
+                    btn.classList.remove('bg-amber-700', 'text-white');
+                    btn.classList.add('bg-amber-200', 'text-amber-900');
+                }
+            }
+
+            // Render hints in container
+            if (count > 0) {
+                hintBoxContainer.classList.remove('hidden');
+                hintBoxContainer.innerHTML = "";
+                for (let i = 0; i < count; i++) {
+                    const p = document.createElement('div');
+                    p.className = "p-2 rounded bg-amber-50 dark:bg-slate-800 border-l-2 border-amber-600 text-slate-800 dark:text-slate-200";
+                    p.innerHTML = caseData.hints[i];
+                    hintBoxContainer.appendChild(p);
+                }
+            } else {
+                hintBoxContainer.classList.add('hidden');
+            }
+        }
+
+        // Student Reflection Saving
+        function saveStudentReflection() {
+            const val = document.getElementById('studentReflection').value;
+            studentNotes[currentCaseId] = val;
+
+            const saveStatus = document.getElementById('saveStatus');
+            saveStatus.classList.remove('opacity-0');
+            setTimeout(() => {
+                saveStatus.classList.add('opacity-0');
+            }, 2000);
+        }
+
+        // Update Stamps Display Widget
+        function updateStampsDisplay() {
+            [1, 2, 3].forEach(id => {
+                const stampElem = document.getElementById(`stamp${id}`);
+                if (caseCompleted[id]) {
+                    stampElem.classList.remove('opacity-30', 'grayscale');
+                    stampElem.classList.add('scale-110', 'text-amber-800');
+                }
+            });
+        }
+
+        // Check if all cases are finished
+        function checkAllCasesComplete() {
+            if (caseCompleted[1] && caseCompleted[2] && caseCompleted[3]) {
+                setTimeout(() => {
+                    openSummaryModal();
+                }, 800);
+            }
+        }
+
+        function openSummaryModal() {
+            const modal = document.getElementById('summaryModal');
+            const content = document.getElementById('summaryReflectionsContent');
+            content.innerHTML = "";
+
+            [1, 2, 3].forEach(id => {
+                const caseData = historicalCases.find(c => c.id === id);
+                const note = studentNotes[id] || "<em>Sin anotación escrita aún.</em>";
+                content.innerHTML += `
+                    <div class="border-b border-amber-200/60 pb-2">
+                        <span class="font-bold text-slate-900 dark:text-slate-100">${caseData.title}:</span>
+                        <p class="text-slate-700 dark:text-slate-300 font-sans mt-0.5">"${note}"</p>
+                    </div>
+                `;
+            });
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeSummaryModal() {
+            document.getElementById('summaryModal').classList.add('hidden');
+        }
+
+        // Accessibility: Font Size Adjuster
+        function adjustFontSize(delta) {
+            fontSizeLevel = Math.max(80, Math.min(130, fontSizeLevel + delta * 10));
+            document.documentElement.style.fontSize = `${fontSizeLevel}%`;
+        }
+
+        function resetFontSize() {
+            fontSizeLevel = 100;
+            document.documentElement.style.fontSize = '100%';
+        }
+
+        // Accessibility: High Contrast Mode
+        function toggleHighContrast() {
+            isHighContrast = !isHighContrast;
+            if (isHighContrast) {
+                document.body.classList.add('high-contrast');
+            } else {
+                document.body.classList.remove('high-contrast');
+            }
+        }
+
+        // Accessibility: Web Speech API (Text to Speech)
+        function setupAudioSpeechSynthesis() {
+            if (!('speechSynthesis' in window)) {
+                const btn = document.getElementById('ttsBtn');
+                btn.style.display = 'none'; // Hide if not supported
+            }
+        }
+
+        function toggleTextToSpeech() {
+            isTtsActive = !isTtsActive;
+            const statusElem = document.getElementById('ttsStatus');
+            if (isTtsActive) {
+                statusElem.innerText = "Lectura Accesible: ON";
+                speakText("Lectura accesible activada. Haz clic en los casos o botones para escuchar el contenido.");
+            } else {
+                statusElem.innerText = "Lectura Accesible: OFF";
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel(); // Stop ongoing speech
+
+            // Clean HTML tags from string before reading
+            const cleanText = text.replace(/<[^>]*>?/gm, '');
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'es-AR'; // Argentine Spanish if available
+            utterance.rate = 0.95; // Slightly slower for clear educational comprehension
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function readActiveCaseText() {
+            const caseData = historicalCases.find(c => c.id === currentCaseId);
+            if (caseData) {
+                speakText(`${caseData.title}. ${caseData.narrative} Pregunta: ${caseData.socraticQuestion}`);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio de Falacias - Impulsos Socráticos</title>
+  <style>
+    :root {
+      --bg-main: #F4F5F9;
+      --card-bg: #FFFFFF;
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --border-color: #E2E8F0;
+      
+      /* Pasteles con alto contraste */
+      --pastel-purple: #EDE9FE;
+      --pastel-purple-border: #C4B5FD;
+      --purple-text: #4C1D95;
+      
+      --pastel-amber: #FEF3C7;
+      --pastel-amber-border: #FDE68A;
+      --amber-text: #78350F;
+      
+      --pastel-green: #D1FAE5;
+      --pastel-green-border: #6EE7B7;
+      --green-text: #064E3B;
+
+      --pastel-rose: #FFE4E6;
+      --pastel-rose-border: #FCA5A5;
+      --rose-text: #881337;
+
+      --btn-bg: #F1F5F9;
+      --btn-hover: #E2E8F0;
+      --font-scale: 1rem;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      font-size: var(--font-scale);
+      line-height: 1.6;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 760px;
+      background-color: var(--card-bg);
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.06);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Barra de Accesibilidad */
+    .accessibility-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--bg-main);
+    }
+
+    .controls-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .control-btn {
+      background-color: var(--btn-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.45rem 0.85rem;
+      border-radius: 12px;
+      font-size: 0.9em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .control-btn:hover {
+      background-color: var(--btn-hover);
+    }
+
+    .control-btn:active {
+      transform: scale(0.97);
+    }
+
+    .progress-badge {
+      background-color: var(--pastel-purple);
+      color: var(--purple-text);
+      font-weight: 700;
+      padding: 0.45rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85em;
+    }
+
+    /* Tarjeta del Caso */
+    .argument-card {
+      background-color: var(--pastel-purple);
+      border: 1.5px solid var(--pastel-purple-border);
+      border-radius: 18px;
+      padding: 1.5rem;
+    }
+
+    .card-label {
+      font-size: 0.8em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--purple-text);
+      margin-bottom: 0.5rem;
+    }
+
+    .argument-text {
+      font-size: 1.2em;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* Pista Socrática */
+    .hint-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .btn-hint {
+      align-self: flex-start;
+      background-color: var(--pastel-amber);
+      border: 1.5px solid var(--pastel-amber-border);
+      color: var(--amber-text);
+      padding: 0.55rem 1.1rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 0.9em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: filter 0.2s, transform 0.1s;
+    }
+
+    .btn-hint:hover {
+      filter: brightness(0.97);
+    }
+
+    .hint-box {
+      background-color: var(--pastel-amber);
+      border: 1.5px solid var(--pastel-amber-border);
+      color: var(--amber-text);
+      padding: 1rem 1.25rem;
+      border-radius: 14px;
+      font-size: 0.95em;
+      display: none;
+    }
+
+    .hint-box.active {
+      display: block;
+    }
+
+    /* Opciones Multiple Choice */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.85rem;
+    }
+
+    .option-btn {
+      background-color: #FFFFFF;
+      border: 2px solid var(--border-color);
+      color: var(--text-main);
+      padding: 1rem 1.25rem;
+      border-radius: 16px;
+      font-size: 1em;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.2s, background-color 0.2s, transform 0.1s;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--pastel-purple-border);
+      background-color: #FAF9FE;
+    }
+
+    .option-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .option-btn.disabled-wrong {
+      text-decoration: line-through;
+      background-color: #F1F5F9;
+      border-color: #CBD5E1;
+    }
+
+    /* Retroalimentación Formativa */
+    .feedback-box {
+      border-radius: 18px;
+      padding: 1.25rem 1.5rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .feedback-box.active {
+      display: flex;
+    }
+
+    .feedback-box.socratic {
+      background-color: var(--pastel-amber);
+      border: 1.5px solid var(--pastel-amber-border);
+      color: var(--amber-text);
+    }
+
+    .feedback-box.success {
+      background-color: var(--pastel-green);
+      border: 1.5px solid var(--pastel-green-border);
+      color: var(--green-text);
+    }
+
+    .feedback-box.error {
+      background-color: var(--pastel-rose);
+      border: 1.5px solid var(--pastel-rose-border);
+      color: var(--rose-text);
+    }
+
+    .feedback-title {
+      font-weight: 700;
+      font-size: 1.05em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-action {
+      align-self: flex-end;
+      padding: 0.65rem 1.35rem;
+      border-radius: 12px;
+      border: none;
+      font-weight: 700;
+      font-size: 0.9em;
+      cursor: pointer;
+      transition: filter 0.2s, transform 0.1s;
+    }
+
+    .btn-action-purple {
+      background-color: var(--purple-text);
+      color: #FFFFFF;
+    }
+
+    .btn-action-purple:hover {
+      filter: brightness(1.15);
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 0.75rem;
+      }
+      .app-container {
+        padding: 1.25rem;
+      }
+      .accessibility-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .controls-group {
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Barra Superior: Ajustes de Fuente, Lectura en Voz Alta y Contador -->
+    <div class="accessibility-bar">
+      <div class="controls-group">
+        <button class="control-btn" onclick="adjustFontSize(-0.1)" title="Disminuir tamaño de fuente">A-</button>
+        <button class="control-btn" onclick="resetFontSize()" title="Restablecer fuente">100%</button>
+        <button class="control-btn" onclick="adjustFontSize(0.1)" title="Aumentar tamaño de fuente">A+</button>
+      </div>
+
+      <div class="controls-group">
+        <button id="tts-btn" class="control-btn" onclick="toggleSpeech()" title="Activar/Pausar lectura en voz alta">
+          <span id="tts-icon">🔊</span>
+          <span id="tts-text">Escuchar</span>
+        </button>
+        <span class="progress-badge">Caso <span id="q-idx">1</span> de <span id="q-total">5</span></span>
+      </div>
+    </div>
+
+    <!-- Enunciado / Caso del Estudiante -->
+    <div class="argument-card">
+      <div class="card-label">Analiza el argumento:</div>
+      <p id="argument-text" class="argument-text">Cargando caso...</p>
+    </div>
+
+    <!-- Pista Socrática -->
+    <div class="hint-container">
+      <button class="btn-hint" onclick="toggleHint()">
+        💡 <span>Pedir Pista Socrática</span>
+      </button>
+      <div id="hint-box" class="hint-box">
+        <strong>Pregunta guía:</strong> <span id="hint-text"></span>
+      </div>
+    </div>
+
+    <!-- Selección de Falacias -->
+    <div id="options-grid" class="options-grid"></div>
+
+    <!-- Retroalimentación Formativa Formativa / Impulso Socrático -->
+    <div id="feedback-card" class="feedback-box">
+      <div id="feedback-title" class="feedback-title"></div>
+      <p id="feedback-body"></p>
+      <button id="action-btn" class="btn-action btn-action-purple"></button>
+    </div>
+
+  </div>
+
+  <script>
+    const dataset = [
+      {
+        argument: "«No podemos tomar en serio la propuesta pedagógica del profesor Gómez, porque todos saben que ni siquiera sabe vestirse bien para venir a dar clases.»",
+        options: ["Ad Hominem", "Hombre de Paja", "Ad Populum", "Falsa Causa"],
+        correct: 0,
+        hint: "¿La crítica está dirigida a la validez de la propuesta pedagógica o a un rasgo personal de la persona que la presenta?",
+        socraticWrong: "Reflexiona sobre el foco de la objeción: ¿Atacar el vestuario de una persona demuestra lógicamente que su propuesta educativa es incorrecta?",
+        explanation: "¡Exacto! El argumento desvía la atención del tema central para atacar la apariencia del emisor (Falacia Ad Hominem)."
+      },
+      {
+        argument: "«Si permitimos que los estudiantes elijan una lectura optativa este trimestre, el año que viene no querrán leer ningún libro y la escuela terminará cerrando.»",
+        options: ["Falso Dilema", "Pendiente Resbaladiza", "Ad Ignorantiam", "Ad Verecundiam"],
+        correct: 1,
+        hint: "Observa el encadenamiento de consecuencias: ¿Un paso moderado inicial conduce de forma inevitable a un desastre extremo?",
+        socraticWrong: "Analiza el mecanismo del argumento: ¿Realmente dar una opción menor desencadena una catástrofe final sin ningún punto intermedio de control?",
+        explanation: "¡Correcto! Se presupone una cadena de consecuencias extremas e improbables a partir de un hecho inofensivo (Pendiente Resbaladiza)."
+      },
+      {
+        argument: "«La Directora sugirió ordenar el aula, así que lo que busca es que nos quedemos inmóviles como estatuas sin mover una sola silla en todo el día.»",
+        options: ["Hombre de Paja", "Ad Hominem", "Ad Misericordiam", "Generalización Apresurada"],
+        correct: 0,
+        hint: "¿El argumento rebate la propuesta real de la Directora o la deforma intencionalmente hacia una versión exagerada y fácil de atacar?",
+        socraticWrong: "Compara la postura original con la interpretación: ¿No se construyó una caricatura absurda de la regla para poder criticarla fácilmente?",
+        explanation: "¡Muy bien! Se distorsionó la posición original construyendo una versión débil para destruirla con facilidad (Hombre de Paja)."
+      },
+      {
+        argument: "«La mayoría de los estudiantes prefiere no tener exámenes los lunes, por lo tanto, pedagógicamente está demostrado que evaluar los lunes es incorrecto.»",
+        options: ["Ad Populum", "Ad Verecundiam", "Falsa Causa", "Ad Ignorantiam"],
+        correct: 0,
+        hint: "¿Que una preferencia sea muy popular o deseada por un grupo prueba científicamente su validez objetiva?",
+        socraticWrong: "Evalúa la fuente de validación: ¿El número de personas que apoyan un deseo convierte ese deseo en una verdad pedagógica comprobada?",
+        explanation: "¡Así es! Sostener la validez de una afirmación únicamente en la popularidad o deseo de la mayoría es una falacia Ad Populum."
+      },
+      {
+        argument: "«Nadie ha podido demostrar de manera irrefutable que no haya fantasmas en la biblioteca antigua; por lo tanto, debemos admitir que existen.»",
+        options: ["Ad Ignorantiam", "Falso Dilema", "Pendiente Resbaladiza", "Ad Hominem"],
+        correct: 0,
+        hint: "¿El argumento aporta pruebas directas sobre el fenómeno o se aprovecha de que no se ha podido probar lo contrario?",
+        socraticWrong: "Recuerda la carga de la prueba: ¿La falta de evidencias para negar la existencia de algo constituye una prueba automática a su favor?",
+        explanation: "¡Excelente! Afirmar que algo es verdadero solo porque no se ha demostrado que sea falso es una falacia Ad Ignorantiam."
+      }
+    ];
+
+    let currentIndex = 0;
+    let attempts = 0;
+    let currentFontScale = 1.0;
+
+    // Web Speech API State
+    let synth = window.speechSynthesis;
+    let isSpeaking = false;
+
+    function init() {
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      attempts = 0;
+      stopSpeech();
+
+      const item = dataset[currentIndex];
+      document.getElementById('q-idx').innerText = currentIndex + 1;
+      document.getElementById('q-total').innerText = dataset.length;
+      document.getElementById('argument-text').innerText = item.argument;
+
+      // Pista
+      const hintBox = document.getElementById('hint-box');
+      hintBox.classList.remove('active');
+      document.getElementById('hint-text').innerText = item.hint;
+
+      // Reset Retroalimentación
+      const feedbackCard = document.getElementById('feedback-card');
+      feedbackCard.className = 'feedback-box';
+
+      // Cargar Opciones
+      const grid = document.getElementById('options-grid');
+      grid.innerHTML = '';
+      item.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(idx, btn);
+        grid.appendChild(btn);
+      });
+    }
+
+    function toggleHint() {
+      const hintBox = document.getElementById('hint-box');
+      hintBox.classList.toggle('active');
+    }
+
+    function checkAnswer(selectedIdx, btnElement) {
+      stopSpeech();
+      const item = dataset[currentIndex];
+      const feedbackCard = document.getElementById('feedback-card');
+      const feedbackTitle = document.getElementById('feedback-title');
+      const feedbackBody = document.getElementById('feedback-body');
+      const actionBtn = document.getElementById('action-btn');
+
+      if (selectedIdx === item.correct) {
+        // Acierto
+        feedbackCard.className = 'feedback-box active success';
+        feedbackTitle.innerHTML = '<span>🎉</span> ¡Deducción Correcta!';
+        feedbackBody.innerText = item.explanation;
+
+        disableOptions();
+        actionBtn.innerText = currentIndex < dataset.length - 1 ? 'Siguiente Caso' : 'Finalizar Entrenamiento';
+        actionBtn.onclick = () => {
+          currentIndex++;
+          if (currentIndex < dataset.length) loadQuestion();
+          else showCompletion();
+        };
+      } else {
+        attempts++;
+        if (attempts === 1) {
+          // Primer error: Impulso Socrático
+          feedbackCard.className = 'feedback-box active socratic';
+          feedbackTitle.innerHTML = '<span>🤔</span> Impulso Socrático';
+          feedbackBody.innerText = item.socraticWrong;
+
+          btnElement.classList.add('disabled-wrong');
+          btnElement.disabled = true;
+
+          actionBtn.innerText = 'Reintentar con esta guía';
+          actionBtn.onclick = () => {
+            feedbackCard.classList.remove('active');
+          };
+        } else {
+          // Segundo error: Solución guiada
+          feedbackCard.className = 'feedback-box active error';
+          feedbackTitle.innerHTML = '<span>💡</span> Solución Formativa';
+          feedbackBody.innerText = `La respuesta es ${item.options[item.correct]}. ${item.explanation}`;
+
+          disableOptions();
+          actionBtn.innerText = currentIndex < dataset.length - 1 ? 'Siguiente Caso' : 'Finalizar Entrenamiento';
+          actionBtn.onclick = () => {
+            currentIndex++;
+            if (currentIndex < dataset.length) loadQuestion();
+            else showCompletion();
+          };
+        }
+      }
+    }
+
+    function disableOptions() {
+      const btns = document.querySelectorAll('.option-btn');
+      btns.forEach(b => b.disabled = true);
+    }
+
+    function showCompletion() {
+      stopSpeech();
+      const container = document.querySelector('.app-container');
+      container.innerHTML = `
+        <div style="text-align: center; padding: 2rem 1rem;">
+          <h2 style="font-size: 1.8em; color: var(--purple-text); margin-bottom: 1rem;">¡Entrenamiento Completado! 🎓</h2>
+          <p style="font-size: 1.1em; color: var(--text-main); margin-bottom: 2rem;">Has ejercitado el pensamiento crítico analizando las estructuras lógicas de las falacias principales.</p>
+          <button class="btn-action btn-action-purple" style="align-self: center;" onclick="location.reload()">Volver a Empezar</button>
+        </div>
+      `;
+    }
+
+    /* Control de Tamaño de Fuente */
+    function adjustFontSize(delta) {
+      currentFontScale = Math.min(Math.max(currentFontScale + delta, 0.85), 1.35);
+      document.documentElement.style.setProperty('--font-scale', `${currentFontScale}rem`);
+    }
+
+    function resetFontSize() {
+      currentFontScale = 1.0;
+      document.documentElement.style.setProperty('--font-scale', '1rem');
+    }
+
+    /* Lectura en Voz Alta (Text to Speech Nativo) */
+    function toggleSpeech() {
+      if (!('speechSynthesis' in window)) {
+        alert('La función de lectura en voz alta no está disponible en este navegador.');
+        return;
+      }
+
+      if (synth.speaking && !synth.paused) {
+        synth.pause();
+        updateTTSBtn(false, true);
+        return;
+      }
+
+      if (synth.paused) {
+        synth.resume();
+        updateTTSBtn(true, false);
+        return;
+      }
+
+      // Preparar el texto a leer
+      const currentItem = dataset[currentIndex];
+      let textToRead = `Analiza el argumento: ${currentItem.argument}.`;
+      
+      const feedbackCard = document.getElementById('feedback-card');
+      if (feedbackCard.classList.contains('active')) {
+        textToRead += ` Retroalimentación: ${document.getElementById('feedback-body').innerText}`;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(textToRead);
+      utterance.lang = 'es-ES';
+      utterance.rate = 0.95;
+
+      utterance.onend = () => {
+        isSpeaking = false;
+        updateTTSBtn(false, false);
+      };
+
+      utterance.onerror = () => {
+        isSpeaking = false;
+        updateTTSBtn(false, false);
+      };
+
+      synth.speak(utterance);
+      isSpeaking = true;
+      updateTTSBtn(true, false);
+    }
+
+    function stopSpeech() {
+      if ('speechSynthesis' in window) {
+        synth.cancel();
+        updateTTSBtn(false, false);
+      }
+    }
+
+    function updateTTSBtn(active, paused) {
+      const icon = document.getElementById('tts-icon');
+      const text = document.getElementById('tts-text');
+
+      if (paused) {
+        icon.innerText = '⏯️';
+        text.innerText = 'Reanudar';
+      } else if (active) {
+        icon.innerText = '⏸️';
+        text.innerText = 'Pausar';
+      } else {
+        icon.innerText = '🔊';
+        text.innerText = 'Escuchar';
+      }
+    }
+
+    // Carga Inicial
+    init();
+  </script>
+</body>
+</html>
