@@ -19,6 +19,10 @@ Este repositorio contiene una colección de aplicaciones web interactivas y medi
 8. **Laboratorio Color DUA (5.° Primaria)** (Lorena Confeggi): Secuencia didáctica interactiva en 3 estaciones (Termómetro Cromático, Pintor de Climas y Diario del Artista) con síntesis de voz (TTS), ajuste de fuentes e insignia final.
 9. **Misión Fórmula: Química Inorgánica (DUA)** (Gustavo Maximiliano Kocsis): Laboratorio interactivo para 5.° año de secundaria para clasificación de óxidos, hidróxidos, ácidos y sales con pistas graduadas, metacognición, alto contraste y lectura en voz alta.
 10. **Bailemos juntos: Posiciones de Ballet (DUA)** (Florencia Guglielmotti): Entorno lúdico de Danza para Primaria con guía interactiva de las 5 posiciones básicas, secretos auditivos, 3 modalidades de Memotest (pies, brazos y mixto), pistas con mascota animada y panel DUA.
+11. **Mi Primer Museo Interactivo: Artes Visuales (DUA)** (Mariela Fernández): Museo virtual interactivo con 12 obras clásicas vectoriales en 3 rondas temáticas, zoom interactivo, lectura en voz alta (TTS), pistas socráticas graduadas y trofeo al observador.
+12. **Laboratorio de Falacias: Impulsos Socráticos (DUA)** (Diego Bernardo): Aplicación interactiva de Filosofía y Lógica para identificar falacias argumentativas no formales a través de casos cotidianos, pistas socráticas, feedback formativo y accesibilidad DUA.
+13. **El Bosque de las Letras Mágicas: Lectoescritura (DUA)** (Mariana Santillan): Aventura gamificada de lectoescritura en 3 misiones (sílabas, rimas y oraciones) con lector por voz (TTS), tipografía accesible y diseño DUA.
+14. **Detectives Digitales: Imágenes Reales vs. IA (DUA)** (Agustina Andrés): Propuesta interactiva para Nivel Inicial (Sala de 5) y primer ciclo para distinguir imágenes reales de IA, con mayúscula imprenta, síntesis de voz (TTS) y alto contraste.
 
 ---
 
