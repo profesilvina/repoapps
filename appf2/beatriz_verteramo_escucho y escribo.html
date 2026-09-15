@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonidos en Juego - Conciencia Fonológica CABA</title>
+    <!-- Fuente Lexend para óptima legibilidad en etapas de alfabetización -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Paleta de alto contraste acorde a normas WCAG AAA */
+            --bg-color: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --primary-color: #2B6CB0;
+            --primary-hover: #2C5282;
+            --accent-color: #D69E2E;
+            --success-color: #2F855A;
+            --text-color: #1A202C;
+            --slot-border: #4A5568;
+            --slot-active: #3182CE;
+            --font-main: 'Lexend', Arial, sans-serif;
+            --btn-size: 70px;
+        }
+
+        /* Estilo Alto Contraste (Configuración Inclusiva Res. 860/25) */
+        body.high-contrast {
+            --bg-color: #000000;
+            --card-bg: #1A1A1A;
+            --primary-color: #FFFF00;
+            --primary-hover: #D4D400;
+            --accent-color: #00FFFF;
+            --success-color: #00FF00;
+            --text-color: #FFFFFF;
+            --slot-border: #FFFFFF;
+            --slot-active: #00FFFF;
+        }
+
+        body.high-contrast .btn-key {
+            background-color: #333333;
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+        }
+
+        body.high-contrast .speaker-btn {
+            background-color: #FFFF00;
+            color: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Encabezado */
+        header {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .logo-title {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--primary-color);
+        }
+
+        .nav-btn {
+            background-color: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 10px 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:focus, .btn-key:focus, .speaker-btn:focus {
+            outline: 4px solid var(--accent-color);
+        }
+
+        /* Área Principal de Trabajo */
+        main {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+        }
+
+        /* Contenedor de la Imagen del Objeto */
+        .image-container {
+            width: 180px;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #EDF2F7;
+            border-radius: 20px;
+            padding: 15px;
+            border: 3px solid #CBD5E0;
+        }
+
+        body.high-contrast .image-container {
+            background-color: #333333;
+            border-color: #FFFFFF;
+        }
+
+        .image-container svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Botón Altavoz */
+        .speaker-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 28px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 6px 0px var(--primary-hover);
+            transition: transform 0.1s;
+            min-height: 60px;
+        }
+
+        .speaker-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0px var(--primary-hover);
+        }
+
+        /* Casilleros para las letras */
+        .slots-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 10px 0;
+            min-height: 75px;
+        }
+
+        .letter-slot {
+            width: 60px;
+            height: 70px;
+            border: 3px dashed var(--slot-border);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            font-weight: 900;
+            background-color: rgba(0,0,0,0.02);
+            transition: all 0.2s;
+        }
+
+        .letter-slot.filled {
+            border-style: solid;
+            border-color: var(--primary-color);
+            background-color: rgba(43, 108, 176, 0.05);
+        }
+
+        .letter-slot.hint {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Teclado Adaptado */
+        .keyboard-container {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .btn-key {
+            min-width: var(--btn-size);
+            height: var(--btn-size);
+            font-size: 1.8rem;
+            font-weight: 900;
+            background-color: #EDF2F7;
+            color: var(--text-color);
+            border: 2px solid #CBD5E0;
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 0 #CBD5E0;
+            transition: all 0.1s;
+        }
+
+        .btn-key:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #CBD5E0;
+        }
+
+        .btn-key.action-btn {
+            background-color: #E2E8F0;
+            font-size: 1.2rem;
+            min-width: 90px;
+        }
+
+        .btn-key.highlight {
+            border-color: var(--accent-color);
+            background-color: #FEFCBF;
+        }
+
+        /* Modal de Configuración Inclusiva */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .setting-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .setting-option select, .setting-option input {
+            padding: 8px;
+            font-size: 1rem;
+            border-radius: 8px;
+        }
+
+        /* Mensajes y Feedback */
+        .feedback-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255,255,255,0.95);
+            border-radius: 24px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        body.high-contrast .feedback-overlay {
+            background-color: rgba(0,0,0,0.95);
+        }
+
+        .feedback-text {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--success-color);
+            text-align: center;
+        }
+
+        /* Barrido Visual para Accesibilidad Motoras */
+        .scan-highlight {
+            outline: 6px solid var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Encabezado de la App -->
+    <header>
+        <div class="logo-title">Sonidos en Juego</div>
+        <button class="nav-btn" onclick="openConfig()" aria-label="Abrir Ajustes de Accesibilidad DUA">
+            ⚙️ Ajustes DUA
+        </button>
+    </header>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main id="main-card">
+        <!-- Imagen Ilustrada del Objeto -->
+        <div class="image-container" id="image-box">
+            <!-- El SVG se inyecta dinámicamente con JavaScript -->
+        </div>
+
+        <!-- Botón Altavoz -->
+        <button class="speaker-btn" id="speak-btn" onclick="playWordSound()" aria-label="Escuchar la palabra">
+            🔊 Escuchar Palabra
+        </button>
+
+        <!-- Casilleros para las letras -->
+        <div class="slots-container" id="slots-box" aria-label="Casilleros de escritura">
+            <!-- Inyección dinámica -->
+        </div>
+
+        <!-- Teclado Adaptado -->
+        <div class="keyboard-container" id="keyboard-box">
+            <!-- Inyección dinámica -->
+        </div>
+
+        <!-- Capa de Felicitación / Feedback -->
+        <div class="feedback-overlay" id="feedback-box">
+            <div style="font-size: 5rem;">🌟</div>
+            <div class="feedback-text" id="feedback-text">¡EXCELENTE!</div>
+            <button class="speaker-btn" onclick="nextWord()">Siguiente Palabra ➔</button>
+        </div>
+    </main>
+
+    <!-- MODAL DE CONFIGURACIÓN INCLUSIVA (Res. 860/25) -->
+    <div class="modal" id="config-modal">
+        <div class="modal-content">
+            <h2>Ajustes Inclusivos (DUA)</h2>
+            
+            <div class="setting-option">
+                <label for="contrast-toggle">Alto Contraste Visual:</label>
+                <input type="checkbox" id="contrast-toggle" onchange="toggleContrast(this.checked)" style="width: 24px; height: 24px;">
+            </div>
+
+            <div class="setting-option">
+                <label for="keyboard-mode">Modo Teclado:</label>
+                <select id="keyboard-mode" onchange="changeKeyboardMode(this.value)">
+                    <option value="reduced">Teclado Reducido (Solo letras clave)</option>
+                    <option value="full">Teclado Completo A-Z</option>
+                </select>
+            </div>
+
+            <div class="setting-option">
+                <label for="audio-speed">Velocidad de Voz:</label>
+                <select id="audio-speed">
+                    <option value="0.7">Lenta</option>
+                    <option value="0.9" selected>Normal</option>
+                </select>
+            </div>
+
+            <div class="setting-option">
+                <label for="scan-mode">Barrido Automático (Pulsador):</label>
+                <input type="checkbox" id="scan-mode" onchange="toggleScanning(this.checked)" style="width: 24px; height: 24px;">
+            </div>
+
+            <button class="nav-btn" style="margin-top: 15px; justify-content: center;" onclick="closeConfig()">Guardar y Cerrar</button>
+        </div>
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT -->
+    <script>
+        /* REPERTORIO DE 10 PALABRAS CON SUS ILUSTRACIONES SVG INTEGRADAS */
+        const vocabulary = [
+            {
+                word: "SOL",
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="25" fill="#F6AD55"/><circle cx="50" cy="50" r="20" fill="#ECC94B"/><g stroke="#F6AD55" stroke-width="5" stroke-linecap="round"><line x1="50" y1="10" x2="50" y2="20"/><line x1="50" y1="80" x2="50" y2="90"/><line x1="10" y1="50" x2="20" y2="50"/><line x1="80" y1="50" x2="90" y2="50"/><line x1="22" y1="22" x2="29" y2="29"/><line x1="71" y1="71" x2="78" y2="78"/><line x1="22" y1="78" x2="29" y2="71"/><line x1="71" y1="29" x2="78" y2="22"/></g></svg>`
+            },
+            {
+                word: "SOLO",
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="18" fill="#4299E1"/><path d="M25 80 C 25 55, 75 55, 75 80 Z" fill="#3182CE"/><circle cx="44" cy="32" r="2.5" fill="#FFF"/><circle cx="56" cy="32" r="2.5" fill="#FFF"/></svg>`
+            },
+            {
+                word: "GATO",
+                svg: `<svg viewBox="0 0 100 100"><polygon points="25,35 15,12 38,26" fill="#ED8936"/><polygon points="75,35 85,12 62,26" fill="#ED8936"/><circle cx="50" cy="52" r="30" fill="#ED8936"/><circle cx="38" cy="46" r="4" fill="#1A202C"/><circle cx="62" cy="46" r="4" fill="#1A202C"/><polygon points="50,56 44,52 56,52" fill="#1A202C"/><path d="M20 54 H 32 M20 60 H 32 M80 54 H 68 M80 60 H 68" stroke="#1A202C" stroke-width="2.5" stroke-linecap="round"/></svg>`
+            },
+            {
+                word: "MESA",
+                svg: `<svg viewBox="0 0 100 100"><rect x="10" y="35" width="80" height="14" rx="4" fill="#9B2C2C"/><rect x="20" y="49" width="10" height="38" rx="2" fill="#742A2A"/><rect x="70" y="49" width="10" height="38" rx="2" fill="#742A2A"/></svg>`
+            },
+            {
+                word: "PELOTA",
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="#E53E3E"/><path d="M20 30 Q 50 50 20 70" stroke="#FFF" stroke-width="6" fill="none"/><path d="M80 30 Q 50 50 80 70" stroke="#FFF" stroke-width="6" fill="none"/><line x1="12" y1="50" x2="88" y2="50" stroke="#FFF" stroke-width="6"/></svg>`
+            },
+            {
+                word: "PATIN",
+                svg: `<svg viewBox="0 0 100 100"><path d="M20 25 L42 25 L42 58 L80 58 L80 70 L20 70 Z" fill="#319795" rx="4"/><circle cx="32" cy="80" r="9" fill="#1A202C"/><circle cx="32" cy="80" r="4" fill="#CBD5E0"/><circle cx="68" cy="80" r="9" fill="#1A202C"/><circle cx="68" cy="80" r="4" fill="#CBD5E0"/></svg>`
+            },
+            {
+                word: "PERRO",
+                svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="48" r="28" fill="#DD6B20"/><ellipse cx="22" cy="45" rx="8" ry="18" fill="#C05621"/><ellipse cx="78" cy="45" rx="8" ry="18" fill="#C05621"/><circle cx="40" cy="42" r="4" fill="#1A202C"/><circle cx="60" cy="42" r="4" fill="#1A202C"/><ellipse cx="50" cy="54" rx="7" ry="5" fill="#1A202C"/></svg>`
+            },
+            {
+                word: "CASA",
+                svg: `<svg viewBox="0 0 100 100"><polygon points="50,15 12,45 88,45" fill="#E53E3E"/><rect x="22" y="45" width="56" height="42" fill="#ECC94B"/><rect x="42" y="60" width="16" height="27" fill="#3182CE"/></svg>`
+            },
+            {
+                word: "TREN",
+                svg: `<svg viewBox="0 0 100 100"><rect x="15" y="30" width="70" height="38" rx="6" fill="#805AD5"/><rect x="60" y="38" width="16" height="16" fill="#E2E8F0" rx="2"/><circle cx="32" cy="74" r="9" fill="#1A202C"/><circle cx="32" cy="74" r="4" fill="#CBD5E0"/><circle cx="68" cy="74" r="9" fill="#1A202C"/><circle cx="68" cy="74" r="4" fill="#CBD5E0"/><rect x="25" y="16" width="12" height="14" fill="#E53E3E"/></svg>`
+            },
+            {
+                word: "PLATO",
+                svg: `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="42" ry="22" fill="#CBD5E0"/><ellipse cx="50" cy="50" rx="30" ry="14" fill="#EDF2F7"/><ellipse cx="50" cy="50" rx="20" ry="8" fill="#FFFFFF"/></svg>`
+            }
+        ];
+
+        /* ESTADO DE LA APLICACIÓN */
+        let currentIndex = 0;
+        let userInput = [];
+        let errorCount = 0;
+        let keyboardMode = "reduced";
+        let scanInterval = null;
+        let scanIndex = 0;
+
+        /* INICIALIZACIÓN */
+        window.onload = () => {
+            loadWord();
+        };
+
+        function loadWord() {
+            const currentItem = vocabulary[currentIndex];
+            userInput = [];
+            errorCount = 0;
+
+            // Cargar Ilustración SVG
+            document.getElementById("image-box").innerHTML = currentItem.svg;
+
+            // Renderizar casilleros
+            renderSlots();
+
+            // Renderizar teclado
+            renderKeyboard();
+
+            // Ocultar Feedback
+            document.getElementById("feedback-box").style.display = "none";
+
+            // Reproducción automática de la palabra al cargar
+            setTimeout(() => { playWordSound(); }, 400);
+        }
+
+        function renderSlots() {
+            const container = document.getElementById("slots-box");
+            container.innerHTML = "";
+            const currentWord = vocabulary[currentIndex].word;
+
+            for (let i = 0; i < currentWord.length; i++) {
+                const slot = document.createElement("div");
+                slot.className = "letter-slot";
+                
+                if (userInput[i]) {
+                    slot.textContent = userInput[i];
+                    slot.classList.add("filled");
+                } else if (errorCount >= 1 && i === 0) {
+                    // Ayuda Nivel 1: Primera letra pista tras error
+                    slot.textContent = currentWord[0];
+                    slot.classList.add("hint");
+                } else {
+                    slot.textContent = "";
+                }
+                container.appendChild(slot);
+            }
+        }
+
+        function renderKeyboard() {
+            const container = document.getElementById("keyboard-box");
+            container.innerHTML = "";
+            const currentWord = vocabulary[currentIndex].word;
+
+            let lettersToDisplay = [];
+
+            if (keyboardMode === "reduced") {
+                // Letras de la palabra + 4 distractores
+                const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                let distractors = alphabet.split("").filter(l => !currentWord.includes(l));
+                distractors = distractors.sort(() => 0.5 - Math.random()).slice(0, 4);
+                
+                lettersToDisplay = Array.from(new Set([...currentWord.split(""), ...distractors])).sort();
+            } else {
+                // Teclado A-Z completo
+                lettersToDisplay = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split("");
+            }
+
+            lettersToDisplay.forEach(letter => {
+                const btn = document.createElement("button");
+                btn.className = "btn-key";
+                btn.textContent = letter;
+                btn.onclick = () => handleKeyPress(letter);
+
+                // Ayuda Nivel 2: Resaltar solo letras necesarias tras 2 errores
+                if (errorCount >= 2 && currentWord.includes(letter)) {
+                    btn.classList.add("highlight");
+                }
+
+                container.appendChild(btn);
+            });
+
+            // Botón Borrar
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "btn-key action-btn";
+            deleteBtn.textContent = "⌫ Borrar";
+            deleteBtn.onclick = handleDelete;
+            container.appendChild(deleteBtn);
+        }
+
+        /* PRONUNCIACIÓN NATURAL CON VOZ ESPAÑOL ARGENTINA */
+        function playWordSound() {
+            const currentWord = vocabulary[currentIndex].word;
+            const speed = parseFloat(document.getElementById("audio-speed").value);
+            
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(currentWord.toLowerCase());
+                utterance.lang = 'es-AR';
+                utterance.rate = speed;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function speakLetter(letter) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(letter.toLowerCase());
+                utterance.lang = 'es-AR';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function handleKeyPress(letter) {
+            const currentWord = vocabulary[currentIndex].word;
+
+            if (userInput.length < currentWord.length) {
+                speakLetter(letter);
+                userInput.push(letter);
+                renderSlots();
+
+                if (userInput.length === currentWord.length) {
+                    validateWord();
+                }
+            }
+        }
+
+        function handleDelete() {
+            if (userInput.length > 0) {
+                userInput.pop();
+                renderSlots();
+            }
+        }
+
+        /* VALIDACIÓN Y AYUDAS */
+        function validateWord() {
+            const targetWord = vocabulary[currentIndex].word;
+            const writtenWord = userInput.join("");
+
+            if (writtenWord === targetWord) {
+                showFeedback(true);
+            } else {
+                errorCount++;
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance("Probemos de nuevo");
+                    utterance.lang = 'es-AR';
+                    window.speechSynthesis.speak(utterance);
+                }
+                
+                setTimeout(() => {
+                    userInput = [];
+                    renderSlots();
+                    renderKeyboard();
+                }, 1000);
+            }
+        }
+
+        function showFeedback(isSuccess) {
+            const feedbackBox = document.getElementById("feedback-box");
+            const feedbackText = document.getElementById("feedback-text");
+
+            if (isSuccess) {
+                feedbackText.textContent = "¡EXCELENTE! ¡LO LOGRASTE!";
+                feedbackBox.style.display = "flex";
+
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance("¡Muy bien!");
+                    utterance.lang = 'es-AR';
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+        }
+
+        function nextWord() {
+            currentIndex = (currentIndex + 1) % vocabulary.length;
+            loadWord();
+        }
+
+        /* AJUSTES INCLUSIVOS Y ACCESIBILIDAD DUA */
+        function openConfig() {
+            document.getElementById("config-modal").style.display = "flex";
+        }
+
+        function closeConfig() {
+            document.getElementById("config-modal").style.display = "none";
+        }
+
+        function toggleContrast(isHigh) {
+            if (isHigh) {
+                document.body.classList.add("high-contrast");
+            } else {
+                document.body.classList.remove("high-contrast");
+            }
+        }
+
+        function changeKeyboardMode(mode) {
+            keyboardMode = mode;
+            renderKeyboard();
+        }
+
+        function toggleScanning(enable) {
+            if (enable) {
+                scanIndex = 0;
+                scanInterval = setInterval(() => {
+                    const elements = document.querySelectorAll(".btn-key, .speaker-btn");
+                    elements.forEach(el => el.classList.remove("scan-highlight"));
+                    if (elements[scanIndex]) {
+                        elements[scanIndex].classList.add("scan-highlight");
+                        elements[scanIndex].focus();
+                        scanIndex = (scanIndex + 1) % elements.length;
+                    }
+                }, 2000);
+            } else {
+                clearInterval(scanInterval);
+                document.querySelectorAll(".scan-highlight").forEach(el => el.classList.remove("scan-highlight"));
+            }
+        }
+    </script>
+</body>
+</html>

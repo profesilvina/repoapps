@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expedientes del Detective · Laboratorio de Deducción</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/special-elite@5.0.19/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/caveat@5.0.18/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/courier-prime@5.0.19/index.css">
+<style>
+  :root{
+    --paper:#f1e4c8;--paper-dark:#e6d3ad;--ink:#2b1d0e;--ink-soft:#4a3a24;
+    --accent:#8b2e1f;--accent2:#2d5f3f;--stamp:#8b2e1f;
+    --tape:rgba(255,230,150,.55);
+    --shadow:0 6px 18px rgba(40,25,10,.25);--radius:6px;
+    --font-type:'Special Elite','Courier New',monospace;
+    --font-hand:'Caveat',cursive;
+    --font-mono:'Courier Prime',monospace;
+    --fs-base:17px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--font-type);font-size:var(--fs-base);color:var(--ink);
+    background:
+      radial-gradient(ellipse at top left,rgba(139,46,31,.08),transparent 60%),
+      radial-gradient(ellipse at bottom right,rgba(45,95,63,.08),transparent 60%),
+      repeating-linear-gradient(0deg,rgba(120,90,40,.02) 0 2px,transparent 2px 4px),
+      linear-gradient(180deg,#f4e7cb 0%,#e8d5a8 100%);
+    min-height:100vh;line-height:1.55;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      radial-gradient(circle at 20% 30%,rgba(80,50,20,.06) 0 2px,transparent 3px),
+      radial-gradient(circle at 70% 60%,rgba(80,50,20,.05) 0 2px,transparent 3px);
+  }
+  body.hc-dark{
+    --paper:#111;--paper-dark:#1a1a1a;--ink:#f5f5dc;--ink-soft:#e0e0c0;
+    --accent:#ff7b5a;--accent2:#7bd389;--stamp:#ff7b5a;--tape:rgba(255,220,100,.2);
+    background:#0a0a0a;color:#f5f5dc;
+  }
+  body.hc-light{
+    --paper:#ffffff;--paper-dark:#f0f0f0;--ink:#000000;--ink-soft:#1a1a1a;
+    --accent:#00008b;--accent2:#006400;--stamp:#00008b;
+    background:#ffffff;color:#000000;
+  }
+  button{font-family:inherit;cursor:pointer}
+  h1,h2,h3{font-family:var(--font-type);letter-spacing:.5px}
+  .hand{font-family:var(--font-hand);font-weight:700}
+  .mono{font-family:var(--font-mono)}
+
+  .a11y-bar{
+    position:sticky;top:0;z-index:50;
+    background:linear-gradient(180deg,#3a2a16,#2b1d0e);color:#f1e4c8;
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+    padding:8px 14px;border-bottom:3px double #8b2e1f;
+    box-shadow:0 4px 10px rgba(0,0,0,.3);
+  }
+  body.hc-dark .a11y-bar{background:#000;border-bottom-color:#ff7b5a}
+  body.hc-light .a11y-bar{background:#000;color:#fff;border-bottom-color:#00008b}
+  .a11y-bar .brand{font-family:var(--font-hand);font-size:1.6rem;margin-right:auto}
+  .a11y-bar button,.a11y-bar select{
+    background:#f1e4c8;color:#2b1d0e;border:1px solid #2b1d0e;
+    padding:5px 10px;border-radius:4px;font-size:.85rem;font-family:var(--font-type);
+  }
+  .a11y-bar button:hover{background:#8b2e1f;color:#f1e4c8}
+  .a11y-bar select{padding:4px 6px}
+  .a11y-bar label{font-size:.8rem;display:flex;align-items:center;gap:4px}
+
+  main{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:24px 18px 60px}
+
+  .cover{
+    background:var(--paper);border:2px solid var(--ink);
+    box-shadow:var(--shadow),inset 0 0 60px rgba(120,80,30,.15);
+    padding:40px 30px;position:relative;border-radius:var(--radius);
+  }
+  .cover::before{
+    content:"CONFIDENCIAL";position:absolute;top:18px;right:22px;
+    font-family:var(--font-type);color:var(--stamp);border:3px solid var(--stamp);
+    padding:6px 14px;transform:rotate(-8deg);font-size:1rem;letter-spacing:3px;opacity:.85;
+  }
+  .cover h1{
+    font-size:clamp(1.8rem,4vw,2.8rem);margin:10px 0 4px;
+    border-bottom:3px double var(--ink);padding-bottom:8px;
+  }
+  .cover .subtitle{font-family:var(--font-hand);font-size:1.6rem;color:var(--accent)}
+  .cover .dossier{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:24px}
+  .card{background:var(--paper-dark);border:1px dashed var(--ink-soft);padding:14px;border-radius:var(--radius);box-shadow:2px 3px 0 rgba(0,0,0,.1)}
+  .card h3{margin:0 0 6px;color:var(--accent);font-size:1.1rem}
+  .stamp-red{display:inline-block;border:2px solid var(--stamp);color:var(--stamp);padding:2px 8px;font-size:.8rem;transform:rotate(-3deg);margin-left:6px}
+  .case-selector{margin-top:28px;background:var(--paper-dark);border:2px solid var(--ink);padding:20px;border-radius:var(--radius);position:relative}
+  .case-selector::after{content:"";position:absolute;top:-10px;left:40px;width:120px;height:22px;background:var(--tape);transform:rotate(-2deg)}
+  .case-option{
+    display:flex;align-items:center;gap:14px;padding:14px;
+    border:2px solid var(--ink-soft);background:var(--paper);
+    margin-top:10px;border-radius:4px;cursor:pointer;
+    transition:transform .2s,box-shadow .2s,border-color .2s;
+  }
+  .case-option:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .case-option.selected{border-color:var(--accent);background:var(--paper-dark)}
+  .case-option .num{font-family:var(--font-hand);font-size:2.2rem;color:var(--accent);border-right:2px dashed var(--ink-soft);padding-right:14px;min-width:50px}
+  .case-option .meta{font-size:.85rem;color:var(--ink-soft)}
+  .btn{
+    background:var(--accent);color:#f1e4c8;border:none;
+    padding:12px 22px;font-size:1rem;letter-spacing:2px;
+    border-radius:4px;text-transform:uppercase;
+    box-shadow:3px 3px 0 rgba(0,0,0,.3);transition:transform .15s;
+  }
+  .btn:hover:not(:disabled){transform:translate(-1px,-1px);box-shadow:4px 4px 0 rgba(0,0,0,.3)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink);box-shadow:none}
+  .btn.ok{background:var(--accent2)}
+
+  .investigation{display:none}
+  .investigation.active{display:block}
+  .case-header{
+    background:var(--paper);border:2px solid var(--ink);
+    padding:18px 22px;border-radius:var(--radius);box-shadow:var(--shadow);
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;
+  }
+  .case-header h2{margin:0;font-size:1.5rem}
+  .progress{display:flex;align-items:center;gap:10px;background:var(--paper-dark);padding:8px 14px;border-radius:20px;border:1px dashed var(--ink-soft)}
+  .progress-bar{width:180px;height:10px;background:var(--paper);border:1px solid var(--ink-soft);border-radius:5px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));width:0%;transition:width .4s}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0}
+  .tab{
+    background:var(--paper-dark);color:var(--ink);border:2px solid var(--ink);border-bottom:none;
+    padding:10px 18px;border-radius:8px 8px 0 0;font-family:var(--font-type);font-size:.95rem;position:relative;top:2px;
+  }
+  .tab.active{background:var(--paper);top:0;font-weight:700;color:var(--accent)}
+  .tab-panel{background:var(--paper);border:2px solid var(--ink);border-radius:0 var(--radius) var(--radius) var(--radius);padding:24px;min-height:400px;box-shadow:var(--shadow)}
+  .tab-panel[hidden]{display:none}
+
+  .comic{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+  .panel{background:#fdf6e0;border:3px solid var(--ink);padding:14px;border-radius:4px;position:relative;box-shadow:inset 0 0 20px rgba(120,80,30,.08)}
+  body.hc-dark .panel{background:#1a1a1a}
+  body.hc-light .panel{background:#fff}
+  .panel .num{position:absolute;top:-14px;left:10px;background:var(--accent);color:#f1e4c8;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-hand);font-size:1.3rem;border:2px solid var(--ink)}
+  .panel h4{margin:10px 0 6px;color:var(--accent)}
+  .panel p{margin:0;font-size:.95rem}
+  .panel svg{width:100%;height:auto;margin-top:8px}
+
+  .suspects{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+  .suspect{background:var(--paper-dark);border:2px solid var(--ink);padding:14px;border-radius:4px;position:relative;box-shadow:var(--shadow);transition:transform .2s}
+  .suspect:hover{transform:translateY(-3px)}
+  .suspect .clip{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:60px;height:20px;background:linear-gradient(180deg,#c0c0c0,#808080);border:1px solid #444;border-radius:3px}
+  .suspect .avatar{width:80px;height:80px;border-radius:50%;background:var(--paper);border:2px solid var(--ink);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-hand);font-size:2rem;color:var(--accent)}
+  .suspect h4{margin:4px 0;text-align:center;color:var(--accent)}
+  .suspect .role{text-align:center;font-size:.85rem;color:var(--ink-soft);margin-bottom:8px}
+  .suspect .data{font-size:.85rem;border-top:1px dashed var(--ink-soft);padding-top:8px}
+  .suspect .data dt{font-weight:700;color:var(--ink)}
+  .suspect .data dd{margin:0 0 4px 0}
+
+  .clues{display:flex;flex-direction:column;gap:14px}
+  .clue{background:var(--paper);border-left:6px solid var(--accent);padding:12px 16px;border-radius:0 4px 4px 0;box-shadow:2px 2px 0 rgba(0,0,0,.1);cursor:pointer;transition:background .2s}
+  .clue:hover{background:var(--paper-dark)}
+  .clue .tag{display:inline-block;background:var(--accent);color:#f1e4c8;padding:2px 8px;border-radius:3px;font-size:.75rem;letter-spacing:1px;margin-right:8px}
+  .clue .detail{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--ink-soft);font-size:.95rem}
+  .clue.open .detail{display:block}
+
+  .alibi-table{width:100%;border-collapse:collapse;font-size:.9rem;background:var(--paper)}
+  .alibi-table th,.alibi-table td{border:1px solid var(--ink-soft);padding:8px;text-align:left;vertical-align:top}
+  .alibi-table th{background:var(--ink);color:var(--paper);font-family:var(--font-type)}
+  .alibi-table tr:nth-child(even) td{background:var(--paper-dark)}
+  .conflict{color:var(--accent);font-weight:700}
+
+  .resolution{display:none}
+  .resolution.active{display:block}
+  .phase{background:var(--paper);border:2px solid var(--ink);padding:24px;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:18px}
+  .phase h3{border-bottom:3px double var(--ink);padding-bottom:6px;color:var(--accent)}
+  .phase .phase-tag{display:inline-block;background:var(--accent2);color:#f1e4c8;padding:3px 10px;border-radius:3px;font-size:.8rem;letter-spacing:2px;margin-right:8px}
+  .checklist{list-style:none;padding:0;margin:14px 0}
+  .checklist li{padding:10px 12px;margin-bottom:8px;background:var(--paper-dark);border:1px solid var(--ink-soft);border-radius:4px;display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+  .checklist li input{width:18px;height:18px;cursor:pointer;margin-top:3px}
+  .deduction-step{background:var(--paper-dark);border:1px dashed var(--ink-soft);padding:14px;border-radius:4px;margin:10px 0}
+  .deduction-step .q{font-family:var(--font-hand);font-size:1.3rem;color:var(--accent);margin-bottom:8px}
+  .options{display:flex;flex-direction:column;gap:6px}
+  .options label{display:flex;align-items:flex-start;gap:10px;padding:8px 12px;background:var(--paper);border:1px solid var(--ink-soft);border-radius:4px;cursor:pointer}
+  .options label:hover{background:var(--paper-dark)}
+  .options input{width:18px;height:18px;margin-top:3px}
+  .feedback{margin-top:12px;padding:12px;border-radius:4px;background:rgba(139,46,31,.08);border-left:4px solid var(--accent);font-family:var(--font-hand);font-size:1.2rem;display:none}
+  .feedback.show{display:block;animation:fadeIn .4s}
+  .feedback.ok{background:rgba(45,95,63,.12);border-left-color:var(--accent2)}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+  .matrix{display:grid;gap:2px;background:var(--ink);padding:2px;border-radius:4px;margin-top:14px;font-size:.85rem}
+  .matrix > div{background:var(--paper);padding:6px;text-align:center}
+  .matrix .head{background:var(--ink);color:var(--paper);font-weight:700}
+  .matrix .row-head{background:var(--paper-dark);font-weight:700;text-align:left}
+  .matrix select{width:100%;font-family:inherit;font-size:.8rem;padding:3px}
+
+  .final-accuse{text-align:center;margin-top:20px;padding:20px;background:var(--paper-dark);border:2px dashed var(--accent);border-radius:var(--radius)}
+  .final-accuse select{font-family:var(--font-type);font-size:1.1rem;padding:8px;border:2px solid var(--ink);background:var(--paper)}
+  .verdict{margin-top:18px;padding:18px;border-radius:var(--radius);font-family:var(--font-hand);font-size:1.4rem;text-align:center;display:none}
+  .verdict.show{display:block;animation:fadeIn .5s}
+  .verdict.win{background:rgba(45,95,63,.15);border:3px solid var(--accent2);color:var(--accent2)}
+  .verdict.lose{background:rgba(139,46,31,.1);border:3px solid var(--accent);color:var(--accent)}
+
+  .nav-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;justify-content:space-between}
+  .speaking{background:rgba(255,230,100,.4);outline:2px solid var(--accent)}
+
+  @media (max-width:600px){
+    .cover::before{font-size:.7rem;padding:4px 8px}
+    .tab{padding:8px 12px;font-size:.85rem}
+    .tab-panel{padding:16px}
+    .matrix{font-size:.7rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="a11y-bar" role="toolbar" aria-label="Herramientas de accesibilidad">
+  <div class="brand">🔍 Expedientes del Detective</div>
+  <button id="fontDown" aria-label="Disminuir tamaño de letra">A−</button>
+  <button id="fontUp" aria-label="Aumentar tamaño de letra">A+</button>
+  <button id="readToggle" aria-label="Activar lectura en voz alta">🔊 Leer</button>
+  <label>Contraste:
+    <select id="contrastMode" aria-label="Modo de contraste">
+      <option value="vintage">Libreta Vintage</option>
+      <option value="dark">Alto Contraste Oscuro</option>
+      <option value="light">Alto Contraste Claro</option>
+    </select>
+  </label>
+</div>
+
+<main>
+
+<section class="cover" id="screen-cover" aria-labelledby="cover-title">
+  <div class="subtitle hand">Departamento de Investigación · División de Enigmas</div>
+  <h1 id="cover-title">Expedientes del Detective</h1>
+  <p><span class="stamp-red">ARCHIVOS CLASIFICADOS</span></p>
+  <p>Tres casos esperan ser resueltos. Cada uno pondrá a prueba tu capacidad de observación, inducción y deducción. Leé con atención, cruzá información, y no te dejes engañar por las apariencias. <em>El género policial de enigma exige rigor lógico.</em></p>
+
+  <div class="dossier">
+    <div class="card">
+      <h3>📚 ¿Qué vamos a trabajar?</h3>
+      <p>Razonamiento <strong>inductivo</strong> (de lo particular a lo general) y <strong>deductivo</strong> (de lo general a lo particular), hipótesis y comprensión lectora aplicada al <strong>género policial de enigma</strong>.</p>
+    </div>
+    <div class="card">
+      <h3>🧭 ¿Cómo se juega?</h3>
+      <ol style="padding-left:18px;margin:0">
+        <li>Revisá la escena, los sospechosos, las pistas y las coartadas.</li>
+        <li>Descartá con <em>inducción</em>: ¿qué evidencias eliminan sospechosos?</li>
+        <li>Deducí con <em>lógica</em>: ¿quién cumple todas las condiciones del culpable?</li>
+        <li>¡Acusá al culpable!</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>🎯 Objetivo del detective</h3>
+      <p>Armar una <strong>hipótesis fundada</strong> usando las pistas como premisas. No alcanza con adivinar: hay que <em>demostrar</em>.</p>
+    </div>
+  </div>
+
+  <div class="case-selector">
+    <h3>Elegí el caso a resolver <span class="stamp-red">SELECCIONAR</span></h3>
+    <div class="case-option" data-case="blackwood" tabindex="0" role="button" aria-pressed="false">
+      <div class="num">01</div>
+      <div>
+        <strong>El misterio del Diamante Azul de Blackwood</strong>
+        <div class="meta">Robo · Enigma clásico · 6 sospechosos · Duración aprox.: 40 min</div>
+      </div>
+    </div>
+    <div class="case-option" data-case="library" tabindex="0" role="button" aria-pressed="false">
+      <div class="num">02</div>
+      <div>
+        <strong>El crimen de la Biblioteca Ashford</strong>
+        <div class="meta">Asesinato · Enigma académico · 6 sospechosos · Duración aprox.: 40 min</div>
+      </div>
+    </div>
+    <div class="case-option" data-case="orient" tabindex="0" role="button" aria-pressed="false">
+      <div class="num">03</div>
+      <div>
+        <strong>Muerte en el Expreso de la Noche</strong>
+        <div class="meta">Asesinato · Enigma en espacio cerrado · 6 sospechosos · Duración aprox.: 40 min</div>
+      </div>
+    </div>
+    <div style="margin-top:18px;text-align:right">
+      <button class="btn" id="btnStart" disabled>🕵️ Abrir expediente →</button>
+    </div>
+  </div>
+</section>
+
+<section class="investigation" id="screen-investigation" aria-labelledby="inv-title">
+  <div class="case-header">
+    <div>
+      <h2 id="inv-title"></h2>
+      <div class="mono" style="font-size:.85rem;color:var(--ink-soft)" id="caseMeta"></div>
+    </div>
+    <div class="progress" aria-live="polite">
+      <span>📓 Diario:</span>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span id="progressText">0/4 secciones</span>
+    </div>
+  </div>
+
+  <nav class="tabs" role="tablist" aria-label="Secciones de investigación">
+    <button class="tab active" role="tab" aria-selected="true" data-tab="contexto">1. Escena</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="sospechosos">2. Sospechosos</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="pistas">3. Pistas</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="coartadas">4. Coartadas</button>
+  </nav>
+
+  <div class="tab-panel" id="tab-contexto" role="tabpanel">
+    <h3>🎬 La escena del crimen</h3>
+    <p>Reconstruí los hechos a partir de estas viñetas. Observá <strong>qué pasó</strong>, <strong>cuándo</strong> y <strong>dónde</strong>.</p>
+    <div class="comic" id="comicPanels"></div>
+    <div class="deduction-step" style="margin-top:16px" id="keyData"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-sospechosos" role="tabpanel" hidden>
+    <h3>👥 Los seis sospechosos</h3>
+    <p>Leé cada ficha con atención. Anotá mentalmente <strong>motivos</strong>, <strong>oportunidades</strong> y <strong>detalles sospechosos</strong>.</p>
+    <div class="suspects" id="suspectsGrid"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-pistas" role="tabpanel" hidden>
+    <h3>🔍 Pistas y testimonios</h3>
+    <p>Hacé clic en cada pista para desplegar el detalle. Las pistas son <strong>premisa</strong> de tu razonamiento.</p>
+    <div class="clues" id="cluesList"></div>
+  </div>
+
+  <div class="tab-panel" id="tab-coartadas" role="tabpanel" hidden>
+    <h3>⏰ Cuadro de coartadas</h3>
+    <p>Compará los horarios declarados con los testimonios cruzados. <strong>Una coartada falsa es una pista enorme.</strong></p>
+    <div style="overflow-x:auto">
+      <table class="alibi-table">
+        <thead><tr><th>Sospechoso</th><th>Declaración (¿dónde estaba?)</th><th>Testigo que lo avala</th><th>¿Se sostiene?</th></tr></thead>
+        <tbody id="alibiBody"></tbody>
+      </table>
+    </div>
+    <div class="deduction-step" style="margin-top:16px">
+      <div class="q hand">💡 Pregunta orientadora:</div>
+      <p>Si el crimen ocurrió en el horario indicado, ¿quién <strong>no pudo</strong> estar en la escena en ese momento? ¿Quién <strong>sí pudo</strong> y además mintió?</p>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="btn ghost" id="btnBackCover">← Volver a portada</button>
+    <button class="btn ok" id="btnToResolution">🧩 Poner a prueba mi hipótesis →</button>
+  </div>
+</section>
+
+<section class="resolution" id="screen-resolution" aria-labelledby="res-title">
+  <div class="case-header">
+    <h2 id="res-title">🧩 Resolución del caso</h2>
+    <div class="mono" style="font-size:.85rem">Fase inductiva → deductiva → conclusión</div>
+  </div>
+
+  <div class="phase" id="phase1">
+    <h3><span class="phase-tag">FASE 1</span>Inducción: descartar con evidencias</h3>
+    <p>La <strong>inducción</strong> va de lo particular a lo general: observamos pistas concretas y concluimos qué sospechosos <em>no pueden</em> ser culpables.</p>
+    <p><strong>Seleccioná todas las evidencias que te permiten descartar sospechosos:</strong></p>
+    <ul class="checklist" id="inductionList"></ul>
+    <div class="feedback" id="feedback1"></div>
+    <div class="nav-buttons">
+      <button class="btn ghost" id="btnBackInv">← Volver a investigar</button>
+      <button class="btn" id="btnPhase1Next">Validar y continuar →</button>
+    </div>
+  </div>
+
+  <div class="phase" id="phase2" style="display:none">
+    <h3><span class="phase-tag">FASE 2</span>Deducción: aplicar premisas lógicas</h3>
+    <p>La <strong>deducción</strong> va de lo general a lo particular: si aceptamos ciertas reglas, podemos concluir algo específico.</p>
+    <div id="deductionSteps"></div>
+    <div class="feedback" id="feedback2"></div>
+    <div class="nav-buttons">
+      <button class="btn ghost" id="btnPhase2Back">← Revisar fase anterior</button>
+      <button class="btn" id="btnPhase2Next">Validar y continuar →</button>
+    </div>
+  </div>
+
+  <div class="phase" id="phase3" style="display:none">
+    <h3><span class="phase-tag">FASE 3</span>Conclusión: la acusación final</h3>
+    <p>Completá la <strong>matriz deductiva</strong> y luego acusá al culpable. Recordá: tu acusación debe estar <em>fundada</em>.</p>
+    <h4 style="margin-top:18px">📋 Matriz deductiva</h4>
+    <p style="font-size:.9rem">Para cada pista, indicá qué sospechoso <strong>descarta</strong> (si es incompatible) o <strong>incrimina</strong> (si lo señala).</p>
+    <div class="matrix" id="deductionMatrix"></div>
+
+    <div class="final-accuse">
+      <p class="hand" style="font-size:1.6rem;margin:0 0 10px">🕵️ "Acuso a..."</p>
+      <select id="accusedSelect" aria-label="Elegir al culpable">
+        <option value="">— Seleccionar sospechoso —</option>
+      </select>
+      <div style="margin-top:14px">
+        <button class="btn" id="btnAccuse">Someter a juicio</button>
+      </div>
+    </div>
+
+    <div class="verdict" id="verdict" role="alert"></div>
+
+    <div class="nav-buttons">
+      <button class="btn ghost" id="btnRestart">🔄 Reiniciar caso</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ============================================================
+   BASE DE DATOS DE CASOS
+   ============================================================ */
+const CASES = {
+
+/* ---------- CASO 1: BLACKWOOD ---------- */
+blackwood: {
+  title:"El misterio del Diamante Azul de Blackwood",
+  meta:"Mansión Blackwood · 14/11/1923 · 20:00 a 21:00 hs · Robo",
+  culprit:"eleanor",
+  panels:[
+    {n:1,t:"La cena",p:"Eran las <strong>19:30</strong>. Lord Blackwood reunió a seis personas en el comedor. Sobre la mesa del estudio, en una vitrina de cristal, brillaba el <strong>Diamante Azul</strong>, su joya más preciada.",svg:`<svg viewBox="0 0 200 100"><rect x="10" y="60" width="180" height="30" fill="#6b4423" stroke="#2b1d0e" stroke-width="2"/><circle cx="100" cy="50" r="12" fill="#4a90e2" stroke="#2b1d0e" stroke-width="2"/><circle cx="100" cy="50" r="5" fill="#a8d0ff"/></svg>`},
+    {n:2,t:"La tormenta",p:"A las <strong>20:00</strong> comenzó una fuerte tormenta. La luz titiló. Lord Blackwood anunció que <strong>a las 21:00</strong> mostraría el diamante a sus invitados.",svg:`<svg viewBox="0 0 200 100"><path d="M20 40 Q50 20 80 40 Q110 20 140 40 Q170 20 180 40 L180 70 L20 70 Z" fill="#555" stroke="#2b1d0e" stroke-width="2"/><path d="M90 45 L80 70 L95 65 L85 90" stroke="#ffcc00" stroke-width="3" fill="none"/></svg>`},
+    {n:3,t:"El grito",p:"A las <strong>20:15</strong> se escuchó un <strong>grito</strong> proveniente del estudio. Todos corrieron. Lord Blackwood estaba pálido: <em>«¡El diamante... desapareció!»</em>",svg:`<svg viewBox="0 0 200 100"><rect x="40" y="20" width="120" height="70" fill="none" stroke="#2b1d0e" stroke-width="2"/><rect x="90" y="50" width="20" height="40" fill="#6b4423" stroke="#2b1d0e" stroke-width="2"/></svg>`},
+    {n:4,t:"El cierre",p:"La ventana del estudio estaba <strong>forzada desde afuera</strong>, pero la lluvia no había mojado la alfombra. La puerta estaba cerrada con llave por dentro. <strong>Nadie entró ni salió de la mansión.</strong>",svg:`<svg viewBox="0 0 200 100"><rect x="30" y="20" width="60" height="70" fill="#8b6f47" stroke="#2b1d0e" stroke-width="2"/><circle cx="80" cy="55" r="3" fill="#2b1d0e"/><path d="M110 30 L170 30 L170 90 L110 90 Z" fill="#a8d0ff" stroke="#2b1d0e" stroke-width="2"/><path d="M115 35 L165 85 M165 35 L115 85" stroke="#8b2e1f" stroke-width="2"/></svg>`}
+  ],
+  keyData:`<div class="q hand">📌 Datos clave para tu razonamiento:</div>
+    <ul style="margin:0;padding-left:20px">
+      <li>El robo ocurrió <strong>entre las 20:00 y las 20:15</strong>.</li>
+      <li>Todos los sospechosos estaban <strong>dentro de la mansión</strong>.</li>
+      <li>La ventana forzada parece una <strong>pista falsa</strong> (la alfombra está seca).</li>
+    </ul>`,
+  suspects:[
+    {id:"higgins",name:"Sra. Agatha Higgins",role:"Ama de llaves · 58 años",initials:"AH",data:[["Motivo","30 años de servicio. Lealtad absoluta."],["Detalle","Lleva llaves de toda la casa, pero no del estudio."],["Dato","Es alérgica al perfume fuerte; nunca lo usa."]]},
+    {id:"reginald",name:"Sr. Reginald Pike",role:"Mayordomo · 45 años",initials:"RP",data:[["Motivo","Conoce cada rincón de la mansión."],["Detalle","Abrió la puerta del estudio con su llave maestra."],["Dato","Sirvió vino a todos entre 20:00 y 20:30."]]},
+    {id:"eleanor",name:"Lady Eleanor Blackwood",role:"Esposa · 38 años",initials:"EB",data:[["Motivo","Deudas de juego secretas. Necesitaba dinero urgente."],["Detalle","Usa un perfume muy característico: rosa y almizcle."],["Dato","Dijo que estaba en el baño entre 20:00 y 20:45."]]},
+    {id:"mortimer",name:"Dr. Edmund Mortimer",role:"Médico familiar · 52 años",initials:"EM",data:[["Motivo","Amigo íntimo de Lord Blackwood. Sin conflictos."],["Detalle","Jugó al billar con Thomas desde las 19:30."],["Dato","Usa gafas y camina con bastón por una vieja lesión."]]},
+    {id:"victoria",name:"Victoria Blackwood",role:"Sobrina · 22 años",initials:"VB",data:[["Motivo","Herredara todo si algo le ocurriera a su tío."],["Detalle","Dijo que leía en su habitación toda la noche."],["Dato","Nadie la vio en toda la velada."]]},
+    {id:"thomas",name:"Thomas Green",role:"Jardinero · 35 años",initials:"TG",data:[["Motivo","Recién contratado. Necesita el empleo."],["Detalle","Estaba con el Dr. Mortimer en el billar."],["Dato","Sus botas siempre tienen barro del jardín."]]}
+  ],
+  clues:[
+    {id:"c1",tag:"HUELLAS",title:"Barro en la alfombra del estudio",brief:"Se encontraron huellas con barro arcilloso junto a la vitrina.",detail:"El barro arcilloso <strong>solo se encuentra en el jardín</strong>, no en ningún otro sector. Quien dejó esas huellas venía directamente del exterior o del invernadero.",eliminates:["higgins","reginald","eleanor","victoria"]},
+    {id:"c2",tag:"VENTANA",title:"La ventana forzada",brief:"La ventana del estudio estaba forzada, pero la alfombra estaba seca.",detail:"Si alguien hubiera entrado por la ventana durante la tormenta, <strong>la alfombra estaría mojada</strong>. Como está seca, la ventana fue forzada <em>después</em> del robo, para despistar.",eliminates:[]},
+    {id:"c3",tag:"PERFUME",title:"Un guante con aroma a rosas",brief:"Detrás de la vitrina apareció un guante femenino impregnado de perfume de rosa y almizcle.",detail:"El perfume de <strong>rosa y almizcle</strong> es muy característico. Solo una persona en la mansión lo usa habitualmente.",eliminates:["higgins","mortimer","thomas","reginald"]},
+    {id:"c4",tag:"HORARIO",title:"El reloj del estudio se detuvo a las 20:08",brief:"El reloj de pared del estudio se detuvo a las 20:08, probablemente por el forcejeo.",detail:"Esto confirma que el robo ocurrió <strong>entre las 20:00 y las 20:15</strong>. Cualquier persona con coartada sólida en ese horario queda descartada.",eliminates:[]},
+    {id:"c5",tag:"TESTIMONIO",title:"Declaración de la cocinera",brief:"La cocinera Mrs. Dunn declaró: <em>«La Sra. Higgins no se movió de la cocina entre las 19 y las 21.»</em>",detail:"La cocinera es fiable y estuvo todo el tiempo en la cocina. Esto confirma la coartada de la Sra. Higgins.",eliminates:["higgins"]},
+    {id:"c6",tag:"TESTIMONIO",title:"Declaración del Dr. Mortimer",brief:"<em>«Thomas y yo jugamos al billar sin interrupción desde las 19:30 hasta después de las 21.»</em>",detail:"El Dr. Mortimer y Thomas se avalan mutuamente. Ambos estuvieron en la sala de billar durante el robo.",eliminates:["mortimer","thomas"]},
+    {id:"c7",tag:"TESTIMONIO",title:"Declaración del mayordomo Reginald",brief:"<em>«Estuve sirviendo vino en el comedor de 20:00 a 20:30. Tres invitados pueden confirmarlo.»</em>",detail:"Tres invitados externos confirman que Reginald sirvió vino durante el momento del robo. Su coartada es sólida.",eliminates:["reginald"]}
+  ],
+  alibis:[
+    {id:"higgins",name:"Sra. Higgins",claim:"En la cocina, de 19:00 a 21:00",witness:"Mrs. Dunn (cocinera)",valid:true,note:""},
+    {id:"reginald",name:"Sr. Reginald",claim:"Sirviendo vino, 20:00 a 20:30",witness:"Tres invitados externos",valid:true,note:""},
+    {id:"eleanor",name:"Lady Eleanor",claim:"En el baño, 20:00 a 20:45",witness:"Nadie la vio entrar ni salir",valid:false,note:"⚠️ ¡Coartada sin testigos!"},
+    {id:"mortimer",name:"Dr. Mortimer",claim:"Jugando al billar, 19:30 a 21:00",witness:"Thomas (jardinero)",valid:true,note:""},
+    {id:"victoria",name:"Victoria",claim:"Leyendo en su habitación",witness:"Nadie la vio",valid:false,note:"⚠️ ¡Coartada sin testigos!"},
+    {id:"thomas",name:"Thomas",claim:"Jugando al billar, 19:30 a 21:00",witness:"Dr. Mortimer",valid:true,note:""}
+  ],
+  inductionOptions:[
+    {id:"i1",text:"Las huellas de barro descartan a Higgins, Reginald, Eleanor y Victoria (ninguno estuvo en el jardín).",correct:true},
+    {id:"i2",text:"El guante con perfume de rosas descarta a Higgins, Mortimer, Thomas y Reginald (solo Eleanor usa ese perfume).",correct:true},
+    {id:"i3",text:"La ventana forzada demuestra que el ladrón entró desde afuera durante la tormenta.",correct:false,hint:"Releé la pista: si hubiera entrado durante la tormenta, la alfombra estaría mojada..."},
+    {id:"i4",text:"La cocinera confirma que Higgins estaba en la cocina. Eso la descarta.",correct:true},
+    {id:"i5",text:"El Dr. Mortimer y Thomas se avalan mutuamente en el billar. Ambos quedan descartados.",correct:true},
+    {id:"i6",text:"Reginald sirvió vino ante tres testigos. Su coartada es sólida.",correct:true}
+  ],
+  deductionSteps:[
+    {q:"Premisa 1: Si alguien tiene una coartada sólida confirmada por testigos fiables, entonces no pudo cometer el robo.",options:[
+      {id:"d1a",text:"Higgins, Reginald, Mortimer y Thomas quedan descartados.",correct:true},
+      {id:"d1b",text:"Solo Victoria queda descartada.",correct:false,hint:"Revisá las coartadas: hay más personas con testigos fiables."},
+      {id:"d1c",text:"Nadie queda descartado, todas las coartadas son dudosas.",correct:false,hint:"Algunas coartadas sí están confirmadas por testigos creíbles."}
+    ]},
+    {q:"Premisa 2: Si el guante encontrado tiene perfume de rosa y almizcle, y solo una persona usa ese perfume, entonces esa persona estuvo en el estudio.",options:[
+      {id:"d2a",text:"Eleanor es la única que usa ese perfume → estuvo en el estudio.",correct:true},
+      {id:"d2b",text:"Victoria usa ese perfume a veces.",correct:false,hint:"Releé la ficha de Victoria: no se menciona ese perfume. En cambio, en la ficha de Eleanor sí se destaca."},
+      {id:"d2c",text:"El guante pudo ser dejado por cualquiera.",correct:false,hint:"El perfume es muy característico: las pistas no mienten en el género policial de enigma."}
+    ]},
+    {q:"Premisa 3: Si una persona dice que estaba en un lugar pero nadie la vio, y además tenía un motivo (deudas), entonces su coartada es débil.",options:[
+      {id:"d3a",text:"Esto se aplica a Eleanor (deudas) y también a Victoria, pero solo Eleanor tiene el perfume que la vincula.",correct:true},
+      {id:"d3b",text:"Esto se aplica solo a Victoria.",correct:false,hint:"Recordá: Eleanor también dijo estar en el baño y nadie la vio... y además tenía deudas."},
+      {id:"d3c",text:"No se aplica a nadie, todas las coartadas son fuertes.",correct:false,hint:"Revisá la tabla de coartadas: hay dos personas sin testigos."}
+    ]}
+  ],
+  matrixRows:[
+    {id:"m1",label:"Huellas de barro → descarta a...",correct:["higgins","reginald","eleanor","victoria"]},
+    {id:"m2",label:"Perfume de rosas → señala a...",correct:["eleanor"]},
+    {id:"m3",label:"Coartada del billar → descarta a...",correct:["mortimer","thomas"]},
+    {id:"m4",label:"Testimonio Mrs. Dunn → descarta a...",correct:["higgins"]},
+    {id:"m5",label:"Testimonio 3 invitados → descarta a...",correct:["reginald"]}
+  ]
+},
+
+/* ---------- CASO 2: BIBLIOTECA ASHFORD ---------- */
+library: {
+  title:"El crimen de la Biblioteca Ashford",
+  meta:"Biblioteca Ashford · 12/03/1952 · 15:00 a 16:00 hs · Asesinato",
+  culprit:"diana",
+  panels:[
+    {n:1,t:"El hallazgo",p:"A las <strong>16:10</strong>, la estudiante Marta encontró al <strong>Profesor Harold Finch</strong> desplomado sobre su escritorio en la sala de manuscritos raros. Un libro abierto junto a su mano.",svg:`<svg viewBox="0 0 200 100"><rect x="30" y="50" width="140" height="40" fill="#6b4423" stroke="#2b1d0e" stroke-width="2"/><circle cx="100" cy="45" r="10" fill="#f1e4c8" stroke="#2b1d0e" stroke-width="2"/><rect x="120" y="55" width="30" height="20" fill="#8b2e1f" stroke="#2b1d0e" stroke-width="1.5"/></svg>`},
+    {n:2,t:"La taza",p:"Sobre el escritorio había una <strong>taza de té</strong> a medio terminar. El médico forense confirmó: <strong>veneno de almendras amargas</strong> (cianuro). La muerte ocurrió entre las 15:00 y las 16:00.",svg:`<svg viewBox="0 0 200 100"><path d="M70 40 L70 80 Q70 90 80 90 L120 90 Q130 90 130 80 L130 40 Z" fill="#f1e4c8" stroke="#2b1d0e" stroke-width="2"/><path d="M130 50 Q150 50 150 65 Q150 80 130 80" fill="none" stroke="#2b1d0e" stroke-width="2"/><path d="M85 35 Q90 25 95 35 M105 35 Q110 25 115 35" stroke="#888" stroke-width="1.5" fill="none"/></svg>`},
+    {n:3,t:"La sala cerrada",p:"La sala de manuscritos raros tiene <strong>una sola puerta</strong>, que se cierra con llave desde adentro. Solo el personal autorizado tiene copia. La puerta estaba cerrada pero <strong>no trabada</strong>.",svg:`<svg viewBox="0 0 200 100"><rect x="60" y="15" width="80" height="75" fill="#8b6f47" stroke="#2b1d0e" stroke-width="2"/><circle cx="125" cy="55" r="4" fill="#2b1d0e"/><rect x="140" y="20" width="20" height="70" fill="#6b4423" stroke="#2b1d0e" stroke-width="1.5"/></svg>`},
+    {n:4,t:"El pañuelo",p:"En el suelo, junto a la silla del profesor, había un <strong>pañuelo bordado</strong> con las iniciales <strong>«D. V.»</strong> y un tenue aroma a jazmín. El profesor no usaba pañuelos.",svg:`<svg viewBox="0 0 200 100"><path d="M60 60 Q100 40 140 60 Q130 80 100 85 Q70 80 60 60 Z" fill="#fff8dc" stroke="#2b1d0e" stroke-width="2"/><text x="100" y="70" text-anchor="middle" font-family="Caveat" font-size="18" fill="#8b2e1f">D.V.</text></svg>`}
+  ],
+  keyData:`<div class="q hand">📌 Datos clave para tu razonamiento:</div>
+    <ul style="margin:0;padding-left:20px">
+      <li>El asesinato ocurrió <strong>entre las 15:00 y las 16:00</strong>.</li>
+      <li>El veneno se administró en el <strong>té</strong>.</li>
+      <li>Solo <strong>5 personas</strong> tenían acceso a la sala de manuscritos ese día.</li>
+      <li>El pañuelo <strong>no es del profesor</strong>.</li>
+    </ul>`,
+  suspects:[
+    {id:"martha",name:"Sra. Martha Collins",role:"Bibliotecaria jefe · 54 años",initials:"MC",data:[["Motivo","Veinte años al servicio de la biblioteca. Sin conflictos."],["Detalle","Tiene llave maestra de todas las salas."],["Dato","Es alérgica al jazmín; nunca usa ese perfume."]]},
+    {id:"arthur",name:"Dr. Arthur Pembroke",role:"Decano · 60 años",initials:"AP",data:[["Motivo","Conflicto con Finch por el presupuesto del departamento."],["Detalle","Estaba en reunión del decanato de 14:30 a 16:30."],["Dato","Fuma en pipa; su aroma es tabaco, no jazmín."]]},
+    {id:"beatrice",name:"Beatrice Lane",role:"Estudiante becada · 20 años",initials:"BL",data:[["Motivo","Iba a ser expulsada por Finch la semana siguiente."],["Detalle","Estaba en el laboratorio de química de 14:00 a 17:00."],["Dato","Usa perfume de vainilla; compañeros la recuerdan."]]},
+    {id:"charles",name:"Charles Whitmore",role:"Conserje · 48 años",initials:"CW",data:[["Motivo","Conoce el edificio pero no tenía rencor."],["Detalle","Estaba arreglando la caldera con un técnico externo."],["Dato","Sus manos siempre tienen grasa de maquinaria."]]},
+    {id:"diana",name:"Dra. Diana Vale",role:"Profesora colega · 42 años",initials:"DV",data:[["Motivo","Rivalidad académica. Ambos postulaban al mismo cargo."],["Detalle","Su familia cultiva almendras amargas en el campo."],["Dato","Usa un perfume de jazmín muy característico."]]},
+    {id:"edward",name:"Edward Finch",role:"Sobrino del profesor · 28 años",initials:"EF",data:[["Motivo","Heredero universal. Deudas de juego importantes."],["Detalle","Dijo que estaba en la cafetería del campus."],["Dato","Nadie lo vio allí; llegó tarde a la cita con su novia."]]}
+  ],
+  clues:[
+    {id:"c1",tag:"VENENO",title:"Cianuro en el té",brief:"El veneno era de almendras amargas. Solo alguien con acceso a ellas pudo conseguirlo.",detail:"El <strong>cianuro de almendras amargas</strong> no se vende comúnmente. La familia de Diana Vale cultiva almendras amargas y ella tiene acceso directo.",eliminates:["martha","arthur","charles"]},
+    {id:"c2",tag:"PAÑUELO",title:"Pañuelo bordado D.V.",brief:"Un pañuelo con iniciales «D. V.» y aroma a jazmín apareció junto al cuerpo.",detail:"Las iniciales coinciden con <strong>Diana Vale</strong>. Además, el jazmín es su perfume característico. El profesor no usaba pañuelos.",eliminates:["martha","arthur","beatrice","charles","edward"]},
+    {id:"c3",tag:"LLAVES",title:"Acceso a la sala",brief:"Solo Martha, Arthur, Diana, Beatrice y Edward tenían llave de la sala de manuscritos.",detail:"Charles (conserje) no tenía llave de esa sala específica. Martha estaba en recepción (testigos). Arthur en reunión (varios testigos).",eliminates:["charles"]},
+    {id:"c4",tag:"HORARIO",title:"Ventana temporal: 15:00 a 16:00",brief:"El forense fijó la muerte entre las 15:00 y las 16:00.",detail:"Cualquier persona con coartada sólida en ese horario queda descartada automáticamente.",eliminates:[]},
+    {id:"c5",tag:"TESTIMONIO",title:"Declaración de técnicos",brief:"<em>«Charles estuvo con nosotros arreglando la caldera de 14:00 a 17:00 sin moverse.»</em>",detail:"Dos técnicos externos confirman la coartada de Charles. Estuvo todo el tiempo en el sótano.",eliminates:["charles"]},
+    {id:"c6",tag:"TESTIMONIO",title:"Declaración del decanato",brief:"<em>«El Dr. Pembroke estuvo en la reunión de 14:30 a 16:30. Cinco personas lo vieron.»</em>",detail:"Cinco miembros del decanato confirman la presencia de Arthur. Su coartada es impecable.",eliminates:["arthur"]},
+    {id:"c7",tag:"TESTIMONIO",title:"Declaración de compañeros",brief:"<em>«Beatrice estuvo en el laboratorio de química con nosotros toda la tarde.»</em>",detail:"Tres compañeros de laboratorio confirman que Beatrice no se movió. Su coartada es sólida.",eliminates:["beatrice"]},
+    {id:"c8",tag:"TESTIMONIO",title:"Declaración de la bibliotecaria",brief:"<em>«Yo estuve en recepción todo el día. Atendí a más de veinte personas.»</em>",detail:"Los registros de entrada y varios testigos confirman que Martha no se movió de recepción.",eliminates:["martha"]}
+  ],
+  alibis:[
+    {id:"martha",name:"Sra. Martha",claim:"En recepción, 9:00 a 17:00",witness:"Registros y 20+ personas",valid:true,note:""},
+    {id:"arthur",name:"Dr. Pembroke",claim:"Reunión decanato, 14:30 a 16:30",witness:"5 miembros del decanato",valid:true,note:""},
+    {id:"beatrice",name:"Beatrice Lane",claim:"Laboratorio química, 14:00 a 17:00",witness:"3 compañeros de laboratorio",valid:true,note:""},
+    {id:"charles",name:"Charles Whitmore",claim:"Arreglando caldera, 14:00 a 17:00",witness:"2 técnicos externos",valid:true,note:""},
+    {id:"diana",name:"Dra. Diana Vale",claim:"En su oficina corrigiendo exámenes",witness:"Nadie la vio entrar ni salir",valid:false,note:"⚠️ ¡Coartada sin testigos!"},
+    {id:"edward",name:"Edward Finch",claim:"En la cafetería del campus",witness:"Nadie lo vio; llegó tarde a cita",valid:false,note:"⚠️ ¡Coartada sin testigos!"}
+  ],
+  inductionOptions:[
+    {id:"i1",text:"El veneno de almendras amargas descarta a Martha, Arthur y Charles (ninguno tiene acceso a ese tipo de almendras).",correct:true},
+    {id:"i2",text:"El pañuelo con iniciales D.V. y aroma a jazmín descarta a Martha, Arthur, Beatrice, Charles y Edward.",correct:true},
+    {id:"i3",text:"Charles no tenía llave de la sala de manuscritos. Eso lo descarta.",correct:true},
+    {id:"i4",text:"La reunión del decanato descarta a Arthur (5 testigos).",correct:true},
+    {id:"i5",text:"El laboratorio descarta a Beatrice (3 compañeros la vieron).",correct:true},
+    {id:"i6",text:"La recepción descarta a Martha (registros y 20+ testigos).",correct:true}
+  ],
+  deductionSteps:[
+    {q:"Premisa 1: Si alguien tiene una coartada sólida confirmada por múltiples testigos fiables, entonces no pudo cometer el crimen.",options:[
+      {id:"d1a",text:"Martha, Arthur, Beatrice y Charles quedan descartados.",correct:true},
+      {id:"d1b",text:"Solo Edward queda descartado.",correct:false,hint:"Revisá las coartadas: hay más personas con testigos fiables que Edward."},
+      {id:"d1c",text:"Nadie queda descartado, todas las coartadas son dudosas.",correct:false,hint:"Cuatro coartadas están confirmadas por múltiples testigos."}
+    ]},
+    {q:"Premisa 2: Si el pañuelo tiene iniciales «D. V.» y aroma a jazmín, y solo una persona cumple ambas condiciones, entonces esa persona estuvo en la escena.",options:[
+      {id:"d2a",text:"Diana Vale (D. V.) usa jazmín → estuvo en la escena.",correct:true},
+      {id:"d2b",text:"Edward pudo haber dejado el pañuelo para incriminar a Diana.",correct:false,hint:"Edward no tiene iniciales D.V. ni usa jazmín. Las pistas físicas son directas en este género."},
+      {id:"d2c",text:"El pañuelo pudo ser de cualquiera.",correct:false,hint:"Las iniciales y el perfume son muy específicos: apuntan a una persona concreta."}
+    ]},
+    {q:"Premisa 3: Si una persona tiene acceso al veneno, motivo (rivalidad), oportunidad (coartada débil) y evidencia física la señala, entonces es la sospechosa principal.",options:[
+      {id:"d3a",text:"Esto se aplica a Diana: acceso (almendras familiares), motivo (cargo), oportunidad (sin testigos) y evidencia (pañuelo).",correct:true},
+      {id:"d3b",text:"Esto se aplica solo a Edward.",correct:false,hint:"Edward no tiene acceso al veneno ni evidencia física que lo vincule."},
+      {id:"d3c",text:"No se aplica a nadie, falta evidencia concluyente.",correct:false,hint:"Reuní las cuatro condiciones: acceso, motivo, oportunidad y evidencia. ¿Quién las cumple todas?"}
+    ]}
+  ],
+  matrixRows:[
+    {id:"m1",label:"Veneno almendras → descarta a...",correct:["martha","arthur","charles"]},
+    {id:"m2",label:"Pañuelo D.V./jazmín → señala a...",correct:["diana"]},
+    {id:"m3",label:"Llaves de la sala → descarta a...",correct:["charles"]},
+    {id:"m4",label:"Testimonio decanato → descarta a...",correct:["arthur"]},
+    {id:"m5",label:"Testimonio laboratorio → descarta a...",correct:["beatrice"]},
+    {id:"m6",label:"Testimonio recepción → descarta a...",correct:["martha"]}
+  ]
+},
+
+/* ---------- CASO 3: EXPRESO DE LA NOCHE ---------- */
+orient: {
+  title:"Muerte en el Expreso de la Noche",
+  meta:"Tren Expreso · 07/12/1934 · 23:00 a 00:00 hs · Asesinato",
+  culprit:"pemberton",
+  panels:[
+    {n:1,t:"El viaje",p:"El Expreso de la Noche partió de Viena a las <strong>21:00</strong>. Seis pasajeros viajaban en el vagón dormitorio. A las <strong>22:30</strong> el mozo sirvió la cena a todos.",svg:`<svg viewBox="0 0 200 100"><rect x="10" y="50" width="180" height="30" fill="#4a3a24" stroke="#2b1d0e" stroke-width="2"/><rect x="20" y="55" width="20" height="15" fill="#a8d0ff" stroke="#2b1d0e" stroke-width="1"/><rect x="50" y="55" width="20" height="15" fill="#a8d0ff" stroke="#2b1d0e" stroke-width="1"/><rect x="80" y="55" width="20" height="15" fill="#a8d0ff" stroke="#2b1d0e" stroke-width="1"/><circle cx="40" cy="85" r="8" fill="#2b1d0e"/><circle cx="160" cy="85" r="8" fill="#2b1d0e"/></svg>`},
+    {n:2,t:"La nieve",p:"A las <strong>22:45</strong> una nevada detuvo el tren en medio del campo. <strong>Nadie subió ni bajó.</strong> Los pasajeros quedaron aislados.",svg:`<svg viewBox="0 0 200 100"><path d="M0 70 Q50 50 100 70 Q150 50 200 70 L200 100 L0 100 Z" fill="#f5f5f5" stroke="#2b1d0e" stroke-width="1.5"/><circle cx="30" cy="30" r="2" fill="#fff"/><circle cx="80" cy="20" r="2" fill="#fff"/><circle cx="130" cy="35" r="2" fill="#fff"/><circle cx="170" cy="25" r="2" fill="#fff"/></svg>`},
+    {n:3,t:"El grito",p:"A las <strong>23:40</strong> se escuchó un grito. El Sr. Montague yacía en su camarote <strong>apuñalado</strong>. Su reloj estaba detenido a las <strong>23:22</strong>.",svg:`<svg viewBox="0 0 200 100"><rect x="30" y="20" width="140" height="70" fill="#8b6f47" stroke="#2b1d0e" stroke-width="2"/><rect x="50" y="40" width="100" height="40" fill="#6b4423" stroke="#2b1d0e" stroke-width="1.5"/><circle cx="150" cy="35" r="8" fill="#f1e4c8" stroke="#2b1d0e" stroke-width="1.5"/></svg>`},
+    {n:4,t:"La ventana",p:"La ventana del camarote estaba <strong>abierta</strong>, pero afuera había <strong>nieve fresca sin huellas</strong>. Imposible que alguien entró o salió por allí.",svg:`<svg viewBox="0 0 200 100"><rect x="60" y="20" width="80" height="60" fill="#a8d0ff" stroke="#2b1d0e" stroke-width="2"/><path d="M60 20 L140 80 M140 20 L60 80" stroke="#2b1d0e" stroke-width="1.5"/><path d="M0 85 Q100 70 200 85 L200 100 L0 100 Z" fill="#f5f5f5" stroke="#2b1d0e" stroke-width="1.5"/></svg>`}
+  ],
+  keyData:`<div class="q hand">📌 Datos clave para tu razonamiento:</div>
+    <ul style="margin:0;padding-left:20px">
+      <li>El asesinato ocurrió <strong>entre las 23:00 y las 23:40</strong>.</li>
+      <li>El tren estaba <strong>detenido por la nieve</strong>: nadie entró ni salió.</li>
+      <li>La ventana abierta es una <strong>pista falsa</strong> (nieve sin huellas).</li>
+      <li>El asesino está <strong>entre los pasajeros</strong>.</li>
+    </ul>`,
+  suspects:[
+    {id:"bianchi",name:"Sra. Isabella Bianchi",role:"Viuda italiana · 45 años",initials:"IB",data:[["Motivo","Conocía a Montague de negocios pasados. Sin rencor aparente."],["Detalle","Dijo que dormía desde las 22:30."],["Dato","Nadie la vio después de cenar."]]},
+    {id:"armstrong",name:"Coronel James Armstrong",role:"Militar retirado · 58 años",initials:"JA",data:[["Motivo","Veterano de guerra. Conocía a Montague del ejército."],["Detalle","Jugaba al ajedrez con el Dr. Konstantin desde las 22:30."],["Dato","Su bastón tiene empuñadura de plata con sus iniciales."]]},
+    {id:"pemberton",name:"Miss Agatha Pemberton",role:"Institutriz · 34 años",initials:"AP",data:[["Motivo","Su hermano murió por culpa de Montague en un negocio fraudulento."],["Detalle","Dijo que leía en su camarote toda la noche."],["Dato","Borda pañuelos con sus iniciales como hobby."]]},
+    {id:"konstantin",name:"Dr. Pavel Konstantin",role:"Médico · 50 años",initials:"PK",data:[["Motivo","Colega de Montague. Sin conflictos."],["Detalle","Jugaba al ajedrez con el Coronel desde las 22:30."],["Dato","Su maletín médico siempre está con él."]]},
+    {id:"hardman",name:"Sr. Cyrus Hardman",role:"Viajero de comercio · 42 años",initials:"CH",data:[["Motivo","Desconocido. Parecía nervioso."],["Detalle","Dijo que fumaba en el vagón comedor."],["Dato","Tres pasajeros lo vieron allí hasta las 23:30."]]},
+    {id:"antonio",name:"Antonio Moretti",role:"Mozo del tren · 28 años",initials:"AM",data:[["Motivo","Empleado del tren. Sin relación con la víctima."],["Detalle","Sirvió la cena a todos hasta las 22:45."],["Dato","Después estuvo en la cocina con el cocinero hasta las 00:00."]]}
+  ],
+  clues:[
+    {id:"c1",tag:"RELOJ",title:"Reloj detenido a las 23:22",brief:"El reloj de pulsera de Montague se detuvo a las 23:22, probablemente durante el forcejeo.",detail:"Esto fija el momento del crimen: <strong>23:22</strong>. Quien tenga coartada sólida a esa hora queda descartado.",eliminates:[]},
+    {id:"c2",tag:"VENTANA",title:"Ventana abierta sin huellas",brief:"La ventana estaba abierta, pero la nieve afuera estaba intacta, sin huellas.",detail:"Si alguien hubiera entrado o salido por la ventana, <strong>habría dejado huellas en la nieve</strong>. Como no las hay, la ventana fue abierta <em>después</em> del crimen, para despistar.",eliminates:[]},
+    {id:"c3",tag:"PAÑUELO",title:"Pañuelo bordado A.P.",brief:"Bajo el cuerpo apareció un pañuelo bordado con las iniciales <strong>«A. P.»</strong>.",detail:"Las iniciales coinciden con <strong>Agatha Pemberton</strong>. Además, bordar pañuelos es su hobby conocido. Montague no usaba pañuelos.",eliminates:["bianchi","armstrong","konstantin","hardman","antonio"]},
+    {id:"c4",tag:"MOTIVO",title:"Venganza familiar",brief:"Se descubrió que el hermano de Miss Pemberton murió arruinado por un negocio fraudulento de Montague.",detail:"Miss Pemberton tenía <strong>motivo de venganza</strong>. Los otros pasajeros no tenían conflicto conocido con la víctima.",eliminates:["armstrong","konstantin","hardman","antonio"]},
+    {id:"c5",tag:"TESTIMONIO",title:"Declaración del mozo Antonio",brief:"<em>«Serví la cena a todos hasta las 22:45. Después estuve en la cocina con el cocinero.»</em>",detail:"El cocinero confirma que Antonio estuvo en la cocina hasta las 00:00. Su coartada es sólida.",eliminates:["antonio"]},
+    {id:"c6",tag:"TESTIMONIO",title:"Declaración del Dr. Konstantin",brief:"<em>«El Coronel y yo jugamos al ajedrez desde las 22:30 sin interrupción.»</em>",detail:"El Coronel Armstrong y el Dr. Konstantin se avalan mutuamente. Ambos estuvieron juntos durante el crimen.",eliminates:["armstrong","konstantin"]},
+    {id:"c7",tag:"TESTIMONIO",title:"Declaración de tres pasajeros",brief:"<em>«Hardman estuvo fumando en el vagón comedor hasta las 23:30. Lo vimos todos.»</em>",detail:"Tres pasajeros confirman la presencia de Hardman en el comedor hasta las 23:30. Su coartada es sólida.",eliminates:["hardman"]}
+  ],
+  alibis:[
+    {id:"bianchi",name:"Sra. Bianchi",claim:"Durmiendo desde las 22:30",witness:"Nadie la vio después de cenar",valid:false,note:"⚠️ ¡Coartada sin testigos!"},
+    {id:"armstrong",name:"Coronel Armstrong",claim:"Ajedrez con Dr. Konstantin, 22:30 en adelante",witness:"Dr. Konstantin",valid:true,note:""},
+    {id:"pemberton",name:"Miss Pemberton",claim:"Leyendo en su camarote",witness:"Nadie la vio",valid:false,note:"⚠️ ¡Coartada sin testigos!"},
+    {id:"konstantin",name:"Dr. Konstantin",claim:"Ajedrez con Coronel, 22:30 en adelante",witness:"Coronel Armstrong",valid:true,note:""},
+    {id:"hardman",name:"Sr. Hardman",claim:"Fumando en vagón comedor hasta 23:30",witness:"3 pasajeros",valid:true,note:""},
+    {id:"antonio",name:"Antonio Moretti",claim:"En la cocina con el cocinero, 22:45 a 00:00",witness:"Cocinero del tren",valid:true,note:""}
+  ],
+  inductionOptions:[
+    {id:"i1",text:"El pañuelo bordado A.P. descarta a Bianchi, Armstrong, Konstantin, Hardman y Antonio (solo Pemberton borda pañuelos con esas iniciales).",correct:true},
+    {id:"i2",text:"El motivo de venganza descarta a Armstrong, Konstantin, Hardman y Antonio (solo Pemberton tenía rencor contra Montague).",correct:true},
+    {id:"i3",text:"La ventana abierta demuestra que el asesino escapó por ella durante la nevada.",correct:false,hint:"Releé la pista: si alguien hubiera salido por la ventana, habría huellas en la nieve intacta..."},
+    {id:"i4",text:"Antonio estuvo en la cocina con el cocinero (testigo). Su coartada es sólida.",correct:true},
+    {id:"i5",text:"Armstrong y Konstantin jugaron al ajedrez juntos (se avalan mutuamente). Ambos quedan descartados.",correct:true},
+    {id:"i6",text:"Hardman estuvo en el vagón comedor ante tres testigos hasta las 23:30. Su coartada es sólida.",correct:true}
+  ],
+  deductionSteps:[
+    {q:"Premisa 1: Si alguien tiene una coartada sólida confirmada por testigos fiables durante el momento del crimen, entonces no pudo cometerlo.",options:[
+      {id:"d1a",text:"Armstrong, Konstantin, Hardman y Antonio quedan descartados.",correct:true},
+      {id:"d1b",text:"Solo Bianchi queda descartada.",correct:false,hint:"Revisá las coartadas: hay más personas con testigos fiables que Bianchi."},
+      {id:"d1c",text:"Nadie queda descartado, todas las coartadas son dudosas.",correct:false,hint:"Cuatro coartadas están confirmadas por testigos creíbles."}
+    ]},
+    {q:"Premisa 2: Si el pañuelo encontrado tiene iniciales «A. P.» y solo una persona borda pañuelos con esas iniciales, entonces esa persona estuvo en la escena.",options:[
+      {id:"d2a",text:"Agatha Pemberton (A. P.) borda pañuelos → estuvo en la escena.",correct:true},
+      {id:"d2b",text:"Bianchi pudo haber dejado el pañuelo para incriminar a Pemberton.",correct:false,hint:"Bianchi no tiene iniciales A.P. ni borda pañuelos. Las pistas físicas son directas."},
+      {id:"d2c",text:"El pañuelo pudo ser de cualquiera.",correct:false,hint:"Las iniciales y el hobby son muy específicos: apuntan a una persona concreta."}
+    ]},
+    {q:"Premisa 3: Si una persona tiene motivo (venganza), oportunidad (coartada débil) y evidencia física la señala, entonces es la culpable.",options:[
+      {id:"d3a",text:"Esto se aplica a Pemberton: motivo (hermano), oportunidad (sin testigos) y evidencia (pañuelo).",correct:true},
+      {id:"d3b",text:"Esto se aplica solo a Bianchi.",correct:false,hint:"Bianchi no tiene motivo conocido ni evidencia física que la vincule."},
+      {id:"d3c",text:"No se aplica a nadie, falta evidencia concluyente.",correct:false,hint:"Reuní las tres condiciones: motivo, oportunidad y evidencia. ¿Quién las cumple todas?"}
+    ]}
+  ],
+  matrixRows:[
+    {id:"m1",label:"Pañuelo A.P. → señala a...",correct:["pemberton"]},
+    {id:"m2",label:"Motivo venganza → señala a...",correct:["pemberton"]},
+    {id:"m3",label:"Coartada ajedrez → descarta a...",correct:["armstrong","konstantin"]},
+    {id:"m4",label:"Testimonio vagón comedor → descarta a...",correct:["hardman"]},
+    {id:"m5",label:"Testimonio cocina → descarta a...",correct:["antonio"]}
+  ]
+}
+
+}; /* FIN OBJETO CASES */
+
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
+const state = {
+  currentCase: null,
+  currentCaseId: null,
+  visited: new Set(),
+  fontSize: 17,
+  speechOn: false
+};
+
+/* ============================================================
+   UTILIDADES DOM
+   ============================================================ */
+const $ = sel => document.querySelector(sel);
+const $$ = sel => document.querySelectorAll(sel);
+
+/* ============================================================
+   RENDERIZADO DINÁMICO DEL CASO ACTIVO
+   ============================================================ */
+function loadCase(caseId){
+  const c = CASES[caseId];
+  if(!c) return;
+  state.currentCase = c;
+  state.currentCaseId = caseId;
+  state.visited.clear();
+
+  // Encabezado
+  $("#inv-title").textContent = "🔎 Caso: " + c.title;
+  $("#caseMeta").textContent = c.meta;
+
+  // Paneles cómic
+  $("#comicPanels").innerHTML = c.panels.map(p=>`
+    <div class="panel">
+      <div class="num">${p.n}</div>
+      <h4>${p.t}</h4>
+      <p>${p.p}</p>
+      ${p.svg}
+    </div>
+  `).join("");
+  $("#keyData").innerHTML = c.keyData;
+
+  // Sospechosos
+  $("#suspectsGrid").innerHTML = c.suspects.map(s=>`
+    <article class="suspect" tabindex="0" aria-label="Ficha de ${s.name}">
+      <div class="clip" aria-hidden="true"></div>
+      <div class="avatar">${s.initials}</div>
+      <h4>${s.name}</h4>
+      <div class="role">${s.role}</div>
+      <dl class="data">
+        ${s.data.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}
+      </dl>
+    </article>
+  `).join("");
+
+  // Pistas
+  $("#cluesList").innerHTML = c.clues.map(cl=>`
+    <div class="clue" tabindex="0" role="button" aria-expanded="false" data-id="${cl.id}">
+      <div><span class="tag">${cl.tag}</span><strong>${cl.title}</strong></div>
+      <p style="margin:6px 0 0;font-size:.95rem">${cl.brief}</p>
+      <div class="detail">${cl.detail}</div>
+    </div>
+  `).join("");
+  $$(".clue").forEach(el=>{
+    el.addEventListener("click",()=>{
+      el.classList.toggle("open");
+      el.setAttribute("aria-expanded", el.classList.contains("open"));
+    });
+    el.addEventListener("keydown",e=>{
+      if(e.key==="Enter"||e.key===" "){e.preventDefault();el.click();}
+    });
+  });
+
+  // Coartadas
+  $("#alibiBody").innerHTML = c.alibis.map(a=>`
+    <tr>
+      <td><strong>${a.name}</strong></td>
+      <td>${a.claim}</td>
+      <td>${a.witness}</td>
+      <td>${a.valid ? "✅ Sí" : `<span class="conflict">${a.note}</span>`}</td>
+    </tr>
+  `).join("");
+
+  // Inducción
+  $("#inductionList").innerHTML = c.inductionOptions.map(o=>`
+    <li data-id="${o.id}">
+      <input type="checkbox" id="ind-${o.id}" value="${o.id}">
+      <label for="ind-${o.id}">${o.text}</label>
+    </li>
+  `).join("");
+
+  // Deducción
+  $("#deductionSteps").innerHTML = c.deductionSteps.map((step,i)=>`
+    <div class="deduction-step" data-step="${i}">
+      <div class="q">${step.q}</div>
+      <div class="options">
+        ${step.options.map(o=>`
+          <label><input type="radio" name="step${i}" value="${o.id}"> ${o.text}</label>
+        `).join("")}
+      </div>
+    </div>
+  `).join("");
+
+  // Matriz
+  const matrix = $("#deductionMatrix");
+  let html = `<div class="head">Pista</div>`;
+  c.suspects.forEach(s=>{html += `<div class="head">${s.initials}</div>`;});
+  c.matrixRows.forEach(row=>{
+    html += `<div class="row-head">${row.label}</div>`;
+    c.suspects.forEach(s=>{
+      html += `<div>
+        <select data-row="${row.id}" data-suspect="${s.id}" aria-label="${row.label} ${s.name}">
+          <option value="">—</option>
+          <option value="descarta">Descarta</option>
+          <option value="incrimina">Incrimina</option>
+          <option value="neutro">Neutro</option>
+        </select>
+      </div>`;
+    });
+  });
+  matrix.style.gridTemplateColumns = `auto repeat(${c.suspects.length},1fr)`;
+  matrix.innerHTML = html;
+
+  // Select acusado
+  $("#accusedSelect").innerHTML = `<option value="">— Seleccionar sospechoso —</option>` +
+    c.suspects.map(s=>`<option value="${s.id}">${s.name}</option>`).join("");
+
+  // Reset feedback y fases
+  $$(".feedback").forEach(f=>{f.classList.remove("show");f.innerHTML="";});
+  $("#phase1").style.display="block";
+  $("#phase2").style.display="none";
+  $("#phase3").style.display="none";
+  $("#verdict").classList.remove("show");
+
+  updateProgress();
+}
+
+function updateProgress(){
+  const total = 4;
+  const n = state.visited.size;
+  $("#progressFill").style.width = (n/total*100)+"%";
+  $("#progressText").textContent = `${n}/${total} secciones`;
+}
+
+function switchTab(tabName){
+  $$(".tab").forEach(t=>{
+    const active = t.dataset.tab===tabName;
+    t.classList.toggle("active",active);
+    t.setAttribute("aria-selected",active);
+  });
+  $$(".tab-panel").forEach(p=>{
+    p.hidden = p.id !== "tab-"+tabName;
+  });
+  state.visited.add(tabName);
+  updateProgress();
+}
+
+function showScreen(id){
+  ["screen-cover","screen-investigation","screen-resolution"].forEach(s=>{
+    const el = document.getElementById(s);
+    el.classList.remove("active");
+    el.style.display = "none";
+  });
+  const el = document.getElementById(id);
+  el.style.display = "block";
+  if(id!=="screen-cover") el.classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showFeedback(id,msg,ok=false){
+  const fb = document.getElementById(id);
+  fb.innerHTML = msg;
+  fb.classList.add("show");
+  fb.classList.toggle("ok",ok);
+}
+
+/* ============================================================
+   VALIDACIONES
+   ============================================================ */
+function validateInduction(){
+  const c = state.currentCase;
+  const selected = [...$$("#inductionList input:checked")].map(i=>i.value);
+  const correctIds = c.inductionOptions.filter(o=>o.correct).map(o=>o.id);
+  const wrong = selected.filter(id=>!correctIds.includes(id));
+  const missing = correctIds.filter(id=>!selected.includes(id));
+  if(wrong.length===0 && missing.length===0){
+    showFeedback("feedback1","✅ ¡Excelente trabajo inductivo! Has descartado correctamente a los sospechosos incompatibles con las evidencias. Pasemos a la deducción.",true);
+    setTimeout(()=>{
+      $("#phase1").style.display="none";
+      $("#phase2").style.display="block";
+      window.scrollTo({top:$("#phase2").offsetTop-80,behavior:"smooth"});
+    },1600);
+  } else {
+    let msg = "⚠️ Todavía hay ajustes por hacer:<ul>";
+    if(wrong.length) msg += `<li>Revisá: alguna evidencia que seleccionaste <strong>no permite descartar</strong> a ese sospechoso. Releé las pistas.</li>`;
+    if(missing.length) msg += `<li>Te falta considerar alguna evidencia que sí descarta sospechosos.</li>`;
+    msg += "</ul><em>Recordá: en la inducción, cada pista particular nos permite eliminar casos particulares.</em>";
+    showFeedback("feedback1",msg);
+  }
+}
+
+function validateDeduction(){
+  const c = state.currentCase;
+  const answers = {};
+  c.deductionSteps.forEach((step,i)=>{
+    const checked = document.querySelector(`input[name="step${i}"]:checked`);
+    answers[i] = checked ? checked.value : null;
+  });
+  let allCorrect = true;
+  let feedbackHtml = "";
+  c.deductionSteps.forEach((step,i)=>{
+    const correctId = step.options.find(o=>o.correct).id;
+    if(answers[i]===correctId){
+      feedbackHtml += `<p>✅ Premisa ${i+1}: correcta.</p>`;
+    } else {
+      allCorrect = false;
+      const wrongOpt = step.options.find(o=>o.id===answers[i]);
+      const hint = wrongOpt && wrongOpt.hint ? wrongOpt.hint : "Releé las pistas y las fichas de los sospechosos.";
+      feedbackHtml += `<p>❌ Premisa ${i+1}: aún no. <em>${hint}</em></p>`;
+    }
+  });
+  if(!answers[0] && !answers[1] && !answers[2]){
+    showFeedback("feedback2","⚠️ Respondé cada premisa antes de continuar.");
+    return;
+  }
+  showFeedback("feedback2",feedbackHtml,allCorrect);
+  if(allCorrect){
+    setTimeout(()=>{
+      $("#phase2").style.display="none";
+      $("#phase3").style.display="block";
+      window.scrollTo({top:$("#phase3").offsetTop-80,behavior:"smooth"});
+    },1800);
+  }
+}
+
+function validateMatrix(){
+  const c = state.currentCase;
+  const selects = $$("#deductionMatrix select");
+  let errors = 0;
+  selects.forEach(sel=>{
+    const rowId = sel.dataset.row;
+    const suspectId = sel.dataset.suspect;
+    const row = c.matrixRows.find(r=>r.id===rowId);
+    const val = sel.value;
+    const shouldBeCorrect = row.correct.includes(suspectId);
+    const userSaysIncrimina = val==="incrimina";
+    const userSaysDescarta = val==="descarta";
+    if(shouldBeCorrect && !userSaysIncrimina) errors++;
+    if(!shouldBeCorrect && val && val!=="neutro" && val!==""){
+      if(userSaysDescarta) errors++;
+    }
+  });
+  return errors;
+}
+
+function handleAccusation(){
+  const c = state.currentCase;
+  const matrixErrors = validateMatrix();
+  const accused = $("#accusedSelect").value;
+  const verdict = $("#verdict");
+  if(!accused){
+    verdict.className = "verdict show lose";
+    verdict.innerHTML = "⚠️ Debés elegir un sospechoso antes de acusar.";
+    return;
+  }
+  if(matrixErrors > 3){
+    verdict.className = "verdict show lose";
+    verdict.innerHTML = `🧭 Tu matriz deductiva tiene varias inconsistencias. Revisá las pistas y completá la matriz con más cuidado antes de acusar. <em>El detective no acusa por intuición: acusa por demostración.</em>`;
+    return;
+  }
+  if(accused === c.culprit){
+    const culpritName = c.suspects.find(s=>s.id===c.culprit).name;
+    verdict.className = "verdict show win";
+    verdict.innerHTML = `🏆 ¡EXCELENTE, DETECTIVE! Has razonado con rigor: <strong>indujiste</strong> descartando con evidencias y <strong>dedujiste</strong> aplicando premisas lógicas. <strong>${culpritName}</strong> es el culpable. ¡Caso resuelto!`;
+  } else {
+    const culpritName = c.suspects.find(s=>s.id===c.culprit).name;
+    let hint = "";
+    if(state.currentCaseId==="blackwood"){
+      hint = "Tu sospechoso/a tiene una coartada sólida o no encaja con las evidencias físicas. Volvé a cruzar pistas con coartadas. ¿Quién queda cuando descartás a todos los demás? Pista: ¿quién usa el perfume del guante encontrado?";
+    } else if(state.currentCaseId==="library"){
+      hint = "Tu sospechoso/a no encaja con todas las evidencias. Releé: ¿quién tiene acceso al veneno, motivo, oportunidad y evidencia física (pañuelo)?";
+    } else {
+      hint = "Tu sospechoso/a no cumple todas las condiciones. Releé: ¿quién tiene motivo de venganza, oportunidad (coartada débil) y evidencia física (pañuelo bordado)?";
+    }
+    verdict.className = "verdict show lose";
+    verdict.innerHTML = `🔎 Esa no es la respuesta, pero no te rindas: un buen detective aprende del error. <br><em>Pista de andamiaje:</em> ${hint}`;
+  }
+}
+
+/* ============================================================
+   ACCESIBILIDAD
+   ============================================================ */
+function changeFontSize(delta){
+  state.fontSize = Math.max(13, Math.min(24, state.fontSize + delta));
+  document.documentElement.style.setProperty("--fs-base", state.fontSize+"px");
+}
+
+function toggleRead(){
+  if(!("speechSynthesis" in window)){
+    alert("Tu navegador no soporta lectura en voz alta.");
+    return;
+  }
+  state.speechOn = !state.speechOn;
+  $("#readToggle").textContent = state.speechOn ? "🔇 Pausar" : "🔊 Leer";
+  if(!state.speechOn){
+    window.speechSynthesis.cancel();
+    $$(".speaking").forEach(el=>el.classList.remove("speaking"));
+    return;
+  }
+  readVisibleText();
+}
+
+function readVisibleText(){
+  if(!state.speechOn) return;
+  window.speechSynthesis.cancel();
+  const panels = $$(".tab-panel:not([hidden]) p, .tab-panel:not([hidden]) .clue, .phase p, .phase .q");
+  panels.forEach(el=>{
+    const text = el.innerText.trim();
+    if(!text) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "es-AR";
+    u.rate = 0.95;
+    u.onstart = ()=>el.classList.add("speaking");
+    u.onend = ()=>el.classList.remove("speaking");
+    window.speechSynthesis.speak(u);
+  });
+}
+
+function setContrast(mode){
+  document.body.classList.remove("hc-dark","hc-light");
+  if(mode==="dark") document.body.classList.add("hc-dark");
+  if(mode==="light") document.body.classList.add("hc-light");
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+function init(){
+  // Selección de caso
+  $$(".case-option").forEach(opt=>{
+    const handler = ()=>{
+      $$(".case-option").forEach(o=>{
+        o.classList.remove("selected");
+        o.setAttribute("aria-pressed","false");
+      });
+      opt.classList.add("selected");
+      opt.setAttribute("aria-pressed","true");
+      state.currentCaseId = opt.dataset.case;
+      $("#btnStart").disabled = false;
+    };
+    opt.addEventListener("click",handler);
+    opt.addEventListener("keydown",e=>{
+      if(e.key==="Enter"||e.key===" "){e.preventDefault();handler();}
+    });
+  });
+
+  // Navegación
+  $("#btnStart").addEventListener("click",()=>{
+    if(!state.currentCaseId) return;
+    loadCase(state.currentCaseId);
+    showScreen("screen-investigation");
+    switchTab("contexto");
+  });
+  $("#btnBackCover").addEventListener("click",()=>{
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    state.speechOn = false;
+    $("#readToggle").textContent = "🔊 Leer";
+    showScreen("screen-cover");
+  });
+  $("#btnToResolution").addEventListener("click",()=>{
+    if(state.visited.size < 2){
+      if(!confirm("Te conviene revisar al menos 2 secciones antes de resolver. ¿Continuar de todos modos?")) return;
+    }
+    showScreen("screen-resolution");
+    $("#phase1").style.display="block";
+    $("#phase2").style.display="none";
+    $("#phase3").style.display="none";
+  });
+  $("#btnBackInv").addEventListener("click",()=>showScreen("screen-investigation"));
+  $("#btnPhase1Next").addEventListener("click",validateInduction);
+  $("#btnPhase2Back").addEventListener("click",()=>{
+    $("#phase2").style.display="none";
+    $("#phase1").style.display="block";
+  });
+  $("#btnPhase2Next").addEventListener("click",validateDeduction);
+  $("#btnAccuse").addEventListener("click",handleAccusation);
+  $("#btnRestart").addEventListener("click",()=>{
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    state.speechOn = false;
+    $("#readToggle").textContent = "🔊 Leer";
+    showScreen("screen-cover");
+  });
+
+  // Tabs
+  $$(".tab").forEach(t=>{
+    t.addEventListener("click",()=>switchTab(t.dataset.tab));
+  });
+
+  // Accesibilidad
+  $("#fontUp").addEventListener("click",()=>changeFontSize(+1));
+  $("#fontDown").addEventListener("click",()=>changeFontSize(-1));
+  $("#readToggle").addEventListener("click",toggleRead);
+  $("#contrastMode").addEventListener("change",e=>setContrast(e.target.value));
+}
+
+document.addEventListener("DOMContentLoaded",init);
+</script>
+</body>
+</html>

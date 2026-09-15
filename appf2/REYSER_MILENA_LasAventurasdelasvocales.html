@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventura de las Vocales - DUA 5 Años</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font - Fredoka para diseño infantil super legible -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Fredoka', 'sans-serif'],
+                    },
+                    colors: {
+                        vocalA: '#FF5964',
+                        vocalE: '#FFAD05',
+                        vocalI: '#4D9DE0',
+                        vocalO: '#E15FED',
+                        vocalU: '#06D6A0',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* Modo Alto Contraste DUA */
+        body.high-contrast {
+            background-color: #000000 !important;
+            color: #FFFF00 !important;
+        }
+
+        body.high-contrast .dua-card {
+            background-color: #1a1a1a !important;
+            border: 4px solid #FFFF00 !important;
+            color: #FFFFFF !important;
+            box-shadow: none !important;
+        }
+
+        body.high-contrast .dua-btn {
+            background-color: #FFFF00 !important;
+            color: #000000 !important;
+            border: 3px solid #FFFFFF !important;
+            font-weight: bold !important;
+        }
+
+        /* Animaciones para niños */
+        @keyframes bounce-gentle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-bounce-gentle {
+            animation: bounce-gentle 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(79, 70, 229, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+
+        .pulse-highlight {
+            animation: pulse-ring 1.5s infinite;
+        }
+
+        /* Botones táctiles accesibles */
+        .btn-touch {
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-touch:active {
+            transform: scale(0.92);
+        }
+
+        /* Estilos de partículas/confeti */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: fall 1.5s linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-amber-50 min-h-screen flex flex-col justify-between text-gray-800 transition-colors duration-300">
+
+    <!-- ENCABEZADO Y PANEL DE ACCESIBILIDAD DUA -->
+    <header class="bg-white shadow-md p-3 md:p-4 sticky top-0 z-50 border-b-4 border-indigo-200">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            
+            <!-- Título Principal con Lectura por Voz -->
+            <div class="flex items-center gap-3">
+                <button onclick="speakText('Aventura de las Vocales')" class="bg-indigo-500 hover:bg-indigo-600 text-white p-2 md:p-3 rounded-full text-xl shadow-md btn-touch" aria-label="Escuchar título">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+                <h1 id="app-title" class="text-2xl md:text-3xl font-bold tracking-wide text-indigo-700">
+                    Aventura de las Vocales 🎨
+                </h1>
+            </div>
+
+            <!-- Herramientas DUA (Tamaño Texto, Alto Contraste, Audio Master) -->
+            <div class="flex items-center gap-2 md:gap-3 bg-indigo-50 p-2 rounded-2xl border border-indigo-100 flex-wrap">
+                <!-- Control Tamaño Fuente -->
+                <div class="flex items-center bg-white rounded-xl shadow-sm border p-1">
+                    <button onclick="changeFontSize(-2)" class="px-3 py-1 text-lg font-bold text-gray-700 hover:bg-indigo-100 rounded-lg btn-touch" aria-label="Disminuir letra">A-</button>
+                    <span class="text-xs px-1 font-bold text-gray-400">TEXTO</span>
+                    <button onclick="changeFontSize(2)" class="px-3 py-1 text-xl font-bold text-gray-700 hover:bg-indigo-100 rounded-lg btn-touch" aria-label="Aumentar letra">A+</button>
+                </div>
+
+                <!-- Alto Contraste -->
+                <button onclick="toggleHighContrast()" class="bg-white hover:bg-indigo-100 text-gray-800 p-2 rounded-xl border shadow-sm flex items-center gap-1 font-semibold text-sm btn-touch" aria-label="Alternar Alto Contraste">
+                    <i class="fa-solid fa-circle-half-stroke text-indigo-600 text-lg"></i>
+                    <span class="hidden sm:inline">Contraste</span>
+                </button>
+
+                <!-- Estado de Voz -->
+                <button id="btn-tts-toggle" onclick="toggleSpeech()" class="bg-emerald-500 text-white p-2 rounded-xl shadow-sm flex items-center gap-1 font-semibold text-sm btn-touch" aria-label="Activar o desactivar voz">
+                    <i id="tts-icon" class="fa-solid fa-comment-dots text-lg"></i>
+                    <span id="tts-label" class="hidden sm:inline">Voz: SI</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="max-w-6xl mx-auto w-full p-4 flex-grow flex flex-col items-center justify-center">
+
+        <!-- Selector de Modos (Exploración / Desafío) -->
+        <div class="flex justify-center gap-4 mb-6 w-full max-w-md">
+            <button id="tab-explore" onclick="setMode('explore')" class="flex-1 py-3 px-4 rounded-2xl font-bold text-lg text-white bg-indigo-600 shadow-lg border-b-4 border-indigo-800 btn-touch flex items-center justify-center gap-2">
+                <i class="fa-solid fa-compass"></i> Explorar
+            </button>
+            <button id="tab-game" onclick="setMode('game')" class="flex-1 py-3 px-4 rounded-2xl font-bold text-lg text-gray-700 bg-white shadow-md border-b-4 border-gray-300 btn-touch flex items-center justify-center gap-2">
+                <i class="fa-solid fa-gamepad"></i> Jugar
+            </button>
+        </div>
+
+        <!-- MODO 1: EXPLORACIÓN LIBRE -->
+        <section id="section-explore" class="w-full flex flex-col items-center">
+            <p class="text-lg md:text-xl text-center text-indigo-900 mb-6 font-semibold bg-white px-6 py-2 rounded-full shadow-sm border border-indigo-100">
+                👉 ¡Toca una vocal o su dibujo para aprender su sonido!
+            </p>
+
+            <!-- Tarjetas de las 5 Vocales -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 w-full">
+                
+                <!-- VOCAL A -->
+                <div class="dua-card bg-white rounded-3xl p-4 shadow-xl border-4 border-red-300 flex flex-col items-center justify-between hover:scale-105 transition-transform duration-300">
+                    <button onclick="playVowel('A')" class="w-full bg-red-100 hover:bg-red-200 rounded-2xl py-3 mb-3 text-6xl font-black text-red-600 shadow-inner btn-touch flex flex-col items-center justify-center gap-1">
+                        <span>A</span>
+                        <span class="text-xs font-bold text-red-400">/a/</span>
+                    </button>
+                    <div onclick="playWord('A')" class="cursor-pointer flex flex-col items-center w-full p-2 bg-red-50 rounded-2xl hover:bg-red-100 transition btn-touch">
+                        <svg class="w-24 h-24 my-2" viewBox="0 0 100 100">
+                            <!-- SVG Araña -->
+                            <ellipse cx="50" cy="55" rx="18" ry="14" fill="#333" />
+                            <circle cx="50" cy="38" r="10" fill="#333" />
+                            <circle cx="46" cy="36" r="2.5" fill="#FFF" />
+                            <circle cx="54" cy="36" r="2.5" fill="#FFF" />
+                            <!-- Patas -->
+                            <path d="M 35 50 Q 15 40 10 55 M 34 55 Q 10 55 10 70 M 65 50 Q 85 40 90 55 M 66 55 Q 90 55 90 70 M 36 60 Q 20 70 25 85 M 64 60 Q 80 70 75 85" stroke="#333" stroke-width="4" fill="none" stroke-linecap="round"/>
+                        </svg>
+                        <span class="text-2xl font-black text-red-600 tracking-wider">ARAÑA</span>
+                    </div>
+                </div>
+
+                <!-- VOCAL E -->
+                <div class="dua-card bg-white rounded-3xl p-4 shadow-xl border-4 border-amber-300 flex flex-col items-center justify-between hover:scale-105 transition-transform duration-300">
+                    <button onclick="playVowel('E')" class="w-full bg-amber-100 hover:bg-amber-200 rounded-2xl py-3 mb-3 text-6xl font-black text-amber-600 shadow-inner btn-touch flex flex-col items-center justify-center gap-1">
+                        <span>E</span>
+                        <span class="text-xs font-bold text-amber-500">/e/</span>
+                    </button>
+                    <div onclick="playWord('E')" class="cursor-pointer flex flex-col items-center w-full p-2 bg-amber-50 rounded-2xl hover:bg-amber-100 transition btn-touch">
+                        <svg class="w-24 h-24 my-2" viewBox="0 0 100 100">
+                            <!-- SVG Elefante -->
+                            <path d="M 25 65 A 25 25 0 0 1 75 65 L 75 80 L 65 80 L 65 70 L 45 70 L 45 80 L 35 80 Z" fill="#9CA3AF" />
+                            <circle cx="35" cy="50" r="20" fill="#9CA3AF" />
+                            <circle cx="30" cy="45" r="3" fill="#000" />
+                            <path d="M 22 55 Q 10 55 10 70 Q 10 80 20 80 Q 22 70 20 65" fill="none" stroke="#9CA3AF" stroke-width="6" stroke-linecap="round"/>
+                            <ellipse cx="45" cy="48" rx="8" ry="14" fill="#D1D5DB" />
+                        </svg>
+                        <span class="text-2xl font-black text-amber-600 tracking-wider">ELEFANTE</span>
+                    </div>
+                </div>
+
+                <!-- VOCAL I -->
+                <div class="dua-card bg-white rounded-3xl p-4 shadow-xl border-4 border-blue-300 flex flex-col items-center justify-between hover:scale-105 transition-transform duration-300">
+                    <button onclick="playVowel('I')" class="w-full bg-blue-100 hover:bg-blue-200 rounded-2xl py-3 mb-3 text-6xl font-black text-blue-600 shadow-inner btn-touch flex flex-col items-center justify-center gap-1">
+                        <span>I</span>
+                        <span class="text-xs font-bold text-blue-400">/i/</span>
+                    </button>
+                    <div onclick="playWord('I')" class="cursor-pointer flex flex-col items-center w-full p-2 bg-blue-50 rounded-2xl hover:bg-blue-100 transition btn-touch">
+                        <svg class="w-24 h-24 my-2" viewBox="0 0 100 100">
+                            <!-- SVG Iguana -->
+                            <path d="M 15 65 Q 30 40 70 50 Q 85 55 90 70 Q 60 75 40 70 Z" fill="#10B981" />
+                            <circle cx="75" cy="52" r="2.5" fill="#000" />
+                            <path d="M 25 50 L 27 43 L 33 48 L 37 40 L 42 47 L 48 38 L 52 47" stroke="#047857" stroke-width="3" fill="none" />
+                            <path d="M 35 68 Q 30 80 25 80 M 60 70 Q 65 82 70 80" stroke="#10B981" stroke-width="5" stroke-linecap="round" />
+                        </svg>
+                        <span class="text-2xl font-black text-blue-600 tracking-wider">IGUANA</span>
+                    </div>
+                </div>
+
+                <!-- VOCAL O -->
+                <div class="dua-card bg-white rounded-3xl p-4 shadow-xl border-4 border-purple-300 flex flex-col items-center justify-between hover:scale-105 transition-transform duration-300">
+                    <button onclick="playVowel('O')" class="w-full bg-purple-100 hover:bg-purple-200 rounded-2xl py-3 mb-3 text-6xl font-black text-purple-600 shadow-inner btn-touch flex flex-col items-center justify-center gap-1">
+                        <span>O</span>
+                        <span class="text-xs font-bold text-purple-400">/o/</span>
+                    </button>
+                    <div onclick="playWord('O')" class="cursor-pointer flex flex-col items-center w-full p-2 bg-purple-50 rounded-2xl hover:bg-purple-100 transition btn-touch">
+                        <svg class="w-24 h-24 my-2" viewBox="0 0 100 100">
+                            <!-- SVG Oso -->
+                            <circle cx="30" cy="30" r="12" fill="#B45309" />
+                            <circle cx="70" cy="30" r="12" fill="#B45309" />
+                            <circle cx="50" cy="55" r="30" fill="#B45309" />
+                            <ellipse cx="50" cy="62" rx="16" ry="12" fill="#FDE68A" />
+                            <ellipse cx="50" cy="56" rx="6" ry="4" fill="#000" />
+                            <circle cx="40" cy="48" r="3" fill="#000" />
+                            <circle cx="60" cy="48" r="3" fill="#000" />
+                        </svg>
+                        <span class="text-2xl font-black text-purple-600 tracking-wider">OSO</span>
+                    </div>
+                </div>
+
+                <!-- VOCAL U -->
+                <div class="dua-card bg-white rounded-3xl p-4 shadow-xl border-4 border-emerald-300 flex flex-col items-center justify-between hover:scale-105 transition-transform duration-300">
+                    <button onclick="playVowel('U')" class="w-full bg-emerald-100 hover:bg-emerald-200 rounded-2xl py-3 mb-3 text-6xl font-black text-emerald-600 shadow-inner btn-touch flex flex-col items-center justify-center gap-1">
+                        <span>U</span>
+                        <span class="text-xs font-bold text-emerald-400">/u/</span>
+                    </button>
+                    <div onclick="playWord('U')" class="cursor-pointer flex flex-col items-center w-full p-2 bg-emerald-50 rounded-2xl hover:bg-emerald-100 transition btn-touch">
+                        <svg class="w-24 h-24 my-2" viewBox="0 0 100 100">
+                            <!-- SVG Uva -->
+                            <path d="M 40 25 Q 50 15 60 20" stroke="#15803D" stroke-width="4" fill="none" />
+                            <circle cx="40" cy="40" r="10" fill="#7E22CE" />
+                            <circle cx="60" cy="40" r="10" fill="#7E22CE" />
+                            <circle cx="50" cy="52" r="10" fill="#6B21A8" />
+                            <circle cx="35" cy="62" r="10" fill="#7E22CE" />
+                            <circle cx="65" cy="62" r="10" fill="#6B21A8" />
+                            <circle cx="50" cy="74" r="10" fill="#581C87" />
+                        </svg>
+                        <span class="text-2xl font-black text-emerald-600 tracking-wider">UVA</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- MODO 2: JUEGO DE DESAFÍO Y ASOCIACIÓN -->
+        <section id="section-game" class="w-full hidden flex flex-col items-center max-w-3xl">
+            
+            <!-- Panel de Pregunta / Consigna -->
+            <div class="dua-card bg-white rounded-3xl p-6 shadow-xl border-4 border-indigo-300 w-full mb-6 flex flex-col items-center text-center relative overflow-hidden">
+                
+                <div id="game-badge" class="bg-indigo-100 text-indigo-800 text-sm font-bold px-4 py-1 rounded-full mb-2">
+                    Desafío de Asociación
+                </div>
+
+                <div class="flex items-center justify-center gap-3 my-2">
+                    <button onclick="repeatQuestion()" class="bg-indigo-500 hover:bg-indigo-600 text-white p-3 rounded-full text-xl shadow-md btn-touch" aria-label="Repetir consigna">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                    <h2 id="game-prompt" class="text-2xl md:text-3xl font-extrabold text-indigo-900">
+                        ¿Con qué vocal empieza...?
+                    </h2>
+                </div>
+
+                <!-- Ilustración Grande Objeto Objetivo -->
+                <div id="target-illustration-container" class="my-4 p-4 bg-indigo-50 rounded-2xl border-2 border-dashed border-indigo-200 min-h-[140px] flex items-center justify-center">
+                    <!-- SVG dinámico del target -->
+                </div>
+
+                <!-- Impulso Socrático / Botón de Pista -->
+                <div class="mt-2 w-full flex flex-col items-center">
+                    <button id="btn-hint" onclick="giveSocraticHint()" class="bg-amber-400 hover:bg-amber-500 text-amber-950 px-5 py-2.5 rounded-2xl font-bold text-base shadow-md flex items-center gap-2 btn-touch border-b-4 border-amber-600">
+                        <i class="fa-solid fa-lightbulb text-xl text-amber-900"></i>
+                        <span>Pedir una Pista (Pensamos juntos)</span>
+                    </button>
+
+                    <!-- Mensaje de Retroalimentación o Pista Socrática -->
+                    <div id="feedback-box" class="mt-4 p-4 rounded-2xl w-full hidden text-lg font-bold transition-all duration-300">
+                        <p id="feedback-text"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opciones de Respuesta (Botones Grandes de Vocales) -->
+            <div class="w-full">
+                <p class="text-center text-gray-600 font-semibold mb-3">Elige la vocal correcta:</p>
+                <div id="options-container" class="grid grid-cols-5 gap-3 md:gap-4 w-full">
+                    <!-- Generado dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Botón Siguiente Pregunta -->
+            <button id="btn-next" onclick="nextQuestion()" class="mt-6 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xl py-3 px-8 rounded-2xl shadow-lg border-b-4 border-emerald-700 hidden btn-touch flex items-center gap-2">
+                <span>¡Siguiente Vocal!</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </section>
+
+    </main>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="bg-white border-t border-indigo-100 p-4 text-center text-sm font-semibold text-gray-500">
+        <p>Aventura de las Vocales • Educación Inclusiva Nivel Inicial (5 años) • DUA</p>
+    </footer>
+
+    <script>
+        /* BASE DE DATOS DE VOCALES Y ASOCIACIONES */
+        const VOWELS_DATA = {
+            'A': {
+                letter: 'A',
+                word: 'Araña',
+                phoneme: 'aaaa',
+                color: 'bg-red-500',
+                borderColor: 'border-red-600',
+                svg: `<svg class="w-28 h-28" viewBox="0 0 100 100">
+                        <ellipse cx="50" cy="55" rx="18" ry="14" fill="#333" />
+                        <circle cx="50" cy="38" r="10" fill="#333" />
+                        <circle cx="46" cy="36" r="2.5" fill="#FFF" />
+                        <circle cx="54" cy="36" r="2.5" fill="#FFF" />
+                        <path d="M 35 50 Q 15 40 10 55 M 34 55 Q 10 55 10 70 M 65 50 Q 85 40 90 55 M 66 55 Q 90 55 90 70 M 36 60 Q 20 70 25 85 M 64 60 Q 80 70 75 85" stroke="#333" stroke-width="4" fill="none" stroke-linecap="round"/>
+                      </svg>`,
+                socraticHints: [
+                    "Abre bien la boca como cuando sonríes en grande. ¿Sientes cómo sale el aire?",
+                    "Aaaaraña... ¿Escuchas qué sonido hace tu boca al empezar la palabra Aaaraña?",
+                    "Es la primera letra del abecedario, ¡tiene la forma de una casita o una montaña!"
+                ]
+            },
+            'E': {
+                letter: 'E',
+                word: 'Elefante',
+                phoneme: 'eeee',
+                color: 'bg-amber-500',
+                borderColor: 'border-amber-600',
+                svg: `<svg class="w-28 h-28" viewBox="0 0 100 100">
+                        <path d="M 25 65 A 25 25 0 0 1 75 65 L 75 80 L 65 80 L 65 70 L 45 70 L 45 80 L 35 80 Z" fill="#9CA3AF" />
+                        <circle cx="35" cy="50" r="20" fill="#9CA3AF" />
+                        <circle cx="30" cy="45" r="3" fill="#000" />
+                        <path d="M 22 55 Q 10 55 10 70 Q 10 80 20 80 Q 22 70 20 65" fill="none" stroke="#9CA3AF" stroke-width="6" stroke-linecap="round"/>
+                        <ellipse cx="45" cy="48" rx="8" ry="14" fill="#D1D5DB" />
+                      </svg>`,
+                socraticHints: [
+                    "Haz una sonrisa de lado a lado y di Eeeelefante. ¿Lo notas?",
+                    "Piensa en un animal gigante con trompa... Eeeelefante. ¿Con qué sonido abres la boca?",
+                    "Esta letra tiene un palito alto y tres patitas acostadas."
+                ]
+            },
+            'I': {
+                letter: 'I',
+                word: 'Iguana',
+                phoneme: 'iiii',
+                color: 'bg-blue-500',
+                borderColor: 'border-blue-600',
+                svg: `<svg class="w-28 h-28" viewBox="0 0 100 100">
+                        <path d="M 15 65 Q 30 40 70 50 Q 85 55 90 70 Q 60 75 40 70 Z" fill="#10B981" />
+                        <circle cx="75" cy="52" r="2.5" fill="#000" />
+                        <path d="M 25 50 L 27 43 L 33 48 L 37 40 L 42 47 L 48 38 L 52 47" stroke="#047857" stroke-width="3" fill="none" />
+                        <path d="M 35 68 Q 30 80 25 80 M 60 70 Q 65 82 70 80" stroke="#10B981" stroke-width="5" stroke-linecap="round" />
+                      </svg>`,
+                socraticHints: [
+                    "Muestra tus dientes cerrados y haz un sonido finito... iiiii.",
+                    "Iiiiguana... Es un sonido muy flaquito y alto. ¿Lo intentamos?",
+                    "Es la letra más delgada de todas, ¡es un palito rectito!"
+                ]
+            },
+            'O': {
+                letter: 'O',
+                word: 'Oso',
+                phoneme: 'oooo',
+                color: 'bg-purple-500',
+                borderColor: 'border-purple-600',
+                svg: `<svg class="w-28 h-28" viewBox="0 0 100 100">
+                        <circle cx="30" cy="30" r="12" fill="#B45309" />
+                        <circle cx="70" cy="30" r="12" fill="#B45309" />
+                        <circle cx="50" cy="55" r="30" fill="#B45309" />
+                        <ellipse cx="50" cy="62" rx="16" ry="12" fill="#FDE68A" />
+                        <ellipse cx="50" cy="56" rx="6" ry="4" fill="#000" />
+                        <circle cx="40" cy="48" r="3" fill="#000" />
+                        <circle cx="60" cy="48" r="3" fill="#000" />
+                      </svg>`,
+                socraticHints: [
+                    "Pon tu boca redonda como un círculo cuando dices Ooooso.",
+                    "¿Qué forma hace tu boca cuando dices OOO? ¡Igual a un círculo!",
+                    "Es una letra completamente redonda, parece una pelota o una dona."
+                ]
+            },
+            'U': {
+                letter: 'U',
+                word: 'Uva',
+                phoneme: 'uuuu',
+                color: 'bg-emerald-500',
+                borderColor: 'border-emerald-600',
+                svg: `<svg class="w-28 h-28" viewBox="0 0 100 100">
+                        <path d="M 40 25 Q 50 15 60 20" stroke="#15803D" stroke-width="4" fill="none" />
+                        <circle cx="40" cy="40" r="10" fill="#7E22CE" />
+                        <circle cx="60" cy="40" r="10" fill="#7E22CE" />
+                        <circle cx="50" cy="52" r="10" fill="#6B21A8" />
+                        <circle cx="35" cy="62" r="10" fill="#7E22CE" />
+                        <circle cx="65" cy="62" r="10" fill="#6B21A8" />
+                        <circle cx="50" cy="74" r="10" fill="#581C87" />
+                      </svg>`,
+                socraticHints: [
+                    "Junta tus labios como si fueras a dar un beso o soplar una vela... Uuuuva.",
+                    "Escucha el primer sonido de Uuuuva. Es como el sonido que hace el viento.",
+                    "Esta letra parece un columpio o una sonrisita hacia arriba."
+                ]
+            }
+        };
+
+        /* ESTADO DE LA APLICACIÓN */
+        let currentFontSize = 18;
+        let ttsActive = true;
+        let currentMode = 'explore';
+        let currentQuestionKey = null;
+        let hintIndex = 0;
+
+        /* SÍNTESIS DE AUDIO (WEB AUDIO API) PARA EFECTOS SONOROS LIBRES DE RED */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSoundEffect(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'success') {
+                // Sonido alegre de acierto
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now); // A4
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.3); // A5
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'hint') {
+                // Sonido suave de pista
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(329.63, now); // E4
+                osc.frequency.exponentialRampToValueAtTime(493.88, now + 0.2); // B4
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } else if (type === 'pop') {
+                // Pop táctil
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.08);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'try') {
+                // Sonido cariñoso de reintento
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(250, now + 0.25);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+        }
+
+        /* WEB SPEECH API (SÍNTESIS DE VOZ) */
+        function speakText(text, onEndCallback = null) {
+            if (!ttsActive) return;
+
+            window.speechSynthesis.cancel(); // Cancelar lecturas anteriores
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.85; // Velocidad pausada ideal para 5 años
+            utterance.pitch = 1.1;  // Tono cálido y amigable
+
+            if (onEndCallback) {
+                utterance.onend = onEndCallback;
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        /* ACCESIBILIDAD DUA: CAMBIO DE TAMAÑO DE TEXTO Y ALTO CONTRASTE */
+        function changeFontSize(delta) {
+            playSoundEffect('pop');
+            currentFontSize = Math.max(14, Math.min(26, currentFontSize + delta));
+            document.body.style.fontSize = `${currentFontSize}px`;
+            speakText(`Tamaño de letra ajustado`);
+        }
+
+        function toggleHighContrast() {
+            playSoundEffect('pop');
+            document.body.classList.toggle('high-contrast');
+            const isHigh = document.body.classList.contains('high-contrast');
+            speakText(isHigh ? "Modo alto contraste activado" : "Modo normal activado");
+        }
+
+        function toggleSpeech() {
+            playSoundEffect('pop');
+            ttsActive = !ttsActive;
+            const btnLabel = document.getElementById('tts-label');
+            const btnIcon = document.getElementById('tts-icon');
+
+            if (ttsActive) {
+                btnLabel.innerText = "Voz: SI";
+                btnIcon.className = "fa-solid fa-comment-dots text-lg";
+                speakText("Lectura accesible activada");
+            } else {
+                btnLabel.innerText = "Voz: NO";
+                btnIcon.className = "fa-solid fa-comment-slash text-lg";
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        /* CAMBIO DE MODOS (EXPLORAR / JUGAR) */
+        function setMode(mode) {
+            playSoundEffect('pop');
+            currentMode = mode;
+
+            const tabExplore = document.getElementById('tab-explore');
+            const tabGame = document.getElementById('tab-game');
+            const secExplore = document.getElementById('section-explore');
+            const secGame = document.getElementById('section-game');
+
+            if (mode === 'explore') {
+                tabExplore.className = "flex-1 py-3 px-4 rounded-2xl font-bold text-lg text-white bg-indigo-600 shadow-lg border-b-4 border-indigo-800 btn-touch flex items-center justify-center gap-2";
+                tabGame.className = "flex-1 py-3 px-4 rounded-2xl font-bold text-lg text-gray-700 bg-white shadow-md border-b-4 border-gray-300 btn-touch flex items-center justify-center gap-2";
+                secExplore.classList.remove('hidden');
+                secGame.classList.add('hidden');
+                speakText("Modo exploración libre. Haz clic en las vocales.");
+            } else {
+                tabGame.className = "flex-1 py-3 px-4 rounded-2xl font-bold text-lg text-white bg-indigo-600 shadow-lg border-b-4 border-indigo-800 btn-touch flex items-center justify-center gap-2";
+                tabExplore.className = "flex-1 py-3 px-4 rounded-2xl font-bold text-lg text-gray-700 bg-white shadow-md border-b-4 border-gray-300 btn-touch flex items-center justify-center gap-2";
+                secExplore.classList.add('hidden');
+                secGame.classList.remove('hidden');
+                startNewGameRound();
+            }
+        }
+
+        /* MODO EXPLORACIÓN: INTERACCIONES CON AUDIO */
+        function playVowel(vowelKey) {
+            playSoundEffect('pop');
+            const data = VOWELS_DATA[vowelKey];
+            speakText(`Vocal ${data.letter}. Su sonido es ${data.phoneme}.`);
+        }
+
+        function playWord(vowelKey) {
+            playSoundEffect('pop');
+            const data = VOWELS_DATA[vowelKey];
+            speakText(`${data.word}. Empieza con la vocal ${data.letter}.`);
+        }
+
+        /* MODO JUEGO / DESAFÍO SOCRÁTICO */
+        function startNewGameRound() {
+            const keys = Object.keys(VOWELS_DATA);
+            // Selección aleatoria asegurando dinamismo
+            const randomKey = keys[Math.floor(Math.random() * keys.length)];
+            currentQuestionKey = randomKey;
+            hintIndex = 0;
+
+            const targetData = VOWELS_DATA[randomKey];
+
+            // Renderizar ilustración objetivo
+            document.getElementById('target-illustration-container').innerHTML = targetData.svg;
+
+            // Ocultar feedback y botón siguiente
+            const feedbackBox = document.getElementById('feedback-box');
+            feedbackBox.classList.add('hidden');
+            document.getElementById('btn-next').classList.add('hidden');
+            document.getElementById('btn-hint').classList.remove('hidden');
+
+            // Renderizar botones de opción (A E I O U)
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            keys.forEach(key => {
+                const item = VOWELS_DATA[key];
+                const btn = document.createElement('button');
+                btn.id = `opt-btn-${key}`;
+                btn.onclick = () => checkAnswer(key);
+                btn.className = `dua-btn bg-white hover:bg-indigo-50 border-4 border-indigo-200 text-indigo-900 font-black text-4xl sm:text-5xl py-4 rounded-2xl shadow-md btn-touch transition flex items-center justify-center`;
+                btn.innerText = item.letter;
+                btn.setAttribute('aria-label', `Vocal ${item.letter}`);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Dictar la consigna
+            const promptText = `¿Con qué vocal empieza la palabra ${targetData.word}?`;
+            document.getElementById('game-prompt').innerText = promptText;
+            speakText(promptText);
+        }
+
+        function repeatQuestion() {
+            playSoundEffect('pop');
+            if (currentQuestionKey) {
+                const targetData = VOWELS_DATA[currentQuestionKey];
+                speakText(`¿Con qué vocal empieza la palabra ${targetData.word}?`);
+            }
+        }
+
+        /* IMPULSOS SOCRÁTICOS (GUIAR SIN DAR LA RESPUESTA) */
+        function giveSocraticHint() {
+            playSoundEffect('hint');
+            const targetData = VOWELS_DATA[currentQuestionKey];
+            const hints = targetData.socraticHints;
+
+            const currentHint = hints[hintIndex % hints.length];
+            hintIndex++;
+
+            const feedbackBox = document.getElementById('feedback-box');
+            const feedbackText = document.getElementById('feedback-text');
+
+            feedbackBox.className = "mt-4 p-4 rounded-2xl w-full text-lg font-bold bg-amber-100 border-2 border-amber-300 text-amber-900 shadow-sm transition-all";
+            feedbackText.innerHTML = `💡 <b>Pista para pensar:</b> ${currentHint}`;
+            feedbackBox.classList.remove('hidden');
+
+            speakText(`Pista: ${currentHint}`);
+        }
+
+        /* EVALUACIÓN DE RESPUESTA Y RETROALIMENTACIÓN FORMATIVA */
+        function checkAnswer(selectedKey) {
+            const feedbackBox = document.getElementById('feedback-box');
+            const feedbackText = document.getElementById('feedback-text');
+            const targetData = VOWELS_DATA[currentQuestionKey];
+
+            if (selectedKey === currentQuestionKey) {
+                // Acierto pedagógico
+                playSoundEffect('success');
+                triggerConfetti();
+
+                feedbackBox.className = "mt-4 p-4 rounded-2xl w-full text-lg font-bold bg-emerald-100 border-2 border-emerald-400 text-emerald-900 shadow-md transition-all";
+                feedbackText.innerHTML = `🎉 ¡Excelente! <b>${targetData.word}</b> empieza con la vocal <b>${targetData.letter}</b>. ¡Lo lograste muy bien!`;
+                feedbackBox.classList.remove('hidden');
+
+                // Resaltar botón correcto
+                const correctBtn = document.getElementById(`opt-btn-${selectedKey}`);
+                if (correctBtn) {
+                    correctBtn.className += " bg-emerald-500 text-white border-emerald-600 pulse-highlight";
+                }
+
+                // Deshabilitar temporalmente opciones
+                disableOptionButtons();
+
+                // Mostrar botón para continuar
+                document.getElementById('btn-next').classList.remove('hidden');
+                document.getElementById('btn-hint').classList.add('hidden');
+
+                speakText(`¡Excelente! ${targetData.word} empieza con la vocal ${targetData.letter}. ¡Lo lograste muy bien!`);
+
+            } else {
+                // Intento formativo (sin castigo, con impulso a la reflexión)
+                playSoundEffect('try');
+
+                feedbackBox.className = "mt-4 p-4 rounded-2xl w-full text-lg font-bold bg-blue-100 border-2 border-blue-300 text-blue-900 shadow-sm transition-all";
+                feedbackText.innerHTML = `💪 ¡Buen intento! Elegiste la <b>${selectedKey}</b>. Escuchemos de nuevo: ¿${targetData.word} empieza con <b>${selectedKey}</b> o suena diferente? ¡Prueba otra vez!`;
+                feedbackBox.classList.remove('hidden');
+
+                speakText(`¡Buen intento! Escuchemos de nuevo. ¿${targetData.word} empieza con la vocal ${selectedKey}? ¡Prueba otra vez o pide una pista!`);
+            }
+        }
+
+        function disableOptionButtons() {
+            Object.keys(VOWELS_DATA).forEach(key => {
+                const btn = document.getElementById(`opt-btn-${key}`);
+                if (btn) btn.onclick = null;
+            });
+        }
+
+        function nextQuestion() {
+            playSoundEffect('pop');
+            startNewGameRound();
+        }
+
+        /* CELEBRACIÓN VISUAL (CONFETI EN SVG Y CANVAS LIBRE) */
+        function triggerConfetti() {
+            const colors = ['#FF5964', '#FFAD05', '#4D9DE0', '#E15FED', '#06D6A0'];
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = '-10px';
+                particle.style.width = (Math.random() * 12 + 8) + 'px';
+                particle.style.height = (Math.random() * 12 + 8) + 'px';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
+                document.body.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 1500);
+            }
+        }
+
+        /* INICIALIZACIÓN DE LA PÁGINA */
+        window.onload = function() {
+            // Bienvenida auditiva inicial
+            setTimeout(() => {
+                speakText("¡Hola! Bienvenid@ a la Aventura de las Vocales. Toca una letra para empezar.");
+            }, 500);
+        };
+    </script>
+</body>
+</html>
