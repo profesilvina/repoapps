@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taller de Comunicación: Publicidad Gráfica y Estereotipos de Género</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Tipografía Century Gothic especificada */
+        body, button, input, select, textarea {
+            font-family: 'Century Gothic', 'CenturyGothic', 'Apple Gothic', 'Futura', 'URW Gothic L', sans-serif;
+            font-size: 16px;
+        }
+
+        /* Estilos de transición y estética */
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        }
+
+        .tab-btn.active {
+            border-bottom: 4px solid #4f46e5;
+            color: #4f46e5;
+            font-weight: bold;
+            background-color: #eef2ff;
+        }
+
+        .option-card {
+            transition: all 0.25s ease-in-out;
+            cursor: pointer;
+        }
+
+        .option-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected-stereotype {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+            box-shadow: 0 0 0 2px #ef4444;
+        }
+
+        .option-card.selected-empowered {
+            border-color: #10b981;
+            background-color: #ecfdf5;
+            box-shadow: 0 0 0 2px #10b981;
+        }
+
+        /* Animación suave para feedback */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Reproductor de audio resaltado */
+        .speaking-active {
+            animation: pulse-ring 1.5s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(79, 70, 229, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Encabezado Pedagógico -->
+    <header class="bg-indigo-900 text-white shadow-lg border-b-4 border-indigo-500">
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2 text-indigo-300 text-sm font-semibold uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-graduation-cap"></i> Educación Secundaria de Adultos | 2° Año
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Asignatura: Comunicación</h1>
+                    <p class="text-indigo-200 text-base mt-1">
+                        Unidad Didáctica: <span class="text-amber-300 font-semibold">Análisis Crítico de la Publicidad Gráfica y Estereotipos de Género</span>
+                    </p>
+                </div>
+                
+                <!-- Botón de Asistente de Voz Global -->
+                <div class="bg-indigo-800/80 p-3 rounded-xl border border-indigo-700 flex flex-col gap-2 min-w-[260px]">
+                    <div class="flex items-center justify-between text-xs text-indigo-200 font-bold uppercase">
+                        <span><i class="fa-solid fa-volume-high mr-1"></i> Lector de Texto a Voz</span>
+                        <span id="speech-status" class="text-emerald-400">Listo</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="btn-read-intro" onclick="readIntroText()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition">
+                            <i class="fa-solid fa-play"></i> Leer Consigna
+                        </button>
+                        <button onclick="stopSpeech()" class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition" title="Detener audio">
+                            <i class="fa-solid fa-stop"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Columna Izquierda / Panel de Guía Pedagógica -->
+        <section class="lg:col-span-4 flex flex-col gap-6">
+            <!-- Guía del Profesor -->
+            <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-200">
+                <div class="flex items-center gap-3 mb-3 border-b border-slate-100 pb-3">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-slate-800 text-lg">Guía del Profesor</h2>
+                        <p class="text-xs text-slate-500">Objetivo de la actividad</p>
+                    </div>
+                </div>
+                <p id="teacher-intro-text" class="text-sm text-slate-600 leading-relaxed">
+                    "¡Hola! Te doy la bienvenida a esta actividad de Comunicación. En los medios masivos, las imágenes no son neutras: construyen formas de ver el mundo. 
+                    <br><br>
+                    Tu objetivo hoy es analizar <strong>6 casos reales de publicidades gráficas</strong> e identificar si la imagen reproduce un <strong>estereotipo de género tradicional</strong> o si muestra a la mujer en una posición de <strong>empoderamiento / ruptura del estereotipo</strong>."
+                </p>
+                <div class="mt-4 bg-amber-50 border-l-4 border-amber-400 p-3 rounded-r-lg text-xs text-amber-800">
+                    <p class="font-bold mb-1"><i class="fa-solid fa-lightbulb"></i> Conceptos clave:</p>
+                    <ul class="list-disc list-inside space-style space-y-1">
+                        <td><strong>Estereotipo:</strong> Idea simplificada y rígida sobre roles masculinos o femeninos.</td>
+                        <td><strong>Empoderamiento:</strong> Ruptura con mandatos tradicionales, diversidad y autonomía.</td>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Progreso del Estudiante -->
+            <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-200">
+                <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wider mb-3 flex items-center justify-between">
+                    <span>Tu Progreso</span>
+                    <span id="progress-text" class="text-indigo-600 font-bold text-base">0 / 6</span>
+                </h3>
+                <div class="w-full bg-slate-200 rounded-full h-3 mb-4 overflow-hidden">
+                    <div id="progress-bar" class="bg-indigo-600 h-3 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <p class="text-xs text-slate-500 mb-4">Completa el análisis y tu justificación en cada caso para habilitar tu reporte final de aprendizaje.</p>
+                <button id="btn-final-report" onclick="scrollToReport()" disabled class="w-full py-2.5 px-4 bg-slate-300 text-slate-500 rounded-xl font-bold text-sm cursor-not-allowed transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-file-contract"></i> Ver Mi Reporte de Análisis
+                </button>
+            </div>
+        </section>
+
+        <!-- Columna Derecha / Módulo Interactivo de Casos -->
+        <section class="lg:col-span-8 flex flex-col gap-6">
+            
+            <!-- Barra de Navegación de Casos (Pestañas) -->
+            <div class="bg-white rounded-2xl p-2 card-shadow border border-slate-200 overflow-x-auto">
+                <div class="flex space-x-1 min-w-max" id="case-tabs">
+                    <!-- Generado dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Tarjeta Activa del Caso -->
+            <div id="active-case-container" class="bg-white rounded-2xl p-6 card-shadow border border-slate-200">
+                <!-- Se inyecta por JS -->
+            </div>
+
+            <!-- Sección de Reporte Final (Inicialmente Oculto o Incompleto) -->
+            <div id="report-section" class="hidden bg-white rounded-2xl p-6 card-shadow border border-indigo-200 bg-indigo-50/30">
+                <div class="border-b border-indigo-100 pb-4 mb-4 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-indigo-900 flex items-center gap-2">
+                            <i class="fa-solid fa-award text-amber-500"></i> Reporte Síntesis de Comunicación
+                        </h2>
+                        <p class="text-sm text-slate-600">Revisión de tu trabajo de análisis crítico</p>
+                    </div>
+                    <button onclick="copyReport()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg font-bold flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-copy"></i> Copiar Reporte
+                    </button>
+                </div>
+
+                <div id="report-content" class="space-y-4 text-sm">
+                    <!-- Se genera automáticamente -->
+                </div>
+
+                <div class="mt-6 p-4 bg-white rounded-xl border border-slate-200">
+                    <label class="block font-bold text-slate-700 mb-2 text-sm">Reflexión Final de Integración (Opcional):</label>
+                    <textarea id="final-reflection" rows="3" class="w-full p-3 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="¿Cómo crees que influyen estas imágenes en nuestra vida cotidiana y en los roles que asumimos en la sociedad?"></textarea>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Modal Mensajes / Toast -->
+    <div id="toast-message" class="fixed bottom-5 right-5 bg-slate-800 text-white px-5 py-3 rounded-xl shadow-2xl transition-opacity opacity-0 pointer-events-none flex items-center gap-3 z-50">
+        <i id="toast-icon" class="fa-solid fa-circle-info text-indigo-400"></i>
+        <span id="toast-text" class="text-sm font-semibold">Mensaje</span>
+    </div>
+
+    <script>
+
+        // Banco de Datos de los 6 Casos de Publicidades Gráficas
+        const casesData = [
+            {
+                id: 1,
+                brand: "Puloil",
+                title: "Caso 1: Puloil (Limpiador de Hogar)",
+                imageFile: "Caso 1 - Puloil.jpg",
+                svgFallback: `
+                    <svg viewBox="0 0 400 400" class="w-full h-full rounded-lg bg-indigo-950">
+                        <rect width="400" height="400" fill="#1e1b4b"/>
+                        <text x="200" y="60" text-anchor="middle" fill="#facc15" font-size="42" font-weight="bold">PULOIL</text>
+                        <text x="200" y="90" text-anchor="middle" fill="#ffffff" font-size="14">LIMPIA EN UN MOMENTO TODOS LOS OBJETOS DEL HOGAR</text>
+                        <!-- Ilustración estilizada -->
+                        <circle cx="200" cy="220" r="100" fill="#312e81"/>
+                        <path d="M 130 300 Q 200 180 270 300" fill="#6366f1" opacity="0.6"/>
+                        <!-- Figuras de mujeres limpiando -->
+                        <path d="M 150 220 Q 160 170 180 220" fill="none" stroke="#fde047" stroke-width="6"/>
+                        <circle cx="165" cy="160" r="18" fill="#fef08a"/>
+                        <path d="M 230 220 Q 240 170 260 220" fill="none" stroke="#fde047" stroke-width="6"/>
+                        <circle cx="245" cy="160" r="18" fill="#fef08a"/>
+                        <!-- Pila de Platos -->
+                        <ellipse cx="200" cy="310" rx="80" ry="20" fill="#e2e8f0"/>
+                        <ellipse cx="200" cy="300" rx="70" ry="18" fill="#ffffff"/>
+                        <text x="200" y="370" text-anchor="middle" fill="#fde047" font-size="13" font-weight="bold">DE TODOS LOS PRODUCTOS QUE SE CONSUMEN EN EL HOGAR</text>
+                    </svg>
+                `,
+                slogan: "Limpia en un momento todos los objetos del hogar.",
+                description: "Afiche publicitario histórico donde se observa a mujeres sonrientes realizando tareas de limpieza pesada en la cocina, lavando vajilla y ollas de forma exclusiva.",
+                correctType: "stereotype",
+                teacherAnalysis: "<strong>Análisis del Profesor:</strong> Esta publicidad responde a un <strong>ESTEREOTIPO DE GÉNERO TRADICIONAL</strong>. Asocia de manera exclusiva a la mujer con el espacio privado (la cocina) y el trabajo doméstico no remunerado. Refuerza la idea naturalizada de que 'limpiar es tarea de mujeres'.",
+                keyConcepts: ["División sexual del trabajo", "Rol doméstico tradicional", "Naturalización del cuidado"]
+            },
+            {
+                id: 2,
+                brand: "Dove",
+                title: "Caso 2: Dove (Belleza Real)",
+                imageFile: "Caso 2 - Dove Belleza Real.jpg",
+                svgFallback: `
+                    <svg viewBox="0 0 400 400" class="w-full h-full rounded-lg bg-slate-50">
+                        <rect width="400" height="400" fill="#f8fafc"/>
+                        <!-- Logo Dove estilizado -->
+                        <path d="M 180 50 Q 200 30 220 50 Q 200 65 180 50 Z" fill="#d97706"/>
+                        <text x="200" y="90" text-anchor="middle" fill="#1e3a8a" font-size="22" font-weight="bold">Dove</text>
+                        <!-- Diversidad de siluetas -->
+                        <g opacity="0.8">
+                            <ellipse cx="120" cy="220" rx="25" ry="70" fill="#cbd5e1"/>
+                            <circle cx="120" cy="130" r="20" fill="#94a3b8"/>
+                            
+                            <ellipse cx="175" cy="210" rx="30" ry="75" fill="#94a3b8"/>
+                            <circle cx="175" cy="120" r="22" fill="#64748b"/>
+                            
+                            <ellipse cx="235" cy="225" rx="22" ry="68" fill="#cbd5e1"/>
+                            <circle cx="235" cy="135" r="19" fill="#94a3b8"/>
+
+                            <ellipse cx="285" cy="215" rx="28" ry="72" fill="#94a3b8"/>
+                            <circle cx="285" cy="125" r="21" fill="#64748b"/>
+                        </g>
+                        <!-- Frase -->
+                        <text x="200" y="320" text-anchor="middle" fill="#1e293b" font-size="18" font-weight="bold">Sistema Reafirmante Dove.</text>
+                        <text x="200" y="345" text-anchor="middle" fill="#0284c7" font-size="16" font-weight="bold">Testeado en curvas reales.</text>
+                        <text x="200" y="375" text-anchor="middle" fill="#64748b" font-size="12">www.porlabellezareal.com.ar</text>
+                    </svg>
+                `,
+                slogan: "Sistema Reafirmante Dove. Testeado en curvas reales.",
+                description: "Campaña gráfica moderna que exhibe a un grupo de mujeres diversas en sus estaturas, etnias y contexturas corporales posando juntas en ropa interior blanca con actitud alegre y segura.",
+                correctType: "empowered",
+                teacherAnalysis: "<strong>Análisis del Profesor:</strong> Esta pieza representa una <strong>RUPTURA DEL ESTEREOTIPO / EMPODERAMIENTO</strong>. Cuestiona el modelo único e inalcanzable de 'belleza hegemónica' (modelos hiperdelgadas y retocadas digitalmente) visibilizando la diversidad de los cuerpos reales con dignidad y autoestima.",
+                keyConcepts: ["Diversidad corporal", "Ruptura del canon hegemónico", "Autoestima y visibilización"]
+            },
+            {
+                id: 3,
+                brand: "Goodyear",
+                title: "Caso 3: Goodyear (Neumáticos)",
+                imageFile: "Caso 3 - Good Year.jpg",
+                svgFallback: `
+                    <svg viewBox="0 0 400 400" class="w-full h-full rounded-lg bg-stone-200">
+                        <rect width="400" height="400" fill="#e7e5e4"/>
+                        <rect x="30" y="30" width="120" height="35" rx="5" fill="#1c1917"/>
+                        <text x="90" y="52" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">GOOD YEAR</text>
+                        <text x="200" y="110" text-anchor="middle" fill="#0c0a09" font-size="32" font-weight="black">BOTAS ANCHAS</text>
+                        <!-- Rueda -->
+                        <circle cx="160" cy="270" r="75" fill="#262626"/>
+                        <circle cx="160" cy="270" r="45" fill="#a8a29e"/>
+                        <circle cx="160" cy="270" r="20" fill="#57534e"/>
+                        <!-- Figura Femenina estilo adorno -->
+                        <path d="M 230 150 L 270 340 L 290 340 L 270 200 Z" fill="#44403c"/>
+                        <circle cx="230" cy="140" r="18" fill="#78716c"/>
+                        
+                        <text x="290" y="190" text-anchor="start" fill="#1c1917" font-size="14" font-weight="bold">Nueva cubierta</text>
+                        <text x="290" y="210" text-anchor="start" fill="#1c1917" font-size="16" font-weight="black">SPEEDWAY</text>
+                        <text x="290" y="230" text-anchor="start" fill="#1c1917" font-size="16" font-weight="black">GRANSPORT</text>
+                        <text x="290" y="280" text-anchor="start" fill="#44403c" font-size="12">Y lucen bárbaras.</text>
+                    </svg>
+                `,
+                slogan: "Botas Anchas. Nueva cubierta Speedway Gransport... Y lucen bárbaras.",
+                description: "Publicidad clásica de neumáticos donde aparece una mujer joven con ropa corta y botas altas en una postura puramente decorativa y seductora, sujetando una llanta de automóvil.",
+                correctType: "stereotype",
+                teacherAnalysis: "<strong>Análisis del Profesor:</strong> Este caso ejemplifica la <strong>COSIFICACIÓN Y EL ESTEREOTIPO</strong>. La mujer no tiene ninguna relación funcional con el producto (los neumáticos). Es utilizada como un 'objeto adorno' o reclamo visual de seducción para atraer la atención del público comprador tradicionalmente masculino.",
+                keyConcepts: ["Cosificación femenina", "Mujer como adorno", "Público objetivo masculinizado"]
+            },
+            {
+                id: 4,
+                brand: "Vanish",
+                title: "Caso 4: Vanish (Quitamanchas)",
+                imageFile: "Caso 4 - Vanish.jpg",
+                svgFallback: `
+                    <svg viewBox="0 0 400 400" class="w-full h-full rounded-lg bg-pink-100">
+                        <rect width="400" height="400" fill="#fce7f3"/>
+                        <rect x="20" y="20" width="360" height="50" rx="10" fill="#db2777"/>
+                        <text x="200" y="52" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="bold">¿PIJAMA PARA COCINAR?</text>
+                        <!-- Varón cocinando -->
+                        <circle cx="200" cy="160" r="30" fill="#fbcfe8"/>
+                        <path d="M 150 280 L 200 200 L 250 280 Z" fill="#ec4899"/>
+                        <!-- Pijama cuadrille mockup -->
+                        <rect x="160" y="280" width="80" height="80" fill="#93c5fd"/>
+                        <!-- Cucharon y Olla -->
+                        <path d="M 230 220 L 280 180" stroke="#475569" stroke-width="6"/>
+                        <ellipse cx="140" cy="330" rx="35" ry="15" fill="#64748b"/>
+                        <text x="310" y="330" text-anchor="middle" fill="#be123c" font-size="14" font-weight="bold">Vanish</text>
+                    </svg>
+                `,
+                slogan: "¿Pijama para cocinar? Usa Vanish en cada lavada. Remueve manchas y malos olores.",
+                description: "Gráfica publicitaria contemporánea que muestra a un varón joven en la cocina, usando pijama mientras prueba la comida que está preparando y utiliza productos de lavado.",
+                correctType: "empowered",
+                teacherAnalysis: "<strong>Análisis del Profesor:</strong> Esta gráfica propone una <strong>RUPTURA CON EL ESTEREOTIPO TRADICIONAL (INVERSIÓN DE ROLES)</strong>. Al incluir a un hombre realizando tareas de cocina y cuidado de la ropa, rompe con la idea de que la limpieza es una carga exclusivamente femenina y promueve la corresponsabilidad en el hogar.",
+                keyConcepts: ["Corresponsabilidad doméstica", "Inversión de roles tradicionales", "Nuevas masculinidades"]
+            },
+            {
+                id: 5,
+                brand: "Picot",
+                title: "Caso 5: Picot (Guantes de Látex)",
+                imageFile: "Caso 5 - Picot.jpg",
+                svgFallback: `
+                    <svg viewBox="0 0 400 400" class="w-full h-full rounded-lg bg-neutral-100">
+                        <rect width="400" height="400" fill="#f5f5f5"/>
+                        <text x="200" y="60" text-anchor="middle" fill="#171717" font-size="24" font-weight="bold">Enséñela desde niña...</prefix></text>
+                        <!-- Madre e hija estilizadas -->
+                        <circle cx="130" cy="140" r="25" fill="#a3a3a3"/>
+                        <path d="M 100 240 L 130 170 L 160 240 Z" fill="#525252"/>
+                        
+                        <circle cx="220" cy="180" r="18" fill="#a3a3a3"/>
+                        <path d="M 200 260 L 220 200 L 240 260 Z" fill="#737373"/>
+
+                        <!-- Guante destacado -->
+                        <path d="M 300 120 Q 330 100 320 180 Z" fill="#dc2626"/>
+
+                        <text x="200" y="300" text-anchor="middle" fill="#171717" font-size="15" font-weight="bold">...a proteger sus manos en las labores caseras</text>
+                        <text x="200" y="330" text-anchor="middle" fill="#dc2626" font-size="22" font-weight="black">GUANTES "PICOT"</text>
+                        <text x="200" y="365" text-anchor="middle" fill="#525252" font-size="12">Para lucir todo el encanto femenino de sus manos.</text>
+                    </svg>
+                `,
+                slogan: "Enséñela desde niña... a proteger sus manos en las labores caseras con Guantes de Látex Picot.",
+                description: "Anuncio de época donde una madre sonriente le coloca un guante de limpieza a su pequeña hija frente a la pileta de la cocina, instruyéndola en las tareas del hogar.",
+                correctType: "stereotype",
+                teacherAnalysis: "<strong>Análisis del Profesor:</strong> Esta pieza reproduce un <strong>ESTEREOTIPO DE GÉNERO Y SOCIALIZACIÓN DIFERENCIADA</strong>. Transmite la idea de que las niñas deben ser educadas desde la infancia para servir en el hogar y asumir el rol de amas de casa, ligando el 'encanto femenino' al cuidado de las manos mientras se limpian las pertenencias familiares.",
+                keyConcepts: ["Socialización de género temprana", "Roles aprendidos en la infancia", "Perpetuación del mandato doméstico"]
+            },
+            {
+                id: 6,
+                brand: "Dior",
+                title: "Caso 6: Miss Dior (Perfumería de Lujo)",
+                imageFile: "Caso 6 - Dior.jpg",
+                svgFallback: `
+                    <svg viewBox="0 0 400 400" class="w-full h-full rounded-lg bg-rose-50">
+                        <rect width="400" height="400" fill="#fff1f2"/>
+                        <!-- Silueta elegante -->
+                        <circle cx="200" cy="130" r="30" fill="#fda4af"/>
+                        <path d="M 120 320 Q 200 180 280 320 Z" fill="#18181b"/>
+                        <!-- Botella de perfume -->
+                        <rect x="150" y="240" width="100" height="90" rx="8" fill="#fbbf24" stroke="#d97706" stroke-width="3"/>
+                        <rect x="180" y="220" width="40" height="20" rx="2" fill="#e2e8f0"/>
+                        <text x="200" y="290" text-anchor="middle" fill="#78350f" font-size="12" font-weight="bold">Miss Dior</text>
+
+                        <text x="200" y="70" text-anchor="middle" fill="#881337" font-size="28" font-weight="serif" font-style="italic">Miss Dior</text>
+                        <text x="200" y="90" text-anchor="middle" fill="#9f1239" font-size="12" tracking="3">LE PARFUM</text>
+                    </svg>
+                `,
+                slogan: "Miss Dior - Le Parfum.",
+                description: "Fotografía publicitaria de alta costura con la actriz Natalie Portman posando sobre un fondo rosa suave, vistiendo un lujoso vestido negro, proyectando glamour, sensualidad y elegancia normatizada.",
+                correctType: "stereotype",
+                teacherAnalysis: "<strong>Análisis del Profesor:</strong> Se trata de un <strong>ESTEREOTIPO DE BELLEZA HEGEMÓNICA Y GLAMOUR ELASTIZADO</strong>. Aunque transmite poder económico y sofisticación, sigue reduciendo el valor de la mujer a la belleza física inalcanzable, la juventud eterna y el deseo estético bajo los cánones de las marcas de lujo.",
+                keyConcepts: ["Canon de belleza hegemónico", "Idealización del lujo", "Estética como valor principal"]
+            }
+        ];
+
+        // Estado Global de la Aplicación
+        let userAnswers = {
+            // id: { choice: 'stereotype'|'empowered', justification: 'text' }
+        };
+        let currentCaseId = 1;
+
+        // Configuración de Sintetizador de Voz (Text to Speech)
+        const synth = window.speechSynthesis;
+        let voices = [];
+
+        function initVoices() {
+            if ('speechSynthesis' in window) {
+                voices = synth.getVoices().filter(v => v.lang.includes('es'));
+                synth.onvoiceschanged = () => {
+                    voices = synth.getVoices().filter(v => v.lang.includes('es'));
+                };
+            }
+        }
+        initVoices();
+
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) {
+                showToast("Tu navegador no soporta lectura de voz en alta.", "fa-triangle-exclamation");
+                return;
+            }
+
+            // Cancelar lecturas anteriores
+            synth.cancel();
+
+            // Limpiar etiquetas HTML del texto
+            const cleanText = text.replace(/<[^>]*>?/gm, '');
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.rate = 0.95; // Velocidad pausada pedagógica
+            utterance.pitch = 1.0;
+
+            // Preferir voz en español argentina o latinoamericana si está disponible
+            const esVoice = voices.find(v => v.lang.includes('es-AR') || v.lang.includes('es-MX') || v.lang.includes('es-ES')) || voices[0];
+            if (esVoice) {
+                utterance.voice = esVoice;
+            }
+
+            const statusEl = document.getElementById('speech-status');
+            utterance.onstart = () => {
+                if (statusEl) {
+                    statusEl.textContent = "Reproduciendo...";
+                    statusEl.className = "text-amber-400 font-bold flex items-center gap-1 animate-pulse";
+                }
+            };
+
+            utterance.onend = () => {
+                if (statusEl) {
+                    statusEl.textContent = "Listo";
+                    statusEl.className = "text-emerald-400 font-bold";
+                }
+            };
+
+            utterance.onerror = () => {
+                if (statusEl) {
+                    statusEl.textContent = "Listo";
+                    statusEl.className = "text-emerald-400 font-bold";
+                }
+            };
+
+            synth.speak(utterance);
+        }
+
+        function stopSpeech() {
+            if ('speechSynthesis' in window) {
+                synth.cancel();
+                const statusEl = document.getElementById('speech-status');
+                if (statusEl) {
+                    statusEl.textContent = "Listo";
+                    statusEl.className = "text-emerald-400 font-bold";
+                }
+            }
+        }
+
+        function readIntroText() {
+            const introText = document.getElementById('teacher-intro-text').innerText;
+            speakText("Mensaje del Profesor. " + introText);
+        }
+
+
+        // Inicialización al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTabs();
+            renderCaseCard(currentCaseId);
+            updateProgress();
+        });
+
+        // Renderizar Pestañas
+        function renderTabs() {
+            const tabsContainer = document.getElementById('case-tabs');
+            tabsContainer.innerHTML = casesData.map(item => {
+                const isAnswered = userAnswers[item.id] && userAnswers[item.id].choice;
+                const isActive = item.id === currentCaseId;
+                
+                return `
+                    <button onclick="switchCase(${item.id})" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-sm transition flex items-center gap-2 ${isActive ? 'active' : 'text-slate-600 hover:bg-slate-100'}">
+                        <span>${item.brand}</span>
+                        ${isAnswered ? '<i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i>' : '<i class="fa-regular fa-circle text-slate-300 text-xs"></i>'}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function switchCase(id) {
+            stopSpeech();
+            currentCaseId = id;
+            renderTabs();
+            renderCaseCard(id);
+        }
+
+        // Renderizar Contenido de la Tarjeta de Caso
+        function renderCaseCard(id) {
+            const caseObj = casesData.find(c => c.id === id);
+            const savedState = userAnswers[id] || { choice: null, justification: '' };
+            const container = document.getElementById('active-case-container');
+
+            container.innerHTML = `
+                <div class="fade-in">
+                    <!-- Encabezado de la Tarjeta -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4 mb-4">
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md">
+                                Caso ${caseObj.id} de 6
+                            </span>
+                            <h2 class="text-xl font-bold text-slate-800 mt-1">${caseObj.title}</h2>
+                        </div>
+                        <button onclick="readCaseDetails(${caseObj.id})" class="self-start sm:self-auto bg-slate-100 hover:bg-indigo-50 text-indigo-700 hover:text-indigo-800 border border-slate-200 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 transition">
+                            <i class="fa-solid fa-volume-high"></i> Escuchar Descripción
+                        </button>
+                    </div>
+
+                    <!-- Layout Gráfico + Datos -->
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6">
+                        <!-- Vista de la Imagen / Gráfica -->
+                        <div class="md:col-span-5 flex flex-col items-center justify-center bg-slate-900 rounded-xl p-2 min-h-[300px] relative overflow-hidden group">
+                            <!-- Intento de cargar la imagen real local, con fallback SVG automático -->
+                            <img src="${caseObj.imageFile}" 
+                                 alt="${caseObj.brand}" 
+                                 class="max-h-[340px] w-auto object-contain rounded-lg shadow-md transition duration-300 group-hover:scale-105"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                            />
+                            <div class="w-full h-full max-h-[340px] hidden">
+                                ${caseObj.svgFallback}
+                            </div>
+                            <span class="text-[10px] text-slate-400 mt-2 block text-center">
+                                <i class="fa-solid fa-magnifying-glass"></i> Pieza gráfica publicitaria oficial
+                            </span>
+                        </div>
+
+                        <!-- Información y Consigna de Análisis -->
+                        <div class="md:col-span-7 flex flex-col justify-between space-y-4">
+                            <div>
+                                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 mb-3">
+                                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Texto/Eslogan Principal:</h4>
+                                    <p class="text-base font-bold text-indigo-950 mt-0.5">"${caseObj.slogan}"</p>
+                                </div>
+                                <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                                    <strong>Descripción de la escena:</strong> ${caseObj.description}
+                                </p>
+                            </div>
+
+                            <!-- Opciones de Clasificación -->
+                            <div>
+                                <label class="block font-bold text-slate-800 text-sm mb-2.5">
+                                    1. ¿Cómo se representa a la mujer o la temática de género en este anuncio?
+                                </label>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div onclick="selectChoice(${caseObj.id}, 'stereotype')" 
+                                         id="opt-stereotype-${caseObj.id}" 
+                                         class="option-card p-3.5 rounded-xl border-2 border-slate-200 text-left flex items-start gap-3 ${savedState.choice === 'stereotype' ? 'selected-stereotype' : ''}">
+                                        <div class="mt-0.5 text-red-500 font-bold text-lg"><i class="fa-solid fa-ban"></i></div>
+                                        <div>
+                                            <div class="font-bold text-sm text-slate-800">Estereotípica</div>
+                                            <div class="text-xs text-slate-500 mt-0.5">Refuerza mandatos, roles tradicionales o cosificación.</div>
+                                        </div>
+                                    </div>
+
+                                    <div onclick="selectChoice(${caseObj.id}, 'empowered')" 
+                                         id="opt-empowered-${caseObj.id}" 
+                                         class="option-card p-3.5 rounded-xl border-2 border-slate-200 text-left flex items-start gap-3 ${savedState.choice === 'empowered' ? 'selected-empowered' : ''}">
+                                        <div class="mt-0.5 text-emerald-500 font-bold text-lg"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                                        <div>
+                                            <div class="font-bold text-sm text-slate-800">Rompe Estereotipo</div>
+                                            <div class="text-xs text-slate-500 mt-0.5">Muestra diversidad, empoderamiento o corresponsabilidad.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Justificación del Estudiante -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-5">
+                        <label class="block font-bold text-slate-700 text-sm mb-1.5 flex items-center justify-between">
+                            <span>2. Justifica tu respuesta brevemente:</span>
+                            <span class="text-xs font-normal text-slate-500">¿Qué elementos de la imagen o texto fundamentan tu elección?</span>
+                        </label>
+                        <textarea id="justification-${caseObj.id}" 
+                                  oninput="saveJustification(${caseObj.id}, this.value)"
+                                  rows="2" 
+                                  class="w-full p-3 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white" 
+                                  placeholder="Escribe aquí tu análisis... (ej: Me di cuenta de que representa un estereotipo porque...)">${savedState.justification}</textarea>
+                    </div>
+
+                    <!-- Botón para Revelar Corrección Pedagógica -->
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                        <button onclick="toggleTeacherFeedback(${caseObj.id})" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-graduation-cap"></i> Ver Devolución del Profesor
+                        </button>
+                        
+                        <!-- Navegación entre casos -->
+                        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                            ${caseObj.id > 1 ? `<button onclick="switchCase(${caseObj.id - 1})" class="px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-arrow-left mr-1"></i> Anterior</button>` : ''}
+                            ${caseObj.id < 6 ? `<button onclick="switchCase(${caseObj.id + 1})" class="px-3 py-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded-lg text-xs font-bold transition">Siguiente <i class="fa-solid fa-arrow-right ml-1"></i></button>` : ''}
+                        </div>
+                    </div>
+
+                    <!-- Bloque de Feedback del Profesor (Oculto inicialmente) -->
+                    <div id="teacher-feedback-${caseObj.id}" class="hidden mt-5 p-4 rounded-xl border border-indigo-200 bg-indigo-50/70 fade-in">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm flex-shrink-0 mt-0.5">
+                                <i class="fa-solid fa-comment-dots"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-1">
+                                    <h4 class="font-bold text-indigo-950 text-sm">Explicación Conceptual Pedagógica</h4>
+                                    <button onclick="readTeacherFeedback(${caseObj.id})" class="text-xs font-bold text-indigo-700 hover:text-indigo-900 flex items-center gap-1">
+                                        <i class="fa-solid fa-volume-high"></i> Escuchar
+                                    </button>
+                                </div>
+                                <div class="text-sm text-slate-700 leading-relaxed mb-3">
+                                    ${caseObj.teacherAnalysis}
+                                </div>
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    <span class="text-xs font-bold text-slate-500 mr-1">Conceptos teóricos:</span>
+                                    ${caseObj.keyConcepts.map(c => `<span class="bg-white border border-indigo-200 text-indigo-800 text-[11px] font-semibold px-2 py-0.5 rounded-full">${c}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+        }
+
+        // Selección de Opción (Estereotipo o Empoderada)
+        function selectChoice(caseId, choice) {
+            if (!userAnswers[caseId]) {
+                userAnswers[caseId] = { choice: null, justification: '' };
+            }
+            userAnswers[caseId].choice = choice;
+
+            // Actualizar clases UI
+            const optStereo = document.getElementById(`opt-stereotype-${caseId}`);
+            const optEmpow = document.getElementById(`opt-empowered-${caseId}`);
+
+            if (choice === 'stereotype') {
+                optStereo.className = "option-card p-3.5 rounded-xl border-2 border-slate-200 text-left flex items-start gap-3 selected-stereotype";
+                optEmpow.className = "option-card p-3.5 rounded-xl border-2 border-slate-200 text-left flex items-start gap-3";
+                showToast("Marcado como Estereotípica", "fa-circle-check");
+            } else {
+                optEmpow.className = "option-card p-3.5 rounded-xl border-2 border-slate-200 text-left flex items-start gap-3 selected-empowered";
+                optStereo.className = "option-card p-3.5 rounded-xl border-2 border-slate-200 text-left flex items-start gap-3";
+                showToast("Marcado como Rompe Estereotipo", "fa-circle-check");
+            }
+
+            renderTabs();
+            updateProgress();
+        }
+
+        // Guardar Justificación Escrita
+        function saveJustification(caseId, text) {
+            if (!userAnswers[caseId]) {
+                userAnswers[caseId] = { choice: null, justification: '' };
+            }
+            userAnswers[caseId].justification = text;
+            updateProgress();
+        }
+
+        // Alternar Visibilidad del Feedback del Profesor
+        function toggleTeacherFeedback(caseId) {
+            const el = document.getElementById(`teacher-feedback-${caseId}`);
+            if (el) {
+                if (el.classList.contains('hidden')) {
+                    el.classList.remove('hidden');
+                    // auto scroll ligero
+                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    el.classList.add('hidden');
+                }
+            }
+        }
+
+        // Actualizar Barra de Progreso
+        function updateProgress() {
+            let answeredCount = 0;
+            casesData.forEach(c => {
+                if (userAnswers[c.id] && userAnswers[c.id].choice && userAnswers[c.id].justification.trim().length > 3) {
+                    answeredCount++;
+                }
+            });
+
+            const percentage = Math.round((answeredCount / 6) * 100);
+            document.getElementById('progress-text').textContent = `${answeredCount} / 6`;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+
+            const btnReport = document.getElementById('btn-final-report');
+            if (answeredCount >= 6) {
+                btnReport.disabled = false;
+                btnReport.className = "w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm transition shadow-md flex items-center justify-center gap-2 cursor-pointer";
+                generateReportHtml();
+            } else {
+                btnReport.disabled = true;
+                btnReport.className = "w-full py-2.5 px-4 bg-slate-300 text-slate-500 rounded-xl font-bold text-sm cursor-not-allowed transition flex items-center justify-center gap-2";
+            }
+        }
+
+
+        // Generar Informe Final Sintético
+        function generateReportHtml() {
+            const reportContainer = document.getElementById('report-content');
+            let html = `
+                <div class="bg-white p-4 rounded-xl border border-slate-200 mb-4">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wide">Resumen del Análisis de Casos</p>
+            `;
+
+            casesData.forEach(c => {
+                const userAns = userAnswers[c.id] || { choice: 'No respondido', justification: 'Sin justificación' };
+                const isCorrect = userAns.choice === c.correctType;
+                const choiceLabel = userAns.choice === 'stereotype' ? 'Estereotípica' : 'Rompe Estereotipo';
+                const correctLabel = c.correctType === 'stereotype' ? 'Estereotípica' : 'Rompe Estereotipo';
+
+                html += `
+                    <div class="py-3 border-b border-slate-100 last:border-0">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-slate-800">${c.brand} (${c.title})</span>
+                            <span class="px-2 py-0.5 rounded text-xs font-bold ${isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                ${isCorrect ? 'Coincide con el análisis teórico' : 'Coincidencia parcial'}
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-600"><strong>Tu clasificación:</strong> ${choiceLabel} (Enfoque teórico: ${correctLabel})</p>
+                        <p class="text-xs text-slate-500 italic mt-0.5">"Tu argumento: ${userAns.justification}"</p>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            reportContainer.innerHTML = html;
+        }
+
+        function scrollToReport() {
+            const reportSec = document.getElementById('report-section');
+            reportSec.classList.remove('hidden');
+            generateReportHtml();
+            reportSec.scrollIntoView({ behavior: 'smooth' });
+            speakText("¡Felicitaciones! Has completado el análisis de los seis casos. Puedes revisar tu reporte final a continuación.");
+        }
+
+        // Lectura por Voz de Casos Específicos
+        function readCaseDetails(caseId) {
+            const caseObj = casesData.find(c => c.id === caseId);
+            const textToRead = `${caseObj.title}. Eslogan: ${caseObj.slogan}. Descripción de la imagen: ${caseObj.description}`;
+            speakText(textToRead);
+        }
+
+        function readTeacherFeedback(caseId) {
+            const caseObj = casesData.find(c => c.id === caseId);
+            speakText(caseObj.teacherAnalysis);
+        }
+
+        // Copiar Reporte al Portapapeles
+        function copyReport() {
+            let textReport = "=== REPORTE DE ANÁLISIS COMUNICACIÓN: PUBLICIDAD Y ESTEREOTIPOS DE GÉNERO ===\n\n";
+            casesData.forEach(c => {
+                const ans = userAnswers[c.id] || {};
+                textReport += `• ${c.brand}:\n  - Selección: ${ans.choice === 'stereotype' ? 'Estereotípica' : 'Rompe Estereotipo'}\n  - Justificación: ${ans.justification}\n\n`;
+            });
+
+            const finalRef = document.getElementById('final-reflection').value;
+            if (finalRef.trim()) {
+                textReport += `• Reflexión Final de Integración:\n${finalRef}\n`;
+            }
+
+            // Copiado compatible con iframe
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = textReport;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+
+            showToast("Reporte copiado al portapapeles con éxito", "fa-clipboard-check");
+        }
+
+        // Mostrar Toast Notification (reemplazo sin alertas)
+        function showToast(text, iconClass) {
+            const toast = document.getElementById('toast-message');
+            const toastText = document.getElementById('toast-text');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastText.textContent = text;
+            toastIcon.className = `fa-solid ${iconClass} text-indigo-400`;
+
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

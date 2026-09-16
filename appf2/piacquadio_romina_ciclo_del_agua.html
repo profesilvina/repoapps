@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Educativa: El Ciclo del Agua</title>
+    <style>
+        :root {
+            --primary: #2980b9;
+            --primary-light: #3498db;
+            --secondary: #e1f5fe;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --text: #2c3e50;
+            --bg: #f4f9f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary-light);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.1rem;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 1rem;
+        }
+
+        .info-box {
+            background-color: var(--secondary);
+            border-left: 5px solid var(--primary-light);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+        }
+
+        .question-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.15rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .options-list {
+            list-style: none;
+        }
+
+        .option-item {
+            margin-bottom: 10px;
+        }
+
+        .option-label {
+            display: block;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+        .option-label:hover {
+            background: #edf2f7;
+            border-color: var(--primary-light);
+        }
+
+        /* Hide default radio input */
+        .option-item input[type="radio"] {
+            display: none;
+        }
+
+        /* Checked style */
+        .option-item input[type="radio"]:checked + .option-label {
+            background: #e3f2fd;
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Result styles after validation */
+        .option-label.correct {
+            background-color: #d4edda !important;
+            border-color: var(--success) !important;
+            color: #155724;
+        }
+
+        .option-label.incorrect {
+            background-color: #f8d7da !important;
+            border-color: var(--error) !important;
+            color: #721c24;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            display: none;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            background-color: #1f6391;
+        }
+
+        #result-section {
+            display: none;
+            text-align: center;
+            background: var(--secondary);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border: 2px dashed var(--primary);
+        }
+
+        #score-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        #badge-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #95a5a6;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>¡Trivia Interactiva del Ciclo del Agua!</h1>
+        <div class="subtitle">Ciencias Naturales - 4° Grado</div>
+    </header>
+
+    <div class="info-box">
+        <strong>¡Hola!</strong> Respondé las siguientes preguntas sobre cómo viaja el agua en nuestro planeta. Al finalizar, hacé clic en el botón de abajo para conocer tu puntaje y descubrir tu nivel. ¡Mucho éxito!
+    </div>
+
+    <form id="quiz-form">
+        <!-- Pregunta 1 -->
+        <div class="question-card" data-correct="b">
+            <div class="question-text">1. ¿Cómo se llama el proceso cuando el sol calienta el agua líquida y esta sube al cielo como vapor?</div>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" name="q1" value="a" id="q1a">
+                    <label for="q1a" class="option-label">a) Condensación</label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" name="q1" value="b" id="q1b">
+                    <label for="q1b" class="option-label">b) Evaporación</label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" name="q1" value="c" id="q1c">
+                    <label for="q1c" class="option-label">c) Precipitación</label>
+                </li>
+            </ul>
+            <div class="feedback"></div>
+        </div>
+
+        <!-- Pregunta 2 -->
+        <div class="question-card" data-correct="c">
+            <div class="question-text">2. Cuando las nubes se llenan de agua y cae en forma de lluvia, nieve o granizo, ocurre la...</div>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" name="q2" value="a" id="q2a">
+                    <label for="q2a" class="option-label">a) Filtración</label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" name="q2" value="b" id="q2b">
+                    <label for="q2b" class="option-label">b) Evaporación</label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" name="q2" value="c" id="q2c">
+                    <label for="q2c" class="option-label">c) Precipitación</label>
+                </li>
+            </ul>
+            <div class="feedback"></div>
+        </div>
+
+        <!-- Pregunta 3 -->
+        <div class="question-card" data-correct="a">
+            <div class="question-text">3. ¿Qué forma las nubes cuando el vapor de agua se enfría en las alturas?</div>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" name="q3" value="a" id="q3a">
+                    <label for="q3a" class="option-label">a) Condensación</label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" name="q3" value="b" id="q3b">
+                    <label for="q3b" class="option-label">b) Transpiración</label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" name="q3" value="c" id="q3c">
+                    <label for="q3c" class="option-label">c) Fusión</label>
+                </li>
+            </ul>
+            <div class="feedback"></div>
+        </div>
+
+        <!-- Pregunta 4 -->
+        <div class="question-card" data-correct="b">
+            <div class="question-text">4. ¿Cuál es el motor principal que hace que funcione todo el ciclo del agua en la Tierra?</div>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" name="q4" value="a" id="q4a">
+                    <label for="q4a" class="option-label">a) El viento</label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" name="q4" value="b" id="q4b">
+                    <label for="q4b" class="option-label">b) La energía del Sol</label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" name="q4" value="c" id="q4c">
+                    <label for="q4c" class="option-label">c) Las plantas</label>
+                </li>
+            </ul>
+            <div class="feedback"></div>
+        </div>
+
+        <!-- Pregunta 5 -->
+        <div class="question-card" data-correct="a">
+            <div class="question-text">5. ¿Qué pasa con el agua de lluvia que cae al suelo y penetra en la tierra formando reservas subterráneas?</div>
+            <ul class="options-list">
+                <li class="option-item">
+                    <input type="radio" name="q5" value="a" id="q5a">
+                    <label for="q5a" class="option-label">a) Se filtra (Filtración / Infiltración)</label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" name="q5" value="b" id="q5b">
+                    <label for="q5b" class="option-label">b) Se evapora de inmediato</label>
+                </li>
+                <li class="option-item">
+                    <input type="radio" name="q5" value="c" id="q5c">
+                    <label for="q5c" class="option-label">c) Desaparece para siempre</label>
+                </li>
+            </ul>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="btn-container">
+            <button type="button" id="submit-btn" onclick="checkAnswers()">Corregir Cuestionario</button>
+        </div>
+    </form>
+
+    <div id="result-section">
+        <div id="score-text"></div>
+        <div id="badge-text"></div>
+    </div>
+
+    <footer>
+        Desarrollado por: <strong>Piacquadio Romina</strong> | Práctica de Aplicación Educativa
+    </footer>
+</div>
+
+<script>
+function checkAnswers() {
+    const cards = document.querySelectorAll('.question-card');
+    let score = 0;
+    let allAnswered = true;
+
+    // Verificar si se respondieron todas las preguntas
+    cards.forEach((card, index) => {
+        const checkedOption = card.querySelector('input[type="radio"]:checked');
+        if (!checkedOption) {
+            allAnswered = false;
+        }
+    });
+
+    if (!allAnswered) {
+        alert("Por favor, respondé todas las preguntas antes de corregir.");
+        return;
+    }
+
+    // Evaluar respuestas
+    cards.forEach((card) => {
+        const correctAnswer = card.getAttribute('data-correct');
+        const checkedOption = card.querySelector('input[type="radio"]:checked');
+        const selectedValue = checkedOption.value;
+        const labels = card.querySelectorAll('.option-label');
+
+        // Reset classes
+        labels.forEach(label => {
+            label.classList.remove('correct', 'incorrect');
+        });
+
+        if (selectedValue === correctAnswer) {
+            score++;
+            checkedOption.nextElementSibling.classList.add('correct');
+        } else {
+            checkedOption.nextElementSibling.classList.add('incorrect');
+            // Resaltar también la correcta para que el alumno aprenda
+            card.querySelector(`input[value="${correctAnswer}"]`).nextElementSibling.classList.add('correct');
+        }
+    });
+
+    // Mostrar sección de resultados
+    const resultSection = document.getElementById('result-section');
+    const scoreText = document.getElementById('score-text');
+    const badgeText = document.getElementById('badge-text');
+
+    resultSection.style.display = 'block';
+    scoreText.innerHTML = `¡Tus respuestas correctas: ${score} de ${cards.length}!`;
+
+    // Asignar una medalla o mensaje motivacional según el puntaje
+    if (score === 5) {
+        badgeText.innerHTML = "🏆 ¡Excelente! Sos un experto/a en el Ciclo del Agua.";
+        badgeText.style.color = "#27ae60";
+    } else if (score >= 3) {
+        badgeText.innerHTML = "👍 ¡Muy bien! Conocés mucho sobre el tema. ¡A seguir repasando!";
+        badgeText.style.color = "#2980b9";
+    } else {
+        badgeText.innerHTML = "🌱 ¡Buen intento! Volvé a leer sobre el ciclo del agua y probá de nuevo.";
+        badgeText.style.color = "#e67e22";
+    }
+
+    // Deshabilitar campos para que no cambien las respuestas tras corregir
+    const inputs = document.querySelectorAll('input[type="radio"]');
+    inputs.forEach(input => input.disabled = true);
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('submit-btn').style.backgroundColor = '#bdc3c7';
+    document.getElementById('submit-btn').style.cursor = 'not-style';
+    
+    // Scroll suave hacia los resultados
+    resultSection.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorando la Función Lineal - DUA y Andamiaje</title>
+    <style>
+        /* =========================================
+           VARIABLES DE TEMA Y ACCESIBILIDAD (DUA)
+           ========================================= */
+        :root {
+            --bg-color: #f4f7f6;
+            --text-color: #2c3e50;
+            --panel-bg: #ffffff;
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --secondary-color: #e9ecef;
+            --accent-color: #28a745;
+            --error-color: #dc3545;
+            --border-color: #dee2e6;
+            --font-size-base: 16px;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --panel-bg: #1e1e1e;
+            --primary-color: #4da6ff;
+            --primary-hover: #1a8cff;
+            --secondary-color: #333333;
+            --accent-color: #4CAF50;
+            --error-color: #ff5252;
+            --border-color: #444444;
+        }
+
+        [data-theme="hc"] { /* Alto Contraste */
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --panel-bg: #000000;
+            --primary-color: #ffff00;
+            --primary-hover: #cccc00;
+            --secondary-color: #222222;
+            --accent-color: #00ff00;
+            --error-color: #ff0000;
+            --border-color: #ffffff;
+        }
+
+        /* =========================================
+           ESTILOS GENERALES
+           ========================================= */
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: var(--font-size-base);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        header {
+            background-color: var(--panel-bg);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .title-container h1 { margin: 0; font-size: 1.5rem; }
+
+        .accessibility-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        
+        [data-theme="hc"] button { color: #000; }
+
+        button:hover { background-color: var(--primary-hover); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .btn-icon { padding: 0.5rem; font-size: 1.2rem; }
+        .btn-secondary { background-color: #6c757d; }
+        .btn-secondary:hover { background-color: #5a6268; }
+
+        .progress-bar {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 1rem;
+            background: var(--secondary-color);
+            flex-wrap: wrap;
+        }
+
+        .step-indicator {
+            padding: 5px 12px;
+            border-radius: 20px;
+            background-color: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            font-weight: bold;
+            opacity: 0.5;
+            font-size: 0.85rem;
+        }
+        .step-indicator.active {
+            opacity: 1;
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        [data-theme="hc"] .step-indicator.active { color: #000; }
+
+        main { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+
+        .step-content { display: none; }
+        .step-content.active { display: block; animation: fadeIn 0.5s; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .panel {
+            background: var(--panel-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        /* Layouts flexibles */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) { .workspace { grid-template-columns: 1fr; } }
+
+        .workspace-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) { .workspace-3 { grid-template-columns: 1fr; } }
+
+        /* Controles y Sliders */
+        .controls { display: flex; flex-direction: column; gap: 1.2rem; }
+        .control-group {
+            background: var(--secondary-color);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .control-group label { font-weight: bold; display: block; margin-bottom: 0.5rem; }
+        
+        input[type=range], input[type=number] { width: 100%; margin: 5px 0; cursor: pointer; }
+        input[type=number] { padding: 0.4rem; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); }
+
+        .formula-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 0.5rem 0;
+            padding: 0.8rem;
+            background: var(--bg-color);
+            border: 2px dashed var(--primary-color);
+            border-radius: 10px;
+        }
+
+        .highlight-m { color: #d35400; }
+        .highlight-b { color: #8e44ad; }
+        [data-theme="dark"] .highlight-m { color: #e67e22; }
+        [data-theme="dark"] .highlight-b { color: #af7ac5; }
+        [data-theme="hc"] .highlight-m { color: #ff5555; }
+        [data-theme="hc"] .highlight-b { color: #ff55ff; }
+
+        /* Canvas del gráfico */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #fff;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        [data-theme="dark"] .canvas-container { background: #222; }
+        [data-theme="hc"] .canvas-container { background: #000; border-color: #fff; }
+        
+        canvas { width: 100%; height: 100%; }
+
+        /* Estilos de Tabla de Valores */
+        .table-container {
+            background: var(--secondary-color);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        table.math-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            background: var(--panel-bg);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        table.math-table th, table.math-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+        }
+        table.math-table th {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        [data-theme="hc"] table.math-table th { color: #000; }
+
+        /* Retroalimentación y Pistas */
+        .feedback-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+        }
+        .feedback-box.show { display: block; }
+        .feedback-box.error { background-color: rgba(220, 53, 69, 0.1); border-left: 5px solid var(--error-color); }
+        .feedback-box.success { background-color: rgba(40, 167, 69, 0.1); border-left: 5px solid var(--accent-color); }
+
+        .hints-container { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+        .hint {
+            background-color: var(--secondary-color);
+            padding: 0.8rem;
+            border-radius: 5px;
+            display: none;
+            border-left: 4px solid var(--primary-color);
+            font-size: 0.95rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 1rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            resize: vertical;
+        }
+
+        .readable-text { font-size: 1.1em; max-width: 800px; }
+        .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+
+    <!-- CABECERA: Controles DUA de Accesibilidad -->
+    <header>
+        <div class="title-container">
+            <h1>📐 Funciones Lineales: Gráficos y Tablas</h1>
+        </div>
+        <div class="accessibility-controls" aria-label="Controles de accesibilidad">
+            <button class="btn-icon" onclick="changeFontSize(2)" aria-label="Aumentar tamaño de letra">A+</button>
+            <button class="btn-icon" onclick="changeFontSize(-2)" aria-label="Disminuir tamaño de letra">A-</button>
+            <button class="btn-icon" id="btn-tts" onclick="toggleTTS()" aria-label="Activar o pausar lectura en voz alta">🔊 Leer</button>
+            <select id="theme-selector" onchange="changeTheme(this.value)" aria-label="Seleccionar contraste visual" style="padding: 0.5rem; border-radius: 5px;">
+                <option value="light">Claro</option>
+                <option value="dark">Oscuro</option>
+                <option value="hc">Alto Contraste</option>
+            </select>
+        </div>
+    </header>
+
+    <!-- INDICADOR DE PROGRESO VISUAL -->
+    <div class="progress-bar" aria-hidden="true">
+        <div class="step-indicator active" id="ind-1">1. Exploración</div>
+        <div class="step-indicator" id="ind-2">2. Desafío Gráfico</div>
+        <div class="step-indicator" id="ind-3">3. Desafío de Tabla</div>
+        <div class="step-indicator" id="ind-4">4. Conexión Total</div>
+        <div class="step-indicator" id="ind-5">5. Reflexión</div>
+    </div>
+
+    <main>
+        <!-- ==============================================
+             PASO 1: EXPLORACIÓN
+             ============================================== -->
+        <section class="step-content active" id="step-1">
+            <div class="panel">
+                <h2 class="readable-text">Fase 1: Conectando la fórmula, el gráfico y la tabla</h2>
+                <p class="readable-text">Mueve los deslizadores de la <strong>pendiente (m)</strong> y la <strong>ordenada (b)</strong>. Observa simultáneamente cómo se dibuja la recta y cómo cambian los valores numéricos en la tabla de coordenadas.</p>
+                
+                <div class="workspace-3">
+                    <div class="canvas-container">
+                        <canvas id="graphCanvas1" width="400" height="400"></canvas>
+                    </div>
+                    
+                    <div class="controls">
+                        <div class="formula-display" aria-live="polite">
+                            y = <span class="highlight-m"><span id="val-m1">1</span>x</span> 
+                            <span class="highlight-b" id="val-b1-display">+ 0</span>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="slider-m1">Pendiente (m):</label>
+                            <input type="range" id="slider-m1" min="-4" max="4" step="1" value="1" oninput="updateExploration()">
+                            <p>m = <span id="m1-text" class="highlight-m">1</span></p>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="slider-b1">Ordenada al origen (b):</label>
+                            <input type="range" id="slider-b1" min="-5" max="5" step="1" value="0" oninput="updateExploration()">
+                            <p>b = <span id="b1-text" class="highlight-b">0</span></p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <h3>Valores (x, y)</h3>
+                        <table class="math-table" id="table-exp">
+                            <thead>
+                                <tr><th>x</th><th>y = mx + b</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <span></span>
+                    <button onclick="goToStep(2)">Ir al Desafío Gráfico →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             PASO 2: DESAFÍO GRÁFICO
+             ============================================== -->
+        <section class="step-content" id="step-2">
+            <div class="panel">
+                <h2 class="readable-text">Fase 2: Desafío de Gráficos</h2>
+                <p class="readable-text"><strong>Misión:</strong> Modifica la fórmula para que la recta <strong>corte el eje vertical (Y) en -3</strong> y tenga una <strong>pendiente negativa (-2)</strong>.</p>
+                
+                <div class="workspace">
+                    <div class="canvas-container">
+                        <canvas id="graphCanvas2" width="400" height="400"></canvas>
+                    </div>
+                    
+                    <div class="controls">
+                        <div class="formula-display" aria-live="polite">
+                            y = <span class="highlight-m"><span id="val-m2">1</span>x</span> 
+                            <span class="highlight-b" id="val-b2-display">+ 0</span>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="slider-m2">Pendiente (m):</label>
+                            <input type="range" id="slider-m2" min="-5" max="5" step="0.5" value="1" oninput="updateGraph2()">
+                        </div>
+
+                        <div class="control-group">
+                            <label for="slider-b2">Ordenada al origen (b):</label>
+                            <input type="range" id="slider-b2" min="-8" max="8" step="1" value="0" oninput="updateGraph2()">
+                        </div>
+
+                        <button onclick="checkChallenge2()">Verificar respuesta</button>
+                        
+                        <div id="feedback-message-2" class="feedback-box"></div>
+                        
+                        <!-- Pistas siempre disponibles -->
+                        <div class="hints-container">
+                            <button class="btn-secondary" onclick="showHint2()">💡 Ver Pista de Apoyo</button>
+                            <div id="hint-2-1" class="hint"><strong>Pista 1:</strong> Recuerda que la letra 'b' indica exactamente en qué valor del eje vertical cruza la recta.</div>
+                            <div id="hint-2-2" class="hint"><strong>Pista 2:</strong> Para lograr una pendiente de -2, el deslizador de 'm' debe posicionarse en -2 para que la recta descienda.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="goToStep(1)">← Anterior</button>
+                    <button id="btn-next-3" onclick="goToStep(3)" style="display: none;">Siguiente: Desafío de Tabla →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             PASO 3: DESAFÍO DE TABLA
+             ============================================== -->
+        <section class="step-content" id="step-3">
+            <div class="panel">
+                <h2 class="readable-text">Fase 3: Completando la Tabla de Valores</h2>
+                <p class="readable-text">Dada la función lineal <strong>y = 2x + 1</strong>, calcula y escribe los valores faltantes de <strong>y</strong> correspondientes a cada valor de <strong>x</strong>.</p>
+                
+                <div class="workspace">
+                    <div class="table-container">
+                        <h3>Función: y = 2x + 1</h3>
+                        <table class="math-table">
+                            <thead>
+                                <tr><th>x</th><th>y (Cálculo)</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>-2</td><td><input type="number" id="t3-val1" placeholder="?"></td></tr>
+                                <tr><td>0</td><td><input type="number" id="t3-val2" placeholder="?"></td></tr>
+                                <tr><td>1</td><td><input type="number" id="t3-val3" placeholder="?"></td></tr>
+                                <tr><td>3</td><td><input type="number" id="t3-val4" placeholder="?"></td></tr>
+                            </tbody>
+                        </table>
+                        <br>
+                        <button onclick="checkChallenge3()">Comprobar valores de la tabla</button>
+                        <div id="feedback-message-3" class="feedback-box"></div>
+                    </div>
+
+                    <div class="controls" style="background: var(--secondary-color); padding: 1.5rem; border-radius: 8px;">
+                        <h3>💡 Guía de Apoyo</h3>
+                        <p>Multiplica cada valor de <strong>x</strong> por la pendiente (2) y súmale la ordenada (1).</p>
+                        
+                        <div class="hints-container">
+                            <button class="btn-secondary" onclick="showHint3()">💡 Ver Pista de Apoyo</button>
+                            <div id="hint-3-1" class="hint"><strong>Pista:</strong> Si x = 0, haz 2 · 0 + 1. ¿Cuánto da? Ese es el corte en el eje vertical.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="goToStep(2)">← Anterior</button>
+                    <button id="btn-next-4" onclick="goToStep(4)" style="display: none;">Siguiente fase →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             PASO 4: CONEXIÓN TOTAL
+             ============================================== -->
+        <section class="step-content" id="step-4">
+            <div class="panel">
+                <h2 class="readable-text">Fase 4: Descubriendo la Fórmula Oculta</h2>
+                <p class="readable-text">Observa la siguiente tabla de valores generada por una función lineal misteriosa. Tu misión es deducir y escribir los valores correctos de <strong>m</strong> y <strong>b</strong>.</p>
+                
+                <div class="workspace">
+                    <div class="table-container">
+                        <h3>Tabla Misteriosa</h3>
+                        <table class="math-table">
+                            <thead>
+                                <tr><th>x</th><th>y</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>0</td><td>3</td></tr>
+                                <tr><td>1</td><td>5</td></tr>
+                                <tr><td>2</td><td>7</td></tr>
+                                <tr><td>3</td><td>9</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="controls">
+                        <div class="control-group">
+                            <label for="mystery-m">¿Cuál es la pendiente (m)?</label>
+                            <input type="number" id="mystery-m" step="0.5" placeholder="Ej: 2">
+                        </div>
+                        <div class="control-group">
+                            <label for="mystery-b">¿Cuál es la ordenada al origen (b)?</label>
+                            <input type="number" id="mystery-b" step="1" placeholder="Ej: 3">
+                        </div>
+                        
+                        <button onclick="checkChallenge4()">Verificar fórmula misteriosa</button>
+                        <div id="feedback-message-4" class="feedback-box"></div>
+                        
+                        <div class="hints-container">
+                            <button class="btn-secondary" onclick="showHint4()">💡 Ver Pistas de Apoyo</button>
+                            <div id="hint-4-1" class="hint"><strong>Pista 1:</strong> Mira qué valor toma 'y' cuando x = 0. Ese es directamente el valor de 'b'.</div>
+                            <div id="hint-4-2" class="hint"><strong>Pista 2:</strong> Observa cuánto aumenta 'y' cada vez que 'x' sube de a 1 unidad. Ese salto constante es 'm'.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="goToStep(3)">← Anterior</button>
+                    <button id="btn-next-5" onclick="goToStep(5)" style="display: none;">Ir a Reflexión Final →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             PASO 5: METACOGNICIÓN
+             ============================================== -->
+        <section class="step-content" id="step-5">
+            <div class="panel">
+                <h2 class="readable-text">Fase 5: Metacognición y Cierre</h2>
+                <p class="readable-text">Tómate un instante para pensar en tu propio aprendizaje. No hay respuestas incorrectas.</p>
+                
+                <form onsubmit="finishActivity(event)">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="reflection-1" style="font-weight: bold; display: block; margin-bottom: 0.5rem;">¿Qué relación descubriste entre la tabla de valores y la línea recta en el gráfico?</label>
+                        <textarea id="reflection-1" required placeholder="Escribe tu reflexión..."></textarea>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="reflection-2" style="font-weight: bold; display: block; margin-bottom: 0.5rem;">¿Qué estrategia te ayudó más cuando te trabaste en alguno de los desafíos?</label>
+                        <textarea id="reflection-2" required placeholder="Escribe tu respuesta..."></textarea>
+                    </div>
+                    <div class="nav-buttons" style="margin-top: 1rem;">
+                        <button type="button" class="btn-secondary" onclick="goToStep(4)">← Anterior</button>
+                        <button type="submit">Guardar y Finalizar</button>
+                    </div>
+                </form>
+
+                <div id="final-message" class="feedback-box success" style="margin-top: 2rem; display:none;">
+                    🎉 ¡Excelente trabajo! Has explorado con éxito la función lineal vinculando fórmulas, gráficos y tablas de valores.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        /* ==========================================================
+           ACCESIBILIDAD Y DUA
+           ========================================================== */
+        let currentFontSize = 16;
+        function changeFontSize(delta) {
+            currentFontSize += delta;
+            if (currentFontSize < 12) currentFontSize = 12;
+            if (currentFontSize > 26) currentFontSize = 26;
+            document.documentElement.style.setProperty('--font-size-base', currentFontSize + 'px');
+        }
+
+        function changeTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            updateExploration();
+            if (document.getElementById('step-2').classList.contains('active')) updateGraph2();
+        }
+
+        let synth = window.speechSynthesis;
+        let isSpeaking = false;
+        function toggleTTS() {
+            if (isSpeaking) {
+                synth.cancel();
+                isSpeaking = false;
+                document.getElementById('btn-tts').innerText = "🔊 Leer";
+                return;
+            }
+            let activeStep = document.querySelector('.step-content.active');
+            let textToRead = activeStep.innerText;
+            let utterance = new SpeechSynthesisUtterance(textToRead);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.9;
+            utterance.onend = () => {
+                isSpeaking = false;
+                document.getElementById('btn-tts').innerText = "🔊 Leer";
+            };
+            synth.speak(utterance);
+            isSpeaking = true;
+            document.getElementById('btn-tts').innerText = "⏸️ Pausar";
+        }
+
+        function goToStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.step-indicator').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('step-' + step).classList.add('active');
+            document.getElementById('ind-' + step).classList.add('active');
+            
+            if(step === 1) updateExploration();
+            if(step === 2) updateGraph2();
+            if(isSpeaking) toggleTTS();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ==========================================================
+           MOTOR GRÁFICO (CANVAS) Y TABLAS DINÁMICAS
+           ========================================================== */
+        function drawGridAndLine(canvasId, m, b) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            
+            const theme = document.documentElement.getAttribute('data-theme');
+            let axisColor = theme === 'dark' || theme === 'hc' ? '#fff' : '#000';
+            let gridColor = theme === 'dark' ? '#444' : (theme === 'hc' ? '#333' : '#ddd');
+            let lineColor = theme === 'hc' ? '#ffff00' : '#007bff';
+            let bPointColor = theme === 'hc' ? '#ff55ff' : '#8e44ad';
+            let rootColor = theme === 'hc' ? '#00ff00' : '#28a745';
+            let textColor = theme === 'dark' || theme === 'hc' ? '#fff' : '#000';
+
+            const scale = w / 20; 
+            const centerX = w / 2;
+            const centerY = h / 2;
+
+            const toCx = (x) => centerX + x * scale;
+            const toCy = (y) => centerY - y * scale;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Grilla
+            ctx.beginPath();
+            ctx.strokeStyle = gridColor;
+            ctx.lineWidth = 1;
+            for (let i = -10; i <= 10; i++) {
+                ctx.moveTo(toCx(i), 0); ctx.lineTo(toCx(i), h);
+                ctx.moveTo(0, toCy(i)); ctx.lineTo(w, toCy(i));
+            }
+            ctx.stroke();
+
+            // Ejes
+            ctx.beginPath();
+            ctx.strokeStyle = axisColor;
+            ctx.lineWidth = 2;
+            ctx.moveTo(0, centerY); ctx.lineTo(w, centerY);
+            ctx.moveTo(centerX, 0); ctx.lineTo(centerX, h);
+            ctx.stroke();
+            
+            ctx.fillStyle = textColor;
+            ctx.font = "14px Arial";
+            ctx.fillText("X", w - 15, centerY - 10);
+            ctx.fillText("Y", centerX + 10, 15);
+
+            // Línea
+            ctx.beginPath();
+            ctx.strokeStyle = lineColor;
+            ctx.lineWidth = 3;
+            let x1 = -10; let y1 = m * x1 + b;
+            let x2 = 10;  let y2 = m * x2 + b;
+            ctx.moveTo(toCx(x1), toCy(y1));
+            ctx.lineTo(toCx(x2), toCy(y2));
+            ctx.stroke();
+
+            // Ordenada al origen
+            ctx.beginPath();
+            ctx.arc(toCx(0), toCy(b), 6, 0, Math.PI * 2);
+            ctx.fillStyle = bPointColor;
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Raíz
+            if (m !== 0) {
+                let rootX = -b / m;
+                if (rootX >= -10 && rootX <= 10) {
+                    ctx.beginPath();
+                    ctx.arc(toCx(rootX), toCy(0), 6, 0, Math.PI * 2);
+                    ctx.fillStyle = rootColor;
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function formatB(b) {
+            return b < 0 ? `- ${Math.abs(b)}` : `+ ${b}`;
+        }
+
+        function updateExploration() {
+            let m = parseFloat(document.getElementById('slider-m1').value);
+            let b = parseFloat(document.getElementById('slider-b1').value);
+            
+            document.getElementById('val-m1').innerText = m;
+            document.getElementById('m1-text').innerText = m;
+            document.getElementById('val-b1-display').innerText = formatB(b);
+            document.getElementById('b1-text').innerText = b;
+
+            drawGridAndLine('graphCanvas1', m, b);
+
+            let tbody = document.querySelector('#table-exp tbody');
+            tbody.innerHTML = '';
+            for (let x = -2; x <= 2; x++) {
+                let y = m * x + b;
+                tbody.innerHTML += `<tr><td>${x}</td><td>${y}</td></tr>`;
+            }
+        }
+
+        function updateGraph2() {
+            let m = parseFloat(document.getElementById('slider-m2').value);
+            let b = parseFloat(document.getElementById('slider-b2').value);
+            
+            document.getElementById('val-m2').innerText = m;
+            document.getElementById('val-b2-display').innerText = formatB(b);
+
+            drawGridAndLine('graphCanvas2', m, b);
+            document.getElementById('feedback-message-2').classList.remove('show');
+        }
+
+        let hintStep2 = 0;
+        function showHint2() {
+            hintStep2++;
+            if (hintStep2 === 1) document.getElementById('hint-2-1').style.display = 'block';
+            if (hintStep2 >= 2) document.getElementById('hint-2-2').style.display = 'block';
+        }
+
+        function checkChallenge2() {
+            let m = parseFloat(document.getElementById('slider-m2').value);
+            let b = parseFloat(document.getElementById('slider-b2').value);
+            let feedback = document.getElementById('feedback-message-2');
+            
+            if (b === -3 && m === -2) {
+                feedback.className = 'feedback-box success show';
+                feedback.innerHTML = "🎯 ¡Perfecto! La recta corta exactamente en -3 y su pendiente es -2.";
+                document.getElementById('btn-next-3').style.display = 'inline-block';
+            } else {
+                feedback.className = 'feedback-box error show';
+                feedback.innerHTML = "Revisa los parámetros: ¿El corte vertical está en -3 y la pendiente en -2? Puedes abrir la pista de apoyo si lo necesitas.";
+            }
+        }
+
+        function showHint3() {
+            document.getElementById('hint-3-1').style.display = 'block';
+        }
+
+        function checkChallenge3() {
+            let v1 = parseFloat(document.getElementById('t3-val1').value);
+            let v2 = parseFloat(document.getElementById('t3-val2').value);
+            let v3 = parseFloat(document.getElementById('t3-val3').value);
+            let v4 = parseFloat(document.getElementById('t3-val4').value);
+            let feedback = document.getElementById('feedback-message-3');
+
+            if (v1 === -3 && v2 === 1 && v3 === 3 && v4 === 7) {
+                feedback.className = 'feedback-box success show';
+                feedback.innerHTML = "🎉 ¡Excelente! Calculaste todos los valores correctamente.";
+                document.getElementById('btn-next-4').style.display = 'inline-block';
+            } else {
+                feedback.className = 'feedback-box error show';
+                feedback.innerHTML = "Hay algún valor que no coincide. Multiplica cada 'x' por 2 y súmale 1.";
+            }
+        }
+
+        let hintStep4 = 0;
+        function showHint4() {
+            hintStep4++;
+            if (hintStep4 === 1) document.getElementById('hint-4-1').style.display = 'block';
+            if (hintStep4 >= 2) document.getElementById('hint-4-2').style.display = 'block';
+        }
+
+        function checkChallenge4() {
+            let m = parseFloat(document.getElementById('mystery-m').value);
+            let b = parseFloat(document.getElementById('mystery-b').value);
+            let feedback = document.getElementById('feedback-message-4');
+
+            if (m === 2 && b === 3) {
+                feedback.className = 'feedback-box success show';
+                feedback.innerHTML = "🌟 ¡Impresionante! Deduste correctamente que la función es y = 2x + 3.";
+                document.getElementById('btn-next-5').style.display = 'inline-block';
+            } else {
+                feedback.className = 'feedback-box error show';
+                feedback.innerHTML = "No es del todo correcto. Revisa qué pasa cuando x = 0 (para 'b') y cómo varía 'y' (para 'm').";
+            }
+        }
+
+        function finishActivity(e) {
+            e.preventDefault();
+            document.getElementById('final-message').style.display = 'block';
+            document.querySelectorAll('#step-5 textarea, #step-5 button[type="submit"]').forEach(el => el.disabled = true);
+        }
+
+        window.onload = () => {
+            updateExploration();
+        };
+    </script>
+</body>
+</html>
