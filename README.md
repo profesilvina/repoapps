@@ -23,6 +23,17 @@ Este repositorio contiene una colección de aplicaciones web interactivas y medi
 12. **Laboratorio de Falacias: Impulsos Socráticos (DUA)** (Diego Bernardo): Aplicación interactiva de Filosofía y Lógica para identificar falacias argumentativas no formales a través de casos cotidianos, pistas socráticas, feedback formativo y accesibilidad DUA.
 13. **El Bosque de las Letras Mágicas: Lectoescritura (DUA)** (Mariana Santillan): Aventura gamificada de lectoescritura en 3 misiones (sílabas, rimas y oraciones) con lector por voz (TTS), tipografía accesible y diseño DUA.
 14. **Detectives Digitales: Imágenes Reales vs. IA (DUA)** (Agustina Andrés): Propuesta interactiva para Nivel Inicial (Sala de 5) y primer ciclo para distinguir imágenes reales de IA, con mayúscula imprenta, síntesis de voz (TTS) y alto contraste.
+15. **Python Zero: Aprendé a programar desde cero** (Graciela Sánchez): Entorno interactivo para primeros pasos en programación Python con laboratorio de código en vivo e insignias.
+16. **Lab Quirúrgico de Reacciones Químicas (DUA)** (Martín Portillo): Laboratorio para 3.° año de secundaria centrado en reactivos, transformaciones químicas, pistas microscópicas y panel DUA con TTS.
+17. **Los Agregados Obreros: Diplomacia y Batalla Cultural (DUA)** (Marcelo Rest): Entorno interactivo de Historia Argentina para 3.° año sobre diplomacia obrera (1946-1955), método socrático y herramientas DUA.
+18. **Expedientes del Detective: Razonamiento Lógico (DUA)** (Gabriela Dimas): Laboratorio de deducción e investigación criminal con 3 enigmas policiales, matriz lógica y accesibilidad DUA con síntesis de voz.
+19. **Aventura de las Vocales (DUA 5 Años)** (Milena Reyser): Aventura interactiva para Nivel Inicial orientada al reconocimiento auditivo, fonológico y visual de las vocales con animaciones, sonido y panel DUA.
+20. **Sonidos en Juego: Conciencia Fonológica y Escritura (DUA)** (Beatriz Verteramo): Aplicación interactiva bajo normas WCAG AAA y tipografía Lexend para segmentar y escribir fonemas con apoyo visual y TTS.
+21. **Publicidad Gráfica y Estereotipos de Género (DUA)** (Denise Wieckiewicz): Laboratorio de análisis crítico de medios con 6 casos reales de publicidad gráfica, clasificación estereotipo vs. empoderamiento, justificación argumentada y lector TTS.
+22. **Explorando la Función Lineal (DUA y Andamiaje)** (Denise Pedrotti): Laboratorio interactivo y gráfico con sliders en tiempo real sobre canvas para experimentar con la pendiente y la ordenada al origen con 5 fases de andamiaje y TTS.
+23. **Trivia Interactiva del Ciclo del Agua** (Romina Piacquadio): Trivia didáctica para 4.° grado sobre las etapas del ciclo hidrológico con retroalimentación inmediata explicativa, puntaje e insignias.
+24. **¡MueveTuCuerpo! Exploradores del Movimiento (DUA)** (Vilma Santacruz): Entorno lúdico de expresión corporal y danza para primer ciclo de primaria con biblioteca de movimientos, preguntas pista, dados corporales y panel DUA (TTS y dislexia).
+25. **Detectives de Algoritmos (DUA)** (Daniela Savastano): Laboratorio de pensamiento computacional para 3.° grado con 5 misiones para investigar algoritmos desordenados, instrucciones ambiguas, pistas socráticas graduadas y panel DUA.
 
 ---
 
