@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e3a8a">
+  <title>EduLaboral - Primaria de Adultos</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    }
+    body {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-size: 16px;
+      padding-bottom: 30px;
+    }
+    .app-header {
+      background: #1e3a8a;
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .app-header h1 {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .badge-online, .badge-offline {
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-online {
+      background: #16a34a;
+    }
+    .badge-offline {
+      background: #dc2626;
+    }
+    .nav-tabs {
+      display: flex;
+      background: #ffffff;
+      border-bottom: 2px solid #e2e8f0;
+      overflow-x: auto;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .tab-btn {
+      flex: 1;
+      min-width: 95px;
+      padding: 14px 10px;
+      border: none;
+      background: none;
+      font-size: 15px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      border-bottom: 3px solid transparent;
+    }
+    .tab-btn:hover {
+      background: #f8fafc;
+      color: #1e3a8a;
+    }
+    .tab-btn.active {
+      color: #1e3a8a;
+      border-bottom: 3px solid #1e3a8a;
+      background: #f0f7ff;
+    }
+    .main-container {
+      padding: 16px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .section-content {
+      display: none;
+      animation: aparecer 0.25s ease-out;
+    }
+    .section-content.active {
+      display: block;
+    }
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h2 {
+      margin-bottom: 16px;
+      color: #1e3a8a;
+      font-size: 22px;
+    }
+    h3 {
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      border: 1px solid #e2e8f0;
+    }
+    .oficio-card {
+      cursor: pointer;
+      border-left: 5px solid #0284c7;
+      margin-bottom: 0;
+      transition: all 0.2s;
+    }
+    .oficio-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+      border-left-color: #1e3a8a;
+    }
+    .oficio-card h3 {
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+    .oficio-card p {
+      color: #475569;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 10px;
+      color: #334155;
+      font-size: 14px;
+    }
+    .input-field {
+      width: 100%;
+      padding: 12px 14px;
+      margin: 6px 0 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+      background: #fff;
+      transition: border-color 0.2s;
+    }
+    .input-field:focus {
+      outline: none;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2,132,199,0.15);
+    }
+    textarea.input-field {
+      resize: vertical;
+      min-height: 90px;
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: #1e3a8a;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      box-shadow: 0 2px 4px rgba(30,58,138,0.2);
+    }
+    .btn-primary:hover {
+      background: #172554;
+    }
+    .result-box {
+      margin-top: 16px;
+      padding: 16px;
+      background: #e0f2fe;
+      border-radius: 8px;
+      border-left: 4px solid #0284c7;
+      line-height: 1.7;
+    }
+    .cv-preview {
+      margin-top: 18px;
+      padding: 20px;
+      background: #f8fafc;
+      border: 2px dashed #0284c7;
+      border-radius: 10px;
+      line-height: 1.6;
+    }
+    .cv-preview h3 {
+      color: #1e3a8a;
+      font-size: 22px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 6px;
+    }
+    .cv-preview p {
+      margin-bottom: 8px;
+    }
+    ul {
+      padding-left: 22px;
+      line-height: 1.8;
+    }
+    .info-box {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+      padding: 12px 14px;
+      margin: 8px 0 16px;
+      border-radius: 6px;
+      line-height: 1.5;
+      font-size: 14px;
+      color: #1e40af;
+    }
+    .footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 13px;
+      padding: 24px 10px 5px;
+    }
+    @media (max-width: 600px) {
+      .grid-cards { grid-template-columns: 1fr; }
+      .app-header h1 { font-size: 20px; }
+      .tab-btn { font-size: 13px; padding: 12px 6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Encabezado con estado de conexión -->
+  <header class="app-header">
+    <h1>EduLaboral</h1>
+    <span id="status-badge" class="badge-online">● En línea</span>
+  </header>
+
+  <!-- Pestañas de Navegación -->
+  <nav class="nav-tabs">
+    <button class="tab-btn active" type="button" onclick="switchTab('oficios', this)">🔧 Oficios</button>
+    <button class="tab-btn" type="button" onclick="switchTab('matematica', this)">📐 Matemática</button>
+    <button class="tab-btn" type="button" onclick="switchTab('cv', this)">📄 Mi CV</button>
+    <button class="tab-btn" type="button" onclick="switchTab('derechos', this)">⚖️ Trabajo</button>
+  </nav>
+
+  <!-- Contenedor Principal -->
+  <main class="main-container">
+
+    <!-- Sección 1: Oficios -->
+    <section id="sec-oficios" class="section-content active">
+      <h2>Módulos de Oficios y Talleres</h2>
+      <div class="grid-cards">
+        <div class="card oficio-card" onclick="switchTab('matematica', document.querySelectorAll('.tab-btn')[1])">
+          <h3>⚡ Electricidad Residencial</h3>
+          <p>Circuitos básicos, cálculo de cables, normas de seguridad y presupuestos de materiales.</p>
+        </div>
+        <div class="card oficio-card" onclick="switchTab('matematica', document.querySelectorAll('.tab-btn')[1])">
+          <h3>🍳 Gastronomía y Cocina</h3>
+          <p>Manipulación higiénica de alimentos, costos de recetas, mermas y cálculo de rendimiento.</p>
+        </div>
+        <div class="card oficio-card" onclick="switchTab('matematica', document.querySelectorAll('.tab-btn')[1])">
+          <h3>🧵 Costura y Textil</h3>
+          <p>Cálculo de tela por prenda, muestrarios, medidas y confección básica de patrones.</p>
+        </div>
+        <div class="card oficio-card" onclick="switchTab('matematica', document.querySelectorAll('.tab-btn')[1])">
+          <h3>🪵 Carpintería y Mantenimiento</h3>
+          <p>Lectura de medidas (cm/pulgadas), ensambles, lijado y mantenimiento edilicio.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 2: Matemática Laboral -->
+    <section id="sec-matematica" class="section-content">
+      <h2>Calculadora de Presupuestos de Trabajo</h2>
+      <div class="card">
+        <div class="info-box">
+          <strong>¿Cómo funciona?</strong><br>
+          Ingresá el costo de los materiales, las horas que te llevará el trabajo y cuánto cobrás por hora de mano de obra. Se calcula automáticamente un 10% adicional para cubrir imprevistos o desperdicios.
+        </div>
+        <label for="costo-mat">Costo estimado de materiales ($):</label>
+        <input type="number" id="costo-mat" placeholder="Ej: 15000" class="input-field" min="0" step="0.01">
+
+        <label for="horas-trab">Horas estimadas de trabajo:</label>
+        <input type="number" id="horas-trab" placeholder="Ej: 8" class="input-field" min="0" step="0.5">
+
+        <label for="valor-hora">Valor de tu hora de mano de obra ($):</label>
+        <input type="number" id="valor-hora" placeholder="Ej: 3500" class="input-field" min="0" step="0.01">
+
+        <button class="btn-primary" type="button" onclick="calcularPresupuesto()">Calcular Presupuesto Total</button>
+
+        <div id="resultado-presupuesto" class="result-box" style="display:none;"></div>
+      </div>
+    </section>
+
+    <!-- Sección 3: Mi CV -->
+    <section id="sec-cv" class="section-content">
+      <h2>Generador Simple de Currículum Vitae</h2>
+      <div class="card">
+        <div class="info-box">
+          Completá tus datos para armar tu presentación laboral. Al hacer clic en "Guardar y Ver Mi CV", la información queda guardada en este dispositivo para cuando la necesites.
+        </div>
+        <label for="cv-nombre">Nombre y apellido completo:</label>
+        <input type="text" id="cv-nombre" placeholder="Ej: Juan Carlos Pérez" class="input-field">
+
+        <label for="cv-tel">Teléfono / WhatsApp de contacto:</label>
+        <input type="text" id="cv-tel" placeholder="Ej: 11 1234 5678" class="input-field">
+
+        <label for="cv-oficio">Oficio o especialidad principal:</label>
+        <input type="text" id="cv-oficio" placeholder="Ej: Electricista domiciliario / Ayudante de cocina" class="input-field">
+
+        <label for="cv-exp">Trabajos, prácticas o cursos realizados:</label>
+        <textarea id="cv-exp" rows="4" placeholder="Describí los arreglos que sabés hacer, herramientas que manejás o talleres que cursaste..." class="input-field"></textarea>
+
+        <button class="btn-primary" type="button" onclick="guardarYGenerarCV()">Guardar y Ver Mi CV</button>
+
+        <div id="vista-cv" class="cv-preview" style="display:none;"></div>
+      </div>
+    </section>
+
+    <!-- Sección 4: Derechos y Trabajo -->
+    <section id="sec-derechos" class="section-content">
+      <h2>Derechos Laborales y Seguridad</h2>
+      <div class="card">
+        <h3>¿Qué es el Monotributo Social?</h3>
+        <p style="line-height:1.6; margin-bottom:20px; color:#334155;">
+          Es un régimen tributario pensado para que los trabajadores independientes de la economía popular o de oficios puedan emitir facturas legales por sus trabajos, acceder a una obra médica y realizar aportes jubilatorios formales.
+        </p>
+        <hr style="margin: 16px 0; border: none; border-top: 1px solid #e2e8f0;">
+        <h3>Normas de Seguridad e Higiene en el Taller</h3>
+        <ul style="color:#334155;">
+          <li>Utilizar calzado de seguridad adecuado para la actividad y evitar calzado abierto.</li>
+          <li>Usar protección ocular (gafas de policarbonato) y protección auditiva cuando corresponda.</li>
+          <li>Mantener ordenada, limpia y despejada la zona de trabajo y de paso.</li>
+          <li>Revisar el estado de los cables y aislaciones de las herramientas antes de enchufarlas.</li>
+          <li>Respetar las instrucciones de seguridad correspondientes a cada oficio y maquinaria.</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="footer">EduLaboral · Primaria de Adultos</div>
+
+  <script>
+    // 1. Detección de conectividad en tiempo real (PWA)
+    function actualizarEstadoConexion() {
+      const badge = document.getElementById("status-badge");
+      if (!badge) return;
+      if (navigator.onLine) {
+        badge.textContent = "● En línea";
+        badge.className = "badge-online";
+      } else {
+        badge.textContent = "● Modo Offline (Sin datos)";
+        badge.className = "badge-offline";
+      }
+    }
+
+    window.addEventListener("online", actualizarEstadoConexion);
+    window.addEventListener("offline", actualizarEstadoConexion);
+
+    // 2. Cambio de pestañas
+    function switchTab(tabId, button) {
+      // Ocultar todas las secciones
+      document.querySelectorAll(".section-content").forEach(function(section) {
+        section.style.display = "none";
+        section.classList.remove("active");
+      });
+
+      // Desactivar todos los botones
+      document.querySelectorAll(".tab-btn").forEach(function(btn) {
+        btn.classList.remove("active");
+      });
+
+      // Mostrar la sección seleccionada
+      const selectedSection = document.getElementById("sec-" + tabId);
+      if (selectedSection) {
+        selectedSection.style.display = "block";
+        selectedSection.classList.add("active");
+      }
+
+      // Activar el botón correspondiente
+      if (button) {
+        button.classList.add("active");
+      }
+    }
+
+    // 3. Calculadora de presupuestos (Matemática Laboral)
+    function calcularPresupuesto() {
+      const mat = parseFloat(document.getElementById("costo-mat").value) || 0;
+      const horas = parseFloat(document.getElementById("horas-trab").value) || 0;
+      const valorHora = parseFloat(document.getElementById("valor-hora").value) || 0;
+
+      if (mat < 0 || horas < 0 || valorHora < 0) {
+        alert("Los valores no pueden ser negativos.");
+        return;
+      }
+
+      const manoDeObra = horas * valorHora;
+      const subtotal = mat + manoDeObra;
+      const imprevistos = subtotal * 0.10;
+      const total = subtotal + imprevistos;
+
+      const formato = new Intl.NumberFormat("es-AR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+      const res = document.getElementById("resultado-presupuesto");
+      res.style.display = "block";
+      res.innerHTML = `
+        <strong style="color:#0369a1; font-size:16px;">Desglose del Presupuesto:</strong><br><br>
+        • <strong>Materiales:</strong> $${formato.format(mat)}<br>
+        • <strong>Mano de Obra</strong> (${horas} hs × $${formato.format(valorHora)}): $${formato.format(manoDeObra)}<br>
+        • <strong>Fondo de Imprevistos (10%):</strong> $${formato.format(imprevistos)}
+        <hr style="margin:12px 0; border:none; border-top:1px solid #7dd3fc;">
+        <strong style="font-size:20px; color:#1e3a8a;">
+          Total a Presupuestar: $${formato.format(total)}
+        </strong>
+      `;
+    }
+
+    // 4. Utilidad para escapar texto HTML
+    function escaparHTML(texto) {
+      const div = document.createElement("div");
+      div.textContent = texto || "";
+      return div.innerHTML;
+    }
+
+    // 5. Generador y persistencia de CV
+    function guardarYGenerarCV() {
+      const nombre = document.getElementById("cv-nombre").value.trim();
+      const tel = document.getElementById("cv-tel").value.trim();
+      const oficio = document.getElementById("cv-oficio").value.trim();
+      const exp = document.getElementById("cv-exp").value.trim();
+
+      if (!nombre || !oficio) {
+        alert("Por favor completá al menos tu nombre y tu oficio.");
+        return;
+      }
+
+      const cvData = { nombre, tel, oficio, exp };
+
+      try {
+        localStorage.setItem("user_cv_edulaboral", JSON.stringify(cvData));
+      } catch (error) {
+        console.warn("No se pudo guardar en localStorage:", error);
+      }
+
+      mostrarCV(cvData);
+    }
+
+    function mostrarCV(data) {
+      const preview = document.getElementById("vista-cv");
+      if (!preview) return;
+      preview.style.display = "block";
+
+      const nombre = escaparHTML(data.nombre);
+      const tel = escaparHTML(data.tel || "No especificado");
+      const oficio = escaparHTML(data.oficio);
+      const exp = escaparHTML(data.exp || "No especificada").replace(/\n/g, "<br>");
+
+      preview.innerHTML = `
+        <h3>📄 ${nombre}</h3>
+        <p><strong>Especialidad u Oficio:</strong> ${oficio}</p>
+        <p><strong>Teléfono / Contacto:</strong> ${tel}</p>
+        <p style="margin-top:12px;"><strong>Experiencia y Prácticas:</strong><br>${exp}</p>
+      `;
+    }
+
+    // 6. Carga inicial al estar listo el DOM
+    document.addEventListener("DOMContentLoaded", function() {
+      actualizarEstadoConexion();
+
+      try {
+        const savedCV = localStorage.getItem("user_cv_edulaboral");
+        if (savedCV) {
+          const data = JSON.parse(savedCV);
+          if (document.getElementById("cv-nombre")) document.getElementById("cv-nombre").value = data.nombre || "";
+          if (document.getElementById("cv-tel")) document.getElementById("cv-tel").value = data.tel || "";
+          if (document.getElementById("cv-oficio")) document.getElementById("cv-oficio").value = data.oficio || "";
+          if (document.getElementById("cv-exp")) document.getElementById("cv-exp").value = data.exp || "";
+          mostrarCV(data);
+        }
+      } catch (error) {
+        console.warn("No se pudo recuperar el CV:", error);
+      }
+    });
+  </script>
+</body>
+</html>

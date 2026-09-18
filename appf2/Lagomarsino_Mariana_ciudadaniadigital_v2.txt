@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ciudadanía Digital</title>
+<style>
+:root{--b:#f2f7f4;--c:#fff;--t:#1d3527;--m:#4a6354;--p:#419d67;--pl:#e3f2e9;--bd:#c2e0d0;--y:#fef3c7;--yt:#78350f;--r:#fee2e2;--rt:#991b1b;--s:1rem}
+body.hc{--b:#0c1810;--c:#15281c;--t:#fff;--m:#c8e6d5;--p:#6ee7b7;--pl:#1f3a29;--bd:#345e43}
+body.fl{--s:1.15rem}body.fx{--s:1.3rem}
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+body{background:var(--b);color:var(--t);font-size:var(--s);line-height:1.4;min-height:100vh;padding:10px;display:flex;flex-direction:column}
+.ab{background:var(--c);border-bottom:2px solid var(--bd);padding:6px 12px;display:flex;justify-content:space-between;align-items:center;margin:-10px -10px 10px;gap:5px}
+.ba{background:var(--pl);color:var(--t);border:1px solid var(--bd);padding:2px 8px;border-radius:4px;cursor:pointer;font-weight:700}
+header{text-align:center;margin-bottom:10px}
+h1{font-size:1.4em}.sub{color:var(--m);font-size:.85em}
+main{max-width:750px;width:100%;margin:0 auto;flex:1}
+.cd{background:var(--c);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-bottom:10px;box-shadow:0 4px 10px rgba(0,0,0,.05)}
+.pb{background:var(--pl);height:8px;border-radius:4px;overflow:hidden;border:1px solid var(--bd)}
+.pf{background:var(--p);height:100%;width:0%;transition:.3s}
+.pt{display:flex;justify-content:space-between;font-size:.75em;font-weight:700;color:var(--m);margin-top:2px}
+.bg{display:inline-block;background:var(--pl);padding:2px 6px;border-radius:10px;font-weight:700;font-size:.75em;margin-bottom:6px;border:1px solid var(--bd)}
+.tt{font-size:1.15em;margin-bottom:6px}
+.st{background:var(--b);padding:8px;border-radius:8px;border-left:3px solid var(--p);margin-bottom:8px;font-size:.95em}
+.qt{font-weight:700;margin-bottom:8px;font-size:.95em}
+.ob{background:var(--c);color:var(--t);border:2px solid var(--bd);padding:6px 10px;border-radius:6px;width:100%;text-align:left;cursor:pointer;display:flex;gap:8px;margin-bottom:6px;font-size:.9em}
+.ob.sel{border-color:var(--p);background:var(--pl);font-weight:700}
+.ob.wrg{border-color:var(--rt);background:var(--r)}
+.lt{background:var(--bd);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75em;flex-shrink:0}
+.fb{margin-top:8px;padding:8px;border-radius:6px;display:none;font-size:.85em}
+.fb.ok{background:var(--pl);border:1px solid var(--p)}
+.fb.bad{background:var(--r);border:1px solid #fca5a5;color:var(--rt)}
+.hs{margin-top:8px;padding-top:6px;border-top:1px dashed var(--bd)}
+.hb{background:var(--y);color:var(--yt);border:1px solid #fcd34d;padding:4px 8px;border-radius:4px;cursor:pointer;font-weight:700;font-size:.8em}
+.hbx{background:var(--y);color:var(--yt);padding:6px;border-radius:6px;margin-top:4px;display:none;font-size:.85em}
+.btn{background:var(--p);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-weight:700;cursor:pointer;font-size:.9em}
+.btn:disabled{background:#a0aec0;cursor:not-allowed}
+.mc{background:var(--b);border:1px solid var(--bd);border-radius:8px;padding:8px;margin-bottom:8px;font-size:.9em}
+.cp{background:var(--c);border:1px solid var(--bd);padding:2px 6px;border-radius:12px;cursor:pointer;font-size:.8em;font-weight:600;margin:2px}
+.cp.act{background:var(--p);color:#fff;border-color:var(--p)}
+.mf{font-size:.8em;padding:4px;border-radius:4px;margin-top:4px;display:none}
+.mf.ok{background:var(--pl);border:1px solid var(--p)}
+.mf.bad{background:var(--y);color:var(--yt)}
+.sc{font-size:1.8em;font-weight:700;color:var(--p);text-align:center;margin:6px 0}
+.ti{display:flex;justify-content:space-between;padding:4px 8px;background:var(--b);border-radius:4px;margin-bottom:4px;font-size:.85em}
+.tg{padding:1px 5px;border-radius:3px;font-size:.8em}
+.tg.ok{background:var(--pl)}.tg.bad{background:var(--r);color:var(--rt)}
+.dn{display:none!important}
+footer{text-align:center;color:var(--m);font-size:.75em;margin-top:auto;padding-top:8px}
+</style>
+</head>
+<body>
+<div class="ab">
+<span><strong>DUA:</strong></span>
+<div>
+<button class="ba" onclick="tC()">🌓 Contraste</button>
+<button class="ba" onclick="sF('')">A</button>
+<button class="ba" onclick="sF('fl')">A+</button>
+<button class="ba" onclick="sF('fx')">A++</button>
+</div>
+</div>
+<header>
+<h1>Ciudadanía Digital</h1>
+<p class="sub">Casos Socráticos y Categorización - 2° Año</p>
+</header>
+<main>
+<div id="i-s" class="cd">
+<h2 class="tt">¡Desafío Ciudadano Digital!</h2>
+<p style="margin-bottom:8px">Evaluación de criterios éticos en entornos virtuales.</p>
+<ul style="margin-left:18px;margin-bottom:12px;font-size:.9em">
+<li><strong>Fase 1:</strong> 5 Casos Socráticos con pistas.</li>
+<li><strong>Fase 2:</strong> Clasificación de 5 situaciones.</li>
+<li><strong>Fase 3:</strong> Reporte final y recomendaciones DUA.</li>
+</ul>
+<div style="text-align:center"><button class="btn" onclick="sA()">Comenzar</button></div>
+</div>
+
+<div id="c-s" class="cd dn">
+<div class="pb"><div id="p-f" class="pf"></div></div>
+<div class="pt"><span id="p-c">Caso 1</span><span id="p-p">20%</span></div>
+<span id="c-b" class="bg">Tema</span>
+<h2 id="c-t" class="tt">Título</h2>
+<div id="c-st" class="st"></div>
+<p id="c-q" class="qt"></p>
+<div id="o-c"></div>
+<div id="fb" class="fb"></div>
+<div class="hs">
+<button id="h-b" class="hb" onclick="gH()">💡 Pista (<span id="h-c">0</span>/2)</button>
+<div id="h-x" class="hbx"></div>
+</div>
+<div style="text-align:right;margin-top:8px"><button id="b-n" class="btn" onclick="nC()" disabled>Siguiente ➔</button></div>
+</div>
+
+<div id="m-s" class="cd dn">
+<span class="bg">Fase 2: Clasificación</span>
+<h2 class="tt">Identificación y Categorización</h2>
+<p style="margin-bottom:8px;color:var(--m);font-size:.85em">Seleccioná la categoría correspondiente:</p>
+<div id="m-c"></div>
+<div style="text-align:right;margin-top:8px"><button id="b-f" class="btn" onclick="sR()" disabled>Ver Informe ➔</button></div>
+</div>
+
+<div id="r-s" class="cd dn">
+<h2 class="tt" style="text-align:center">Informe de Desempeño</h2>
+<div id="sc" class="sc">--%</div>
+<div id="ql" class="st"></div>
+<h3 style="font-size:.95em;margin:8px 0 4px">Desglose:</h3>
+<div id="bd"></div>
+<h3 style="font-size:.95em;margin:8px 0 2px">Sugerencias:</h3>
+<p id="rc" style="color:var(--m);font-size:.8em"></p>
+<div style="text-align:center;margin-top:12px;display:flex;gap:6px;justify-content:center">
+<button class="btn" onclick="rA()">Reintentar</button>
+<button class="btn" style="background:var(--m)" onclick="window.print()">Imprimir</button>
+</div>
+</div>
+</main>
+<footer><p>Educación Ciudadana | Adaptado DUA</p></footer>
+
+<script>
+const cs=[
+{tp:"Ciberbullying",tt:"Caso 1: Grupo paralelo",st:"Crean grupo sin Mateo, suben fotos suyas con burlas e insultos. Mateo deja de ir a clases.",q:"¿Qué rol asumen los que ríen o reenvían?",o:[
+{t:"Observadores neutrales sin culpa.",k:0,f:"La neutralidad no existe si la risa aumenta el acoso.",h:"¿Qué pasa si nadie ríe?"},
+{t:"Validadores del acoso; hay que frenar y apoyar.",k:1,f:"¡Excelente! Cortar la cadena es actuar con ética.",h:""},
+{t:"Broma típica de secundaria.",k:0,f:"Si genera sufrimiento no es una broma.",h:"Pensá en el daño emocional."},
+{t:"Culpa de Mateo por no defenderse.",k:0,f:"La víctima no es responsable del acoso.",h:"No culpes a la víctima."},
+{t:"Mateo debe cambiar de escuela.",k:0,f:"Aislar a la víctima no soluciona la violencia.",h:"Analizá el grupo."}],h:["Diferenciá quién genera de quién difunde.","Un ciudadano no es cómplice."]},
+{tp:"Sexting y Privacidad",tt:"Caso 2: Extorsión y privacidad",st:"Lucía envió una foto íntima a su pareja. Tras cortar, él amenaza con difundirla si no vuelven.",q:"¿Cómo debe actuar Lucía de forma segura?",o:[
+{t:"Ceder y volver para evitar la difusión.",k:0,f:"Ceder perpetúa el chantaje.",h:"¿El chantaje se detiene al ceder?"},
+{t:"No ceder, guardar capturas, avisar a adultos y denunciar.",k:1,f:"¡Correcto! Quien amenaza comete el delito. Guardar pruebas es vital.",h:""},
+{t:"Pedir disculpas a su ex por confiar.",k:0,f:"Lucía no cometió falta alguna al confiar.",h:"Ella es la víctima."},
+{t:"Borrar el chat y callar por vergüenza.",k:0,f:"Sin pruebas se dificulta la denuncia.",h:"Preservá pruebas."},
+{t:"Amenazar con agredirlo físicamente.",k:0,f:"Responder con violencia escala el conflicto.",h:"Usa vías institucionales."}],h:["Diferenciá sexting de extorsión.","No ceder, guardar pruebas y pedir ayuda."]},
+{tp:"Grooming",tt:"Caso 3: El 'amigo' del juego",st:"Un usuario regala pases a Julián (13), pide hablar por privado y exige fotos en ropa interior en secreto.",q:"¿Qué señales hay y cómo responder?",o:[
+{t:"Intercambio justo de regalos por fotos.",k:0,f:"Nadie debe pedir fotos íntimas por premios.",h:"Reflexioná las intenciones."},
+{t:"Es Grooming; cortar contacto, guardar evidencias y avisar.",k:1,f:"¡Muy bien! Identificaste el engaño y pedido de secreto.",h:""},
+{t:"Enviar fotos falsas para seguir ganando pases.",k:0,f:"Seguir en contacto aumenta el riesgo.",h:"Cortá el contacto."},
+{t:"Culpa de los padres por dejarlo jugar.",k:0,f:"El responsable es el acosador.",h:"Enfocate en el acosador."},
+{t:"Borrar la cuenta sin contarle a nadie.",k:0,f:"Callar deja desprotegidos a otros.",h:"Avisá a un adulto."}],h:["Atención al pedido de secreto y regalos.","Regla: cortar, guardar pruebas y avisar."]},
+{tp:"Desinformación",tt:"Caso 4: Noticias sin verificar",st:"Camila ve una placa falsa que acusa a un compañero de un delito y la comparte para 'alertar'.",q:"¿Qué análisis corresponde?",o:[
+{t:"Actuó bien para difundir rápido.",k:0,f:"Difundir sin comprobar difama.",h:"Diferenciá informar de difamar."},
+{t:"Culpa solo de quien creó la imagen.",k:0,f:"Al compartir multiplicás el daño.",h:"Tu rol es activo."},
+{t:"Difusión irresponsable de desinformación que daña el honor.",k:1,f:"¡Excelente! Hay que contrastar fuentes antes de compartir.",h:""},
+{t:"Solo actuó mal si el afectado era su amigo.",k:0,f:"El respeto a la dignidad es universal.",h:"La ética no depende del afecto."},
+{t:"Toda placa es verdadera por defecto.",k:0,f:"Es fácil crear noticias falsas.",h:"Dudá de fuentes anónimas."}],h:["¿Qué pasa si la noticia es falsa?","Contrastá antes de compartir."]},
+{tp:"Uso Responsable",tt:"Caso 5: Grabación sin permiso",st:"Tomás graba a un compañero cayendo y lastimándose, y lo sube a redes con música graciosa sin permiso.",q:"¿Cómo se relaciona el 'like' con la dignidad?",o:[
+{t:"La privacidad no importa si da vistas.",k:0,f:"La popularidad no justifica la burla.",h:"Ponete en su lugar."},
+{t:"El respeto a la imagen está por encima del entretenimiento.",k:1,f:"¡Exacto! El consentimiento es pilar del respeto digital.",h:""},
+{t:"Culpa del compañero por caerse.",k:0,f:"Caerse es un accidente; burlarse es una elección.",h:"Diferenciá accidente de burla."},
+{t:"Solo actuó mal si el colegio lo sanciona.",k:0,f:"La ética nace de la empatía, no del castigo.",h:"Pensá en el respeto."},
+{t:"Culpa del algoritmo de la red social.",k:0,f:"Cada uno es responsable de lo que sube.",h:"Asumí la responsabilidad."}],h:["¿Te gustaría que difundan tu dolor?","Publicar la imagen de otro requiere permiso."]}
+];
+
+const mb=[
+{i:1,s:"Crean cuenta anónima para calificar cuerpos y burlarse de alumnos de 1° año.",c:"Ciberbullying",e:"Es Ciberbullying por hostigamiento entre pares."},
+{i:2,s:"Un desconocido finge 14 años para pedir fotos íntimas a un joven en Discord.",c:"Grooming",e:"Es Grooming por engaño adulto a un menor."},
+{i:3,s:"Un exnovio publica en Telegram fotos íntimas que recibió en la confianza.",c:"Sexting y Privacidad",e:"Es difusión no consentida de material íntimo."},
+{i:4,s:"Reenvían un audio sin fuente sobre agua contaminada en la ciudad.",c:"Desinformación",e:"Es Desinformación (fake news) sin fuente oficial."},
+{i:5,s:"Un alumno configura redes privadas y revisa permisos de sus aplicaciones.",c:"Uso Responsable",e:"Es Uso Responsable de la huella digital."}
+];
+
+const ct=["Ciberbullying","Grooming","Sexting y Privacidad","Desinformación","Uso Responsable"];
+
+let cI=0,sO=null,hC=0,tH=0,aC=[],mA={};
+
+function sF(c){document.body.className=document.body.className.replace(/\bfl\b|\bfx\b/g,'');if(c)document.body.classList.add(c)}
+function tC(){document.body.classList.toggle('hc')}
+
+function sA(){
+document.getElementById('i-s').classList.add('dn');
+document.getElementById('c-s').classList.remove('dn');
+cI=0;aC=[];tH=0;rC();
+}
+
+function rC(){
+const c=cs[cI];sO=null;hC=0;
+const p=Math.round(((cI+1)/cs.length)*100);
+document.getElementById('p-f').style.width=p+'%';
+document.getElementById('p-c').innerText=`Caso ${cI+1} de ${cs.length}`;
+document.getElementById('p-p').innerText=p+'%';
+document.getElementById('c-b').innerText=c.tp;
+document.getElementById('c-t').innerText=c.tt;
+document.getElementById('c-st').innerText=c.st;
+document.getElementById('c-q').innerText=c.q;
+document.getElementById('h-x').style.display='none';
+document.getElementById('h-x').innerText='';
+document.getElementById('h-c').innerText='0';
+document.getElementById('h-b').disabled=false;
+document.getElementById('fb').style.display='none';
+document.getElementById('b-n').disabled=true;
+
+const oc=document.getElementById('o-c');oc.innerHTML='';
+const L=['A','B','C','D','E'];
+c.o.forEach((o,i)=>{
+const b=document.createElement('button');
+b.className='ob';
+b.onclick=()=>so(i);
+b.innerHTML=`<span class="lt">${L[i]}</span><span>${o.t}</span>`;
+oc.appendChild(b);
+});
+}
+
+function so(i){
+sO=i;const c=cs[cI];const o=c.o[i];
+document.querySelectorAll('.ob').forEach((b,idx)=>{
+b.classList.remove('sel','wrg');
+if(idx===i)b.classList.add(o.k?'sel':'wrg');
+});
+const fb=document.getElementById('fb');
+fb.style.display='block';
+if(o.k){
+fb.className='fb ok';
+fb.innerHTML=`<strong>¡Correcto!</strong><br>${o.f}`;
+}else{
+fb.className='fb bad';
+fb.innerHTML=`<strong>⚠️ No adecuada.</strong><br>${o.f}<br><span style="display:block;margin-top:2px;font-weight:700">💡 ${o.h}</span>`;
+}
+document.getElementById('b-n').disabled=false;
+}
+
+function gH(){
+const c=cs[cI];
+if(hC<c.h.length){
+hC++;tH++;
+const hx=document.getElementById('h-x');
+hx.style.display='block';
+hx.innerHTML+=`<p><strong>🔍 Pista ${hC}:</strong> ${c.h[hC-1]}</p>`;
+document.getElementById('h-c').innerText=hC;
+if(hC===c.h.length)document.getElementById('h-b').disabled=true;
+}
+}
+
+function nC(){
+if(sO===null)return;
+aC.push({tp:cs[cI].tp,k:cs[cI].o[sO].k});
+cI++;
+if(cI<cs.length)rC();else rM();
+}
+
+function rM(){
+document.getElementById('c-s').classList.add('dn');
+document.getElementById('m-s').classList.remove('dn');
+mA={};
+const mc=document.getElementById('m-c');mc.innerHTML='';
+mb.forEach((m,i)=>{
+const d=document.createElement('div');
+d.className='mc';
+let ch='';
+ct.forEach(cat=>ch+=`<button class="cp" onclick="sm(${m.i},'${cat}')">${cat}</button>`);
+d.innerHTML=`<div style="font-weight:700">${i+1}. "${m.s}"</div><div id="ch-${m.i}">${ch}</div><div class="mf" id="mf-${m.i}"></div>`;
+mc.appendChild(d);
+});
+cM();
+}
+
+function sm(i,cat){
+mA[i]=cat;
+const item=mb.find(x=>x.i===i);
+document.querySelectorAll(`#ch-${i} .cp`).forEach(b=>b.classList.toggle('act',b.innerText===cat));
+const mf=document.getElementById(`mf-${i}`);
+mf.style.display='block';
+if(cat===item.c){
+mf.className='mf ok';
+mf.innerHTML=`<strong>¡Correcto!</strong> ${item.e}`;
+}else{
+mf.className='mf bad';
+mf.innerHTML=`<strong>Pista:</strong> Leé bien la situación y seleccioná otra opción.`;
+}
+cM();
+}
+
+function cM(){
+document.getElementById('b-f').disabled=Object.keys(mA).length<mb.length;
+}
+
+function sR(){
+document.getElementById('m-s').classList.add('dn');
+document.getElementById('r-s').classList.remove('dn');
+const cOk=aC.filter(a=>a.k).length;
+let mOk=0;
+mb.forEach(q=>{if(mA[q.i]===q.c)mOk++;});
+const p=Math.round(((cOk+mOk)/(cs.length+mb.length))*100);
+
+document.getElementById('sc').innerText=`${p}% Competencia Ciudadana`;
+
+let msg=p>=90?"<strong>¡Excelente!</strong> Destacada capacidad de análisis ético en red.":
+p>=65?"<strong>¡Buen Trabajo!</strong> Identificaste la mayoría de situaciones.":
+"<strong>En Proceso.</strong> Reforzá los criterios de seguridad y respeto en internet.";
+
+if(tH>0)msg+=`<br><small><i>DUA:</i> Usaste ${tH} pista(s).</small>`;
+document.getElementById('ql').innerHTML=msg;
+
+const bd=document.getElementById('bd');bd.innerHTML='';
+aC.forEach((a,i)=>{
+bd.innerHTML+=`<div class="ti"><span>Caso ${i+1} [${a.tp}]:</span><span class="tg ${a.k?'ok':'bad'}">${a.k?'Correcto':'Revisar'}</span></div>`;
+});
+mb.forEach((m,i)=>{
+const ok=mA[m.i]===m.c;
+bd.innerHTML+=`<div class="ti"><span>Clasificación ${i+1}:</span><span class="tg ${ok?'ok':'bad'}">${ok?'Correcto':'Revisar'}</span></div>`;
+});
+
+document.getElementById('rc').innerHTML="• Consultá a adultos de confianza ante acoso o extorsión.<br>• Aplicá siempre la empatía antes de publicar o compartir.";
+}
+
+function rA(){
+document.getElementById('r-s').classList.add('dn');
+document.getElementById('i-s').classList.remove('dn');
+}
+</script>
+</body>
+</html>

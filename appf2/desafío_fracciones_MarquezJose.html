@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafío Fracciones - Exploratorio DUA</title>
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --success-color: #16a34a;
+            --warning-color: #d97706;
+            --border-color: #e2e8f0;
+            --font-scale: 1rem;
+        }
+
+        body.dark-mode {
+            --bg-primary: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: var(--font-scale);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .accessibility-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background-color: rgba(37, 99, 235, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-acc {
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-acc:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .challenge-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .fraction-visual {
+            display: flex;
+            height: 40px;
+            width: 100%;
+            border: 2px solid var(--text-primary);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .fraction-part {
+            height: 100%;
+            border-right: 1px solid var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .filled { background-color: #3b82f6; }
+        .empty { background-color: #cbd5e1; color: #475569; }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .btn-option {
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .btn-option:hover {
+            border-color: var(--accent-color);
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .feedback-box {
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .feedback-box.info {
+            background-color: rgba(37, 99, 235, 0.1);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .feedback-box.success {
+            background-color: rgba(22, 163, 74, 0.1);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainContainer">
+    <header>
+        <h1>Desafío Fracciones - Repartos y Equivalencias</h1>
+        <div class="accessibility-toolbar" aria-label="Herramientas de accesibilidad DUA">
+            <button class="btn-acc" onclick="changeFontSize(0.1)" title="Aumentar tamaño de letra">A+</button>
+            <button class="btn-acc" onclick="changeFontSize(-0.1)" title="Disminuir tamaño de letra">A-</button>
+            <button class="btn-acc" onclick="toggleContrast()" title="Cambiar contraste">🌗 Contraste</button>
+            <button class="btn-acc" onclick="readAloud()" title="Lectura en voz alta">🔊 Leer en Voz Alta</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="challenge-card">
+            <h2 id="stepTitle">Desafío 1: El Reparto de la Pizza</h2>
+            <p id="stepDescription">
+                Tres amigos compraron una pizza grande cortada en 8 porciones iguales. Mateo comió 2 porciones y Sofía comió 4 porciones.
+                <strong>¿Qué fracción de la pizza queda para el tercer amigo?</strong>
+            </p>
+
+            <div class="fraction-visual" id="fractionVisual">
+                <!-- Se genera dinámicamente -->
+            </div>
+
+            <div class="options-grid" id="optionsGrid">
+                <button class="btn-option" onclick="checkAnswer('2/8')">Quedan 2/8</button>
+                <button class="btn-option" onclick="checkAnswer('4/8')">Quedan 4/8</button>
+                <button class="btn-option" onclick="checkAnswer('6/8')">Quedan 6/8</button>
+            </div>
+
+            <button class="btn-acc" onclick="toggleHint()" style="margin-top: 8px;">💡 Solicitar Pista Socrática</button>
+
+            <div class="feedback-box info" id="hintBox">
+                <p><strong>Reflexión:</strong> Pensá en la pizza completa como un entero de 8/8. Si sumás lo que comió Mateo (2) y Sofía (4)... ¿cuántas porciones comieron en total de las 8 que había?</p>
+            </div>
+
+            <div class="feedback-box" id="feedbackBox"></div>
+        </section>
+
+        <section class="challenge-card hidden" id="metacognitionCard">
+            <h2>🧠 Reflexión Metacognitiva Final</h2>
+            <p style="margin-bottom: 12px;">¡Excelente trabajo completando la actividad! Responde para cerrar:</p>
+            <label for="reflection" style="display:block; margin-bottom: 8px; font-weight: bold;">¿Qué estrategia visual o pista te ayudó a resolver el reparto?</label>
+            <textarea id="reflection" rows="3" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color);"></textarea>
+            <button class="btn-primary" onclick="finishActivity()">Finalizar y Guardar Experiencia</button>
+        </section>
+    </main>
+</div>
+
+<script>
+    let currentScale = 1.0;
+    let totalPieces = 8;
+    let mateoPieces = 2;
+    let sofiaPieces = 4;
+
+    function renderFraction() {
+        const visual = document.getElementById('fractionVisual');
+        visual.innerHTML = '';
+        for (let i = 0; i < totalPieces; i++) {
+            const div = document.createElement('div');
+            div.className = 'fraction-part';
+            if (i < mateoPieces) {
+                div.classList.add('filled');
+                div.innerText = 'M';
+            } else if (i < mateoPieces + sofiaPieces) {
+                div.classList.add('filled');
+                div.style.backgroundColor = '#8b5cf6';
+                div.innerText = 'S';
+            } else {
+                div.classList.add('empty');
+                div.innerText = '?';
+            }
+            div.style.flex = '1';
+            visual.appendChild(div);
+        }
+    }
+
+    function changeFontSize(delta) {
+        currentScale += delta;
+        if (currentScale < 0.8) currentScale = 0.8;
+        if (currentScale > 1.4) currentScale = 1.4;
+        document.body.style.fontSize = currentScale + 'rem';
+    }
+
+    function toggleContrast() {
+        document.body.classList.toggle('dark-mode');
+    }
+
+    function readAloud() {
+        const text = document.getElementById('stepTitle').innerText + ". " + document.getElementById('stepDescription').innerText;
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert('Tu navegador no soporta lectura de voz nativa.');
+        }
+    }
+
+    function toggleHint() {
+        const hintBox = document.getElementById('hintBox');
+        hintBox.style.display = hintBox.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function checkAnswer(answer) {
+        const feedback = document.getElementById('feedbackBox');
+        feedback.style.display = 'block';
+
+        if (answer === '2/8') {
+            feedback.className = 'feedback-box success';
+            feedback.innerHTML = '<p><strong>¡Correcto! 🎉</strong> Si Mateo comió 2/8 y Sofía 4/8, en total comieron 6/8. Por lo tanto, quedan 2/8 de la pizza para el tercer amigo.</p><button class="btn-primary" onclick="showMetacognition()">Avanzar a Reflexión</button>';
+        } else {
+            feedback.className = 'feedback-box info';
+            feedback.innerHTML = '<p><strong>Revisemos juntos:</strong> Contá los cuadrados marcados con "?" en la barra visual. Esos representan las porciones que aún no se comieron. ¡Inténtalo de nuevo!</p>';
+        }
+    }
+
+    function showMetacognition() {
+        document.getElementById('metacognitionCard').classList.remove('hidden');
+        document.getElementById('feedbackBox').style.display = 'none';
+    }
+
+    function finishActivity() {
+        alert('¡Felicitaciones! Has completado el recorrido pedagógico con éxito.');
+    }
+
+    // Inicializar
+    renderFraction();
+</script>
+</body>
+</html>

@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>El Tren de los Números - Sala de 4</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Kids & Legibility -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        accessible: ['Atkinson Hyperlegible', 'Fredoka', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --font-scale: 1;
+        }
+
+        html {
+            font-size: calc(16px * var(--font-scale));
+        }
+
+        body {
+            font-family: 'Fredoka', 'Atkinson Hyperlegible', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            overflow-x: hidden;
+            background: linear-gradient(180deg, #e0f2fe 0%, #f0f9ff 50%, #dcfce7 100%);
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* HIGH CONTRAST THEME OVERRIDES */
+        body.theme-high-contrast {
+            background: #000000 !important;
+            color: #ffffff !important;
+        }
+
+        body.theme-high-contrast header,
+        body.theme-high-contrast main,
+        body.theme-high-contrast footer,
+        body.theme-high-contrast div {
+            border-color: #ffff00 !important;
+        }
+
+        body.theme-high-contrast .bg-white,
+        body.theme-high-contrast .bg-white\/90,
+        body.theme-high-contrast .bg-white\/95,
+        body.theme-high-contrast .bg-white\/80,
+        body.theme-high-contrast .bg-slate-100 {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+
+        body.theme-high-contrast .number-card,
+        body.theme-high-contrast .carriage-slot {
+            background-color: #ffff00 !important;
+            color: #000000 !important;
+            border: 4px solid #ffffff !important;
+        }
+
+        body.theme-high-contrast .number-card span,
+        body.theme-high-contrast .carriage-slot span {
+            color: #000000 !important;
+        }
+
+        /* DARK THEME OVERRIDES */
+        body.theme-dark {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%) !important;
+            color: #f8fafc !important;
+        }
+
+        body.theme-dark header,
+        body.theme-dark .glass-card {
+            background-color: rgba(30, 41, 59, 0.9) !important;
+            color: #f8fafc !important;
+            border-color: #334155 !important;
+        }
+
+        /* Modern Utility Classes */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+        }
+
+        .wiggle {
+            animation: wiggle 0.4s ease-in-out;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-6deg); }
+            75% { transform: rotate(6deg); }
+        }
+
+        .train-wheel {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .train-drive {
+            animation: driveAcross 3s ease-in-out forwards;
+        }
+
+        @keyframes driveAcross {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(120vw); }
+        }
+
+        .selected-card {
+            box-shadow: 0 0 0 4px #3b82f6, 0 12px 20px -4px rgba(59, 130, 246, 0.3);
+            transform: scale(1.08) translateY(-4px);
+        }
+
+        ::-webkit-scrollbar {
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between p-3 sm:p-6 select-none max-w-7xl mx-auto">
+
+    <!-- TOP BAR: Navigation, Accessibility & Game Modes -->
+    <header class="w-full glass-card rounded-3xl p-3 sm:p-4 flex flex-col gap-3 z-10 transition-all">
+        
+        <!-- ACCESSIBILITY TOOLBAR -->
+        <div class="w-full flex flex-wrap items-center justify-between gap-2 bg-slate-100/80 dark:bg-slate-800/80 p-2 rounded-2xl border border-slate-200 dark:border-slate-700">
+            
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider pl-1">♿ Accesibilidad</span>
+                
+                <!-- Font Size -->
+                <div class="flex items-center gap-1 bg-white dark:bg-slate-700 rounded-xl p-1 shadow-sm border border-slate-200 dark:border-slate-600">
+                    <button onclick="changeFontSize(-0.1)" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-600 hover:bg-slate-200 text-slate-800 dark:text-white rounded-lg font-black text-xs transition-all active:scale-95" title="Disminuir tamaño de letra" aria-label="Disminuir letra">
+                        A-
+                    </button>
+                    <span id="font-size-indicator" class="text-xs font-bold px-1.5 text-slate-700 dark:text-slate-200">100%</span>
+                    <button onclick="changeFontSize(0.1)" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-600 hover:bg-slate-200 text-slate-800 dark:text-white rounded-lg font-black text-xs transition-all active:scale-95" title="Aumentar tamaño de letra" aria-label="Aumentar letra">
+                        A+
+                    </button>
+                </div>
+
+                <!-- Contrast Switcher -->
+                <button onclick="toggleContrastMode()" id="btn-contrast" class="px-3 py-1.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-800 dark:text-slate-100 font-bold text-xs rounded-xl border border-slate-300 dark:border-slate-600 transition-all active:scale-95 flex items-center gap-1.5" title="Cambiar contraste de color">
+                    👁️ <span id="contrast-label">Contraste: Normal</span>
+                </button>
+            </div>
+
+            <!-- Text to Speech Controls -->
+            <div class="flex items-center gap-2">
+                <button onclick="speakInstructionText()" class="px-3 py-1.5 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-1.5" title="Leer indicación en voz alta">
+                    🗣️ <span>Leer indicación</span>
+                </button>
+
+                <button onclick="toggleTTSPause()" id="btn-tts-pause" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-1.5" title="Pausar o reanudar lectura">
+                    ⏸️ <span id="tts-pause-label">Pausar voz</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN HEADER ROW -->
+        <div class="flex flex-wrap items-center justify-between gap-3 px-1">
+            <!-- Title -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-sky-500 text-white rounded-2xl flex items-center justify-center text-2xl shadow-md">
+                    🚂
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight leading-none">
+                        El Tren de los Números
+                    </h1>
+                    <p class="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
+                        Juego para ordenar números
+                    </p>
+                </div>
+            </div>
+
+            <!-- Mode Selector Tabs -->
+            <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/90 p-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-700">
+                <button onclick="setGameMode('1-5')" id="btn-mode-1-5" class="px-3 sm:px-4 py-1.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-white text-sky-700 shadow-sm">
+                    1 al 5
+                </button>
+                <button onclick="setGameMode('1-10')" id="btn-mode-1-10" class="px-3 sm:px-4 py-1.5 rounded-xl font-bold text-xs sm:text-sm transition-all text-slate-600 dark:text-slate-300 hover:text-slate-900">
+                    1 al 10
+                </button>
+                <button onclick="setGameMode('missing')" id="btn-mode-missing" class="px-3 sm:px-4 py-1.5 rounded-xl font-bold text-xs sm:text-sm transition-all text-slate-600 dark:text-slate-300 hover:text-slate-900">
+                    ¿Cuál falta?
+                </button>
+            </div>
+
+            <!-- Score & Controls -->
+            <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/40 px-3 py-1.5 rounded-xl border border-amber-200 dark:border-amber-800/50 font-black text-amber-600 dark:text-amber-400 text-base sm:text-lg" title="Puntos ganados">
+                    <span aria-hidden="true">⭐</span>
+                    <span id="star-counter">0</span>
+                </div>
+
+                <button onclick="toggleAudio()" id="btn-audio" class="w-9 h-9 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl shadow-sm flex items-center justify-center transition-all active:scale-95 text-base" title="Activar o desactivar sonidos">
+                    🔊
+                </button>
+
+                <button onclick="resetCurrentLevel()" class="w-9 h-9 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl shadow-sm flex items-center justify-center transition-all active:scale-95 text-base" title="Reiniciar nivel">
+                    🔄
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN INTERACTIVE AREA -->
+    <main class="w-full flex-1 flex flex-col justify-center items-center my-4 sm:my-6 relative gap-4">
+        
+        <!-- INSTRUCTION BANNER -->
+        <div id="instruction-box" class="glass-card px-6 py-2.5 rounded-2xl shadow-sm border border-sky-100 dark:border-sky-900 text-center transition-all">
+            <p id="instruction-text" class="text-sm sm:text-lg font-bold text-slate-800 dark:text-slate-200 flex items-center justify-center gap-2">
+                <span class="text-xl" aria-hidden="true">👇</span>
+                <span id="instruction-content">Arrastrá o tocá los números para ponerlos en orden en su vagón.</span>
+            </p>
+        </div>
+
+        <!-- TRAIN TRACK & SLOTS CONTAINER -->
+        <div class="w-full overflow-x-auto py-2 px-2 flex justify-start md:justify-center items-end" id="train-viewport">
+            <div id="train-container" class="flex items-end gap-2 sm:gap-3 min-w-max transition-all duration-700 p-2">
+                
+                <!-- LOCOMOTIVE -->
+                <div class="flex flex-col items-center flex-shrink-0 relative z-10 mr-1">
+                    <div class="w-24 sm:w-32 h-28 sm:h-36 bg-gradient-to-b from-rose-500 to-red-600 rounded-3xl shadow-lg border-2 border-red-400 flex flex-col justify-between p-2.5 relative">
+                        <div class="flex justify-between items-center">
+                            <div class="w-9 h-9 bg-sky-100 border border-sky-300 rounded-xl flex items-center justify-center text-xl shadow-inner">
+                                🐻
+                            </div>
+                            <div class="w-5 h-7 bg-slate-800 rounded-t-md -mt-5 border border-slate-600"></div>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <div class="w-5 h-5 bg-amber-300 rounded-full border border-amber-400 shadow-md"></div>
+                            <span class="text-white font-extrabold text-[10px] sm:text-xs bg-red-700/80 px-2 py-0.5 rounded-md tracking-wider">INICIO</span>
+                        </div>
+                        <div class="absolute -bottom-3 left-2 right-2 flex justify-between">
+                            <div class="w-7 h-7 sm:w-9 sm:h-9 bg-slate-800 border-2 border-amber-400 rounded-full flex items-center justify-center text-white text-[10px] train-wheel">⚙️</div>
+                            <div class="w-7 h-7 sm:w-9 sm:h-9 bg-slate-800 border-2 border-amber-400 rounded-full flex items-center justify-center text-white text-[10px] train-wheel">⚙️</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARRIAGE SLOTS -->
+                <div id="slots-holder" class="flex items-end gap-2 sm:gap-3">
+                    <!-- Dynamic Slots -->
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TRACK LINE BACKGROUND -->
+        <div class="w-full max-w-4xl h-3 bg-slate-700/80 rounded-full shadow-inner relative -mt-4 mb-2 flex justify-between items-center px-4">
+            <div class="w-full h-0.5 bg-amber-400 border-t border-dashed border-slate-900"></div>
+        </div>
+
+        <!-- NUMBER CARDS PALETTE -->
+        <div class="w-full max-w-3xl glass-card rounded-3xl p-4 sm:p-5 shadow-lg border border-white/80">
+            <div class="text-center mb-3">
+                <span class="text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest bg-slate-100 dark:bg-slate-800 px-4 py-1 rounded-full border border-slate-200 dark:border-slate-700">
+                    Elegí un número
+                </span>
+            </div>
+
+            <!-- Cards Container -->
+            <div id="cards-palette" class="flex flex-wrap justify-center items-center gap-3 sm:gap-4 min-h-[110px]">
+                <!-- Dynamic Cards -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- VICTORY MODAL -->
+    <div id="victory-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md hidden flex-col justify-center items-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center border border-slate-100 shadow-2xl">
+            <div class="text-5xl sm:text-6xl mb-3">🚂 🎉</div>
+            <h2 class="text-2xl sm:text-4xl font-black text-sky-600 dark:text-sky-400 mb-1">¡MUY BIEN!</h2>
+            <p class="text-base sm:text-xl font-bold text-slate-700 dark:text-slate-200 mb-5">Completaste el tren perfectamente.</p>
+            
+            <div class="flex justify-center gap-1.5 mb-6 text-3xl" aria-hidden="true">
+                ⭐ ⭐ ⭐ ⭐ ⭐
+            </div>
+
+            <button onclick="nextRound()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg sm:text-xl rounded-2xl shadow-lg transition-all active:scale-95">
+                ¡JUGAR DE NUEVO! 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- CONFETTI CANVAS -->
+    <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-40"></canvas>
+
+    <script>
+        // Game State
+        let currentMode = '1-5';
+        let targetSequence = [];
+        let currentSlotsState = [];
+        let selectedCardValue = null;
+        let starCount = 0;
+        let isAudioMuted = false;
+
+        // Accessibility State
+        let currentFontScale = 1.0;
+        let contrastModes = ['normal', 'high-contrast', 'dark'];
+        let contrastIndex = 0;
+        let isTTSPaused = false;
+        let currentInstructionText = "Arrastrá o tocá los números para ponerlos en orden en su vagón.";
+
+        const numberNames = ["cero", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez"];
+
+        // High-contrast constellation dots
+        function generateConstellationHTML(num) {
+            let dotsHTML = '';
+            for (let i = 0; i < num; i++) {
+                dotsHTML += `<span class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-red-600 border-2 border-white shadow-md inline-block" aria-hidden="true"></span>`;
+            }
+            return `<div class="flex flex-wrap justify-center items-center gap-1 max-w-[95%] mt-1 px-1">${dotsHTML}</div>`;
+        }
+
+        // ACCESSIBILITY: Font Size Adjuster
+        function changeFontSize(delta) {
+            currentFontScale = Math.min(Math.max(currentFontScale + delta, 0.8), 1.5);
+            document.documentElement.style.setProperty('--font-scale', currentFontScale);
+            document.getElementById('font-size-indicator').textContent = `${Math.round(currentFontScale * 100)}%`;
+            playSound('pop');
+        }
+
+        // ACCESSIBILITY: High Contrast / Theme Switcher
+        function toggleContrastMode() {
+            contrastIndex = (contrastIndex + 1) % contrastModes.length;
+            const mode = contrastModes[contrastIndex];
+            
+            document.body.classList.remove('theme-high-contrast', 'theme-dark');
+            const labelEl = document.getElementById('contrast-label');
+
+            if (mode === 'high-contrast') {
+                document.body.classList.add('theme-high-contrast');
+                labelEl.textContent = 'Contraste: Alto';
+            } else if (mode === 'dark') {
+                document.body.classList.add('theme-dark');
+                labelEl.textContent = 'Contraste: Oscuro';
+            } else {
+                labelEl.textContent = 'Contraste: Normal';
+            }
+            playSound('pop');
+        }
+
+        // ACCESSIBILITY: Text-To-Speech (Native SpeechSynthesis)
+        function speakText(text) {
+            if (isAudioMuted || !('speechSynthesis' in window)) return;
+            
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-AR';
+            utterance.rate = 0.85; // Clearer rate for children & accessibility
+            utterance.pitch = 1.1;
+
+            const voices = window.speechSynthesis.getVoices();
+            const esVoice = voices.find(v => v.lang.startsWith('es'));
+            if (esVoice) utterance.voice = esVoice;
+
+            isTTSPaused = false;
+            updateTTSPauseButton();
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function speakInstructionText() {
+            speakText(currentInstructionText);
+        }
+
+        function toggleTTSPause() {
+            if (!('speechSynthesis' in window)) return;
+
+            if (window.speechSynthesis.speaking) {
+                if (isTTSPaused) {
+                    window.speechSynthesis.resume();
+                    isTTSPaused = false;
+                } else {
+                    window.speechSynthesis.pause();
+                    isTTSPaused = true;
+                }
+            } else {
+                speakInstructionText();
+            }
+            updateTTSPauseButton();
+        }
+
+        function updateTTSPauseButton() {
+            const label = document.getElementById('tts-pause-label');
+            if (isTTSPaused) {
+                label.textContent = "Reanudar voz";
+            } else {
+                label.textContent = "Pausar voz";
+            }
+        }
+
+        // Web Audio Synthesizer
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudioContext() {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playSound(type) {
+            if (isAudioMuted) return;
+            initAudioContext();
+            if (!audioCtx) return;
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'pop') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } 
+            else if (type === 'correct') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.08);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+            else if (type === 'error') {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(110, now + 0.2);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            }
+            else if (type === 'fanfare') {
+                const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+                    gain.gain.setValueAtTime(0.3, now + idx * 0.1);
+                    gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.1 + 0.3);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.1);
+                    osc.stop(now + idx * 0.1 + 0.3);
+                });
+            }
+            else if (type === 'train') {
+                [587.33, 739.99].forEach((freq) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.6);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.6);
+                });
+            }
+        }
+
+        function toggleAudio() {
+            isAudioMuted = !isAudioMuted;
+            const btn = document.getElementById('btn-audio');
+            if (isAudioMuted) {
+                btn.textContent = '🔇';
+                btn.classList.replace('bg-green-500', 'bg-gray-400');
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            } else {
+                btn.textContent = '🔊';
+                btn.classList.replace('bg-gray-400', 'bg-green-500');
+                playSound('pop');
+                speakText("Sonido activado");
+            }
+        }
+
+        function setGameMode(mode) {
+            currentMode = mode;
+            
+            ['1-5', '1-10', 'missing'].forEach(m => {
+                const btn = document.getElementById(`btn-mode-${m}`);
+                if (m === mode) {
+                    btn.className = "px-3 sm:px-4 py-1.5 rounded-xl font-bold text-xs sm:text-sm transition-all bg-white dark:bg-slate-700 text-sky-700 dark:text-sky-300 shadow-sm border border-slate-200/80 dark:border-slate-600";
+                } else {
+                    btn.className = "px-3 sm:px-4 py-1.5 rounded-xl font-bold text-xs sm:text-sm transition-all text-slate-600 dark:text-slate-300 hover:text-slate-900 border border-transparent";
+                }
+            });
+
+            playSound('pop');
+            initGame();
+        }
+
+        function initGame() {
+            selectedCardValue = null;
+            const slotsHolder = document.getElementById('slots-holder');
+            const cardsPalette = document.getElementById('cards-palette');
+            const instructionContent = document.getElementById('instruction-content');
+            
+            slotsHolder.innerHTML = '';
+            cardsPalette.innerHTML = '';
+
+            if (currentMode === '1-5') {
+                targetSequence = [1, 2, 3, 4, 5];
+                currentInstructionText = "Arrastrá o tocá los números del 1 al 5 para ponerlos en orden en su vagón.";
+            } else if (currentMode === '1-10') {
+                targetSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+                currentInstructionText = "Arrastrá o tocá los números del 1 al 10 para ponerlos en orden en su vagón.";
+            } else if (currentMode === 'missing') {
+                targetSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+                currentInstructionText = "Arrastrá o tocá los números que faltan para ponerlos en orden en su vagón.";
+            }
+
+            instructionContent.textContent = currentInstructionText;
+
+            currentSlotsState = new Array(targetSequence.length).fill(null);
+
+            let prefilledIndices = [];
+            if (currentMode === 'missing') {
+                const total = targetSequence.length;
+                while (prefilledIndices.length < 5) {
+                    let randIdx = Math.floor(Math.random() * total);
+                    if (!prefilledIndices.includes(randIdx)) prefilledIndices.push(randIdx);
+                }
+                prefilledIndices.forEach(idx => {
+                    currentSlotsState[idx] = targetSequence[idx];
+                });
+            }
+
+            // Render Slots
+            targetSequence.forEach((numVal, index) => {
+                const isPreFilled = currentSlotsState[index] !== null;
+                const slotEl = document.createElement('div');
+                slotEl.id = `slot-${index}`;
+                slotEl.dataset.index = index;
+                slotEl.className = `carriage-slot w-20 sm:w-28 h-28 sm:h-36 rounded-3xl border-2 ${
+                    isPreFilled ? 'border-sky-400 bg-amber-300/90' : 'border-dashed border-slate-300 bg-white/70'
+                } shadow-sm flex flex-col justify-between p-2 relative transition-all duration-300 flex-shrink-0 cursor-pointer hover:border-sky-400`;
+
+                slotEl.addEventListener('click', () => handleSlotClick(index));
+
+                slotEl.addEventListener('dragover', (e) => e.preventDefault());
+                slotEl.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const draggedVal = parseInt(e.dataTransfer.getData('text/plain'));
+                    attemptPlaceNumber(draggedVal, index);
+                });
+
+                if (isPreFilled) {
+                    slotEl.innerHTML = createCarriageHTML(numVal, false);
+                } else {
+                    slotEl.innerHTML = `
+                        <div class="w-full flex justify-end items-center px-1">
+                            <span class="text-xs opacity-0" aria-hidden="true">⭐</span>
+                        </div>
+                        <div class="flex-1 flex flex-col items-center justify-center text-slate-300">
+                            <span class="text-2xl sm:text-3xl font-black" aria-hidden="true">❓</span>
+                        </div>
+                        <div class="w-full flex justify-between px-1">
+                            <div class="w-5 h-5 bg-slate-800 rounded-full border border-slate-600"></div>
+                            <div class="w-5 h-5 bg-slate-800 rounded-full border border-slate-600"></div>
+                        </div>
+                    `;
+                }
+
+                slotsHolder.appendChild(slotEl);
+            });
+
+            // Prepare cards
+            let remainingNumbers = targetSequence.filter((val, idx) => currentSlotsState[idx] === null);
+            let shuffledNumbers = [...remainingNumbers].sort(() => Math.random() - 0.5);
+
+            shuffledNumbers.forEach(num => {
+                const cardEl = createCardElement(num);
+                cardsPalette.appendChild(cardEl);
+            });
+
+            speakInstructionText();
+        }
+
+        function createCarriageHTML(num, isAnimated = false) {
+            return `
+                <div class="w-full flex justify-end items-center px-1">
+                    <span class="text-xs text-amber-600" aria-hidden="true">⭐</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center justify-center my-1">
+                    <span class="text-3xl sm:text-5xl font-black text-slate-900 drop-shadow-sm">${num}</span>
+                    ${generateConstellationHTML(num)}
+                </div>
+                <div class="w-full flex justify-between px-1 -mb-4">
+                    <div class="w-7 h-7 sm:w-8 sm:h-8 bg-slate-800 border-2 border-amber-400 rounded-full flex items-center justify-center text-white text-[10px] ${isAnimated ? 'train-wheel' : ''}">⚙️</div>
+                    <div class="w-7 h-7 sm:w-8 sm:h-8 bg-slate-800 border-2 border-amber-400 rounded-full flex items-center justify-center text-white text-[10px] ${isAnimated ? 'train-wheel' : ''}">⚙️</div>
+                </div>
+            `;
+        }
+
+        function createCardElement(num) {
+            const card = document.createElement('div');
+            card.id = `card-${num}`;
+            card.dataset.value = num;
+            card.draggable = true;
+            
+            card.className = `number-card w-20 sm:w-24 h-24 sm:h-28 bg-amber-300 border-2 border-amber-400 rounded-3xl shadow-md flex flex-col items-center justify-center p-2 cursor-pointer transform transition-all duration-200 hover:scale-105 active:scale-95 select-none gap-1`;
+
+            card.innerHTML = `
+                <span class="text-3xl sm:text-4xl font-black text-slate-900 drop-shadow-sm">${num}</span>
+                ${generateConstellationHTML(num)}
+            `;
+
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', num);
+                playSound('pop');
+                speakText(numberNames[num]);
+            });
+
+            card.addEventListener('click', () => {
+                playSound('pop');
+                speakText(numberNames[num]);
+                
+                document.querySelectorAll('#cards-palette > div').forEach(c => c.classList.remove('selected-card'));
+                
+                if (selectedCardValue === num) {
+                    selectedCardValue = null;
+                } else {
+                    selectedCardValue = num;
+                    card.classList.add('selected-card');
+                }
+            });
+
+            return card;
+        }
+
+        function attemptPlaceNumber(numValue, slotIndex) {
+            const expectedValue = targetSequence[slotIndex];
+
+            if (numValue === expectedValue) {
+                currentSlotsState[slotIndex] = numValue;
+                selectedCardValue = null;
+
+                playSound('correct');
+                speakText(`Muy bien, es el número ${numberNames[numValue]}`);
+
+                const slotEl = document.getElementById(`slot-${slotIndex}`);
+                slotEl.className = `carriage-slot w-20 sm:w-28 h-28 sm:h-36 rounded-3xl border-2 border-amber-500 bg-amber-300 shadow-md flex flex-col justify-between p-2 relative transition-all duration-300 flex-shrink-0 scale-105`;
+                slotEl.innerHTML = createCarriageHTML(numValue, true);
+
+                const cardEl = document.getElementById(`card-${numValue}`);
+                if (cardEl) cardEl.remove();
+
+                checkVictoryCondition();
+
+            } else {
+                playSound('error');
+                speakText("Prueba en otro vagón");
+
+                const slotEl = document.getElementById(`slot-${slotIndex}`);
+                slotEl.classList.add('wiggle', 'border-rose-400');
+                setTimeout(() => {
+                    slotEl.classList.remove('wiggle', 'border-rose-400');
+                }, 500);
+            }
+        }
+
+        function checkVictoryCondition() {
+            const isComplete = currentSlotsState.every((val, idx) => val === targetSequence[idx]);
+
+            if (isComplete) {
+                starCount += targetSequence.length;
+                document.getElementById('star-counter').textContent = starCount;
+
+                playSound('train');
+                setTimeout(() => playSound('fanfare'), 600);
+
+                setTimeout(() => {
+                    speakText("¡Felicitaciones! Completaste el tren.");
+                }, 500);
+
+                const trainContainer = document.getElementById('train-container');
+                trainContainer.classList.add('train-drive');
+
+                triggerConfetti();
+
+                setTimeout(() => {
+                    document.getElementById('victory-modal').classList.remove('hidden');
+                    document.getElementById('victory-modal').classList.add('flex');
+                }, 2200);
+            }
+        }
+
+        function nextRound() {
+            document.getElementById('victory-modal').classList.add('hidden');
+            document.getElementById('victory-modal').classList.remove('flex');
+
+            const trainContainer = document.getElementById('train-container');
+            trainContainer.classList.remove('train-drive');
+
+            initGame();
+        }
+
+        function resetCurrentLevel() {
+            playSound('pop');
+            initGame();
+        }
+
+        function triggerConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#f43f5e', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+
+            for (let i = 0; i < 120; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 16,
+                    vy: (Math.random() - 0.7) * 16,
+                    size: Math.random() * 12 + 6,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    rSpeed: (Math.random() - 0.5) * 10
+                });
+            }
+
+            let animationFrame;
+            const startTime = Date.now();
+
+            function render() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.25;
+                    p.rotation += p.rSpeed;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                    ctx.restore();
+                });
+
+                if (Date.now() - startTime < 3000) {
+                    animationFrame = requestAnimationFrame(render);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    cancelAnimationFrame(animationFrame);
+                }
+            }
+
+            render();
+        }
+
+        window.onload = function() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    window.speechSynthesis.getVoices();
+                };
+            }
+            initGame();
+        };
+    </script>
+</body>
+</html>

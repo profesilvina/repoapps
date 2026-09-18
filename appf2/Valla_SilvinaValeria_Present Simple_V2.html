@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aprende Present Simple & Verb To Be - Inglés 1.º Año</title>
+  <style>
+    :root {
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --primary: #4a90e2;
+      --primary-hover: #357abd;
+      --text-main: #2c3e50;
+      --success-bg: #e8f8f5;
+      --success-border: #2ecc71;
+      --error-bg: #fdf2e9;
+      --error-border: #e67e22;
+      --warning-bg: #fef9e7;
+      --warning-border: #f1c40f;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      width: 100%;
+      max-width: 680px;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      color: var(--text-main);
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 6px;
+      margin: 30px 0 15px 0;
+    }
+
+    .exercise-card {
+      background-color: #fafafa;
+      border: 2px solid #e1e8ed;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .sentence {
+      font-size: 1.15rem;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .btn-hint {
+      background-color: #e2e8f0;
+      color: #4a5568;
+      border: none;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      margin-bottom: 10px;
+    }
+
+    .btn-hint:hover {
+      background-color: #cbd5e0;
+    }
+
+    .hint {
+      display: none;
+      font-size: 0.9rem;
+      color: #555;
+      background-color: #eef4fb;
+      border-left: 4px solid var(--primary);
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    input[type="text"] {
+      padding: 8px 12px;
+      font-size: 1.05rem;
+      border: 2px solid #bdc3c7;
+      border-radius: 8px;
+      width: 130px;
+      text-align: center;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary);
+    }
+
+    input[type="text"].empty-highlight {
+      border-color: #e74c3c;
+      background-color: #fadbd8;
+    }
+
+    .btn {
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 16px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background-color 0.2s;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .alert-box {
+      display: none;
+      background-color: var(--warning-bg);
+      border-left: 5px solid var(--warning-border);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: #7d6608;
+    }
+
+    .feedback {
+      margin-top: 12px;
+      padding: 12px 15px;
+      border-radius: 8px;
+      display: none;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .feedback.correct {
+      display: block;
+      background-color: var(--success-bg);
+      border-left: 5px solid var(--success-border);
+    }
+
+    .feedback.incorrect {
+      display: block;
+      background-color: var(--error-bg);
+      border-left: 5px solid var(--error-border);
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>English: Present Simple & Verb To Be</h1>
+
+  <div id="alert-msg" class="alert-box">
+    ⚠️ Por favor, responde todas las preguntas antes de comprobar tus respuestas.
+  </div>
+
+  <form id="quiz-form">
+    
+    <div class="section-title"><b>Parte 1: Present Simple (Action Verbs)</b></div>
+
+    <!-- Oración 1 -->
+    <div class="exercise-card">
+      <div class="sentence">1. She <input type="text" id="q1" autocomplete="off"> (play) soccer on Saturdays.</div>
+      <button type="button" class="btn-hint" onclick="toggleHint('hint1')">💡 Ver pista</button>
+      <div id="hint1" class="hint"><b>Pista:</b> Sujeto singular (3.ª persona "She").</div>
+      <div id="fb1" class="feedback"></div>
+    </div>
+
+    <!-- Oración 2 -->
+    <div class="exercise-card">
+      <div class="sentence">2. They <input type="text" id="q2" autocomplete="off"> (eat) pizza every Friday.</div>
+      <button type="button" class="btn-hint" onclick="toggleHint('hint2')">💡 Ver pista</button>
+      <div id="hint2" class="hint"><b>Pista:</b> Sujeto en plural ("They"). El verbo no cambia.</div>
+      <div id="fb2" class="feedback"></div>
+    </div>
+
+    <!-- Oración 3 -->
+    <div class="exercise-card">
+      <div class="sentence">3. He <input type="text" id="q3" autocomplete="off"> (watch) TV in the evening.</div>
+      <button type="button" class="btn-hint" onclick="toggleHint('hint3')">💡 Ver pista</button>
+      <div id="hint3" class="hint"><b>Pista:</b> Verbo terminado en "-ch" con el sujeto "He".</div>
+      <div id="fb3" class="feedback"></div>
+    </div>
+
+    <!-- Oración 4 -->
+    <div class="exercise-card">
+      <div class="sentence">4. I <input type="text" id="q4" autocomplete="off"> (like) to study English.</div>
+      <button type="button" class="btn-hint" onclick="toggleHint('hint4')">💡 Ver pista</button>
+      <div id="hint4" class="hint"><b>Pista:</b> Primera persona "I". Se utiliza la forma base.</div>
+      <div id="fb4" class="feedback"></div>
+    </div>
+
+    <!-- Oración 5 -->
+    <div class="exercise-card">
+      <div class="sentence">5. My brother <input type="text" id="q5" autocomplete="off"> (study) for his exams.</div>
+      <button type="button" class="btn-hint" onclick="toggleHint('hint5')">💡 Ver pista</button>
+      <div id="hint5" class="hint"><b>Pista:</b> Verbo terminado en consonante + "y" con sujeto equivalente a "He".</div>
+      <div id="fb5" class="feedback"></div>
+    </div>
+
+    <div class="section-title"><b>Parte 2: Verb "To Be" (am / is / are / isn't / aren't)</b></div>
+
+    <!-- Oración 6 -->
+    <div class="exercise-card">
+      <div class="sentence">6. She <input type="text" id="q6" autocomplete="off"> a talented architect.</div>
+      <button type="button" class="btn-hint" onclick="toggleHint('hint6')">💡 Ver pista</button>
+      <div id="hint6" class="hint"><b>Pista:</b> "She" usa la forma de 3.ª persona del singular del verbo *to be*.</div>
+      <div id="fb6" class="feedback"></div>
+    </div>
+
+    <!-- Oración 7 -->
+    <div class="exercise-card">
+      <div class="sentence">7. They <input type="text" id="q7" autocomplete="off"> at school today.</div>
+      <button type="button" class="btn-hint" onclick="toggleHint('hint7')">💡 Ver pista</button>
+      <div id="hint7" class="hint"><b>Pista:</b> "They" hace referencia a un sujeto en plural.</div>
+      <div id="fb7" class="feedback"></div>
+    </div>
+
+    <!-- Oración 8 -->
+    <div class="exercise-card">
+      <div class="sentence">8. I <input type="text" id="q8" autocomplete="off"> in the main office today.</div>
+      <button type="button" class="btn-hint" onclick="toggleHint('hint8')">💡 Ver pista</button>
+      <div id="hint8" class="hint"><b>Pista:</b> La primera persona ("I") tiene una forma única del verbo *to be*.</div>
+      <div id="fb8" class="feedback"></div>
+    </div>
+
+    <!-- Oración 9 -->
+    <div class="exercise-card">
+      <div class="sentence">9. We <input type="text" id="q9" autocomplete="off"> (not / be) ready for the exam.</div>
+      <button type="button" class="btn-hint" onclick="toggleHint('hint9')">💡 Ver pista</button>
+      <div id="hint9" class="hint"><b>Pista:</b> Forma negativa correspondiente a sujetos en plural.</div>
+      <div id="fb9" class="feedback"></div>
+    </div>
+
+    <!-- Oración 10 -->
+    <div class="exercise-card">
+      <div class="sentence">10. <input type="text" id="q10" autocomplete="off"> you interested in joining the team?</div>
+      <button type="button" class="btn-hint" onclick="toggleHint('hint10')">💡 Ver pista</button>
+      <div id="hint10" class="hint"><b>Pista:</b> Pregunta que inicia dirigiéndose a la 2.ª persona ("you").</div>
+      <div id="fb10" class="feedback"></div>
+    </div>
+
+    <button type="button" class="btn" onclick="checkAnswers()">Comprobar respuestas</button>
+  </form>
+</div>
+
+<script>
+  function toggleHint(hintId) {
+    const hintElement = document.getElementById(hintId);
+    if (hintElement.style.display === 'block') {
+      hintElement.style.display = 'none';
+    } else {
+      hintElement.style.display = 'block';
+    }
+  }
+
+  const data = [
+    // Parte 1: Present Simple
+    { id: 'q1', fb: 'fb1', answers: ['plays'], expCorrect: '<b>¡Correcto!</b> Al usar <i>She</i>, agregamos <b>-s</b>.', expIncorrect: '<b>Incorrecto:</b> Recuerda que para <i>he/she/it</i> en presente simple se añade <b>-s</b> al verbo.' },
+    { id: 'q2', fb: 'fb2', answers: ['eat'], expCorrect: '<b>¡Correcto!</b> Con <i>They</i> el verbo se mantiene igual.', expIncorrect: '<b>Incorrecto:</b> Para sujetos en plural (<i>we/they</i>) el verbo se mantiene en su forma base.' },
+    { id: 'q3', fb: 'fb3', answers: ['watches'], expCorrect: '<b>¡Correcto!</b> Verbos terminados en "-ch" añaden <b>-es</b> con <i>He</i>.', expIncorrect: '<b>Incorrecto:</b> Cuando el verbo termina en "-ch" y el sujeto es <i>He</i>, se añade <b>-es</b>.' },
+    { id: 'q4', fb: 'fb4', answers: ['like'], expCorrect: '<b>¡Correcto!</b> Con <i>I</i> el verbo no cambia.', expIncorrect: '<b>Incorrecto:</b> La primera persona <i>I</i> usa el verbo en su forma base.' },
+    { id: 'q5', fb: 'fb5', answers: ['studies'], expCorrect: '<b>¡Correcto!</b> Cambiamos "-y" por <b>-ies</b>.', expIncorrect: '<b>Incorrecto:</b> Si el verbo termina en consonante + "y", cambiamos la "y" por <b>-ies</b>.' },
+
+    // Parte 2: Verb To Be
+    { id: 'q6', fb: 'fb6', answers: ['is'], expCorrect: '<b>¡Correcto!</b> Usamos <b>is</b> para <i>She</i>.', expIncorrect: '<b>Incorrecto:</b> Recuerda que para <i>he</i>, <i>she</i> e <i>it</i> usamos <b>is</b>.' },
+    { id: 'q7', fb: 'fb7', answers: ['are'], expCorrect: '<b>¡Correcto!</b> Usamos <b>are</b> para <i>They</i>.', expIncorrect: '<b>Incorrecto:</b> Para sujetos en plural (<i>we</i>, <i>you</i>, <i>they</i>) la forma correcta es <b>are</b>.' },
+    { id: 'q8', fb: 'fb8', answers: ['am'], expCorrect: '<b>¡Correcto!</b> <i>I</i> siempre se combina con <b>am</b>.', expIncorrect: '<b>Incorrecto:</b> El pronombre <i>I</i> se combina exclusivamente con <b>am</b>.' },
+    { id: 'q9', fb: 'fb9', answers: ['aren\'t', 'are not'], expCorrect: '<b>¡Correcto!</b> Usamos <b>aren\'t</b> para la negativa en plural.', expIncorrect: '<b>Incorrecto:</b> Para plurales en negativo usamos <b>aren\'t</b> (o <i>are not</i>).' },
+    { id: 'q10', fb: 'fb10', answers: ['are'], expCorrect: '<b>¡Correcto!</b> Las preguntas con <i>you</i> inician con <b>Are</b>.', expIncorrect: '<b>Incorrecto:</b> Las preguntas dirigidas a <i>you</i> deben comenzar con <b>Are</b>.' }
+  ];
+
+  function checkAnswers() {
+    const alertBox = document.getElementById('alert-msg');
+    let hasEmptyFields = false;
+
+    alertBox.style.display = 'none';
+    data.forEach(item => {
+      const input = document.getElementById(item.id);
+      input.classList.remove('empty-highlight');
+      
+      if (input.value.trim() === '') {
+        hasEmptyFields = true;
+        input.classList.add('empty-highlight');
+      }
+    });
+
+    if (hasEmptyFields) {
+      alertBox.style.display = 'block';
+      return;
+    }
+
+    data.forEach(item => {
+      const input = document.getElementById(item.id);
+      const feedback = document.getElementById(item.fb);
+      const userAnswer = input.value.trim().toLowerCase();
+
+      if (item.answers.includes(userAnswer)) {
+        feedback.className = 'feedback correct';
+        feedback.innerHTML = `✓ ${item.expCorrect}`;
+      } else {
+        feedback.className = 'feedback incorrect';
+        feedback.innerHTML = `✗ ${item.expIncorrect}`;
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
