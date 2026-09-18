@@ -71,6 +71,37 @@
       --card-shadow: 0 0 0 2px #ffffff;
     }
 
+    body.high-contrast .badge-version-v2 {
+      background: #00ff00 !important;
+      color: #000000 !important;
+      border: 2px solid #ffffff !important;
+      box-shadow: none !important;
+    }
+
+    body.high-contrast .badge-version-v1 {
+      background: #222222 !important;
+      color: #ffffff !important;
+      border: 1px solid #ffffff !important;
+    }
+
+    body.high-contrast .card-improvement-box {
+      background: #111111 !important;
+      color: #ffffff !important;
+      border-color: #ffff00 !important;
+      border-left-color: #00ffff !important;
+    }
+
+    body.high-contrast .card-improvement-box strong {
+      color: #00ffff !important;
+    }
+
+    body.high-contrast .btn-compare,
+    body.high-contrast .btn-compare-to-v2 {
+      background: #000000 !important;
+      color: #ffff00 !important;
+      border-color: #ffffff !important;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -467,6 +498,95 @@
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
     }
 
+    .badge-version-v2 {
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+      border: 1px solid #059669;
+    }
+
+    .badge-version-v1 {
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card-improvement-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid #10b981;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.84rem;
+      color: #166534;
+      margin-bottom: 16px;
+      line-height: 1.45;
+    }
+
+    .card-improvement-box strong {
+      display: block;
+      color: #047857;
+      margin-bottom: 3px;
+      font-size: 0.85rem;
+    }
+
+    .card-actions-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .btn-compare,
+    .btn-compare-to-v2 {
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 9px 16px;
+      border-radius: var(--radius-md);
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      background: #f8fafc;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+
+    .btn-compare:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: #94a3b8;
+    }
+
+    .btn-compare-to-v2 {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .btn-compare-to-v2:hover {
+      background: #dbeafe;
+      color: #1e40af;
+      border-color: #93c5fd;
+    }
+
     /* Estado Vacío */
     .empty-state {
       grid-column: 1 / -1;
@@ -558,6 +678,7 @@
             <option value="Primaria">Primaria</option>
             <option value="Secundaria">Secundaria</option>
             <option value="Universidad">Universidad / Superior</option>
+            <option value="Adultos">Adultos / Formación Laboral</option>
           </select>
         </div>
 
@@ -578,8 +699,17 @@
             <option value="Educación Musical">Educación Musical</option>
             <option value="Inglés">Inglés</option>
             <option value="Educación Ciudadana">Educación Ciudadana</option>
-            <option value="Educación Tecnológica">Educación Tecnológica</option>
+            <option value="Educación Tecnológica">Educación Tecnológica / Oficios</option>
             <option value="Comunicación">Comunicación</option>
+          </select>
+        </div>
+
+        <div class="select-wrapper">
+          <label for="filter-version"><i class="fa-solid fa-code-compare"></i> Versión / Evolución</label>
+          <select id="filter-version" class="filter-select" aria-label="Filtrar por Versión">
+            <option value="todas">Todas las versiones (V1 y V2)</option>
+            <option value="v2">✨ Solo Versiones 2 (Mejoradas)</option>
+            <option value="v1">📦 Solo Versiones 1 (Originales)</option>
           </select>
         </div>
       </div>
@@ -643,14 +773,33 @@
       {
         id: "app-4",
         emoji: "🇬🇧",
-        titulo: "Aprende Present Simple (Inglés 1.º Año)",
+        titulo: "Aprende Present Simple (Inglés 1.º Año) — V1",
         autor: "Silvina Valla",
-        descripcion: "Aplicación interactiva para ejercitar la conjugación de verbos en Present Simple con retroalimentación inmediata explicativa según las reglas gramaticales para 1.º año.",
+        descripcion: "Versión inicial interactiva para ejercitar la conjugación de verbos en Present Simple con retroalimentación inmediata según las reglas gramaticales para 1.º año.",
         nivel: "Secundaria",
         materia: "Inglés",
         color: "#7c3aed", // Violeta inglés
         url: "appf2/Silvina Valla_379948_assignsubmission_file_/Valla_Silvina_Presente Simple.html",
-        tags: ["Inglés", "Gramática", "Present Simple", "Feedback Inmediato", "Secundaria"]
+        version: "v1",
+        hasV2: true,
+        v2Url: "appf2/Valla_SilvinaValeria_Present Simple_V2.html",
+        tags: ["Inglés", "Gramática", "Present Simple", "Versión 1", "Secundaria"]
+      },
+      {
+        id: "app-4-v2",
+        emoji: "🇬🇧",
+        titulo: "Aprende Present Simple & Verb To Be (DUA) — V2",
+        autor: "Silvina Valla",
+        descripcion: "Versión 2 mejorada que amplía la propuesta didáctica incorporando el verbo 'To Be', fichas explicativas de reglas gramaticales, bloques secuenciados y retroalimentación formativa.",
+        nivel: "Secundaria",
+        materia: "Inglés",
+        color: "#2563eb", // Azul royal
+        url: "appf2/Valla_SilvinaValeria_Present Simple_V2.html",
+        version: "v2",
+        hasV1: true,
+        v1Url: "appf2/Silvina Valla_379948_assignsubmission_file_/Valla_Silvina_Presente Simple.html",
+        mejoras: "Incorpora Verb To Be, navegación por bloques, tarjetas de reglas de consulta rápida y diseño visual renovado.",
+        tags: ["Inglés", "Gramática", "Present Simple", "Verb To Be", "Versión 2", "Mejoras IA", "Secundaria"]
       },
       {
         id: "app-5",
@@ -667,14 +816,33 @@
       {
         id: "app-6",
         emoji: "🛡️",
-        titulo: "Educación Ciudadana Digital: Dilema Digital (DUA)",
+        titulo: "Educación Ciudadana: Dilema Digital — V1",
         autor: "Mariana Lagomarsino",
-        descripcion: "Simulador interactivo para 2.º año con dilemas sobre ciberbullying, sexting, grooming, desinformación y derecho a la imagen. Incluye pistas formativas, retroalimentación legal y adaptaciones DUA.",
+        descripcion: "Simulador interactivo inicial para 2.º año con dilemas sobre ciberbullying, sexting, grooming, desinformación y derecho a la imagen en entornos digitales.",
         nivel: "Secundaria",
         materia: "Educación Ciudadana",
         color: "#059669", // Esmeralda cívico
         url: "appf2/Mariana Lagomarsino_379929_assignsubmission_file_/Lagomarsino_Mariana_ciudadaniadigital.html",
-        tags: ["Educación Ciudadana", "Ciudadanía Digital", "DUA", "Ciberbullying", "Grooming", "Secundaria"]
+        version: "v1",
+        hasV2: true,
+        v2Url: "appf2/Lagomarsino_Mariana_ciudadaniadigital_v2.html",
+        tags: ["Educación Ciudadana", "Ciudadanía Digital", "Dilemas", "Versión 1", "Secundaria"]
+      },
+      {
+        id: "app-6-v2",
+        emoji: "🛡️",
+        titulo: "Ciudadanía Digital: Dilemas Éticos y Legales (DUA) — V2",
+        autor: "Mariana Lagomarsino",
+        descripcion: "Versión 2 mejorada con barra de accesibilidad DUA completa (modo alto contraste y escala de fuentes), barra de avance paso a paso, marco normativo argentino y pistas socráticas formativas.",
+        nivel: "Secundaria",
+        materia: "Educación Ciudadana",
+        color: "#10b981", // Verde esmeralda vivo
+        url: "appf2/Lagomarsino_Mariana_ciudadaniadigital_v2.html",
+        version: "v2",
+        hasV1: true,
+        v1Url: "appf2/Mariana Lagomarsino_379929_assignsubmission_file_/Lagomarsino_Mariana_ciudadaniadigital.html",
+        mejoras: "Barra DUA de alto contraste y tamaño de fuente, barra de progreso por etapas, fundamentación jurídica ampliada y retroalimentación argumentada.",
+        tags: ["Educación Ciudadana", "Ciudadanía Digital", "DUA", "Versión 2", "Mejoras IA", "Marco Legal", "Alto Contraste"]
       },
       {
         id: "app-7",
@@ -823,14 +991,33 @@
       {
         id: "app-19",
         emoji: "🔤",
-        titulo: "Aventura de las Vocales (DUA 5 Años)",
+        titulo: "Aventura de las Vocales (DUA 5 Años) — V1",
         autor: "Milena Reyser",
-        descripcion: "Aventura interactiva para Nivel Inicial (Sala de 5) orientada al reconocimiento auditivo, fonológico y visual de las vocales con animaciones lúdicas, sonido, partículas y panel de accesibilidad DUA con TTS.",
+        descripcion: "Aventura interactiva inicial para Nivel Inicial (Sala de 5) orientada al reconocimiento auditivo, fonológico y visual de las vocales con animaciones lúdicas, sonido y partículas.",
         nivel: "Inicial",
         materia: "Prácticas del Lenguaje",
         color: "#ea580c", // Naranja cálido infantil
         url: "appf2/REYSER_MILENA_LasAventurasdelasvocales.html",
-        tags: ["Nivel Inicial", "Alfabetización", "Vocales", "DUA", "Sonidos", "TTS", "Sala de 5"]
+        version: "v1",
+        hasV2: true,
+        v2Url: "appf2/REYSER_MILENA_AventuradeVocales V2.html",
+        tags: ["Nivel Inicial", "Alfabetización", "Vocales", "Versión 1", "Sonidos", "TTS", "Sala de 5"]
+      },
+      {
+        id: "app-19-v2",
+        emoji: "🔤",
+        titulo: "Aventura de las Vocales: Fonología y DUA — V2",
+        autor: "Milena Reyser",
+        descripcion: "Versión 2 profundamente rediseñada con Tailwind CSS y tipografía Fredoka. Integra colores temáticos específicos por vocal, botones con pronunciación fonológica TTS y modo de alto contraste DUA.",
+        nivel: "Inicial",
+        materia: "Prácticas del Lenguaje",
+        color: "#f97316", // Naranja vibrante
+        url: "appf2/REYSER_MILENA_AventuradeVocales V2.html",
+        version: "v2",
+        hasV1: true,
+        v1Url: "appf2/REYSER_MILENA_LasAventurasdelasvocales.html",
+        mejoras: "Diseño renovado con Tailwind y fuente Fredoka, paleta cromática diferenciada por vocal, síntesis de voz TTS optimizada y modo de alto contraste.",
+        tags: ["Nivel Inicial", "Alfabetización", "Vocales", "DUA", "Versión 2", "Mejoras IA", "Fredoka", "Alto Contraste", "TTS"]
       },
       {
         id: "app-20",
@@ -903,6 +1090,42 @@
         color: "#5b3cc4", // Púrpura algorítmico
         url: "appf2/savastano- Daniela- Algoritmos.html",
         tags: ["Educación Tecnológica", "Educación Digital", "Pensamiento Computacional", "Algoritmos", "Primaria", "DUA", "Socrático", "TTS"]
+      },
+      {
+        id: "app-26",
+        emoji: "🛠️",
+        titulo: "EduLaboral PWA: Oficios y Empleabilidad (DUA)",
+        autor: "Susana Sanabria",
+        descripcion: "Aplicación interactiva tipo PWA para Primaria de Jóvenes y Adultos. Incluye guías interactivas de medidas (cm/pulgadas), ensambles y lijado, calculadora de presupuestos de materiales y generador de CV con lectura en voz alta y panel DUA.",
+        nivel: "Adultos",
+        materia: "Educación Tecnológica",
+        color: "#0d9488", // Verde azulado oficios
+        url: "appf2/edulaboral_primaria_adultosSusanaSanabria.html",
+        tags: ["Primaria de Adultos", "Educación Laboral", "Oficios", "Presupuestos", "CV", "DUA", "Herramientas", "Seguridad"]
+      },
+      {
+        id: "app-27",
+        emoji: "🚂",
+        titulo: "El Tren de los Números: Serie Numérica (DUA)",
+        autor: "Paula Kemerer",
+        descripcion: "Entorno interactivo para Nivel Inicial (Sala de 4) para explorar la serie numérica y el conteo lúdico a través de vagones interactivos. Incluye tipografía Atkinson Hyperlegible, modo alto contraste DUA, audio y refuerzo positivo.",
+        nivel: "Inicial",
+        materia: "Matemática",
+        color: "#f59e0b", // Ámbar cálido infantil
+        url: "appf2/Kemerer_Paula_Matematica.html",
+        tags: ["Nivel Inicial", "Sala de 4", "Matemática", "Conteo", "Serie Numérica", "DUA", "Atkinson Hyperlegible", "Alto Contraste"]
+      },
+      {
+        id: "app-28",
+        emoji: "🍰",
+        titulo: "Desafío Fracciones: Exploratorio Visual (DUA)",
+        autor: "José Luis Márquez",
+        descripcion: "Laboratorio interactivo para explorar el concepto y representación de fracciones mediante barras fraccionarias dinámicas, comparaciones gráficas, retos graduados y panel de accesibilidad DUA con modo oscuro y ajuste de tipografía.",
+        nivel: "Primaria",
+        materia: "Matemática",
+        color: "#2563eb", // Azul matemático
+        url: "appf2/desafío_fracciones_MarquezJose.html",
+        tags: ["Matemática", "Fracciones", "DUA", "Visualización", "Primaria", "Modo Oscuro", "Accesibilidad"]
       }
     ];
 
@@ -912,6 +1135,7 @@
     const searchInput = document.getElementById('search-input');
     const filterLevel = document.getElementById('filter-level');
     const filterSubject = document.getElementById('filter-subject');
+    const filterVersion = document.getElementById('filter-version');
     const statusCount = document.getElementById('status-count');
 
     // Función principal para renderizar las tarjetas
@@ -919,6 +1143,7 @@
       const searchTerm = searchInput.value.toLowerCase().trim();
       const selectedLevel = filterLevel.value;
       const selectedSubject = filterSubject.value;
+      const selectedVersion = filterVersion ? filterVersion.value : 'todas';
 
       // Filtrar el array de apps
       const filtradas = REPOSITORIO_APPS.filter(app => {
@@ -927,12 +1152,21 @@
           (app.autor && app.autor.toLowerCase().includes(searchTerm)) ||
           app.descripcion.toLowerCase().includes(searchTerm) ||
           app.materia.toLowerCase().includes(searchTerm) ||
+          (app.mejoras && app.mejoras.toLowerCase().includes(searchTerm)) ||
           app.tags.some(tag => tag.toLowerCase().includes(searchTerm));
 
-        const matchLevel = (selectedLevel === 'todos') || (app.nivel === selectedLevel);
+        const matchLevel = (selectedLevel === 'todos') || 
+          (app.nivel === selectedLevel) || 
+          (selectedLevel === 'Adultos' && app.nivel.toLowerCase().includes('adulto')) || 
+          (selectedLevel === 'Primaria' && app.nivel.toLowerCase().includes('primaria'));
+
         const matchSubject = (selectedSubject === 'todas') || (app.materia === selectedSubject);
 
-        return matchSearch && matchLevel && matchSubject;
+        const matchVersion = (selectedVersion === 'todas') || 
+          (selectedVersion === 'v2' && app.version === 'v2') || 
+          (selectedVersion === 'v1' && (app.version === 'v1' || !app.version));
+
+        return matchSearch && matchLevel && matchSubject && matchVersion;
       });
 
       // Actualizar contador
@@ -968,11 +1202,67 @@
         const tagsHTML = app.tags.map(t => `<span class="tag">#${t}</span>`).join('');
         const autorHTML = app.autor ? `<div class="card-author"><i class="fa-solid fa-user-pen"></i> por: ${app.autor}</div>` : '';
 
+        // Badge de versión
+        let versionBadgeHTML = '';
+        if (app.version === 'v2') {
+          versionBadgeHTML = `<span class="badge-version-v2" title="Versión 2 mejorada con andamiaje DUA"><i class="fa-solid fa-wand-magic-sparkles"></i> Versión 2 (Mejorada)</span>`;
+        } else if (app.hasV2) {
+          versionBadgeHTML = `<span class="badge-version-v1" title="Versión 1 original de base"><i class="fa-solid fa-code-commit"></i> Versión 1 (Original)</span>`;
+        }
+
+        // Bloque explicativo de mejoras en V2
+        let mejorasHTML = '';
+        if (app.version === 'v2' && app.mejoras) {
+          mejorasHTML = `
+            <div class="card-improvement-box">
+              <strong><i class="fa-solid fa-arrow-trend-up"></i> Mejoras incorporadas en V2:</strong>
+              <span>${app.mejoras}</span>
+            </div>
+          `;
+        }
+
+        // Botones de acción y comparación
+        let actionsHTML = '';
+        if (app.version === 'v2' && app.hasV1) {
+          actionsHTML = `
+            <div class="card-actions-group">
+              <a href="${app.url}" class="btn-launch" target="_blank" rel="noopener noreferrer" aria-label="Abrir versión 2 de ${app.titulo}">
+                <i class="fa-solid fa-rocket"></i> Abrir Versión 2 (Mejorada)
+              </a>
+              <a href="${app.v1Url}" class="btn-compare" target="_blank" rel="noopener noreferrer" aria-label="Comparar con versión 1 original de ${app.titulo}" title="Abrir versión 1 original para contrastar mejoras">
+                <i class="fa-solid fa-code-compare"></i> Comparar con Versión 1 Original
+              </a>
+            </div>
+          `;
+        } else if (app.hasV2) {
+          actionsHTML = `
+            <div class="card-actions-group">
+              <a href="${app.url}" class="btn-launch" target="_blank" rel="noopener noreferrer" aria-label="Abrir versión 1 de ${app.titulo}">
+                <i class="fa-solid fa-rocket"></i> Abrir Versión 1 (Original)
+              </a>
+              <a href="${app.v2Url}" class="btn-compare-to-v2" target="_blank" rel="noopener noreferrer" aria-label="Ver versión 2 mejorada de ${app.titulo}" title="Ver la evolución con mejoras DUA y didácticas">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Ver Versión 2 Mejorada
+              </a>
+            </div>
+          `;
+        } else {
+          actionsHTML = `
+            <div class="card-actions-group">
+              <a href="${app.url}" class="btn-launch" target="_blank" rel="noopener noreferrer" aria-label="Abrir aplicación ${app.titulo}">
+                <i class="fa-solid fa-rocket"></i> Abrir Aplicación
+              </a>
+            </div>
+          `;
+        }
+
         card.innerHTML = `
           <div>
             <div class="card-badges">
-              <span class="badge-level">${app.nivel}</span>
-              <span class="badge-subject">${app.materia}</span>
+              <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                <span class="badge-level">${app.nivel}</span>
+                <span class="badge-subject">${app.materia}</span>
+              </div>
+              ${versionBadgeHTML}
             </div>
             <h2 class="card-title">
               <span class="card-emoji" aria-hidden="true">${app.emoji}</span>
@@ -980,11 +1270,10 @@
             </h2>
             ${autorHTML}
             <p class="card-desc">${app.descripcion}</p>
+            ${mejorasHTML}
             <div class="card-tags">${tagsHTML}</div>
           </div>
-          <a href="${app.url}" class="btn-launch" target="_blank" rel="noopener noreferrer" aria-label="Abrir aplicación ${app.titulo}">
-            <i class="fa-solid fa-rocket"></i> Abrir Aplicación
-          </a>
+          ${actionsHTML}
         `;
 
         appsGrid.appendChild(card);
@@ -995,6 +1284,7 @@
     searchInput.addEventListener('input', renderApps);
     filterLevel.addEventListener('change', renderApps);
     filterSubject.addEventListener('change', renderApps);
+    if (filterVersion) filterVersion.addEventListener('change', renderApps);
 
     // --- HERRAMIENTAS DUA ACCESIBILIDAD ---
     let baseFontSize = 16;
