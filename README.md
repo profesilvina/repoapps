@@ -1,9 +1,10 @@
 # 💻 Repositorio de Aplicaciones Educativas (Vibe Coding & DUA)
 
-> **Autora:** Silvina Busto  
+> **Coordinación y Compilación:** Prof. Silvina Elena Busto  
+> **Asistencia Técnica y Vibe Coding:** Antigravity CLI  
 > **Enfoque Pedagógico:** Mediadores didácticos para el andamiaje cognitivo, "Socias del Pensamiento" (Perkins) y Diseño Universal para el Aprendizaje (DUA - Res. 860/25).
 
-Este repositorio contiene una colección de aplicaciones web interactivas y mediadores didácticos desarrollados mediante la metodología **Vibe Coding** (desarrollo asistido por Inteligencia Artificial y lenguaje natural).
+Este repositorio contiene una colección de aplicaciones web interactivas y mediadores didácticos desarrollados mediante la metodología **Vibe Coding** (desarrollo asistido por Inteligencia Artificial con soporte de Antigravity CLI y lenguaje natural).
 
 ---
 
@@ -34,6 +35,21 @@ Este repositorio contiene una colección de aplicaciones web interactivas y medi
 23. **Trivia Interactiva del Ciclo del Agua** (Romina Piacquadio): Trivia didáctica para 4.° grado sobre las etapas del ciclo hidrológico con retroalimentación inmediata explicativa, puntaje e insignias.
 24. **¡MueveTuCuerpo! Exploradores del Movimiento (DUA)** (Vilma Santacruz): Entorno lúdico de expresión corporal y danza para primer ciclo de primaria con biblioteca de movimientos, preguntas pista, dados corporales y panel DUA (TTS y dislexia).
 25. **Detectives de Algoritmos (DUA)** (Daniela Savastano): Laboratorio de pensamiento computacional para 3.° grado con 5 misiones para investigar algoritmos desordenados, instrucciones ambiguas, pistas socráticas graduadas y panel DUA.
+26. **EduLaboral PWA: Oficios y Empleabilidad (DUA)** (Susana Sanabria): Aplicación interactiva tipo PWA para Primaria de Jóvenes y Adultos con guías de medidas, ensamble, calculadora de presupuestos y generador de CV.
+27. **El Tren de los Números: Serie Numérica y Conteo (DUA) — V1 y V2** (Paula Kemerer): Entorno interactivo para Nivel Inicial (Sala de 4) con tipografía Atkinson Hyperlegible y Fredoka, audio nativo, alto contraste y conteo en vagones.
+28. **Desafío Fracciones: Exploratorio Visual (DUA)** (José Luis Márquez): Laboratorio de visualización interactiva de fracciones con barras dinámicas, retos comparativos y panel DUA con modo oscuro.
+29. **Aventura de la Multiplicación (3.er Grado)** (Liliana Giubbani): Entorno lúdico y gamificado para 3.er grado de primaria para ejercitar las tablas de multiplicar mediante misiones interactivas y refuerzos positivos.
+
+---
+
+## 📄 Licenciamiento y Autoría Colectiva
+
+Este repositorio se publica y comparte bajo un **esquema dual de licencias abiertas**:
+
+- **Código fuente (software y estructura técnica):** Licenciado bajo [GNU AGPL v3 (Affero General Public License)](https://www.gnu.org/licenses/agpl-3.0.html). Garantiza que el software permanezca libre, auditable y colaborativo, obligando a compartir las mejoras técnicas incluso al ofrecerse a través de la red (servicios web).
+- **Contenidos pedagógicos (textos, secuencias didácticas, consignas y medios):** Licenciados bajo [Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/). Permite adaptar, traducir y reutilizar los materiales siempre que se cite la autoría docente y las obras derivadas conserven la misma libertad.
+
+> 👤 **Reconocimiento autoral:** Se reconoce y preserva la autoría docente individual de cada colega creador/a en sus respectivas aplicaciones interactivas, compiladas de forma abierta en el marco de la formación docente y la cultura de Recursos Educativos Abiertos (REA).
 
 ---
 
@@ -56,13 +72,23 @@ Abre el archivo `index.html` en un editor de texto y agrega un nuevo objeto al a
 
 ```javascript
 {
-  id: "app-3",
+  id: "app-30",
+  emoji: "💡",
   titulo: "Título de tu Nueva App",
-  autor: "Silvina Busto",
+  autor: "Nombre del Docente",
   descripcion: "Descripción breve de la propuesta...",
-  nivel: "Secundaria", // Primaria, Secundaria o Universidad
+  nivel: "Secundaria", // Inicial, Primaria, Secundaria, Universidad o Adultos
   materia: "Matemática",
-  url: "nombre_de_tu_archivo.htm",
+  color: "#6366f1",
+  url: "appf2/nombre_de_tu_archivo.html",
   tags: ["DUA", "Interactiva"]
 }
 ```
+
+---
+
+## 👩‍🏫 Coordinación y Asistencia Técnica
+
+- **Compilación y Coordinación Pedagógica:** Prof. Silvina Elena Busto
+- **Asistencia Técnica e Inteligencia Artificial:** Antigravity CLI (Google DeepMind)
+- **Contacto:** profesilvina@gmail.com

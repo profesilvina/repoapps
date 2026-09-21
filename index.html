@@ -622,6 +622,72 @@
         padding: 10px 16px;
       }
     }
+
+    /* Pie de página del repositorio */
+    .repo-footer {
+      margin-top: 60px;
+      padding: 30px 20px 40px;
+      border-top: 1px solid var(--filter-border);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .repo-footer-copy {
+      color: var(--text-main);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .repo-footer-licenses {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      font-size: 0.88rem;
+    }
+
+    .repo-footer-licenses a {
+      color: #38bdf8;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+
+    .repo-footer-licenses a:hover {
+      color: #ffffff;
+    }
+
+    .repo-footer-licenses .sep {
+      color: var(--text-muted);
+    }
+
+    .repo-footer-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto;
+      opacity: 0.85;
+    }
+
+    body.high-contrast .repo-footer {
+      border-top: 2px solid #ffffff;
+      color: #ffffff;
+    }
+
+    body.high-contrast .repo-footer-copy {
+      color: #ffff00;
+    }
+
+    body.high-contrast .repo-footer-licenses a {
+      color: #00ffff;
+    }
+
+    body.high-contrast .repo-footer-note {
+      color: #ffffff;
+    }
   </style>
 </head>
 <body>
@@ -726,6 +792,19 @@
     <main class="apps-grid" id="apps-grid" aria-label="Catálogo de Aplicaciones">
       <!-- Las tarjetas se generan dinámicamente desde el array JavaScript de abajo -->
     </main>
+
+    <!-- Pie de Página Legal y Licenciamiento Abierto -->
+    <footer class="repo-footer" role="contentinfo">
+      <div class="repo-footer-content">
+        <p class="repo-footer-copy">© 2026 <strong>Repositorio de aplicaciones educativas</strong> · Compilación y coordinación pedagógica: <strong>Prof. Silvina Elena Busto</strong> · Asistencia técnica con <strong>Antigravity CLI</strong></p>
+        <p class="repo-footer-licenses">
+          <span><i class="fa-solid fa-code"></i> Código fuente bajo <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU AGPL v3</a></span>
+          <span class="sep">·</span>
+          <span><i class="fa-brands fa-creative-commons"></i> Contenidos didácticos bajo <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons CC BY-SA 4.0</a></span>
+        </p>
+        <p class="repo-footer-note">Se reconoce la autoría docente individual de cada aplicación interactiva compilada en este repositorio abierto (Recursos Educativos Abiertos - REA).</p>
+      </div>
+    </footer>
 
   </div>
 
@@ -859,14 +938,33 @@
       {
         id: "app-8",
         emoji: "🎨",
-        titulo: "Laboratorio Color DUA (5.° Primaria)",
+        titulo: "Laboratorio Color DUA (5.° Primaria) — V1",
         autor: "Lorena Confeggi",
-        descripcion: "Secuencia didáctica interactiva en 3 estaciones: Termómetro Cromático (círculo cálido/frío), Pintor de Climas (simulador de paisajes) y Diario del Artista con síntesis de voz (TTS) e insignia final.",
+        descripcion: "Secuencia didáctica interactiva inicial en 3 estaciones: Termómetro Cromático (círculo cálido/frío), Pintor de Climas (simulador de paisajes) y Diario del Artista con síntesis de voz (TTS) e insignia final.",
         nivel: "Primaria",
         materia: "Educación Plástica",
         color: "#db2777", // Rosa fucsia artístico
         url: "appf2/lorena_confeggi_laboratorio.html",
-        tags: ["Educación Plástica", "DUA", "Color", "Primaria", "TTS", "Simulador", "Insignia"]
+        version: "v1",
+        hasV2: true,
+        v2Url: "appf2/lorena_confeggi_lab(v2).html",
+        tags: ["Educación Plástica", "DUA", "Color", "Primaria", "TTS", "Simulador", "Versión 1"]
+      },
+      {
+        id: "app-8-v2",
+        emoji: "🎨",
+        titulo: "Laboratorio del Color: Paletas Cálidas y Frías (DUA) — V2",
+        autor: "Lorena Confeggi",
+        descripcion: "Versión 2 profundamente rediseñada con Tailwind CSS, paleta interactiva de colores cálidos y fríos, tres modos visuales (Claro, Oscuro y Alto Contraste DUA), tipografía Fredoka y Nunito, y diario interactivo del artista.",
+        nivel: "Primaria",
+        materia: "Educación Plástica",
+        color: "#ea580c", // Naranja artístico
+        url: "appf2/lorena_confeggi_lab(v2).html",
+        version: "v2",
+        hasV1: true,
+        v1Url: "appf2/lorena_confeggi_laboratorio.html",
+        mejoras: "Rediseño completo con Tailwind CSS, modos Claro / Oscuro / Alto Contraste DUA, paleta interactiva cálida y fría, tipografía Fredoka y diario de reflexiones plásticas.",
+        tags: ["Educación Plástica", "DUA", "Color", "Primaria", "Versión 2", "Mejoras IA", "Tailwind", "Alto Contraste", "Fredoka"]
       },
       {
         id: "app-9",
@@ -1106,14 +1204,33 @@
       {
         id: "app-27",
         emoji: "🚂",
-        titulo: "El Tren de los Números: Serie Numérica (DUA)",
+        titulo: "El Tren de los Números: Serie Numérica (DUA) — V1",
         autor: "Paula Kemerer",
-        descripcion: "Entorno interactivo para Nivel Inicial (Sala de 4) para explorar la serie numérica y el conteo lúdico a través de vagones interactivos. Incluye tipografía Atkinson Hyperlegible, modo alto contraste DUA, audio y refuerzo positivo.",
+        descripcion: "Entorno interactivo inicial para Nivel Inicial (Sala de 4) para explorar la serie numérica y el conteo lúdico a través de vagones interactivos. Incluye tipografía Atkinson Hyperlegible, modo alto contraste DUA, audio y refuerzo positivo.",
         nivel: "Inicial",
         materia: "Matemática",
         color: "#f59e0b", // Ámbar cálido infantil
         url: "appf2/Kemerer_Paula_Matematica.html",
-        tags: ["Nivel Inicial", "Sala de 4", "Matemática", "Conteo", "Serie Numérica", "DUA", "Atkinson Hyperlegible", "Alto Contraste"]
+        version: "v1",
+        hasV2: true,
+        v2Url: "appf2/Kemerer_Paula_Matematica_V2.html",
+        tags: ["Nivel Inicial", "Sala de 4", "Matemática", "Conteo", "Serie Numérica", "DUA", "Atkinson Hyperlegible", "Alto Contraste", "Versión 1"]
+      },
+      {
+        id: "app-27-v2",
+        emoji: "🚂",
+        titulo: "El Tren de los Números: Serie Numérica y Conteo (DUA) — V2",
+        autor: "Paula Kemerer",
+        descripcion: "Versión 2 ampliada con Tailwind CSS, tipografía Fredoka y Atkinson Hyperlegible, síntesis de audio nativa, modo de alto contraste DUA y nuevos vagones interactivos de conteo.",
+        nivel: "Inicial",
+        materia: "Matemática",
+        color: "#f59e0b", // Ámbar cálido infantil
+        url: "appf2/Kemerer_Paula_Matematica_V2.html",
+        version: "v2",
+        hasV1: true,
+        v1Url: "appf2/Kemerer_Paula_Matematica.html",
+        mejoras: "Diseño renovado con Tailwind, doble tipografía accesible (Fredoka y Atkinson), escalado de fuente DUA, audio nativo y nuevos desafíos de conteo.",
+        tags: ["Nivel Inicial", "Sala de 4", "Matemática", "Conteo", "Serie Numérica", "DUA", "Versión 2", "Mejoras IA", "Fredoka", "Atkinson Hyperlegible", "Alto Contraste"]
       },
       {
         id: "app-28",
@@ -1126,6 +1243,42 @@
         color: "#2563eb", // Azul matemático
         url: "appf2/desafío_fracciones_MarquezJose.html",
         tags: ["Matemática", "Fracciones", "DUA", "Visualización", "Primaria", "Modo Oscuro", "Accesibilidad"]
+      },
+      {
+        id: "app-29",
+        emoji: "✖️",
+        titulo: "Aventura de la Multiplicación (3.er Grado)",
+        autor: "Liliana Giubbani",
+        descripcion: "Entorno interactivo y gamificado para 3.er grado de primaria que introduce las tablas de multiplicar mediante misiones lúdicas, apoyos visuales y refuerzos positivos.",
+        nivel: "Primaria",
+        materia: "Matemática",
+        color: "#10b981", // Verde esmeralda
+        url: "appf2/giubbani_liliana_aventura_de_la_multiplicaci_n.html",
+        tags: ["Matemática", "Multiplicación", "Tablas", "Primaria", "3er Grado", "Gamificación", "Lúdico"]
+      },
+      {
+        id: "app-30",
+        emoji: "🧩",
+        titulo: "Exploradores de Fracciones: Representación y Niveles (DUA)",
+        autor: "Magalí Schumann",
+        descripcion: "Laboratorio interactivo de fracciones para 4.° grado en 3 niveles (Partes fijas, Dividir el entero y Fracciones y enteros). Incluye barra de accesibilidad DUA con lector TTS en voz alta, ajuste tipográfico, alto contraste y retroalimentación formativa ante el error.",
+        nivel: "Primaria",
+        materia: "Matemática",
+        color: "#0d9488", // Verde azulado / Teal
+        url: "appf2/Magali_Schumann_fracciones_dua.html",
+        tags: ["Matemática", "Fracciones", "Primaria", "4.° Grado", "DUA", "TTS", "Alto Contraste", "Niveles", "Res. 860/25"]
+      },
+      {
+        id: "app-31",
+        emoji: "🎓",
+        titulo: "Celebración del Día del Maestro",
+        autor: "Ivana Choque",
+        descripcion: "Propuesta educativa interactiva diseñada en Canva para que las y los estudiantes exploren, reflexionen y completen actividades sobre la labor docente y el significado del Día del Maestro.",
+        nivel: "Primaria",
+        materia: "Formación Ética y Ciudadana",
+        color: "#ec4899", // Rosa vibrante
+        url: "appf2/choque_ivana_dia_del_maestro.html",
+        tags: ["Efemérides", "Día del Maestro", "Canva", "Formación Ética", "Primaria", "Interactiva"]
       }
     ];
 
