@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aventura de la Multiplicación - 3er Grado</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Comic Neue y Nunito -->
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandYellow: '#FFD166',
+            brandGreen: '#06D6A0',
+            brandBlue: '#118AB2',
+            brandPink: '#EF476F',
+            brandPurple: '#8338EC',
+            brandOrange: '#FF9F1C',
+            bgSoft: '#F8F9FA'
+          },
+          fontFamily: {
+            sans: ['Nunito', 'sans-serif'],
+            fun: ['Comic Neue', 'cursive']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar & Animations */
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #fce7f3 100%);
+      min-height: 100vh;
+      user-select: none;
+    }
+
+    .bounce-in {
+      animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .pulse-glow {
+      animation: pulseGlow 2s infinite;
+    }
+
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: scale(0.3); }
+      50% { opacity: 1; transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255, 209, 102, 0.6)); }
+      50% { transform: scale(1.03); filter: drop-shadow(0 0 15px rgba(255, 209, 102, 0.9)); }
+    }
+
+    .card-flip {
+      perspective: 1000px;
+    }
+
+    .card-inner {
+      transition: transform 0.4s;
+      transform-style: preserve-3d;
+    }
+
+    .card-inner.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Confetti Canvas Container */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+
+  <!-- Canvas for Confetti -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Top Navigation Header -->
+  <header class="bg-white/80 backdrop-blur-md border-b-4 border-yellow-400 sticky top-0 z-40 px-4 py-3 shadow-md">
+    <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <!-- Logo & Title -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('quiz-menu')">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-yellow-400 to-orange-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg transform hover:rotate-6 transition">
+          <i class="fa-solid fa-star"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-black font-fun text-brandPurple tracking-wide leading-tight">MultiAventura</h1>
+          <p class="text-xs font-semibold text-slate-500">¡Aprende las tablas jugando!</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-2 overflow-x-auto py-1">
+        <button onclick="switchTab('explorador')" id="nav-explorador" class="nav-btn px-4 py-2 rounded-xl font-bold text-sm sm:text-base flex items-center gap-2 transition bg-slate-100 hover:bg-slate-200 text-slate-700">
+          <i class="fa-solid fa-shapes text-brandBlue"></i>
+          <span>Explorador</span>
+        </button>
+        <button onclick="switchTab('quiz-menu')" id="nav-quiz" class="nav-btn px-4 py-2 rounded-xl font-bold text-sm sm:text-base flex items-center gap-2 transition bg-brandPurple text-white shadow-md">
+          <i class="fa-solid fa-gamepad text-brandYellow"></i>
+          <span>Quiz / Desafío</span>
+        </button>
+        <button onclick="switchTab('memory')" id="nav-memory" class="nav-btn px-4 py-2 rounded-xl font-bold text-sm sm:text-base flex items-center gap-2 transition bg-slate-100 hover:bg-slate-200 text-slate-700">
+          <i class="fa-solid fa-clone text-brandPink"></i>
+          <span>Parejas</span>
+        </button>
+        <button onclick="switchTab('logros')" id="nav-logros" class="nav-btn px-4 py-2 rounded-xl font-bold text-sm sm:text-base flex items-center gap-2 transition bg-slate-100 hover:bg-slate-200 text-slate-700">
+          <i class="fa-solid fa-trophy text-brandYellow"></i>
+          <span>Logros</span>
+        </button>
+      </nav>
+
+      <!-- Global Sound Toggle -->
+      <button id="sound-btn" onclick="toggleSound()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 font-bold transition shadow-sm" title="Activar/Desactivar Sonido">
+        <i id="sound-icon" class="fa-solid fa-volume-high text-brandGreen"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-5xl w-full mx-auto p-4 sm:p-6">
+
+    <!-- ==================== SECTION 1: EXPLORADOR CONCEPTUAL ==================== -->
+    <section id="sec-explorador" class="tab-content hidden space-y-6">
+      <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-blue-200">
+        <div class="text-center max-w-xl mx-auto mb-6">
+          <span class="bg-blue-100 text-brandBlue text-xs font-black uppercase px-3 py-1 rounded-full">Concepto Visual</span>
+          <h2 class="text-3xl font-black font-fun text-slate-800 mt-2">¿Qué es Multiplicar?</h2>
+          <p class="text-slate-600 font-semibold mt-1">Multiplicar es sumar el mismo número varias veces. ¡Es como juntar grupos de cosas iguales!</p>
+        </div>
+
+        <!-- Interactive Sliders -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-2xl border-2 border-slate-200">
+          <!-- Control Grupos -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center font-bold text-slate-700">
+              <label for="exp-num1" class="flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-brandPurple"></i>
+                Número de Grupos (Filas):
+              </label>
+              <span id="exp-val1" class="text-2xl font-black text-brandPurple bg-purple-100 px-3 py-1 rounded-xl">3</span>
+            </div>
+            <input type="range" id="exp-num1" min="1" max="10" value="3" class="w-full h-3 bg-purple-200 rounded-lg appearance-none cursor-pointer accent-brandPurple" oninput="updateExplorador()">
+          </div>
+
+          <!-- Control Objetos -->
+          <div class="space-y-2">
+            <div class="flex justify-between items-center font-bold text-slate-700">
+              <label for="exp-num2" class="flex items-center gap-2">
+                <i class="fa-solid fa-cubes text-brandPink"></i>
+                Objetos por Grupo (Columnas):
+              </label>
+              <span id="exp-val2" class="text-2xl font-black text-brandPink bg-pink-100 px-3 py-1 rounded-xl">4</span>
+            </div>
+            <input type="range" id="exp-num2" min="1" max="10" value="4" class="w-full h-3 bg-pink-200 rounded-lg appearance-none cursor-pointer accent-brandPink" oninput="updateExplorador()">
+          </div>
+        </div>
+
+        <!-- Math Representation Card -->
+        <div class="mt-6 text-center bg-yellow-50 border-2 border-brandYellow rounded-2xl p-4">
+          <div id="exp-equation" class="text-3xl sm:text-4xl font-black font-fun text-slate-800">
+            3 × 4 = <span class="text-brandGreen text-4xl sm:text-5xl">12</span>
+          </div>
+          <div id="exp-repeated-addition" class="text-slate-600 font-bold text-sm sm:text-base mt-2">
+            Es lo mismo que sumar: 4 + 4 + 4 = 12
+          </div>
+        </div>
+
+        <!-- Dot Matrix Representation Grid -->
+        <div class="mt-6 bg-slate-100 p-6 rounded-2xl flex flex-col items-center justify-center min-h-[220px] overflow-x-auto border-2 border-slate-200">
+          <h4 class="text-xs font-black uppercase text-slate-400 mb-4 tracking-wider">Matriz de Objetos (Arreglo Rectangular)</h4>
+          <div id="exp-grid" class="flex flex-col gap-3">
+            <!-- Dynamic elements generated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 2: QUIZ / DESAFÍO ==================== -->
+    <section id="sec-quiz-menu" class="tab-content space-y-6">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-purple-200 text-center">
+        <span class="bg-purple-100 text-brandPurple text-xs font-black uppercase px-3 py-1 rounded-full">¡Selecciona tu Reto!</span>
+        <h2 class="text-3xl sm:text-4xl font-black font-fun text-slate-800 mt-2">¿Qué tabla deseas practicar hoy?</h2>
+        <p class="text-slate-600 font-semibold mt-1 max-w-lg mx-auto">Elige una tabla específica o entra al Modo Desafío Mixto para ganar más puntos y medallas.</p>
+
+        <!-- Selector Grid for Tables 1 to 10 -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mt-8">
+          <!-- Generated Buttons for 1-10 -->
+          <script>
+            for(let i=1; i<=10; i++) {
+              document.write(`
+                <button onclick="startQuiz(${i})" class="group bg-gradient-to-b from-white to-slate-50 border-4 border-slate-200 hover:border-brandPurple rounded-2xl p-4 shadow-sm hover:shadow-lg transition transform hover:-translate-y-1 flex flex-col items-center">
+                  <span class="text-xs font-extrabold text-slate-400 group-hover:text-brandPurple uppercase">Tabla del</span>
+                  <span class="text-4xl font-black font-fun text-slate-800 group-hover:text-brandPurple mt-1">${i}</span>
+                </button>
+              `);
+            }
+          </script>
+        </div>
+
+        <!-- Special Challenge Mode Button -->
+        <div class="mt-8 pt-6 border-t-2 border-slate-100">
+          <button onclick="startQuiz('mixed')" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-brandOrange via-brandPink to-brandPurple text-white rounded-2xl font-black text-xl shadow-lg hover:shadow-2xl transition transform hover:scale-105 flex items-center justify-center gap-3 mx-auto pulse-glow">
+            <i class="fa-solid fa-fire text-brandYellow text-2xl"></i>
+            <span>¡MODO DESAFÍO MIXTO (TODAS LAS TABLAS)!</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz Active Gameplay Screen -->
+    <section id="sec-quiz-game" class="tab-content hidden space-y-6">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-yellow-300">
+        <!-- Top Status Bar: Streak, Level, Score -->
+        <div class="flex items-center justify-between border-b-2 border-slate-100 pb-4 mb-6 gap-2">
+          <button onclick="switchTab('quiz-menu')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs sm:text-sm flex items-center gap-1 transition">
+            <i class="fa-solid fa-arrow-left"></i> Volver
+          </button>
+          
+          <div class="flex items-center gap-4">
+            <!-- Streak -->
+            <div class="flex items-center gap-1.5 bg-orange-50 border border-orange-200 px-3 py-1 rounded-full" title="Racha de aciertos">
+              <i class="fa-solid fa-fire text-brandOrange"></i>
+              <span id="quiz-streak" class="font-extrabold text-brandOrange text-sm sm:text-base">0</span>
+            </div>
+            <!-- Score -->
+            <div class="flex items-center gap-1.5 bg-yellow-50 border border-yellow-200 px-3 py-1 rounded-full">
+              <i class="fa-solid fa-star text-brandYellow"></i>
+              <span id="quiz-score" class="font-extrabold text-slate-700 text-sm sm:text-base">0 Pts</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="space-y-2 mb-8">
+          <div class="flex justify-between text-xs font-extrabold text-slate-400">
+            <span id="quiz-progress-text">Pregunta 1 de 10</span>
+            <span id="quiz-progress-percent">10%</span>
+          </div>
+          <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden border border-slate-200 p-0.5">
+            <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-brandGreen to-brandBlue rounded-full transition-all duration-300" style="width: 10%;"></div>
+          </div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="text-center py-6 bg-slate-50 rounded-2xl border-2 border-slate-200 mb-8 relative">
+          <div class="text-sm font-black text-brandBlue uppercase tracking-wide">¿Cuánto es?</div>
+          <div id="quiz-question" class="text-5xl sm:text-6xl font-black font-fun text-slate-800 my-3 tracking-wider">
+            7 × 8 = ?
+          </div>
+          <!-- Visual Helper Cue for wrong attempts or initial hint -->
+          <div id="quiz-hint" class="text-xs sm:text-sm text-slate-500 font-semibold h-6 flex items-center justify-center gap-1">
+            <span>¡Piensa bien tu respuesta!</span>
+          </div>
+        </div>
+
+        <!-- Answer Options Grid -->
+        <div id="quiz-options" class="grid grid-cols-2 gap-4">
+          <!-- Options dynamically rendered -->
+        </div>
+
+        <!-- Feedback Overlay / Alert Box inside game -->
+        <div id="quiz-feedback" class="mt-6 p-4 rounded-2xl text-center hidden bounce-in">
+          <div id="quiz-feedback-title" class="text-xl font-black font-fun">¡Excelente!</div>
+          <p id="quiz-feedback-msg" class="text-sm font-bold mt-0.5">7 × 8 significa 7 veces 8, que da 56.</p>
+          <button id="quiz-next-btn" onclick="nextQuestion()" class="mt-4 px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow-md transition">
+            Siguiente Pregunta <i class="fa-solid fa-chevron-right ml-1"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz Results Screen -->
+    <section id="sec-quiz-results" class="tab-content hidden space-y-6">
+      <div class="bg-white rounded-3xl p-8 shadow-xl border-4 border-green-300 text-center bounce-in">
+        <div class="w-20 h-20 mx-auto bg-yellow-100 rounded-full flex items-center justify-center text-brandYellow text-4xl shadow-inner mb-4">
+          <i class="fa-solid fa-trophy"></i>
+        </div>
+        <h2 class="text-3xl font-black font-fun text-slate-800">¡Ronda Completada!</h2>
+        <p class="text-slate-600 font-semibold mt-1">¡Has hecho un trabajo fantástico practicando hoy!</p>
+
+        <!-- Final Score Board -->
+        <div class="my-6 grid grid-cols-3 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+          <div>
+            <div class="text-xs text-slate-400 font-bold uppercase">Aciertos</div>
+            <div id="res-correct" class="text-2xl font-black text-brandGreen">8/10</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400 font-bold uppercase">Puntos</div>
+            <div id="res-score" class="text-2xl font-black text-brandPurple">+80</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400 font-bold uppercase">Racha Máxima</div>
+            <div id="res-streak" class="text-2xl font-black text-brandOrange">5</div>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <button onclick="switchTab('quiz-menu')" class="px-6 py-3 bg-brandPurple hover:bg-purple-700 text-white font-black rounded-xl shadow-md transition">
+            <i class="fa-solid fa-rotate-right mr-2"></i> Elegir Otra Tabla
+          </button>
+          <button onclick="switchTab('logros')" class="px-6 py-3 bg-brandYellow hover:bg-yellow-500 text-slate-800 font-black rounded-xl shadow-md transition">
+            <i class="fa-solid fa-award mr-2"></i> Ver Medallas
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 3: JUEGO MEMORY MATCH ==================== -->
+    <section id="sec-memory" class="tab-content hidden space-y-6">
+      <div class="bg-white rounded-3xl p-6 shadow-xl border-4 border-pink-200">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <span class="bg-pink-100 text-brandPink text-xs font-black uppercase px-3 py-1 rounded-full">Juego de Emparejar</span>
+            <h2 class="text-3xl font-black font-fun text-slate-800 mt-1">Memory Multiplicación</h2>
+            <p class="text-slate-600 font-semibold text-sm">Encuentra la pareja correcta entre la multiplicación y su resultado.</p>
+          </div>
+          
+          <button onclick="initMemoryGame()" class="px-4 py-2 bg-brandPink hover:bg-pink-600 text-white font-bold rounded-xl shadow transition text-sm flex items-center gap-2">
+            <i class="fa-solid fa-arrows-rotate"></i> Reiniciar Juego
+          </button>
+        </div>
+
+        <!-- Memory Stats Bar -->
+        <div class="flex justify-around bg-slate-50 p-3 rounded-2xl border border-slate-200 mb-6 text-center">
+          <div>
+            <span class="text-xs font-bold text-slate-400 uppercase">Movimientos</span>
+            <p id="mem-moves" class="text-xl font-black text-slate-700">0</p>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-slate-400 uppercase">Parejas Encontradas</span>
+            <p id="mem-matches" class="text-xl font-black text-brandGreen">0 / 6</p>
+          </div>
+        </div>
+
+        <!-- Memory Cards Grid -->
+        <div id="memory-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto">
+          <!-- Cards rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECTION 4: TABLERO DE LOGROS / MEDALLAS ==================== -->
+    <section id="sec-logros" class="tab-content hidden space-y-6">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-4 border-yellow-200">
+        <div class="text-center max-w-xl mx-auto mb-8">
+          <span class="bg-yellow-100 text-brandYellow-700 text-xs font-black uppercase px-3 py-1 rounded-full">Tus Trofeos</span>
+          <h2 class="text-3xl font-black font-fun text-slate-800 mt-2">Salón de la Fama</h2>
+          <p class="text-slate-600 font-semibold mt-1">¡Gana puntos practicando para desbloquear todas las medallas!</p>
+        </div>
+
+        <!-- Badges Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="badges-container">
+          <!-- Dynamically populated achievements -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 mt-auto text-center text-xs text-slate-500 font-semibold">
+    <p>Aventura de la Multiplicación • Creado para estudiantes de 3.º de Primaria</p>
+  </footer>
+
+  <script>
+    /* ================= GLOBAL STATE ================= */
+    const state = {
+      soundEnabled: true,
+      score: 0,
+      streak: 0,
+      maxStreak: 0,
+      unlockedBadges: new Set(),
+      // Quiz state
+      quizCurrentTable: 1,
+      quizQuestions: [],
+      quizCurrentIndex: 0,
+      quizCorrectCount: 0,
+      // Memory state
+      memoryCards: [],
+      flippedCards: [],
+      memoryMatchedCount: 0,
+      memoryMoves: 0,
+      memoryLock: false
+    };
+
+    /* ================= AUDIO SYNTHESIZER (Web Audio API) ================= */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(type) {
+      if (!state.soundEnabled) return;
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      const now = audioCtx.currentTime;
+
+      if (type === 'correct') {
+        // Happy arpeggio
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now); // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+        osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      } else if (type === 'wrong') {
+        // Low buzz
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.setValueAtTime(140, now + 0.15);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } else if (type === 'click') {
+        // Short pop
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(400, now);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      } else if (type === 'win') {
+        // Fanfare
+        [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, idx) => {
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.type = 'sine';
+          o.frequency.setValueAtTime(freq, now + idx * 0.08);
+          g.gain.setValueAtTime(0.2, now + idx * 0.08);
+          g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.3);
+          o.start(now + idx * 0.08);
+          o.stop(now + idx * 0.08 + 0.3);
+        });
+      }
+    }
+
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      const btnIcon = document.getElementById('sound-icon');
+      if (state.soundEnabled) {
+        btnIcon.className = "fa-solid fa-volume-high text-brandGreen";
+      } else {
+        btnIcon.className = "fa-solid fa-volume-xmark text-slate-400";
+      }
+    }
+
+    /* ================= TAB NAVIGATION ================= */
+    function switchTab(tabId) {
+      playSound('click');
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      
+      // Reset nav button styles
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.className = "nav-btn px-4 py-2 rounded-xl font-bold text-sm sm:text-base flex items-center gap-2 transition bg-slate-100 hover:bg-slate-200 text-slate-700";
+      });
+
+      // Show targeted tab
+      const targetSec = document.getElementById(`sec-${tabId}`);
+      if (targetSec) targetSec.classList.remove('hidden');
+
+      // Highlight active nav button
+      const navBtnMap = {
+        'explorador': 'nav-explorador',
+        'quiz-menu': 'nav-quiz',
+        'quiz-game': 'nav-quiz',
+        'quiz-results': 'nav-quiz',
+        'memory': 'nav-memory',
+        'logros': 'nav-logros'
+      };
+
+      const activeNav = document.getElementById(navBtnMap[tabId]);
+      if (activeNav) {
+        activeNav.className = "nav-btn px-4 py-2 rounded-xl font-bold text-sm sm:text-base flex items-center gap-2 transition bg-brandPurple text-white shadow-md";
+      }
+
+      // Tab specific triggers
+      if (tabId === 'explorador') updateExplorador();
+      if (tabId === 'memory' && state.memoryCards.length === 0) initMemoryGame();
+      if (tabId === 'logros') renderAchievements();
+    }
+
+    /* ================= SECTION 1: EXPLORADOR CONCEPTUAL ================= */
+    function updateExplorador() {
+      const num1 = parseInt(document.getElementById('exp-num1').value);
+      const num2 = parseInt(document.getElementById('exp-num2').value);
+
+      document.getElementById('exp-val1').innerText = num1;
+      document.getElementById('exp-val2').innerText = num2;
+
+      const result = num1 * num2;
+      document.getElementById('exp-equation').innerHTML = `
+        ${num1} × ${num2} = <span class="text-brandGreen text-4xl sm:text-5xl">${result}</span>
+      `;
+
+      // Build repeated addition string
+      let additionArray = [];
+      for(let i=0; i<num1; i++) additionArray.push(num2);
+      document.getElementById('exp-repeated-addition').innerText = 
+        `Es lo mismo que sumar: ${additionArray.join(' + ')} = ${result}`;
+
+      // Render dot matrix grid
+      const gridContainer = document.getElementById('exp-grid');
+      gridContainer.innerHTML = '';
+
+      const colors = ['bg-pink-400', 'bg-purple-400', 'bg-blue-400', 'bg-green-400', 'bg-yellow-400', 'bg-orange-400'];
+
+      for (let r = 0; r < num1; r++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = "flex gap-2 items-center justify-center";
+        
+        // Row label
+        const rowLabel = document.createElement('span');
+        rowLabel.className = "text-xs font-bold text-slate-400 mr-2 w-14 text-right";
+        rowLabel.innerText = `Grupo ${r + 1}:`;
+        rowDiv.appendChild(rowLabel);
+
+        for (let c = 0; c < num2; c++) {
+          const dot = document.createElement('div');
+          const colorClass = colors[r % colors.length];
+          dot.className = `w-7 h-7 sm:w-8 sm:h-8 rounded-full ${colorClass} text-white flex items-center justify-center font-bold text-xs shadow-sm transform hover:scale-125 transition cursor-pointer`;
+          dot.innerText = '★';
+          rowDiv.appendChild(dot);
+        }
+        gridContainer.appendChild(rowDiv);
+      }
+    }
+
+    /* ================= SECTION 2: QUIZ / DESAFÍO ================= */
+    function startQuiz(table) {
+      playSound('click');
+      state.quizCurrentTable = table;
+      state.quizCurrentIndex = 0;
+      state.quizCorrectCount = 0;
+      state.quizQuestions = generateQuestions(table, 10);
+      
+      switchTab('quiz-game');
+      renderQuestion();
+    }
+
+    function generateQuestions(table, count) {
+      let questions = [];
+      for (let i = 0; i < count; i++) {
+        let n1, n2;
+        if (table === 'mixed') {
+          n1 = Math.floor(Math.random() * 10) + 1;
+          n2 = Math.floor(Math.random() * 10) + 1;
+        } else {
+          n1 = table;
+          n2 = Math.floor(Math.random() * 10) + 1;
+        }
+
+        const answer = n1 * n2;
+        // Generate 3 wrong unique options
+        let options = new Set([answer]);
+        while (options.size < 4) {
+          let wrong = answer + (Math.floor(Math.random() * 7) - 3);
+          if (wrong > 0 && wrong !== answer) options.add(wrong);
+          else options.add(answer + options.size * 2);
+        }
+
+        questions.push({
+          num1: n1,
+          num2: n2,
+          answer: answer,
+          options: Array.from(options).sort(() => Math.random() - 0.5)
+        });
+      }
+      return questions;
+    }
+
+    function renderQuestion() {
+      const q = state.quizQuestions[state.quizCurrentIndex];
+      const total = state.quizQuestions.length;
+
+      // Reset Feedback UI
+      const feedbackEl = document.getElementById('quiz-feedback');
+      feedbackEl.classList.add('hidden');
+
+      // Update Progress Header
+      document.getElementById('quiz-progress-text').innerText = `Pregunta ${state.quizCurrentIndex + 1} de ${total}`;
+      const percent = Math.round(((state.quizCurrentIndex) / total) * 100);
+      document.getElementById('quiz-progress-percent').innerText = `${percent}%`;
+      document.getElementById('quiz-progress-bar').style.width = `${percent}%`;
+
+      document.getElementById('quiz-score').innerText = `${state.score} Pts`;
+      document.getElementById('quiz-streak').innerText = state.streak;
+
+      // Question text
+      document.getElementById('quiz-question').innerText = `${q.num1} × ${q.num2} = ?`;
+      document.getElementById('quiz-hint').innerHTML = `<span><i class="fa-solid fa-lightbulb text-yellow-500 mr-1"></i> Pista: Sumar ${q.num1} veces el ${q.num2}</span>`;
+
+      // Render Options Buttons
+      const optsContainer = document.getElementById('quiz-options');
+      optsContainer.innerHTML = '';
+
+      q.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "quiz-opt-btn bg-gradient-to-b from-white to-slate-50 border-4 border-slate-200 hover:border-brandPurple hover:bg-purple-50 text-slate-800 text-2xl sm:text-3xl font-black font-fun py-5 rounded-2xl shadow-sm transition transform hover:-translate-y-1";
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(opt, btn);
+        optsContainer.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selectedOption, clickedBtn) {
+      const q = state.quizQuestions[state.quizCurrentIndex];
+      const feedbackEl = document.getElementById('quiz-feedback');
+      const feedbackTitle = document.getElementById('quiz-feedback-title');
+      const feedbackMsg = document.getElementById('quiz-feedback-msg');
+
+      // Disable all option buttons temporarily
+      document.querySelectorAll('.quiz-opt-btn').forEach(b => b.disabled = true);
+
+      if (selectedOption === q.answer) {
+        // CORRECT ANSWER
+        playSound('correct');
+        triggerConfetti();
+        state.score += 10;
+        state.streak++;
+        state.quizCorrectCount++;
+        if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+
+        clickedBtn.classList.remove('border-slate-200');
+        clickedBtn.classList.add('bg-green-100', 'border-brandGreen', 'text-brandGreen');
+
+        feedbackEl.className = "mt-6 p-4 rounded-2xl text-center bounce-in bg-green-100 border-2 border-brandGreen text-slate-800";
+        feedbackTitle.innerText = "¡Excelente! ¡Respuesta Correcta!";
+        feedbackMsg.innerText = `${q.num1} × ${q.num2} es igual a ${q.answer}. ¡Sigue así!`;
+
+      } else {
+        // INCORRECT ANSWER
+        playSound('wrong');
+        state.streak = 0;
+
+        clickedBtn.classList.remove('border-slate-200');
+        clickedBtn.classList.add('bg-red-100', 'border-brandPink', 'text-brandPink');
+
+        // Highlight correct button
+        document.querySelectorAll('.quiz-opt-btn').forEach(b => {
+          if (parseInt(b.innerText) === q.answer) {
+            b.classList.add('bg-green-100', 'border-brandGreen');
+          }
+        });
+
+        feedbackEl.className = "mt-6 p-4 rounded-2xl text-center bounce-in bg-red-50 border-2 border-brandPink text-slate-800";
+        feedbackTitle.innerText = "¡Casi lo logras!";
+        feedbackMsg.innerText = `La respuesta correcta era ${q.answer} (${q.num1} veces ${q.num2} es ${q.answer}).`;
+      }
+
+      feedbackEl.classList.remove('hidden');
+      checkBadgeUnlocks();
+    }
+
+    function nextQuestion() {
+      playSound('click');
+      state.quizCurrentIndex++;
+      if (state.quizCurrentIndex < state.quizQuestions.length) {
+        renderQuestion();
+      } else {
+        showQuizResults();
+      }
+    }
+
+    function showQuizResults() {
+      playSound('win');
+      triggerConfetti();
+      
+      document.getElementById('res-correct').innerText = `${state.quizCorrectCount} / ${state.quizQuestions.length}`;
+      document.getElementById('res-score').innerText = `+${state.quizCorrectCount * 10}`;
+      document.getElementById('res-streak').innerText = state.maxStreak;
+
+      switchTab('quiz-results');
+    }
+
+    /* ================= SECTION 3: JUEGO MEMORY MATCH ================= */
+    function initMemoryGame() {
+      state.memoryMoves = 0;
+      state.memoryMatchedCount = 0;
+      state.flippedCards = [];
+      state.memoryLock = false;
+
+      document.getElementById('mem-moves').innerText = '0';
+      document.getElementById('mem-matches').innerText = '0 / 6';
+
+      // Pick 6 random operations
+      let pairs = [];
+      let usedOps = new Set();
+      while (usedOps.size < 6) {
+        let a = Math.floor(Math.random() * 8) + 2; // 2 to 9
+        let b = Math.floor(Math.random() * 9) + 1; // 1 to 9
+        let key = `${a}x${b}`;
+        if (!usedOps.has(key)) {
+          usedOps.add(key);
+          let ans = a * b;
+          pairs.push({ id: key, op: `${a} × ${b}`, val: ans });
+        }
+      }
+
+      // Create 12 cards (6 operations + 6 values)
+      let cardDeck = [];
+      pairs.forEach(p => {
+        cardDeck.push({ pairId: p.id, type: 'op', content: p.op });
+        cardDeck.push({ pairId: p.id, type: 'val', content: p.val });
+      });
+
+      // Shuffle
+      state.memoryCards = cardDeck.sort(() => Math.random() - 0.5);
+
+      // Render Grid
+      const grid = document.getElementById('memory-grid');
+      grid.innerHTML = '';
+
+      state.memoryCards.forEach((card, idx) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = "card-flip h-24 sm:h-28 cursor-pointer";
+        cardEl.onclick = () => flipMemoryCard(idx, cardEl);
+
+        cardEl.innerHTML = `
+          <div class="card-inner w-full h-full relative rounded-2xl shadow-md" id="mem-card-${idx}">
+            <div class="card-front absolute inset-0 bg-gradient-to-br from-brandPink to-purple-500 rounded-2xl flex items-center justify-center text-white text-3xl font-black border-2 border-white">
+              <i class="fa-solid fa-star text-brandYellow"></i>
+            </div>
+            <div class="card-back absolute inset-0 bg-white rounded-2xl border-4 border-brandPink flex items-center justify-center text-slate-800 text-xl sm:text-2xl font-black font-fun p-2 text-center">
+              ${card.content}
+            </div>
+          </div>
+        `;
+        grid.appendChild(cardEl);
+      });
+    }
+
+    function flipMemoryCard(idx, cardContainer) {
+      if (state.memoryLock) return;
+      const cardInner = document.getElementById(`mem-card-${idx}`);
+      
+      // Prevent flipping already flipped or matched card
+      if (cardInner.classList.contains('is-flipped')) return;
+
+      playSound('click');
+      cardInner.classList.add('is-flipped');
+      state.flippedCards.push({ idx, card: state.memoryCards[idx], el: cardInner });
+
+      if (state.flippedCards.length === 2) {
+        state.memoryMoves++;
+        document.getElementById('mem-moves').innerText = state.memoryMoves;
+        checkMemoryMatch();
+      }
+    }
+
+    function checkMemoryMatch() {
+      state.memoryLock = true;
+      const [c1, c2] = state.flippedCards;
+
+      if (c1.card.pairId === c2.card.pairId && c1.idx !== c2.idx) {
+        // MATCH!
+        playSound('correct');
+        state.memoryMatchedCount++;
+        document.getElementById('mem-matches').innerText = `${state.memoryMatchedCount} / 6`;
+        
+        c1.el.classList.add('pulse-glow');
+        c2.el.classList.add('pulse-glow');
+
+        state.flippedCards = [];
+        state.memoryLock = false;
+
+        if (state.memoryMatchedCount === 6) {
+          setTimeout(() => {
+            playSound('win');
+            triggerConfetti();
+            state.score += 30;
+            checkBadgeUnlocks();
+          }, 500);
+        }
+      } else {
+        // NO MATCH
+        playSound('wrong');
+        setTimeout(() => {
+          c1.el.classList.remove('is-flipped');
+          c2.el.classList.remove('is-flipped');
+          state.flippedCards = [];
+          state.memoryLock = false;
+        }, 1000);
+      }
+    }
+
+    /* ================= SECTION 4: LOGROS / MEDALLAS ================= */
+    const BADGES_DATA = [
+      { id: 'first_step', name: 'Primer Paso', desc: 'Acumula tus primeros 10 puntos', icon: 'fa-shoe-prints', color: 'text-blue-500', req: s => s.score >= 10 },
+      { id: 'streak_3', name: 'Racha Flameante', desc: 'Consigue 3 aciertos seguidos', icon: 'fa-fire', color: 'text-orange-500', req: s => s.maxStreak >= 3 },
+      { id: 'master_50', name: 'Matemático Estrella', desc: 'Consigue 50 puntos acumulados', icon: 'fa-star', color: 'text-yellow-500', req: s => s.score >= 50 },
+      { id: 'memory_master', name: 'Memoria de Elefante', desc: 'Completa un juego de parejas', icon: 'fa-brain', color: 'text-pink-500', req: s => s.memoryMatchedCount === 6 },
+      { id: 'streak_10', name: 'Invencible', desc: 'Consigue una racha de 10 aciertos', icon: 'fa-crown', color: 'text-purple-500', req: s => s.maxStreak >= 10 },
+      { id: 'score_100', name: 'Gran Maestro', desc: 'Llega a 100 puntos en total', icon: 'fa-trophy', color: 'text-amber-500', req: s => s.score >= 100 }
+    ];
+
+    function checkBadgeUnlocks() {
+      BADGES_DATA.forEach(b => {
+        if (!state.unlockedBadges.has(b.id) && b.req(state)) {
+          state.unlockedBadges.add(b.id);
+          playSound('win');
+          triggerConfetti();
+        }
+      });
+    }
+
+    function renderAchievements() {
+      const container = document.getElementById('badges-container');
+      container.innerHTML = '';
+
+      BADGES_DATA.forEach(b => {
+        const isUnlocked = state.unlockedBadges.has(b.id);
+
+        const card = document.createElement('div');
+        card.className = `p-4 rounded-2xl border-2 flex items-center space-x-4 transition ${
+          isUnlocked 
+            ? 'bg-gradient-to-r from-yellow-50 to-white border-yellow-300 shadow-md' 
+            : 'bg-slate-50 border-slate-200 opacity-60'
+        }`;
+
+        card.innerHTML = `
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
+            isUnlocked ? 'bg-yellow-100 ' + b.color : 'bg-slate-200 text-slate-400'
+          }">
+            <i class="fa-solid ${b.icon}"></i>
+          </div>
+          <div>
+            <h4 class="font-black text-slate-800 text-base">${b.name}</h4>
+            <p class="text-xs font-semibold text-slate-500">${b.desc}</p>
+            <span class="inline-block mt-1 text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
+              isUnlocked ? 'bg-green-100 text-brandGreen' : 'bg-slate-200 text-slate-500'
+            }">
+              ${isUnlocked ? 'Desbloqueado' : 'Bloqueado'}
+            </span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    /* ================= VISUAL EFFECTS: CONFETTI ================= */
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let particles = [];
+      const colors = ['#FFD166', '#06D6A0', '#118AB2', '#EF476F', '#8338EC', '#FF9F1C'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12 - 4,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 10
+        });
+      }
+
+      let animationFrame;
+      let opacity = 1;
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2; // Gravity
+          p.rotation += p.rotSpeed;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        particles = particles.filter(p => p.y < canvas.height);
+
+        if (particles.length > 0) {
+          animationFrame = requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          cancelAnimationFrame(animationFrame);
+        }
+      }
+
+      animate();
+    }
+
+    /* ================= INITIALIZATION ================= */
+    window.onload = function() {
+      updateExplorador();
+      switchTab('quiz-menu');
+    };
+
+    window.onresize = function() {
+      const canvas = document.getElementById('confetti-canvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+  </script>
+</body>
+</html>

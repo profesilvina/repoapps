@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio del Color: Paletas Cálidas y Frías</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            warm: '#f97316',
+                            cold: '#0284c7',
+                            accent: '#8b5cf6',
+                            bgLight: '#f8fafc',
+                            cardLight: '#ffffff'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap');
+
+        :root {
+            --bg-main: #f1f5f9;
+            --card-main: #ffffff;
+            --text-main: #1e293b;
+            --border-main: #cbd5e1;
+            --accent-warm: #ea580c;
+            --accent-cold: #0369a1;
+            --base-font-size: 16px;
+        }
+
+        /* Modo Alto Contraste (DUA) */
+        [data-theme="high-contrast"] {
+            --bg-main: #000000;
+            --card-main: #111111;
+            --text-main: #ffff00;
+            --border-main: #ffffff;
+            --accent-warm: #ffaa00;
+            --accent-cold: #00ffff;
+        }
+
+        /* Modo Oscuro Suave */
+        [data-theme="dark"] {
+            --bg-main: #0f172a;
+            --card-main: #1e293b;
+            --text-main: #f8fafc;
+            --border-main: #334155;
+            --accent-warm: #fb923c;
+            --accent-cold: #38bdf8;
+        }
+
+        #customAlertModal {
+            transition: opacity 0.2s ease;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Nunito', sans-serif;
+            font-size: var(--base-font-size);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1, h2, h3, .font-heading {
+            font-family: 'Fredoka', cursive;
+        }
+
+        .card-container {
+            background-color: var(--card-main);
+            border: 2px solid var(--border-main);
+        }
+
+        .interactive-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .interactive-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .interactive-btn:active {
+            transform: translateY(0);
+        }
+
+        @keyframes gentle-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        .pulse-gently {
+            animation: gentle-pulse 3s infinite ease-in-out;
+        }
+
+        .color-region {
+            cursor: pointer;
+            transition: fill 0.4s ease, stroke 0.2s ease;
+        }
+
+        .color-region:hover {
+            stroke-width: 3px;
+            filter: brightness(1.1);
+        }
+
+        .focus-ring:focus-visible {
+            outline: 3px solid #8b5cf6;
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+<body id="mainBody" class="min-h-screen flex flex-col p-2 md:p-6" data-scale="16">
+
+    <div class="max-w-5xl mx-auto w-full flex-grow flex flex-col gap-4">
+
+        <!-- BARRA SUPERIOR DE ACCESIBILIDAD Y BARRA DE PROGRESO (DUA) -->
+        <header class="card-container rounded-2xl p-4 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-amber-400 rounded-full flex items-center justify-center text-2xl shadow-inner border-2 border-amber-500">
+                    🎨
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-amber-600 dark:text-amber-400">Taller del Color Interactivo</h1>
+                    <p class="text-xs md:text-sm font-semibold opacity-80">5° Año Primaria • Plástica y Artes Visuales</p>
+                </div>
+            </div>
+
+            <!-- BOTONES ACCESIBILIDAD Y BOTÓN DESTACADO DE RECORRIDO -->
+            <div class="flex flex-wrap items-center justify-center gap-2" role="region" aria-label="Herramientas de accesibilidad">
+                <button onclick="openRouteSelector()" class="interactive-btn focus-ring px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-md hover:from-amber-600 hover:to-orange-600 border border-amber-300 cursor-pointer" title="Reiniciar y elegir recorrido artístico">
+                    <span class="text-lg">🗺️</span> <span>Elegir Recorrido</span>
+                </button>
+
+                <div class="bg-slate-200 dark:bg-slate-700 p-1 rounded-xl flex gap-1">
+                    <button onclick="adjustFont(2)" class="focus-ring px-3 py-1.5 bg-white dark:bg-slate-800 rounded-lg text-sm font-bold shadow-xs hover:bg-slate-100 dark:text-white cursor-pointer" title="Aumentar letra" aria-label="Aumentar tamaño de letra">A+</button>
+                    <button onclick="adjustFont(-2)" class="focus-ring px-3 py-1.5 bg-white dark:bg-slate-800 rounded-lg text-sm font-bold shadow-xs hover:bg-slate-100 dark:text-white cursor-pointer" title="Reducir letra" aria-label="Disminuir tamaño de letra">A-</button>
+                </div>
+
+                <button onclick="cycleTheme()" class="focus-ring px-3 py-1.5 bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-200 rounded-xl text-sm font-bold flex items-center gap-1 hover:bg-indigo-200 cursor-pointer" title="Cambiar tema visual">
+                    <span>🌓</span> <span class="hidden sm:inline">Modo Vista</span>
+                </button>
+
+                <button id="ttsToggleBtn" onclick="toggleTTS()" class="focus-ring px-3 py-1.5 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 rounded-xl text-sm font-bold flex items-center gap-1 hover:bg-emerald-200 cursor-pointer" title="Lectura de voz alta">
+                    <span id="ttsIcon">🔊</span> <span class="hidden sm:inline" id="ttsText">Escuchar página</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- PANTALLA DE SELECCIÓN DE RECORRIDO (MODAL) -->
+        <div id="routeModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="card-container rounded-3xl p-6 md:p-8 max-w-xl w-full shadow-2xl space-y-6 animate-fade-in border-4 border-amber-400">
+                <div class="text-center space-y-2">
+                    <div class="text-5xl">🧭</div>
+                    <h2 class="text-2xl md:text-3xl font-bold font-heading text-amber-600 dark:text-amber-400">Elige tu Recorrido Artístico</h2>
+                    <p class="text-sm opacity-80">¿Qué aventura de temperatura visual te gustaría investigar primero hoy?</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="startRoute('warm')" class="interactive-btn focus-ring p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/20 border-2 border-orange-400 dark:border-orange-500 text-left flex flex-col gap-3 hover:shadow-lg cursor-pointer">
+                        <div class="flex items-center justify-between">
+                            <span class="text-3xl">☀️</span>
+                            <span class="bg-orange-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">Ruta Solar</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-orange-700 dark:text-orange-300">Expedición Cálida</h3>
+                        <p class="text-xs opacity-80 leading-relaxed">Enfocada en los tonos de fuego, sol y energía. Ideal para explorar días de verano y paisajes vibrantes.</p>
+                    </button>
+
+                    <button onclick="startRoute('cold')" class="interactive-btn focus-ring p-5 rounded-2xl bg-gradient-to-br from-sky-500/10 to-blue-500/20 border-2 border-sky-400 dark:border-sky-500 text-left flex flex-col gap-3 hover:shadow-lg cursor-pointer">
+                        <div class="flex items-center justify-between">
+                            <span class="text-3xl">❄️</span>
+                            <span class="bg-sky-600 text-white text-xs font-bold px-2.5 py-1 rounded-full">Ruta Polar</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-sky-700 dark:text-sky-300">Expedición Fría</h3>
+                        <p class="text-xs opacity-80 leading-relaxed">Enfocada en los tonos de agua, hielo y noche. Ideal para explorar mundos nocturnos y atmósferas serenas.</p>
+                    </button>
+                </div>
+
+                <div class="text-center pt-2">
+                    <button onclick="closeRouteSelector()" class="text-xs font-bold underline opacity-70 hover:opacity-100 cursor-pointer">Continuar con el recorrido general libre</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE MENSAJE PERSONALIZADO SEGURO -->
+        <div id="customAlertModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="card-container rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4 border-2 border-amber-400">
+                <div class="text-4xl">⚠️</div>
+                <h3 id="alertTitle" class="font-heading font-bold text-xl text-amber-600 dark:text-amber-400">Aviso del Taller</h3>
+                <p id="alertMessage" class="text-sm opacity-90 leading-relaxed"></p>
+                <button onclick="closeAlertModal()" class="interactive-btn focus-ring w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl cursor-pointer shadow-md">
+                    Entendido
+                </button>
+            </div>
+        </div>
+
+        <!-- BARRA DE PROGRESO SOCRÁTICO -->
+        <div class="card-container rounded-xl p-3 shadow-xs flex flex-col gap-1">
+            <div class="flex justify-between items-center text-xs font-bold uppercase tracking-wider opacity-80">
+                <span id="routeBannerLabel">Tu Viaje de Descubrimiento</span>
+                <span id="progressText">Paso 1 de 4</span>
+            </div>
+            <div class="w-full bg-slate-200 dark:bg-slate-700 h-3 rounded-full overflow-hidden">
+                <div id="progressBar" class="bg-gradient-to-r from-amber-500 via-purple-500 to-sky-500 h-full w-1/4 transition-all duration-500 rounded-full"></div>
+            </div>
+        </div>
+
+        <!-- PERSONAJE MEDIADOR SOCRÁTICO -->
+        <aside class="card-container rounded-2xl p-4 bg-gradient-to-r from-amber-50/80 to-sky-50/80 dark:from-slate-800 dark:to-slate-800 border-amber-300 dark:border-slate-600 flex items-start gap-4 shadow-sm" aria-live="polite">
+            <div class="text-4xl md:text-5xl shrink-0 p-2 bg-white dark:bg-slate-700 rounded-2xl shadow-sm border border-amber-200 dark:border-slate-600 pulse-gently">
+                🖌️
+            </div>
+            <div class="flex-grow">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="font-heading font-bold text-amber-800 dark:text-amber-300 text-base">Pincelín (Tu guía de arte):</span>
+                    <span id="guideBadge" class="bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-100 text-xs px-2 py-0.5 rounded-full font-bold">Acompañante</span>
+                </div>
+                <p id="socraticSpeech" class="text-sm md:text-base leading-relaxed">
+                    ¡Hola! Soy Pincelín. Hoy investigaremos juntos cómo los colores pueden hacernos sentir calor o frío sólo con mirarlos. ¡Comencemos con la Estación 1!
+                </p>
+            </div>
+        </aside>
+
+        <!-- MÓDULO 1: EXPLORACIÓN DEL CÍRCULO CROMÁTICO -->
+        <section id="step1" class="card-container rounded-2xl p-5 shadow-sm flex flex-col gap-6">
+            <div class="border-b pb-3 border-slate-200 dark:border-slate-700 flex justify-between items-start flex-wrap gap-2">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <span>🧪 Estación 1:</span> El Termómetro Sensorial
+                    </h2>
+                    <p class="text-sm opacity-80 mt-1">Explora las zonas del Círculo Cromático tocando cada color para sentir su energía visual.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div class="flex flex-col items-center justify-center gap-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Haz clic en una porción del círculo</span>
+                    
+                    <div class="relative w-64 h-64 md:w-72 md:h-72 rounded-full border-4 border-slate-300 dark:border-slate-600 shadow-md overflow-hidden flex items-center justify-center">
+                        <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90">
+                            <path d="M50,50 L100,50 A50,50 0 0,1 93.3,75 Z" fill="#ff0000" onclick="testColor('#ff0000', 'Rojo', 'calido')" class="color-region" title="Rojo"></path>
+                            <path d="M50,50 L93.3,75 A50,50 0 0,1 75,93.3 Z" fill="#ff7f00" onclick="testColor('#ff7f00', 'Naranja', 'calido')" class="color-region" title="Naranja"></path>
+                            <path d="M50,50 L75,93.3 A50,50 0 0,1 50,100 Z" fill="#ffff00" onclick="testColor('#ffff00', 'Amarillo', 'calido')" class="color-region" title="Amarillo"></path>
+                            <path d="M50,50 L50,100 A50,50 0 0,1 25,93.3 Z" fill="#a3e635" onclick="testColor('#a3e635', 'Verde Claro', 'transicion-frio')" class="color-region" title="Verde Claro"></path>
+                            <path d="M50,50 L25,93.3 A50,50 0 0,1 6.7,75 Z" fill="#10b981" onclick="testColor('#10b981', 'Verde Azulado', 'frio')" class="color-region" title="Verde Azulado"></path>
+                            <path d="M50,50 L6.7,75 A50,50 0 0,1 0,50 Z" fill="#06b6d4" onclick="testColor('#06b6d4', 'Cian / Turquesa', 'frio')" class="color-region" title="Cian"></path>
+                            <path d="M50,50 L0,50 A50,50 0 0,1 6.7,25 Z" fill="#2563eb" onclick="testColor('#2563eb', 'Azul Intenso', 'frio')" class="color-region" title="Azul Intenso"></path>
+                            <path d="M50,50 L6.7,25 A50,50 0 0,1 25,6.7 Z" fill="#4f46e5" onclick="testColor('#4f46e5', 'Azul Violeta', 'frio')" class="color-region" title="Azul Violeta"></path>
+                            <path d="M50,50 L25,6.7 A50,50 0 0,1 50,0 Z" fill="#9333ea" onclick="testColor('#9333ea', 'Violeta', 'frio')" class="color-region" title="Violeta"></path>
+                            <path d="M50,50 L50,0 A50,50 0 0,1 75,6.7 Z" fill="#c026d3" onclick="testColor('#c026d3', 'Violeta Rojizo', 'transicion-calida')" class="color-region" title="Violeta Rojizo"></path>
+                            <path d="M50,50 L75,6.7 A50,50 0 0,1 93.3,25 Z" fill="#f43f5e" onclick="testColor('#f43f5e', 'Rojo Rosa', 'calido')" class="color-region" title="Rojo Rosa"></path>
+                            <path d="M50,50 L93.3,25 A50,50 0 0,1 100,50 Z" fill="#dc2626" onclick="testColor('#dc2626', 'Carmín', 'calido')" class="color-region" title="Carmín"></path>
+                            <circle cx="50" cy="50" r="18" fill="white" class="dark:fill-slate-800" stroke="#cbd5e1" stroke-width="2"/>
+                            <text x="50" y="52" text-anchor="middle" font-size="7" font-weight="bold" fill="currentColor">CÍRCULO</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4 bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h3 class="font-bold text-base flex items-center gap-2">
+                        <span>🌡️ Reacción Térmica Visual:</span>
+                    </h3>
+
+                    <div id="sensorDisplay" class="min-h-[100px] flex flex-col items-center justify-center p-4 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 text-center gap-2">
+                        <span class="text-3xl">👈</span>
+                        <p class="text-sm font-semibold">Haz clic en cualquier color del círculo cromático para analizar su temperatura.</p>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs font-bold pt-2 border-t border-slate-200 dark:border-slate-700">
+                        <span>Colores explorados:</span>
+                        <span id="exploredCount" class="bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 px-2.5 py-1 rounded-full">0 de 3 recomendados</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3 pt-2">
+                <div class="flex flex-wrap gap-2 items-center justify-between">
+                    <button onclick="toggleHint(1)" class="interactive-btn focus-ring text-xs md:text-sm font-bold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/50 hover:bg-amber-200 px-3 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer">
+                        <span>💡 ¿Necesitas una pista? (Activar Pista 1)</span>
+                    </button>
+                    <button id="btnNext1" onclick="nextStep(2)" disabled class="interactive-btn focus-ring text-sm font-bold bg-slate-300 text-slate-500 px-5 py-2.5 rounded-xl cursor-not-allowed transition-all">
+                        Avanzar a la Estación 2 ➔
+                    </button>
+                </div>
+
+                <div id="hintBox1" class="hidden p-4 rounded-xl bg-amber-50 dark:bg-slate-800 border-l-4 border-amber-500 text-sm space-y-2">
+                    <p class="font-bold text-amber-800 dark:text-amber-300">🧩 Pista Graduada Nivel 1:</p>
+                    <p>Observa la naturaleza: ¿A qué elementos te recuerda la mitad izquierda del círculo (rojos, amarillos, naranjas)? ¿Y la mitad derecha (azules, violetas, verdosos)?</p>
+                    <div id="hintLevel2_1" class="hidden pt-2 border-t border-amber-200 dark:border-slate-700">
+                        <p class="font-bold text-amber-800 dark:text-amber-300">🧩 Pista Graduada Nivel 2:</p>
+                        <p>Los colores <strong>cálidos</strong> transmiten calor porque nos recuerdan al sol y al fuego. Los <strong>fríos</strong> nos recuerdan al agua, la nieve o las sombras nocturnas.</p>
+                    </div>
+                    <button onclick="unlockHintLevel2(1)" class="text-xs text-amber-700 dark:text-amber-400 font-bold underline mt-1 cursor-pointer">Ver más ayuda (+Pista Nivel 2)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MÓDULO 2: LABORATORIO DE PAISAJES -->
+        <section id="step2" class="card-container rounded-2xl p-5 shadow-sm flex flex-col gap-6 hidden">
+            <div class="border-b pb-3 border-slate-200 dark:border-slate-700">
+                <h2 class="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <span>🎨 Estación 2:</span> El Pintor de Climas
+                </h2>
+                <p class="text-sm opacity-80 mt-1">Aplica lo aprendido transformando la atmósfera del paisaje.</p>
+            </div>
+
+            <div class="bg-indigo-50 dark:bg-slate-800/80 p-4 rounded-xl border border-indigo-200 dark:border-slate-700 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">Consigna Creativa:</span>
+                    <p id="landscapeConsignaText" class="font-bold text-base text-slate-800 dark:text-slate-200">
+                        Tu objetivo es pintar este paisaje para transmitir un <span class="text-amber-600 dark:text-amber-400 underline decoration-2">DÍA DE VERANO CALUROSO</span>.
+                    </p>
+                </div>
+
+                <div class="flex flex-col items-center md:items-end gap-1">
+                    <span class="text-xs font-bold opacity-80">Elige tu pincel de color:</span>
+                    <div class="flex gap-2 bg-white dark:bg-slate-900 p-2 rounded-xl shadow-xs border border-slate-200 dark:border-slate-700">
+                        <button onclick="selectPaint('#ef4444', 'Rojo', 'calido')" class="w-8 h-8 rounded-full bg-red-500 focus-ring ring-offset-1 border-2 border-white shadow-xs interactive-btn cursor-pointer" title="Rojo"></button>
+                        <button onclick="selectPaint('#f97316', 'Naranja', 'calido')" class="w-8 h-8 rounded-full bg-orange-500 focus-ring ring-offset-1 border-2 border-white shadow-xs interactive-btn cursor-pointer" title="Naranja"></button>
+                        <button onclick="selectPaint('#eab308', 'Amarillo', 'calido')" class="w-8 h-8 rounded-full bg-yellow-500 focus-ring ring-offset-1 border-2 border-white shadow-xs interactive-btn cursor-pointer" title="Amarillo"></button>
+                        <div class="w-0.5 h-8 bg-slate-300 dark:bg-slate-700 mx-0.5"></div>
+                        <button onclick="selectPaint('#0284c7', 'Azul', 'frio')" class="w-8 h-8 rounded-full bg-sky-600 focus-ring ring-offset-1 border-2 border-white shadow-xs interactive-btn cursor-pointer" title="Azul"></button>
+                        <button onclick="selectPaint('#06b6d4', 'Cian', 'frio')" class="w-8 h-8 rounded-full bg-cyan-500 focus-ring ring-offset-1 border-2 border-white shadow-xs interactive-btn cursor-pointer" title="Cian"></button>
+                        <button onclick="selectPaint('#7e22ce', 'Violeta', 'frio')" class="w-8 h-8 rounded-full bg-purple-700 focus-ring ring-offset-1 border-2 border-white shadow-xs interactive-btn cursor-pointer" title="Violeta"></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="md:col-span-2 flex flex-col items-center justify-center">
+                    <div class="w-full max-w-md h-64 bg-slate-100 dark:bg-slate-900 rounded-2xl border-4 border-slate-300 dark:border-slate-700 overflow-hidden shadow-inner relative flex items-center justify-center">
+                        <svg id="landscapeSvg" viewBox="0 0 400 250" class="w-full h-full">
+                            <rect id="regionSky" x="0" y="0" width="400" height="150" fill="#e2e8f0" onclick="paintRegion('regionSky', 'Cielo')" class="color-region" />
+                            <circle id="regionSun" cx="320" cy="50" r="30" fill="#cbd5e1" onclick="paintRegion('regionSun', 'Sol')" class="color-region" />
+                            <polygon id="regionMountain1" points="0,150 120,60 220,150" fill="#94a3b8" onclick="paintRegion('regionMountain1', 'Montaña Lejana')" class="color-region" />
+                            <polygon id="regionMountain2" points="140,150 270,70 380,150" fill="#64748b" onclick="paintRegion('regionMountain2', 'Montaña Principal')" class="color-region" />
+                            <rect id="regionGround" x="0" y="150" width="400" height="100" fill="#cbd5e1" onclick="paintRegion('regionGround', 'Terreno')" class="color-region" />
+                            <path id="regionRiver" d="M180,150 Q200,190 220,250 L260,250 Q230,190 200,150 Z" fill="#94a3b8" onclick="paintRegion('regionRiver', 'Río')" class="color-region" />
+                        </svg>
+
+                        <div class="absolute top-2 left-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-bold shadow-xs border border-slate-200 dark:border-slate-700 flex items-center gap-2">
+                            <span>Pincel actual:</span>
+                            <span id="activeBrushBadge" class="inline-block w-4 h-4 rounded-full bg-slate-400 border border-white"></span>
+                            <span id="activeBrushName">Ninguno seleccionado</span>
+                        </div>
+                    </div>
+                    <span class="text-xs opacity-75 mt-2 font-semibold">Haz clic en cada parte del dibujo para pintarlo.</span>
+                </div>
+
+                <div class="flex flex-col gap-3 bg-slate-50 dark:bg-slate-800/60 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h3 class="font-bold text-sm text-slate-700 dark:text-slate-300 uppercase tracking-wide">
+                        Análisis del Clima Creado:
+                    </h3>
+                    <div id="landscapeFeedback" class="text-sm space-y-2">
+                        <p class="text-slate-600 dark:text-slate-400 italic">Pinta al menos 3 partes del paisaje para evaluar la atmósfera de tu obra.</p>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center text-xs font-bold">
+                        <span>Zonas pintadas:</span>
+                        <span id="paintedRegionsCount" class="bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">0 de 3</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-3 pt-2">
+                <div class="flex flex-wrap gap-2 items-center justify-between">
+                    <button onclick="toggleHint(2)" class="interactive-btn focus-ring text-xs md:text-sm font-bold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/50 hover:bg-amber-200 px-3 py-2 rounded-xl flex items-center gap-1.5 cursor-pointer">
+                        <span>💡 ¿Necesitas una pista socrática?</span>
+                    </button>
+                    <button id="btnNext2" onclick="nextStep(3)" disabled class="interactive-btn focus-ring text-sm font-bold bg-slate-300 text-slate-500 px-5 py-2.5 rounded-xl cursor-not-allowed transition-all">
+                        Avanzar a la Estación 3 ➔
+                    </button>
+                </div>
+
+                <div id="hintBox2" class="hidden p-4 rounded-xl bg-amber-50 dark:bg-slate-800 border-l-4 border-amber-500 text-sm space-y-2">
+                    <p class="font-bold text-amber-800 dark:text-amber-300">🧩 Pista Socrática:</p>
+                    <p>Si querés transmitir calor, utilizá rojos, naranjas y amarillos en el cielo y el sol. Si querés frío, utilizá azules y cianes.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MÓDULO 3: DESAFÍOS SOCRÁTICOS -->
+        <section id="step3" class="card-container rounded-2xl p-5 shadow-sm flex flex-col gap-6 hidden">
+            <div class="border-b pb-3 border-slate-200 dark:border-slate-700">
+                <h2 class="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <span>🕵️ Estación 3:</span> Detective del Color
+                </h2>
+                <p class="text-sm opacity-80 mt-1">Resuelve estos acertijos razonando con lo aprendido.</p>
+            </div>
+
+            <div class="space-y-4 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                <p class="font-bold text-base text-slate-800 dark:text-slate-200">
+                    Desafío 1: ¿Por qué el color <span class="text-emerald-600 dark:text-emerald-400 font-black">Verde</span> puede sentirse cálido o frío?
+                </p>
+
+                <div class="grid grid-cols-1 gap-2">
+                    <button onclick="checkQuestion1('incorrect1')" class="interactive-btn focus-ring text-left p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-purple-400 font-semibold text-sm cursor-pointer">
+                        a) Porque el color verde no existe en la naturaleza.
+                    </button>
+                    <button onclick="checkQuestion1('correct')" class="interactive-btn focus-ring text-left p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-purple-400 font-semibold text-sm cursor-pointer">
+                        b) Porque si se mezcla con más AMARILLO se vuelve cálido, y con más AZUL se vuelve frío.
+                    </button>
+                    <button onclick="checkQuestion1('incorrect2')" class="interactive-btn focus-ring text-left p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-purple-400 font-semibold text-sm cursor-pointer">
+                        c) Porque depende de si es de día o de noche únicamente.
+                    </button>
+                </div>
+
+                <div id="q1Feedback" class="hidden p-3 rounded-xl text-sm font-semibold"></div>
+            </div>
+
+            <div class="space-y-4 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                <p class="font-bold text-base text-slate-800 dark:text-slate-200">
+                    Desafío 2: Para ilustrar un <span class="text-sky-600 dark:text-sky-400 font-black">planeta de hielo y sombras</span>, ¿qué combinación eliges?
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <button onclick="checkQuestion2('optionA')" class="interactive-btn focus-ring p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-sky-400 text-center flex flex-col items-center gap-2 cursor-pointer">
+                        <div class="flex gap-1">
+                            <span class="w-6 h-6 rounded-full bg-red-600 inline-block"></span>
+                            <span class="w-6 h-6 rounded-full bg-amber-500 inline-block"></span>
+                            <span class="w-6 h-6 rounded-full bg-yellow-400 inline-block"></span>
+                        </div>
+                        <span class="text-xs font-bold">Opción A: Rojo, Naranja, Amarillo</span>
+                    </button>
+
+                    <button onclick="checkQuestion2('correct')" class="interactive-btn focus-ring p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-sky-400 text-center flex flex-col items-center gap-2 cursor-pointer">
+                        <div class="flex gap-1">
+                            <span class="w-6 h-6 rounded-full bg-sky-500 inline-block"></span>
+                            <span class="w-6 h-6 rounded-full bg-indigo-600 inline-block"></span>
+                            <span class="w-6 h-6 rounded-full bg-cyan-400 inline-block"></span>
+                        </div>
+                        <span class="text-xs font-bold">Opción B: Azul, Violeta, Cian</span>
+                    </button>
+
+                    <button onclick="checkQuestion2('optionC')" class="interactive-btn focus-ring p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:border-sky-400 text-center flex flex-col items-center gap-2 cursor-pointer">
+                        <div class="flex gap-1">
+                            <span class="w-6 h-6 rounded-full bg-rose-500 inline-block"></span>
+                            <span class="w-6 h-6 rounded-full bg-yellow-300 inline-block"></span>
+                            <span class="w-6 h-6 rounded-full bg-orange-400 inline-block"></span>
+                        </div>
+                        <span class="text-xs font-bold">Opción C: Rosa, Amarillo, Naranja</span>
+                    </button>
+                </div>
+
+                <div id="q2Feedback" class="hidden p-3 rounded-xl text-sm font-semibold"></div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="toggleHint(3)" class="interactive-btn focus-ring text-xs md:text-sm font-bold text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/50 hover:bg-amber-200 px-3 py-2 rounded-xl cursor-pointer">
+                    💡 Pista para el Detective
+                </button>
+                <button id="btnNext3" onclick="nextStep(4)" disabled class="interactive-btn focus-ring text-sm font-bold bg-slate-300 text-slate-500 px-5 py-2.5 rounded-xl cursor-not-allowed transition-all">
+                    Avanzar a la Reflexión Final ➔
+                </button>
+            </div>
+
+            <div id="hintBox3" class="hidden p-4 rounded-xl bg-amber-50 dark:bg-slate-800 border-l-4 border-amber-500 text-sm space-y-1">
+                <p class="font-bold text-amber-800 dark:text-amber-300">🧩 Pista Detective:</p>
+                <p>Recuerda que los tonos primarios cálidos (Rojo, Amarillo) empujan hacia el calor, mientras que el Azul domina en los ambientes fríos.</p>
+            </div>
+        </section>
+
+        <!-- MÓDULO 4: METACOGNICIÓN Y DIARIO DEL ARTISTA (CORREGIDO Y ROBUSTO) -->
+        <section id="step4" class="card-container rounded-2xl p-5 shadow-sm flex flex-col gap-6 hidden">
+            <div class="border-b pb-3 border-slate-200 dark:border-slate-700 text-center md:text-left">
+                <h2 class="text-xl md:text-2xl font-bold text-purple-700 dark:text-purple-300 flex items-center justify-center md:justify-start gap-2">
+                    <span>🎓 Estación Final:</span> Diario de Reflexión Artística
+                </h2>
+                <p class="text-sm opacity-80 mt-1">¡Felicitaciones por llegar hasta aquí! Completa tu diario para recibir tu insignia.</p>
+            </div>
+
+            <div class="space-y-4 max-w-2xl mx-auto w-full">
+                <div class="space-y-2">
+                    <label for="meta1" class="font-bold text-sm md:text-base block text-slate-800 dark:text-slate-200">
+                        1. ¿Qué fue lo que más te ayudó a darte cuenta de si un color era cálido o frío durante los desafíos?
+                    </label>
+                    <textarea id="meta1" rows="3" class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus-ring" placeholder="Ejemplo: Me sirvió recordar los elementos de la naturaleza como el sol, el fuego o el hielo..."></textarea>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="meta2" class="font-bold text-sm md:text-base block text-slate-800 dark:text-slate-200">
+                        2. Si un amigo tuviera dudas sobre cómo pintar una escena de invierno nocturna, ¿qué le recomendarías?
+                    </label>
+                    <textarea id="meta2" rows="3" class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm focus-ring" placeholder="Escribe aquí tu recomendación artística..."></textarea>
+                </div>
+
+                <button onclick="finishJourney()" class="w-full interactive-btn focus-ring font-heading font-bold text-base py-3 bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-600 text-white rounded-xl shadow-md hover:opacity-95 cursor-pointer">
+                    ✨ Registrar mi Reflexión y Obtener Insignia
+                </button>
+            </div>
+
+            <!-- CONTENEDOR DE INSIGNIA Y RESUMEN (DINÁMICO) -->
+            <div id="badgeContainer" class="hidden mt-6 p-6 rounded-2xl bg-gradient-to-r from-amber-100 via-purple-100 to-sky-100 dark:from-slate-800 dark:to-purple-950 border-2 border-amber-400 text-center space-y-4 animate-fade-in">
+                <div class="text-6xl animate-bounce">🏆</div>
+                <h3 class="font-heading font-bold text-2xl text-amber-700 dark:text-amber-300">¡Insignia de Maestro del Color Obtenida!</h3>
+                <p class="text-sm opacity-90">Has completado con éxito todas las estaciones del taller y demostrado tu criterio artístico.</p>
+                
+                <div id="summaryResponse" class="bg-white/80 dark:bg-slate-900/80 p-4 rounded-xl text-left text-xs md:text-sm space-y-2 border border-amber-200 dark:border-slate-700">
+                    <!-- Contenido inyectado por JS -->
+                </div>
+
+                <div class="pt-2 flex justify-center gap-4">
+                    <button onclick="restartJourney()" class="interactive-btn focus-ring px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-sm shadow-md cursor-pointer">
+                        🔄 Reiniciar Taller
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        let state = {
+            currentStep: 1,
+            themeIndex: 0,
+            themes: ['', 'dark', 'high-contrast'],
+            exploredColors: new Set(),
+            selectedBrush: null,
+            paintedRegions: {},
+            question1Answered: false,
+            question2Answered: false,
+            ttsActive: false,
+            activeRoute: 'general',
+            selectedVoice: null
+        };
+
+        function alertModal(message, title = "Aviso del Taller") {
+            const modal = document.getElementById('customAlertModal');
+            document.getElementById('alertTitle').innerText = title;
+            document.getElementById('alertMessage').innerText = message;
+            modal.classList.remove('hidden');
+        }
+
+        function closeAlertModal() {
+            const modal = document.getElementById('customAlertModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function initVoices() {
+            if ('speechSynthesis' in window) {
+                const updateVoices = () => {
+                    const voices = window.speechSynthesis.getVoices();
+                    
+                    // Priorizar voces en español de alta calidad o naturales (como Google en español, Microsoft, o voces locales de mayor naturalidad)
+                    const esVoices = voices.filter(v => v.lang && (v.lang.startsWith('es') || v.lang.startsWith('es-')));
+                    
+                    // Buscar una voz natural / premium si está disponible
+                    state.selectedVoice = esVoices.find(v => 
+                        v.name.includes('Natural') || 
+                        v.name.includes('Google') || 
+                        v.name.includes('Helena') || 
+                        v.name.includes('Laura') || 
+                        v.name.includes('Pablo') ||
+                        v.name.includes('Sabina') ||
+                        v.name.includes('Microsoft')
+                    ) || esVoices[0] || voices[0];
+                };
+                
+                updateVoices();
+                if (window.speechSynthesis.onvoiceschanged !== undefined) {
+                    window.speechSynthesis.onvoiceschanged = updateVoices;
+                }
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            initVoices();
+            nextStep(1);
+        });
+
+        function openRouteSelector() {
+            const modal = document.getElementById('routeModal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeRouteSelector() {
+            const modal = document.getElementById('routeModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function startRoute(routeType) {
+            state.activeRoute = routeType;
+            closeRouteSelector();
+
+            const banner = document.getElementById('routeBannerLabel');
+            const badge = document.getElementById('guideBadge');
+            const speech = document.getElementById('socraticSpeech');
+            const landscapeConsigna = document.getElementById('landscapeConsignaText');
+
+            if (routeType === 'warm') {
+                if (banner) banner.innerText = "🗺️ Recorrido Especial: Expedición Cálida (Solar)";
+                if (badge) {
+                    badge.innerText = "Guía Solar ☀️";
+                    badge.className = "bg-orange-200 dark:bg-orange-900 text-orange-900 dark:text-orange-100 text-xs px-2 py-0.5 rounded-full font-bold";
+                }
+                if (speech) speech.innerText = "¡Elegiste la Ruta Solar! Investigaremos cómo los colores cálidos transmiten energía y calor de verano.";
+                if (landscapeConsigna) landscapeConsigna.innerHTML = `Tu objetivo es pintar este paisaje para transmitir un <span class="text-amber-600 dark:text-amber-400 underline decoration-2">DÍA DE VERANO CALUROSO (Paleta Cálida)</span>.`;
+            } else if (routeType === 'cold') {
+                if (banner) banner.innerText = "🗺️ Recorrido Especial: Expedición Fría (Polar)";
+                if (badge) {
+                    badge.innerText = "Guía Polar ❄️";
+                    badge.className = "bg-sky-200 dark:bg-sky-900 text-sky-900 dark:text-sky-100 text-xs px-2 py-0.5 rounded-full font-bold";
+                }
+                if (speech) speech.innerText = "¡Elegiste la Ruta Polar! Investigaremos cómo los colores fríos transmiten calma y frescura.";
+                if (landscapeConsigna) landscapeConsigna.innerHTML = `Tu objetivo es pintar este paisaje para transmitir una <span class="text-sky-600 dark:text-sky-400 underline decoration-2">NOCHE HELADA DE INVIERNO (Paleta Fría)</span>.`;
+            } else {
+                if (banner) banner.innerText = "Tu Viaje de Descubrimiento (Libre)";
+                if (badge) {
+                    badge.innerText = "Acompañante";
+                    badge.className = "bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-100 text-xs px-2 py-0.5 rounded-full font-bold";
+                }
+                if (speech) speech.innerText = "¡Hola de nuevo! Vamos a investigar juntos la temperatura del color.";
+                if (landscapeConsigna) landscapeConsigna.innerHTML = `Tu objetivo es pintar este paisaje explorando la atmósfera elegida.`;
+            }
+
+            nextStep(1);
+        }
+
+        function adjustFont(delta) {
+            const body = document.getElementById('mainBody');
+            if (!body) return;
+            
+            let current = parseInt(body.style.getPropertyValue('--base-font-size')) || 16;
+            current = Math.min(Math.max(14, current + delta), 22);
+            
+            body.style.setProperty('--base-font-size', current + 'px');
+            body.setAttribute('data-scale', current);
+        }
+
+        function cycleTheme() {
+            state.themeIndex = (state.themeIndex + 1) % state.themes.length;
+            const theme = state.themes[state.themeIndex];
+            const body = document.getElementById('mainBody');
+            if (!body) return;
+            
+            body.removeAttribute('data-theme');
+            body.classList.remove('dark');
+
+            if (theme === 'dark') {
+                body.classList.add('dark');
+            } else if (theme === 'high-contrast') {
+                body.setAttribute('data-theme', 'high-contrast');
+            }
+        }
+
+        function toggleTTS() {
+            if (!('speechSynthesis' in window)) {
+                alertModal("Tu navegador no soporta lectura de voz alta.");
+                return;
+            }
+
+            const speechElem = document.getElementById('socraticSpeech');
+            const iconElem = document.getElementById('ttsIcon');
+            const textElem = document.getElementById('ttsText');
+            if (!speechElem) return;
+
+            if (state.ttsActive) {
+                window.speechSynthesis.cancel();
+                state.ttsActive = false;
+                if (iconElem) iconElem.innerText = "🔊";
+                if (textElem) textElem.innerText = "Escuchar página";
+            } else {
+                const speechText = speechElem.innerText;
+                const utterance = new SpeechSynthesisUtterance(speechText);
+                utterance.lang = 'es-ES';
+                
+                // Ajustar parámetros para que suene menos robótica y más expresiva
+                utterance.rate = 0.95;  // Ligeramente más pausada para mejor comprensión infantil
+                utterance.pitch = 1.05; // Un tono un poco más amigable/cálido
+
+                if (state.selectedVoice) {
+                    utterance.voice = state.selectedVoice;
+                }
+                
+                utterance.onend = () => {
+                    state.ttsActive = false;
+                    if (iconElem) iconElem.innerText = "🔊";
+                    if (textElem) textElem.innerText = "Escuchar página";
+                };
+
+                window.speechSynthesis.speak(utterance);
+                state.ttsActive = true;
+                if (iconElem) iconElem.innerText = "⏹️";
+                if (textElem) textElem.innerText = "Detener lectura";
+            }
+        }
+
+        function testColor(hex, name, tempType) {
+            state.exploredColors.add(name);
+            const countEl = document.getElementById('exploredCount');
+            if (countEl) countEl.innerText = `${state.exploredColors.size} de 3 recomendados`;
+
+            const display = document.getElementById('sensorDisplay');
+            if (!display) return;
+
+            let badgeColor = '';
+            let explanation = '';
+
+            if (tempType === 'calido') {
+                badgeColor = 'bg-orange-500 text-white';
+                explanation = `El <strong>${name}</strong> es un color <strong>CÁLIDO</strong>. Al mirarlo, nuestro cerebro tiende a asociarlo con la luz solar, el fuego y la energía vital.`;
+            } else if (tempType === 'frio') {
+                badgeColor = 'bg-sky-600 text-white';
+                explanation = `El <strong>${name}</strong> es un color <strong>FRÍO</strong>. Nos transmite serenidad, profundidad y nos recuerda al agua, el hielo o la sombra nocturna.`;
+            } else {
+                badgeColor = 'bg-purple-600 text-white';
+                explanation = `El <strong>${name}</strong> es un color de <strong>TRANSICIÓN</strong>. Su temperatura puede inclinarse hacia lo cálido o lo frío según los colores que tenga al lado.`;
+            }
+
+            display.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full shadow-md border-2 border-white shrink-0" style="background-color: ${hex};"></div>
+                    <div class="text-left">
+                        <span class="text-xs px-2 py-0.5 rounded-full font-bold ${badgeColor}">${tempType.toUpperCase()}</span>
+                        <p class="text-xs md:text-sm mt-1">${explanation}</p>
+                    </div>
+                </div>
+            `;
+
+            if (state.exploredColors.size >= 3) {
+                const btnNext = document.getElementById('btnNext1');
+                if (btnNext) {
+                    btnNext.disabled = false;
+                    btnNext.className = "interactive-btn focus-ring text-sm font-bold bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl cursor-pointer shadow-md";
+                }
+            }
+        }
+
+        function selectPaint(hex, name, tempType) {
+            state.selectedBrush = { hex, name, tempType };
+            const badge = document.getElementById('activeBrushBadge');
+            const nameLbl = document.getElementById('activeBrushName');
+            if (badge) badge.style.backgroundColor = hex;
+            if (nameLbl) nameLbl.innerText = `${name} (${tempType})`;
+        }
+
+        function paintRegion(regionId, regionName) {
+            if (!state.selectedBrush) {
+                alertModal("¡Primero debes elegir un pincel con color de la paleta superior!");
+                return;
+            }
+
+            const el = document.getElementById(regionId);
+            if (el) {
+                el.setAttribute('fill', state.selectedBrush.hex);
+            }
+            state.paintedRegions[regionId] = state.selectedBrush.tempType;
+
+            const paintedCount = Object.keys(state.paintedRegions).length;
+            const countLbl = document.getElementById('paintedRegionsCount');
+            if (countLbl) countLbl.innerText = `${paintedCount} de 3`;
+
+            evaluateLandscapeAtmosphere();
+        }
+
+        function evaluateLandscapeAtmosphere() {
+            const regions = Object.values(state.paintedRegions);
+            if (regions.length < 3) return;
+
+            const warmCount = regions.filter(t => t === 'calido').length;
+            const coldCount = regions.filter(t => t === 'frio').length;
+            const feedbackBox = document.getElementById('landscapeFeedback');
+            if (!feedbackBox) return;
+
+            let feedbackHTML = '';
+            if (state.activeRoute === 'warm' || warmCount > coldCount) {
+                feedbackHTML = `<p class="text-orange-700 dark:text-orange-300 font-bold">☀️ ¡Excelente atmósfera cálida! Estás logrando transmitir la sensación de un día vibrante y soleado.</p>`;
+            } else if (state.activeRoute === 'cold' || coldCount > warmCount) {
+                feedbackHTML = `<p class="text-sky-700 dark:text-sky-300 font-bold">❄️ ¡Gran atmósfera fría! Estás logrando transmitir una sensación fresca, nocturna o helada.</p>`;
+            } else {
+                feedbackHTML = `<p class="text-purple-700 dark:text-purple-300 font-bold">🎨 ¡Paisaje mixto! Has combinado tonos cálidos y fríos, generando un interesante contraste visual.</p>`;
+            }
+
+            feedbackBox.innerHTML = feedbackHTML;
+
+            const btnNext = document.getElementById('btnNext2');
+            if (btnNext) {
+                btnNext.disabled = false;
+                btnNext.className = "interactive-btn focus-ring text-sm font-bold bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl cursor-pointer shadow-md";
+            }
+        }
+
+        function checkQuestion1(answerType) {
+            const feedback = document.getElementById('q1Feedback');
+            if (!feedback) return;
+            feedback.classList.remove('hidden');
+
+            if (answerType === 'correct') {
+                feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-200 border border-emerald-300";
+                feedback.innerText = "¡Correcto! El verde es un color intermedio que cambia de temperatura según con qué primario se relacione más.";
+                state.question1Answered = true;
+                checkAllQuestionsDone();
+            } else {
+                feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-100 dark:bg-rose-900/50 text-rose-800 dark:text-rose-200 border border-rose-300";
+                feedback.innerText = "No exactamente. Pensemos en cómo se mezclan los colores primarios para formarlo. ¡Inténtalo de nuevo!";
+            }
+        }
+
+        function checkQuestion2(answerType) {
+            const feedback = document.getElementById('q2Feedback');
+            if (!feedback) return;
+            feedback.classList.remove('hidden');
+
+            if (answerType === 'correct') {
+                feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-200 border border-emerald-300";
+                feedback.innerText = "¡Correcto! La opción B utiliza exclusivamente tonos fríos (Azul, Violeta, Cian), perfectos para un entorno helado.";
+                state.question2Answered = true;
+                checkAllQuestionsDone();
+            } else {
+                feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-100 dark:bg-rose-900/50 text-rose-800 dark:text-rose-200 border border-rose-300";
+                feedback.innerText = "Esa combinación tiene tonos cálidos que nos recordarían al calor o al fuego. Recuerda buscar la paleta fría.";
+            }
+        }
+
+        function checkAllQuestionsDone() {
+            if (state.question1Answered && state.question2Answered) {
+                const btnNext = document.getElementById('btnNext3');
+                if (btnNext) {
+                    btnNext.disabled = false;
+                    btnNext.className = "interactive-btn focus-ring text-sm font-bold bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-xl cursor-pointer shadow-md";
+                }
+            }
+        }
+
+        function nextStep(stepNumber) {
+            state.currentStep = stepNumber;
+            for (let i = 1; i <= 4; i++) {
+                const sec = document.getElementById(`step${i}`);
+                if (sec) {
+                    if (i === stepNumber) sec.classList.remove('hidden');
+                    else sec.classList.add('hidden');
+                }
+            }
+
+            const progText = document.getElementById('progressText');
+            const progBar = document.getElementById('progressBar');
+            if (progText) progText.innerText = `Paso ${stepNumber} de 4`;
+            if (progBar) progBar.style.width = `${(stepNumber / 4) * 100}%`;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleHint(stepNum) {
+            const box = document.getElementById(`hintBox${stepNum}`);
+            if (box) box.classList.toggle('hidden');
+        }
+
+        function unlockHintLevel2(stepNum) {
+            const lvl2 = document.getElementById(`hintLevel2_${stepNum}`);
+            if (lvl2) lvl2.classList.remove('hidden');
+        }
+
+        function finishJourney() {
+            const m1El = document.getElementById('meta1');
+            const m2El = document.getElementById('meta2');
+            if (!m1El || !m2El) return;
+
+            const m1 = m1El.value.trim();
+            const m2 = m2El.value.trim();
+
+            if (!m1 || !m2) {
+                alertModal("Por favor completa ambas preguntas en tu diario de artista antes de obtener la insignia.");
+                return;
+            }
+
+            const badgeContainer = document.getElementById('badgeContainer');
+            const summaryResponse = document.getElementById('summaryResponse');
+            if (badgeContainer) badgeContainer.classList.remove('hidden');
+            if (summaryResponse) {
+                summaryResponse.innerHTML = `
+                    <p><strong>1. Tu clave de temperatura:</strong> ${escapeHtml(m1)}</p>
+                    <p><strong>2. Tu recomendación para el invierno:</strong> ${escapeHtml(m2)}</p>
+                `;
+            }
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        function restartJourney() {
+            state.exploredColors.clear();
+            state.paintedRegions = {};
+            state.question1Answered = false;
+            state.question2Answered = false;
+            state.selectedBrush = null;
+            
+            const badgeContainer = document.getElementById('badgeContainer');
+            if (badgeContainer) badgeContainer.classList.add('hidden');
+            
+            const m1El = document.getElementById('meta1');
+            const m2El = document.getElementById('meta2');
+            if (m1El) m1El.value = '';
+            if (m2El) m2El.value = '';
+
+            nextStep(1);
+        }
+    </script>
+</body>
+</html>
