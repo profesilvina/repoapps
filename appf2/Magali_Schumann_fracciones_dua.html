@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploradores de Fracciones - Matemática 4.° Grado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --font-main: 'Fredoka', 'Open Sans', sans-serif;
+            --bg-color: #f0fdf4;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --primary-color: #0d9488;
+            --primary-hover: #0f766e;
+            --accent-color: #f59e0b;
+            --border-color: #cbd5e1;
+        }
+
+        /* Alto contraste */
+        body.theme-high-contrast {
+            --bg-color: #000000;
+            --card-bg: #121212;
+            --text-color: #ffffff;
+            --primary-color: #facc15;
+            --primary-hover: #eab308;
+            --accent-color: #38bdf8;
+            --border-color: #ffffff;
+        }
+
+        /* Modo Oscuro */
+        body.theme-dark {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --primary-color: #14b8a6;
+            --primary-hover: #2dd4bf;
+            --accent-color: #fbbf24;
+            --border-color: #334155;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .custom-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+        }
+
+        /* Partes de las figuras interactivas */
+        .fraction-piece {
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .fraction-piece:hover {
+            filter: brightness(0.9);
+            transform: scale(0.98);
+        }
+
+        .fraction-piece.selected {
+            fill: #3b82f6 !important;
+            stroke: #1d4ed8;
+            stroke-width: 3;
+        }
+
+        body.theme-high-contrast .fraction-piece.selected {
+            fill: #facc15 !important;
+            stroke: #ffffff;
+        }
+
+        /* Focus accesible */
+        button:focus-visible, input:focus-visible, select:focus-visible {
+            outline: 4px solid #f59e0b;
+            outline-offset: 2px;
+        }
+
+        /* Animación suave */
+        .bounce-gentle {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-2 md:p-6 text-base" id="app-body">
+
+    <header class="w-full max-w-5xl mx-auto mb-4" role="banner">
+        <div class="custom-card rounded-2xl p-4 shadow-sm flex flex-wrap justify-between items-center gap-4">
+            
+            <!-- Identificación del programa -->
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl" aria-hidden="true">🧩</span>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-wide">Exploradores de Fracciones</h1>
+                    <p class="text-xs md:text-sm opacity-80">Matemática 4.° Grado - CABA</p>
+                </div>
+            </div>
+
+            <!-- Panel Accesibilidad (Res. 860/25) -->
+            <div class="flex flex-wrap items-center gap-2" role="region" aria-label="Controles de accesibilidad">
+                <!-- Ajuste tamaño tipográfico -->
+                <div class="flex bg-emerald-100 rounded-xl p-1 gap-1 text-slate-800" title="Tamaño de letra">
+                    <button onclick="changeFontSize(-1)" class="px-2 py-1 font-bold rounded hover:bg-white" aria-label="Disminuir letra">A-</button>
+                    <button onclick="resetFontSize()" class="px-2 py-1 text-xs rounded hover:bg-white" aria-label="Restablecer letra">A</button>
+                    <button onclick="changeFontSize(1)" class="px-2 py-1 font-bold rounded hover:bg-white" aria-label="Aumentar letra">A+</button>
+                </div>
+
+                <!-- Selector de Tema / Contraste -->
+                <button onclick="toggleTheme()" class="p-2 bg-amber-100 text-slate-800 rounded-xl font-semibold hover:bg-amber-200 flex items-center gap-1 text-xs md:text-sm" aria-label="Cambiar modo de contraste">
+                    <span id="theme-icon">👁️</span>
+                    <span id="theme-label">Contraste</span>
+                </button>
+
+                <!-- Lectura en Voz Alta -->
+                <button id="btn-tts" onclick="readActiveCard()" class="p-2 bg-sky-100 text-slate-800 rounded-xl font-semibold hover:bg-sky-200 flex items-center gap-1 text-xs md:text-sm" aria-label="Leer pantalla en voz alta">
+                    🔊 Escuchar
+                </button>
+            </div>
+        </div>
+
+        <!-- Barra de Progreso por Niveles -->
+        <nav class="w-full mt-3 flex justify-between gap-2" aria-label="Niveles de aprendizaje">
+            <button id="nav-lvl-1" onclick="loadLevel(1)" class="flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm text-center border-2 transition-all">
+                Nivel 1: Partes fijas
+            </button>
+            <button id="nav-lvl-2" onclick="loadLevel(2)" class="flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm text-center border-2 transition-all">
+                Nivel 2: Dividir el entero
+            </button>
+            <button id="nav-lvl-3" onclick="loadLevel(3)" class="flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm text-center border-2 transition-all">
+                Nivel 3: Fracciones y enteros
+            </button>
+        </nav>
+    </header>
+
+    <main class="w-full max-w-5xl mx-auto flex-grow grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+        
+        <!-- Panel Izquierdo: Consigna y Controles de Fracción -->
+        <section class="md:col-span-5 custom-card rounded-3xl p-5 shadow-md flex flex-col justify-between space-y-4" id="section-task">
+            <div>
+                <div class="flex justify-between items-center mb-2">
+                    <span id="level-badge" class="px-3 py-1 bg-teal-100 text-teal-800 text-xs font-bold rounded-full">Nivel 1</span>
+                    <span id="step-count" class="text-xs opacity-70">Desafío 1 de 3</span>
+                </div>
+
+                <h2 id="task-title" class="text-lg md:text-xl font-bold mb-2">¡Representemos la fracción!</h2>
+                <p id="task-instruction" class="text-sm md:text-base leading-relaxed mb-4">
+                    Observa la fracción. Haz clic sobre las partes del entero para pintar la cantidad requerida.
+                </p>
+
+                <!-- Tarjeta Visual de la Fracción -->
+                <div class="bg-amber-50 rounded-2xl p-4 border-2 border-amber-200 flex flex-col items-center justify-center my-2 text-slate-900">
+                    <span class="text-xs text-amber-800 font-bold mb-1">Fracción a representar:</span>
+                    <div class="flex items-center space-x-3">
+                        <!-- Caso Mixto / Enteros (se oculta si es 0) -->
+                        <span id="frac-whole" class="text-4xl font-extrabold text-amber-700 hidden">1</span>
+                        
+                        <!-- Representación Matemática -->
+                        <div class="flex flex-col items-center font-bold text-3xl">
+                            <span id="frac-num" class="border-b-4 border-slate-800 px-2">3</span>
+                            <span id="frac-den" class="px-2">4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selector de Divisiones (Solo Nivel 2 y 3) -->
+                <div id="division-control" class="hidden mt-4 bg-slate-100 p-3 rounded-xl border border-slate-300">
+                    <label for="slider-parts" class="block text-xs font-bold mb-1">¿En cuántas partes querés dividir cada entero?</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="range" id="slider-parts" min="2" max="8" value="2" oninput="updateDivisions(this.value)" class="w-full accent-teal-600 h-2 bg-slate-300 rounded-lg cursor-pointer">
+                        <span id="parts-val" class="font-bold text-lg text-teal-700 min-w-[20px] text-center">2</span>
+                    </div>
+                    <p class="text-[11px] opacity-75 mt-1">Recordá: el denominador nos indica las partes iguales del entero.</p>
+                </div>
+            </div>
+
+            <!-- Botones de Acción / Comprobación -->
+            <div class="space-y-2 pt-2">
+                <button onclick="checkAnswer()" class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-2xl shadow-md transition-transform active:scale-95 text-center flex items-center justify-center gap-2">
+                    <span>✨ Comprobar representación</span>
+                </button>
+                <button onclick="toggleHint()" class="w-full py-2 bg-amber-100 hover:bg-amber-200 text-amber-900 font-semibold rounded-2xl text-xs md:text-sm flex items-center justify-center gap-1">
+                    💡 <span>Necesito una pista</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Panel Derecho: Lienzo Gráfico Interactivo de Representación -->
+        <section class="md:col-span-7 custom-card rounded-3xl p-5 shadow-md flex flex-col items-center justify-center min-h-[350px]" id="canvas-area">
+            <h3 class="text-xs font-bold uppercase tracking-wider opacity-60 mb-2">Tu lienzo de dibujo</h3>
+            <p id="canvas-hint" class="text-xs text-center mb-4">Haz clic en cada parte para pintarla o despintarla.</p>
+
+            <!-- Contenedor dinámico donde se generan las figuras SVG -->
+            <div id="shapes-container" class="w-full flex flex-wrap items-center justify-center gap-6 p-2">
+                <!-- SVG Dinámicos -->
+            </div>
+        </section>
+    </main>
+
+    <div id="hint-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="custom-card rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <span>💡</span> Pista de Orientación
+                </h3>
+                <button onclick="toggleHint()" class="text-xl font-bold p-1 hover:opacity-70" aria-label="Cerrar pista">✕</button>
+            </div>
+            
+            <p id="hint-text" class="text-sm md:text-base leading-relaxed text-slate-700">
+                <!-- Pregunta socrática -->
+            </p>
+
+            <div class="bg-teal-50 p-3 rounded-xl border border-teal-200">
+                <p id="socratic-question" class="text-xs font-semibold text-teal-900 italic">
+                    <!-- Reflexión extra -->
+                </p>
+            </div>
+
+            <button onclick="toggleHint()" class="w-full py-2 bg-teal-600 text-white font-bold rounded-xl hover:bg-teal-700 text-sm">
+                ¡Entendido, voy a probar!
+            </button>
+        </div>
+    </div>
+
+    <div id="metacognition-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="custom-card rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="text-center">
+                <span class="text-5xl">🏆</span>
+                <h3 class="font-bold text-2xl mt-2 text-teal-800">¡Excelente recorrido!</h3>
+                <p class="text-xs text-slate-600">Has explorado y representado diferentes fracciones.</p>
+            </div>
+
+            <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 space-y-3">
+                <h4 class="font-bold text-sm text-amber-900">Reflexionemos sobre lo aprendido (Metacognición):</h4>
+                
+                <div>
+                    <label for="meta-q1" class="block text-xs font-semibold mb-1">1. ¿En qué te fijaste primero para saber en cuántas partes dividir la figura?</label>
+                    <textarea id="meta-q1" rows="2" class="w-full p-2 text-xs rounded-xl border border-slate-300 text-slate-900" placeholder="Escribí tu respuesta acá..."></textarea>
+                </div>
+
+                <div>
+                    <label for="meta-q2" class="block text-xs font-semibold mb-1">2. ¿Qué estrategia te ayudó cuando la fracción tenía enteros (mixta)?</label>
+                    <textarea id="meta-q2" rows="2" class="w-full p-2 text-xs rounded-xl border border-slate-300 text-slate-900" placeholder="Escribí tu respuesta acá..."></textarea>
+                </div>
+            </div>
+
+            <button onclick="finishMetacognition()" class="w-full py-3 bg-teal-600 text-white font-bold rounded-xl hover:bg-teal-700 shadow-lg text-sm">
+                Guardar y Reiniciar Experiencia
+            </button>
+        </div>
+    </div>
+
+    <footer class="w-full max-w-5xl mx-auto mt-6 text-center text-xs opacity-75 py-2 border-t border-slate-300" role="contentinfo">
+        <p>Diseñado bajo los principios del DUA (Resolución 860/25 CABA) • Mediación Socio-Pedagógica</p>
+    </footer>
+
+    <script>
+        /* BASE DE DATOS DE DESAFÍOS DIDÁCTICOS */
+        const levelsData = {
+            1: [
+                { num: 3, den: 4, whole: 0, hint: "¿Recuerdas qué indica el denominador (el número de abajo)? Nos dice en cuántas partes iguales está dividido el entero.", socratic: "¿Cuántas partes pintaste y cuántas partes te pide el numerador (el número de arriba)?" },
+                { num: 2, den: 5, whole: 0, hint: "Mira fijamente el número de arriba. Nos dice cuántas partes debemos tomar o colorear.", socratic: "Si pintas 2 partes de las 5 disponibles, ¿estarás representando la fracción pedida?" },
+                { num: 5, den: 6, whole: 0, hint: "¡Estás muy cerca! El número de arriba te dice exactamente cuántos trozos pintar.", socratic: "¿Te faltan o te sobran partes pintadas?" }
+            ],
+            2: [
+                { num: 1, den: 3, whole: 0, hint: "En este nivel debes decidir la división del entero. El denominador te da esa pista clave.", socratic: "Si el denominador es 3, ¿el entero debería estar dividido en 2, 3 o 4 partes?" },
+                { num: 3, den: 8, whole: 0, hint: "Primero ajusta el deslizador para dividir la figura en las partes requeridas por el denominador.", socratic: "Una vez dividida la figura en 8 partes, ¿cuántas debes seleccionar?" },
+                { num: 4, den: 6, whole: 0, hint: "Fíjate si el entero está dividido en las partes correctas antes de empezar a pintar.", socratic: "¿Qué pasaría si divides el entero en menos partes de las que indica abajo?" }
+            ],
+            3: [
+                { num: 1, den: 2, whole: 1, hint: "Esta es una fracción con enteros (1 1/2). Significa que necesitas 1 entero completo y 1/2 de otro.", socratic: "¿Cuántos enteros completos debes pintar del todo?" },
+                { num: 3, den: 2, whole: 0, hint: "La fracción 3/2 es mayor a un entero. ¡Por eso tenés dos figuras disponibles!", socratic: "Si cada entero se divide en 2 partes, ¿cuántas partes en total necesitas pintar para llegar a 3?" },
+                { num: 1, den: 4, whole: 2, hint: "Tenés 2 enteros completos y 1/4 más. Divide cada figura según el denominador.", socratic: "¿Pintaste ya los 2 enteros completos antes de pintar la fracción restante?" }
+            ]
+        };
+
+        /* ESTADO GLOBAL DE LA APLICACIÓN */
+        let currentLevel = 1;
+        let currentChallengeIndex = 0;
+        let userDivisions = 4; // Por defecto
+        let selectedPieces = {}; // Guarda estado { 'shape-0-piece-1': true/false }
+        let fontSizeLevel = 0; // -1, 0, 1, 2
+        let currentTheme = 'light'; // 'light', 'dark', 'contrast'
+        let isProcessing = false; // Bloqueo para evitar múltiples clics concurrentes
+
+        /* INICIALIZACIÓN */
+        window.onload = () => {
+            loadLevel(1);
+        };
+
+        /* CARGAR NIVEL */
+        function loadLevel(lvl) {
+            currentLevel = lvl;
+            currentChallengeIndex = 0;
+            isProcessing = false;
+            
+            // Actualizar pestañas
+            [1, 2, 3].forEach(l => {
+                const btn = document.getElementById(`nav-lvl-${l}`);
+                if(l === lvl) {
+                    btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm text-center border-2 border-teal-600 bg-teal-600 text-white shadow-md";
+                } else {
+                    btn.className = "flex-1 py-2 px-3 rounded-xl font-bold text-xs md:text-sm text-center border-2 border-slate-300 bg-white text-slate-700 hover:bg-slate-100";
+                }
+            });
+
+            // Visibilidad de controles de división
+            const divControl = document.getElementById('division-control');
+            if (lvl === 1) {
+                divControl.classList.add('hidden');
+            } else {
+                divControl.classList.remove('hidden');
+            }
+
+            renderChallenge();
+        }
+
+        /* RENDERIZAR DESAFÍO ACTUAL */
+        function renderChallenge() {
+            const challenge = levelsData[currentLevel]?.[currentChallengeIndex];
+            if (!challenge) return;
+
+            selectedPieces = {}; // Resetear selección
+
+            // Actualizar labels
+            document.getElementById('level-badge').innerText = `Nivel ${currentLevel}`;
+            document.getElementById('step-count').innerText = `Desafío ${currentChallengeIndex + 1} de ${levelsData[currentLevel].length}`;
+            
+            // Renderizar fracción textual
+            document.getElementById('frac-num').innerText = challenge.num;
+            document.getElementById('frac-den').innerText = challenge.den;
+            
+            const wholeEl = document.getElementById('frac-whole');
+            if (challenge.whole > 0) {
+                wholeEl.innerText = challenge.whole;
+                wholeEl.classList.remove('hidden');
+            } else {
+                wholeEl.classList.add('hidden');
+            }
+
+            // Configurar slider si aplica
+            const slider = document.getElementById('slider-parts');
+            if (currentLevel === 1) {
+                userDivisions = challenge.den;
+            } else {
+                slider.value = 2; // Iniciar en 2 para que el usuario elija
+                userDivisions = 2;
+                document.getElementById('parts-val').innerText = userDivisions;
+            }
+
+            // Instrucción específica
+            const inst = document.getElementById('task-instruction');
+            if(currentLevel === 1) {
+                inst.innerText = "Observa la fracción. Haz clic sobre las partes del entero para pintar la cantidad requerida.";
+            } else if(currentLevel === 2) {
+                inst.innerText = "Utiliza el deslizador para elegir en cuántas partes dividir el entero. Luego, pinta la fracción indicada.";
+            } else {
+                inst.innerText = "Representa este número mixto / fracción mayor a la unidad utilizando los enteros necesarios.";
+            }
+
+            renderShapes();
+        }
+
+        /* ACTUALIZAR DIVISIONES (NIVEL 2 Y 3) */
+        function updateDivisions(val) {
+            userDivisions = parseInt(val);
+            document.getElementById('parts-val').innerText = userDivisions;
+            selectedPieces = {}; // Reiniciar selecciones al cambiar cortes
+            renderShapes();
+        }
+
+        /* DIBUJAR INTEGRALMENTE LAS FIGURAS SVG DE ENTEROS */
+        function renderShapes() {
+            const challenge = levelsData[currentLevel]?.[currentChallengeIndex];
+            if (!challenge) return;
+
+            const container = document.getElementById('shapes-container');
+            container.innerHTML = '';
+
+            // Determinar cuántos enteros dibujar
+            let numEntities = 1;
+            if (currentLevel === 3) {
+                if (challenge.whole > 0) {
+                    numEntities = challenge.whole + 1; // Enteros + la fracción restante
+                } else {
+                    numEntities = Math.ceil(challenge.num / challenge.den);
+                }
+            }
+
+            for (let e = 0; e < numEntities; e++) {
+                const shapeWrapper = document.createElement('div');
+                shapeWrapper.className = "flex flex-col items-center gap-2 bg-slate-50/50 p-3 rounded-2xl border border-slate-200";
+                
+                const label = document.createElement('span');
+                label.className = "text-xs font-bold text-slate-500";
+                label.innerText = `Entero ${e + 1}`;
+                shapeWrapper.appendChild(label);
+
+                // Crear SVG dinámico circular para representar el entero
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute("viewBox", "0 0 200 200");
+                svg.setAttribute("class", "w-36 h-36 md:w-44 md:h-44 drop-shadow-sm");
+
+                const totalParts = userDivisions;
+                const center = 100;
+                const radius = 90;
+
+                for (let i = 0; i < totalParts; i++) {
+                    const startAngle = (i * 360) / totalParts;
+                    const endAngle = ((i + 1) * 360) / totalParts;
+                    
+                    const pathData = describeArc(center, center, radius, startAngle, endAngle);
+                    const pieceId = `shape-${e}-piece-${i}`;
+
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    path.setAttribute("d", pathData);
+                    path.setAttribute("class", `fraction-piece ${selectedPieces[pieceId] ? 'selected' : ''}`);
+                    path.setAttribute("fill", selectedPieces[pieceId] ? "#3b82f6" : "#ffffff");
+                    path.setAttribute("stroke", "#475569");
+                    path.setAttribute("stroke-width", "2");
+                    path.setAttribute("role", "button");
+                    path.setAttribute("aria-label", `Parte ${i + 1} del Entero ${e + 1}`);
+                    path.setAttribute("tabindex", "0");
+
+                    // Eventos de interacción
+                    path.onclick = () => togglePiece(pieceId, path);
+                    path.onkeydown = (ev) => { if (ev.key === 'Enter' || ev.key === ' ') togglePiece(pieceId, path); };
+
+                    svg.appendChild(path);
+                }
+
+                shapeWrapper.appendChild(svg);
+                container.appendChild(shapeWrapper);
+            }
+        }
+
+        /* CALCULAR RUTA ARCO SVG */
+        function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+            const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+            return {
+                x: centerX + (radius * Math.cos(angleInRadians)),
+                y: centerY + (radius * Math.sin(angleInRadians))
+            };
+        }
+
+        function describeArc(x, y, radius, startAngle, endAngle) {
+            // Manejar entero completo sin cortes
+            if (endAngle - startAngle >= 360) {
+                return `M ${x - radius}, ${y} a ${radius},${radius} 0 1,0 ${radius * 2},0 a ${radius},${radius} 0 1,0 -${radius * 2},0`;
+            }
+
+            const start = polarToCartesian(x, y, radius, endAngle);
+            const end = polarToCartesian(x, y, radius, startAngle);
+            const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+
+            return [
+                "M", x, y,
+                "L", start.x, start.y,
+                "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y,
+                "Z"
+            ].join(" ");
+        }
+
+        /* TOGGLE SELECCIÓN DE PIEZA */
+        function togglePiece(id, element) {
+            selectedPieces[id] = !selectedPieces[id];
+            if (selectedPieces[id]) {
+                element.classList.add('selected');
+                element.setAttribute('fill', '#3b82f6');
+            } else {
+                element.classList.remove('selected');
+                element.setAttribute('fill', '#ffffff');
+            }
+        }
+
+        /* VERIFICACIÓN DE RESPUESTA CON MEDIACIÓN DIDÁCTICA Y FRACCIONES EQUIVALENTES */
+        function checkAnswer() {
+            if (isProcessing) return;
+
+            const challenge = levelsData[currentLevel]?.[currentChallengeIndex];
+            if (!challenge) return;
+            
+            // Total de partes seleccionadas por el alumno
+            const countSelected = Object.values(selectedPieces).filter(Boolean).length;
+
+            if (countSelected === 0) {
+                showFeedback(false, "¡Todavía no pintaste ninguna parte! Haz clic sobre la figura para colorear la fracción.");
+                return;
+            }
+
+            // Cálculo del valor numérico real esperable vs representado
+            const targetTotalParts = challenge.num + (challenge.whole * challenge.den);
+            const targetValue = targetTotalParts / challenge.den;
+
+            const userDiv = (currentLevel === 1) ? challenge.den : userDivisions;
+            const userValue = countSelected / userDiv;
+
+            // Comparación decimal con tolerancia para equivalencias
+            if (Math.abs(userValue - targetValue) < 0.0001) {
+                isProcessing = true;
+                let feedbackMsg = "¡Fantástico trabajo! Has comprendido y representado la fracción perfectamente.";
+                
+                if (currentLevel > 1 && userDiv !== challenge.den) {
+                    feedbackMsg = `¡Excelente! Descubriste una fracción equivalente: representaste ${countSelected}/${userDiv}, que vale lo mismo que ${challenge.num}/${challenge.den}.`;
+                }
+
+                showFeedback(true, feedbackMsg);
+                setTimeout(() => {
+                    nextChallenge();
+                }, 2200);
+            } else if (userValue < targetValue) {
+                showFeedback(false, `¡Vas por buen camino! Pintaste ${countSelected} partes de ${userDiv}, pero necesitás representar ${targetTotalParts}/${challenge.den}. ¿Te animás a pintar las partes que faltan?`);
+            } else {
+                showFeedback(false, `¡Atención! Pintaste ${countSelected} partes de ${userDiv}, que es más de lo que nos solicita la fracción. Haz clic sobre las partes sobrantes para despintarlas.`);
+            }
+        }
+
+        /* MOSTRAR RETROALIMENTACIÓN FORMATIVA (SIN ALERTAS) */
+        function showFeedback(isCorrect, message) {
+            const canvasArea = document.getElementById('canvas-area');
+            
+            // Eliminar feedback anterior si existe
+            const oldFb = document.getElementById('feedback-banner');
+            if (oldFb) oldFb.remove();
+
+            const fb = document.createElement('div');
+            fb.id = 'feedback-banner';
+            fb.className = `w-full p-4 mt-4 rounded-2xl border-2 text-sm font-semibold flex items-center justify-between transition-all ${
+                isCorrect ? 'bg-emerald-100 border-emerald-400 text-emerald-900' : 'bg-amber-100 border-amber-400 text-amber-900'
+            }`;
+
+            fb.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">${isCorrect ? '🎉' : '🤔'}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            canvasArea.appendChild(fb);
+            speakText(message);
+        }
+
+        /* AVANZAR EN EL JUEGO */
+        function nextChallenge() {
+            const oldFb = document.getElementById('feedback-banner');
+            if (oldFb) oldFb.remove();
+
+            const levelChallenges = levelsData[currentLevel];
+            if (!levelChallenges) return;
+
+            if (currentChallengeIndex < levelChallenges.length - 1) {
+                currentChallengeIndex++;
+                isProcessing = false;
+                renderChallenge();
+            } else {
+                if (currentLevel < 3) {
+                    showFeedback(true, `¡Felicitaciones! Completaste todos los desafíos del Nivel ${currentLevel}. ¡Pasamos al siguiente nivel!`);
+                    setTimeout(() => {
+                        isProcessing = false;
+                        loadLevel(currentLevel + 1);
+                    }, 2500);
+                } else {
+                    isProcessing = false;
+                    document.getElementById('metacognition-modal').classList.remove('hidden');
+                    speakText("¡Felicitaciones! Has completado todos los niveles. Tómate un momento para responder estas preguntas reflexivas.");
+                }
+            }
+        }
+
+        /* MEDIACIÓN SOCRÁTICA / PISTAS GRADUADAS */
+        function toggleHint() {
+            const modal = document.getElementById('hint-modal');
+            const isHidden = modal.classList.contains('hidden');
+
+            if (isHidden) {
+                const challenge = levelsData[currentLevel]?.[currentChallengeIndex];
+                if (!challenge) return;
+
+                document.getElementById('hint-text').innerText = challenge.hint;
+                document.getElementById('socratic-question').innerText = challenge.socratic;
+                modal.classList.remove('hidden');
+                speakText(challenge.hint + " " + challenge.socratic);
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        /* FINALIZAR METACOGNICIÓN */
+        function finishMetacognition() {
+            document.getElementById('metacognition-modal').classList.add('hidden');
+            document.getElementById('meta-q1').value = '';
+            document.getElementById('meta-q2').value = '';
+            loadLevel(1);
+        }
+
+        /* ACCESIBILIDAD: CAMBIO DE TAMAÑO DE FUENTE (A+/A-) */
+        function changeFontSize(delta) {
+            fontSizeLevel = Math.max(-1, Math.min(3, fontSizeLevel + delta));
+            const fontClasses = ['text-sm', 'text-base', 'text-lg', 'text-xl'];
+            const appBody = document.getElementById('app-body');
+            
+            // Remover clases previas
+            appBody.classList.remove('text-sm', 'text-base', 'text-lg', 'text-xl');
+            appBody.classList.add(fontClasses[fontSizeLevel + 1]);
+        }
+
+        function resetFontSize() {
+            fontSizeLevel = 0;
+            const appBody = document.getElementById('app-body');
+            appBody.classList.remove('text-sm', 'text-lg', 'text-xl');
+            appBody.classList.add('text-base');
+        }
+
+        /* ACCESIBILIDAD: CAMBIO DE MODO DE CONTRASTE */
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            const label = document.getElementById('theme-label');
+
+            if (currentTheme === 'light') {
+                currentTheme = 'dark';
+                body.className = "min-h-screen flex flex-col justify-between p-2 md:p-6 text-base theme-dark";
+                icon.innerText = "🌙";
+                label.innerText = "Modo Oscuro";
+            } else if (currentTheme === 'dark') {
+                currentTheme = 'contrast';
+                body.className = "min-h-screen flex flex-col justify-between p-2 md:p-6 text-base theme-high-contrast";
+                icon.innerText = "⚡";
+                label.innerText = "Alto Contraste";
+            } else {
+                currentTheme = 'light';
+                body.className = "min-h-screen flex flex-col justify-between p-2 md:p-6 text-base";
+                icon.innerText = "👁️";
+                label.innerText = "Modo Claro";
+            }
+        }
+
+        /* ACCESIBILIDAD: LECTURA EN VOZ ALTA (SÍNTESIS NATIVA DE VOZ) */
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Cancelar lecturas anteriores
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-AR'; // Prioridad español Argentina
+                utterance.rate = 0.95; // Velocidad amigable para niños
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function readActiveCard() {
+            const challenge = levelsData[currentLevel][currentChallengeIndex];
+            let textToRead = `Nivel ${currentLevel}. Desafío ${currentChallengeIndex + 1}. `;
+            textToRead += document.getElementById('task-instruction').innerText + " ";
+            
+            if (challenge.whole > 0) {
+                textToRead += `Fracción: ${challenge.whole} entero y ${challenge.num} sobre ${challenge.den}.`;
+            } else {
+                textToRead += `Fracción: ${challenge.num} sobre ${challenge.den}.`;
+            }
+
+            speakText(textToRead);
+        }
+    </script>
+</body>
+</html>
