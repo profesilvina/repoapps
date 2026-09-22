@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica Interactiva: Ecuaciones de Primer Grado</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- KaTeX CDN for crisp math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#035485',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .katex-display {
+            margin: 0.5em 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+            .shadow-xl, .shadow-md, .shadow-sm {
+                box-shadow: none !important;
+            }
+        }
+        /* Custom scrollbar for mathematical details */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm no-print">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-sky-500 to-indigo-600 text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid me-1 fa-calculator text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg md:text-xl text-slate-800 leading-tight">Ecuaciones de Primer Grado</h1>
+                    <p class="text-xs text-slate-500">Módulo de Autoevaluación e Interactivo</p>
+                </div>
+            </div>
+
+            <!-- Stats Header Badge -->
+            <div id="headerStats" class="flex items-center gap-2 md:gap-4 text-sm font-medium">
+                <div class="bg-slate-100 px-3 py-1.5 rounded-lg flex items-center space-x-2 text-slate-600">
+                    <i class="fa-regular fa-clock text-sky-600"></i>
+                    <span id="timerText">00:00</span>
+                </div>
+                <div class="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-200/60 flex items-center space-x-2">
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span id="headerCorrect">0</span>
+                </div>
+                <div class="bg-rose-50 text-rose-700 px-3 py-1.5 rounded-lg border border-rose-200/60 flex items-center space-x-2">
+                    <i class="fa-solid fa-times-circle"></i>
+                    <span id="headerIncorrect">0</span>
+                </div>
+                <button id="soundToggleBtn" onclick="toggleAudio()" title="Activar/Desactivar sonido" class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors">
+                    <i id="soundIcon" class="fa-solid fa-volume-high"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full">
+        
+        <!-- PRACTICE SCREEN -->
+        <div id="practiceView" class="space-y-6">
+            
+            <!-- Controls Bar: Difficulty & Finish Button -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center space-x-2 w-full sm:w-auto">
+                    <label for="difficultySelect" class="text-sm font-semibold text-slate-700 whitespace-nowrap">
+                        <i class="fa-solid fa-layer-group text-sky-500 mr-1"></i> Nivel:
+                    </label>
+                    <select id="difficultySelect" onchange="changeDifficulty()" class="bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5 font-medium transition">
+                        <option value="1">Nivel 1: Básicas (x + a = b)</option>
+                        <option value="2" selected>Nivel 2: Con Coeficiente (ax + b = c)</option>
+                        <option value="3">Nivel 3: Incógnita en ambos lados (ax + b = cx + d)</option>
+                        <option value="4">Nivel 4: Con Paréntesis a(x + b) = c</option>
+                        <option value="mixed">Nivel Mixto (Aleatorio)</option>
+                    </select>
+                </div>
+
+                <button onclick="finishPractice()" class="w-full sm:w-auto bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md transition transform active:scale-95 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-flag-checkered"></i>
+                    <span>Finalizar Práctica y Ver Informe</span>
+                </button>
+            </div>
+
+            <!-- Main Interactive Card Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Math Workspace Left Column (8 cols) -->
+                <div class="lg:col-span-8 space-y-6">
+                    
+                    <!-- Question Container Card -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 shadow-sm relative overflow-hidden">
+                        <!-- Top Accent Bar -->
+                        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500"></div>
+
+                        <div class="flex justify-between items-center mb-4">
+                            <span id="questionBadge" class="bg-sky-100 text-sky-800 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
+                                Ecuación #<span id="questionCounter">1</span>
+                            </span>
+                            <span id="difficultyBadge" class="text-xs font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">
+                                Nivel 2
+                            </span>
+                        </div>
+
+                        <!-- Instruction text -->
+                        <p class="text-slate-600 font-medium text-center text-sm md:text-base mb-2">
+                            Resuelve la siguiente ecuación de primer grado para la incógnita <span class="font-bold text-sky-600">x</span>:
+                        </p>
+
+                        <!-- Mathematical Equation Display -->
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl py-8 px-4 my-4 text-center min-h-[120px] flex items-center justify-center shadow-inner">
+                            <div id="equationMath" class="text-2xl md:text-4xl text-slate-800 font-serif"></div>
+                        </div>
+
+                        <!-- Input and Controls Form -->
+                        <form id="answerForm" onsubmit="handleAnswerSubmit(event)" class="mt-6 space-y-4">
+                            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                                <label for="userAnswer" class="text-slate-700 font-semibold text-lg flex items-center gap-2">
+                                    <span class="text-sky-600 font-serif italic text-xl">x =</span>
+                                </label>
+                                <input type="text" id="userAnswer" autocomplete="off" placeholder="Ej: 5 o -3/2" required
+                                    class="w-full sm:w-48 text-center text-2xl font-bold bg-white border-2 border-slate-300 rounded-xl px-4 py-3 focus:outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100 transition text-slate-800 shadow-sm" />
+                                
+                                <button type="submit" id="submitBtn" class="w-full sm:w-auto bg-sky-600 hover:bg-sky-700 text-white font-semibold px-6 py-3.5 rounded-xl shadow-md hover:shadow-lg transition transform active:scale-95 flex items-center justify-center space-x-2">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span>Comprobar</span>
+                                </button>
+                            </div>
+                            <p class="text-xs text-center text-slate-400">
+                                Puedes ingresar números enteros (ej. <code class="bg-slate-100 px-1 rounded">4</code>) o fracciones (ej. <code class="bg-slate-100 px-1 rounded">-3/2</code>).
+                            </p>
+                        </form>
+
+                        <!-- Feedback Message Box (Shown after checking) -->
+                        <div id="feedbackContainer" class="hidden mt-6 p-4 rounded-xl border transition-all duration-300">
+                            <div class="flex items-start space-x-3">
+                                <div id="feedbackIcon" class="text-2xl mt-0.5"></div>
+                                <div class="flex-grow">
+                                    <h4 id="feedbackTitle" class="font-bold text-base"></h4>
+                                    <p id="feedbackText" class="text-sm mt-1"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Controls after answer -->
+                        <div id="postAnswerControls" class="hidden mt-6 pt-4 border-t border-slate-100 flex flex-wrap justify-between items-center gap-3">
+                            <button type="button" onclick="toggleStepByStep()" class="text-slate-600 hover:text-sky-700 text-sm font-semibold flex items-center space-x-1.5 px-3 py-2 rounded-lg hover:bg-slate-100 transition">
+                                <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                                <span>Ver solución paso a paso</span>
+                            </button>
+                            <button type="button" onclick="nextQuestion()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow transition transform active:scale-95 flex items-center space-x-2">
+                                <span>Siguiente Ecuación</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+
+                        <!-- Step-by-Step Resolution Drawer -->
+                        <div id="stepDrawer" class="hidden mt-4 p-5 bg-amber-50/70 border border-amber-200 rounded-xl text-slate-800 text-sm space-y-3">
+                            <h4 class="font-bold text-amber-900 flex items-center gap-2 border-b border-amber-200/80 pb-2">
+                                <i class="fa-solid fa-list-check text-amber-600"></i> Explicación detallada
+                            </h4>
+                            <div id="stepByStepContent" class="space-y-2 pt-1 font-sans"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Right Side Column: Scratchpad / Borrador Virtual (4 cols) -->
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col h-full">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-slate-700 text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-pen-ruler text-sky-500"></i> Borrador de Apuntes
+                            </h3>
+                            <button onclick="clearScratchpad()" class="text-xs text-rose-600 hover:text-rose-800 hover:bg-rose-50 px-2 py-1 rounded font-medium transition">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Borrar
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-3">Usa este espacio táctil o ratón para realizar tus operaciones secundarias.</p>
+                        
+                        <!-- Interactive Canvas -->
+                        <div class="relative flex-grow min-h-[220px] bg-slate-50 rounded-xl border border-dashed border-slate-300 overflow-hidden">
+                            <canvas id="scratchpadCanvas" class="w-full h-full cursor-crosshair block"></canvas>
+                        </div>
+                        <div class="mt-3 flex justify-between items-center text-xs text-slate-400">
+                            <div class="flex items-center space-x-2">
+                                <span class="inline-block w-3 h-3 bg-slate-800 rounded-full cursor-pointer border border-slate-300" onclick="setCanvasColor('#1e293b')"></span>
+                                <span class="inline-block w-3 h-3 bg-sky-600 rounded-full cursor-pointer" onclick="setCanvasColor('#0284c7')"></span>
+                                <span class="inline-block w-3 h-3 bg-rose-600 rounded-full cursor-pointer" onclick="setCanvasColor('#e11d48')"></span>
+                            </div>
+                            <span>Lienzo borrador</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- REPORT / INFORME SCREEN (Hidden by default) -->
+        <div id="reportView" class="hidden space-y-8">
+            
+            <!-- Summary Header Banner -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm text-center relative overflow-hidden">
+                <div id="reportBadgeBg" class="absolute top-0 left-0 right-0 h-3 bg-sky-500"></div>
+
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-sky-50 text-sky-600 text-4xl mb-4 shadow-inner" id="reportScoreIcon">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800" id="reportTitle">
+                    ¡Informe de Práctica Finalizado!
+                </h2>
+                <p id="reportSubtitle" class="text-slate-500 mt-2 max-w-lg mx-auto text-sm md:text-base">
+                    Aquí tienes el resumen detallado con todos tus resultados, aciertos y áreas de mejora.
+                </p>
+
+                <!-- Key Metrics Cards Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                    <div class="bg-slate-50 border border-slate-200/80 p-4 rounded-2xl">
+                        <span class="text-xs uppercase font-semibold tracking-wider text-slate-400 block mb-1">Total Ecuaciones</span>
+                        <span id="reportTotal" class="text-3xl font-extrabold text-slate-800">0</span>
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-200/80 p-4 rounded-2xl">
+                        <span class="text-xs uppercase font-semibold tracking-wider text-emerald-600 block mb-1">Aciertos</span>
+                        <span id="reportCorrect" class="text-3xl font-extrabold text-emerald-700">0</span>
+                    </div>
+                    <div class="bg-rose-50 border border-rose-200/80 p-4 rounded-2xl">
+                        <span class="text-xs uppercase font-semibold tracking-wider text-rose-600 block mb-1">Errores</span>
+                        <span id="reportIncorrect" class="text-3xl font-extrabold text-rose-700">0</span>
+                    </div>
+                    <div class="bg-sky-50 border border-sky-200/80 p-4 rounded-2xl">
+                        <span class="text-xs uppercase font-semibold tracking-wider text-sky-600 block mb-1">Efectividad</span>
+                        <span id="reportAccuracy" class="text-3xl font-extrabold text-sky-700">0%</span>
+                    </div>
+                </div>
+
+                <!-- Secondary Time Metrics -->
+                <div class="mt-4 text-xs text-slate-500 flex flex-wrap justify-center gap-4">
+                    <span><i class="fa-regular fa-clock mr-1 text-slate-400"></i> Tiempo total: <strong id="reportTotalTime" class="text-slate-700">00:00</strong></span>
+                    <span><i class="fa-solid fa-stopwatch mr-1 text-slate-400"></i> Promedio por ecuación: <strong id="reportAvgTime" class="text-slate-700">0s</strong></span>
+                </div>
+            </div>
+
+            <!-- Detailed Breakdown Table/Cards -->
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-list-ol text-sky-500"></i> Desglose por Ecuación
+                        </h3>
+                        <p class="text-xs text-slate-500">Revisa la respuesta que ingresaste en cada ejercicio planteado.</p>
+                    </div>
+                    <div class="flex items-center gap-2 no-print">
+                        <button onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold px-4 py-2 rounded-xl transition flex items-center space-x-2">
+                            <i class="fa-solid fa-print"></i>
+                            <span>Imprimir Informe</span>
+                        </button>
+                        <button onclick="restartPractice()" class="bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold px-5 py-2 rounded-xl shadow transition flex items-center space-x-2">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>Nueva Práctica</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-xs uppercase font-semibold text-slate-400 bg-slate-50/50">
+                                <th class="py-3 px-4">#</th>
+                                <th class="py-3 px-4">Ecuación</th>
+                                <th class="py-3 px-4 text-center">Tu Respuesta</th>
+                                <th class="py-3 px-4 text-center">Solución Correcta</th>
+                                <th class="py-3 px-4 text-center">Resultado</th>
+                                <th class="py-3 px-4 text-right no-print">Explicación</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody" class="divide-y divide-slate-100 text-sm">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Fallback empty state -->
+                <div id="emptyHistoryMsg" class="hidden py-12 text-center text-slate-400">
+                    <i class="fa-solid fa-folder-open text-4xl mb-2 text-slate-300"></i>
+                    <p>No respondiste ninguna ecuación en esta sesión.</p>
+                </div>
+            </div>
+
+            <!-- Bottom CTA Buttons -->
+            <div class="flex justify-center pt-2 no-print">
+                <button onclick="restartPractice()" class="bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold px-8 py-3.5 rounded-2xl shadow-lg hover:shadow-xl transition transform active:scale-95 flex items-center space-x-3 text-base">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Iniciar una Nueva Práctica</span>
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400 no-print">
+        <div class="max-w-6xl mx-auto px-4">
+            <p>Ecuaciones de Primer Grado • Plataforma Educativa Interactiva de Matemáticas</p>
+        </div>
+    </footer>
+
+    <script>
+        /* State Variables */
+        let currentDifficulty = "2";
+        let questionCounter = 1;
+        let history = [];
+        let currentProblem = null;
+        let isAnswerSubmitted = false;
+
+        // Timer
+        let startTime = null;
+        let timerInterval = null;
+        let totalSeconds = 0;
+
+        // Audio state
+        let audioMuted = false;
+        let audioCtx = null;
+
+        /* Init Application */
+        window.onload = function() {
+            initScratchpad();
+            startTimer();
+            generateNewProblem();
+        };
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    audioCtx = new AudioContext();
+                }
+            }
+        }
+
+        function toggleAudio() {
+            audioMuted = !audioMuted;
+            const icon = document.getElementById('soundIcon');
+            if (audioMuted) {
+                icon.className = 'fa-solid fa-volume-xmark text-rose-500';
+            } else {
+                icon.className = 'fa-solid fa-volume-high text-slate-600';
+            }
+        }
+
+        function playSound(type) {
+            if (audioMuted) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.15); // E5
+                    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.3); // G5
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                    osc.start(now);
+                    osc.stop(now + 0.45);
+                } else if (type === 'incorrect') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(220, now); // A3
+                    osc.frequency.setValueAtTime(174.61, now + 0.15); // F3
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                }
+            } catch (e) {
+                console.log("Audio not supported or blocked by browser.");
+            }
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                totalSeconds++;
+                const mins = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+                const secs = (totalSeconds % 60).toString().padStart(2, '0');
+                document.getElementById('timerText').textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function getRandomInt(min, max, excludeZero = true) {
+            let num = 0;
+            while (num === 0 && excludeZero) {
+                num = Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+            return num;
+        }
+
+        /**
+         * Equation Generators guarantees exact integer or clean fraction answers.
+         * We choose integer 'x' first, then construct the coefficients around it!
+         */
+        function generateProblem(diff) {
+            let activeDiff = diff;
+            if (diff === 'mixed') {
+                activeDiff = Math.floor(Math.random() * 4 + 1).toString();
+            }
+
+            const x = getRandomInt(-12, 12, true); // Solución entera x
+            let latex = '';
+            let steps = [];
+            let problemData = {};
+
+            if (activeDiff === '1') {
+                // Form: x + a = b
+                const a = getRandomInt(-20, 20, true);
+                const b = x + a;
+                const signA = a > 0 ? `+ ${a}` : `- ${Math.abs(a)}`;
+                
+                latex = `x ${signA} = ${b}`;
+
+                steps.push(`Partimos de la ecuación: \\( x ${signA} = ${b} \\)`);
+                steps.push(`Para despejar \\(x\\), trasladamos el término independiente al otro lado de la igualdad cambiando de signo:`);
+                steps.push(`\\( x = ${b} ${a > 0 ? `- ${a}` : `+ ${Math.abs(a)}`} \\)`);
+                steps.push(`Calculamos el resultado final: \\( x = ${x} \\)`);
+
+                problemData = { difficultyName: 'Nivel 1 (x + a = b)', xVal: x, latex: latex, steps: steps };
+
+            } else if (activeDiff === '2') {
+                // Form: ax + b = c
+                const a = getRandomInt(-9, 9, true);
+                const b = getRandomInt(-25, 25, true);
+                const c = a * x + b;
+
+                const coeffA = a === 1 ? '' : (a === -1 ? '-' : a);
+                const signB = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+
+                latex = `${coeffA}x ${signB} = ${c}`;
+
+                steps.push(`Dada la ecuación: \\( ${coeffA}x ${signB} = ${c} \\)`);
+                steps.push(`Restamos/sumamos \\(${Math.abs(b)}\\) en ambos lados para aislar el término con la incógnita:`);
+                steps.push(`\\( ${coeffA}x = ${c} ${b > 0 ? `- ${b}` : `+ ${Math.abs(b)}`} \\implies ${coeffA}x = ${a * x} \\)`);
+                steps.push(`Dividimos entre el coeficiente \\(${a}\\):`);
+                steps.push(`\\( x = \\frac{${a * x}}{${a}} \\implies x = ${x} \\)`);
+
+                problemData = { difficultyName: 'Nivel 2 (ax + b = c)', xVal: x, latex: latex, steps: steps };
+
+            } else if (activeDiff === '3') {
+                // Form: ax + b = cx + d
+                let a = getRandomInt(-8, 8, true);
+                let c = getRandomInt(-8, 8, true);
+                while (a === c) { // Prevent division by zero
+                    c = getRandomInt(-8, 8, true);
+                }
+                const b = getRandomInt(-20, 20, true);
+                // a*x + b = c*x + d  => d = a*x + b - c*x = (a-c)*x + b
+                const d = (a - c) * x + b;
+
+                const coeffA = a === 1 ? '' : (a === -1 ? '-' : a);
+                const coeffC = c === 1 ? '' : (c === -1 ? '-' : c);
+                const signB = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+                const signD = d > 0 ? `+ ${d}` : (d === 0 ? '' : `- ${Math.abs(d)}`);
+
+                latex = `${coeffA}x ${signB} = ${coeffC}x ${signD}`;
+
+                const lhsX = a - c;
+                const rhsNum = d - b;
+
+                steps.push(`Dada la ecuación: \\( ${coeffA}x ${signB} = ${coeffC}x ${signD} \\)`);
+                steps.push(`Agrupamos los términos con \\(x\\) a la izquierda y los números a la derecha:`);
+                steps.push(`\\( ${coeffA}x ${c > 0 ? `- ${coeffC}x` : `+ ${Math.abs(c)}x`} = ${d} ${b > 0 ? `- ${b}` : `+ ${Math.abs(b)}`} \\)`);
+                steps.push(`Simplificamos ambos miembros: \\( ${lhsX === 1 ? '' : (lhsX === -1 ? '-' : lhsX)}x = ${rhsNum} \\)`);
+                steps.push(`Despejamos \\(x\\): \\( x = \\frac{${rhsNum}}{${lhsX}} = ${x} \\)`);
+
+                problemData = { difficultyName: 'Nivel 3 (ax + b = cx + d)', xVal: x, latex: latex, steps: steps };
+
+            } else {
+                // Form: a(x + b) = c
+                const a = getRandomInt(-6, 6, true);
+                const b = getRandomInt(-10, 10, true);
+                const c = a * (x + b);
+
+                const signB = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+
+                latex = `${a}(x ${signB}) = ${c}`;
+
+                steps.push(`Dada la ecuación con paréntesis: \\( ${a}(x ${signB}) = ${c} \\)`);
+                steps.push(`Método 1 (Aplica propiedad distributiva):`);
+                steps.push(`\\( ${a}x ${a * b > 0 ? `+ ${a * b}` : `- ${Math.abs(a * b)}`} = ${c} \\)`);
+                steps.push(`Pasamos la constante al lado derecho: \\( ${a}x = ${c} ${a * b > 0 ? `- ${a * b}` : `+ ${Math.abs(a * b)}`} \\implies ${a}x = ${a * x} \\)`);
+                steps.push(`Dividimos entre \\(${a}\\): \\( x = ${x} \\)`);
+
+                problemData = { difficultyName: 'Nivel 4 con paréntesis', xVal: x, latex: latex, steps: steps };
+            }
+
+            return problemData;
+        }
+
+        function generateNewProblem() {
+            isAnswerSubmitted = false;
+            currentProblem = generateProblem(currentDifficulty);
+
+            // Update UI elements
+            document.getElementById('questionCounter').textContent = questionCounter;
+            document.getElementById('difficultyBadge').textContent = currentProblem.difficultyName;
+            document.getElementById('userAnswer').value = '';
+            document.getElementById('userAnswer').disabled = false;
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+
+            // Hide feedback & step drawer
+            document.getElementById('feedbackContainer').classList.add('hidden');
+            document.getElementById('postAnswerControls').classList.add('hidden');
+            document.getElementById('stepDrawer').classList.add('hidden');
+
+            // Render Math with KaTeX
+            const container = document.getElementById('equationMath');
+            try {
+                katex.render(currentProblem.latex, container, {
+                    throwOnError: false,
+                    displayMode: true
+                });
+            } catch (e) {
+                container.textContent = currentProblem.latex;
+            }
+
+            // Focus input
+            setTimeout(() => {
+                document.getElementById('userAnswer').focus();
+            }, 100);
+        }
+
+        function changeDifficulty() {
+            currentDifficulty = document.getElementById('difficultySelect').value;
+            generateNewProblem();
+        }
+
+        function parseFractionOrDecimal(inputStr) {
+            if (!inputStr) return NaN;
+            const str = inputStr.trim().replace(',', '.');
+            if (str.includes('/')) {
+                const parts = str.split('/');
+                if (parts.length === 2) {
+                    const num = parseFloat(parts[0]);
+                    const den = parseFloat(parts[1]);
+                    if (!isNaN(num) && !isNaN(den) && den !== 0) {
+                        return num / den;
+                    }
+                }
+            }
+            return parseFloat(str);
+        }
+
+        function handleAnswerSubmit(e) {
+            e.preventDefault();
+            if (isAnswerSubmitted) return;
+
+            const inputVal = document.getElementById('userAnswer').value;
+            const numericVal = parseFractionOrDecimal(inputVal);
+
+            if (isNaN(numericVal)) {
+                showTemporaryToast("Por favor, ingresa un número válido o una fracción (ej. 4 o -3/2).");
+                return;
+            }
+
+            isAnswerSubmitted = true;
+            document.getElementById('userAnswer').disabled = true;
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').classList.add('opacity-50', 'cursor-not-allowed');
+
+            // Check correctness (tolerance for small decimal rounding)
+            const isCorrect = Math.abs(numericVal - currentProblem.xVal) < 0.001;
+
+            // Record to history
+            history.push({
+                id: questionCounter,
+                latex: currentProblem.latex,
+                userAnswerStr: inputVal.trim(),
+                correctVal: currentProblem.xVal,
+                isCorrect: isCorrect,
+                steps: currentProblem.steps,
+                difficulty: currentProblem.difficultyName
+            });
+
+            // Update Header counts
+            const correctCount = history.filter(h => h.isCorrect).length;
+            const incorrectCount = history.length - correctCount;
+            document.getElementById('headerCorrect').textContent = correctCount;
+            document.getElementById('headerIncorrect').textContent = incorrectCount;
+
+            // Display Feedback Box
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            const feedbackIcon = document.getElementById('feedbackIcon');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackText = document.getElementById('feedbackText');
+
+            feedbackContainer.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-900', 'bg-rose-50', 'border-rose-200', 'text-rose-900');
+
+            if (isCorrect) {
+                playSound('correct');
+                feedbackContainer.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-900');
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i>';
+                feedbackTitle.textContent = "¡Excelente! Respuesta Correcta";
+                feedbackText.textContent = `¡Muy bien calculado! El valor de x efectivamente es ${currentProblem.xVal}.`;
+            } else {
+                playSound('incorrect');
+                feedbackContainer.classList.add('bg-rose-50', 'border-rose-200', 'text-rose-900');
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-600"></i>';
+                feedbackTitle.textContent = "Respuesta Incorrecta";
+                feedbackText.textContent = `Tu respuesta fue ${inputVal}, pero el valor correcto es x = ${currentProblem.xVal}. ¡Revisa la solución paso a paso para aprender del procedimiento!`;
+            }
+
+            document.getElementById('postAnswerControls').classList.remove('hidden');
+
+            // Render step content into drawer
+            renderSteps();
+        }
+
+        function renderSteps() {
+            const container = document.getElementById('stepByStepContent');
+            container.innerHTML = '';
+
+            currentProblem.steps.forEach((stepText) => {
+                const div = document.createElement('div');
+                div.className = "py-1.5 border-b border-amber-200/50 last:border-0";
+                div.innerHTML = stepText;
+                container.appendChild(div);
+            });
+
+            // Render inline math inside step drawer
+            if (window.katex) {
+                const mathNodes = container.querySelectorAll('.katex-math');
+                // Auto render standard LaTeX tokens if present
+            }
+        }
+
+        function toggleStepByStep() {
+            const drawer = document.getElementById('stepDrawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        function nextQuestion() {
+            questionCounter++;
+            generateNewProblem();
+        }
+
+        function finishPractice() {
+            // Stop timer
+            clearInterval(timerInterval);
+
+            // Hide Practice, Show Report
+            document.getElementById('practiceView').classList.add('hidden');
+            document.getElementById('reportView').classList.remove('hidden');
+
+            const total = history.length;
+            const correct = history.filter(h => h.isCorrect).length;
+            const incorrect = total - correct;
+            const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+            document.getElementById('reportTotal').textContent = total;
+            document.getElementById('reportCorrect').textContent = correct;
+            document.getElementById('reportIncorrect').textContent = incorrect;
+            document.getElementById('reportAccuracy').textContent = `${accuracy}%`;
+
+            // Time calculations
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            document.getElementById('reportTotalTime').textContent = `${mins}m ${secs}s`;
+            
+            const avgSecs = total > 0 ? Math.round(totalSeconds / total) : 0;
+            document.getElementById('reportAvgTime').textContent = `${avgSecs}s`;
+
+            // Badge & Title customisation
+            const titleEl = document.getElementById('reportTitle');
+            const iconEl = document.getElementById('reportScoreIcon');
+            const bgEl = document.getElementById('reportBadgeBg');
+
+            if (accuracy >= 80 && total >= 3) {
+                titleEl.textContent = "¡Magnífico Trabajo!";
+                iconEl.className = "inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 text-emerald-600 text-4xl mb-4 shadow-inner";
+                iconEl.innerHTML = '<i class="fa-solid fa-award"></i>';
+                bgEl.className = "absolute top-0 left-0 right-0 h-3 bg-emerald-500";
+            } else if (accuracy >= 50) {
+                titleEl.textContent = "¡Buen Esfuerzo!";
+                iconEl.className = "inline-flex items-center justify-center w-20 h-20 rounded-full bg-sky-100 text-sky-600 text-4xl mb-4 shadow-inner";
+                iconEl.innerHTML = '<i class="fa-solid fa-thumbs-up"></i>';
+                bgEl.className = "absolute top-0 left-0 right-0 h-3 bg-sky-500";
+            } else {
+                titleEl.textContent = "Sigue Practicando";
+                iconEl.className = "inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-100 text-amber-600 text-4xl mb-4 shadow-inner";
+                iconEl.innerHTML = '<i class="fa-solid fa-book-open"></i>';
+                bgEl.className = "absolute top-0 left-0 right-0 h-3 bg-amber-500";
+            }
+
+            // Populate Table
+            const tbody = document.getElementById('historyTableBody');
+            const emptyMsg = document.getElementById('emptyHistoryMsg');
+            tbody.innerHTML = '';
+
+            if (total === 0) {
+                emptyMsg.classList.remove('hidden');
+                return;
+            } else {
+                emptyMsg.classList.add('hidden');
+            }
+
+            history.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50/80 transition";
+
+                const badgeClass = item.isCorrect 
+                    ? "bg-emerald-100 text-emerald-800 border-emerald-200" 
+                    : "bg-rose-100 text-rose-800 border-rose-200";
+
+                const statusText = item.isCorrect ? "Correcto" : "Incorrecto";
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-semibold text-slate-500">${index + 1}</td>
+                    <td class="py-3 px-4 font-serif text-base text-slate-800" id="histEq_${index}"></td>
+                    <td class="py-3 px-4 text-center font-bold text-slate-700">${item.userAnswerStr}</td>
+                    <td class="py-3 px-4 text-center font-bold text-sky-700">x = ${item.correctVal}</td>
+                    <td class="py-3 px-4 text-center">
+                        <span class="inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full border ${badgeClass}">
+                            ${statusText}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-right no-print">
+                        <button onclick="toggleHistoryStep(${index})" class="text-xs text-sky-600 hover:text-sky-800 font-semibold underline">
+                            Ver solución
+                        </button>
+                    </td>
+                `;
+
+                tbody.appendChild(tr);
+
+                // Row expansion for step details
+                const trStep = document.createElement('tr');
+                trStep.id = `histStepRow_${index}`;
+                trStep.className = "hidden bg-slate-50/90";
+                trStep.innerHTML = `
+                    <td colspan="6" class="p-4 border-b border-slate-200">
+                        <div class="text-xs text-slate-700 space-y-1.5 pl-4 border-l-2 border-sky-500">
+                            <p class="font-bold text-slate-800">Pasos de resolución:</p>
+                            ${item.steps.map(s => `<p>${s}</p>`).join('')}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(trStep);
+
+                // Render math in table
+                setTimeout(() => {
+                    const mathTd = document.getElementById(`histEq_${index}`);
+                    if (mathTd) {
+                        try {
+                            katex.render(item.latex, mathTd, { throwOnError: false });
+                        } catch (e) {
+                            mathTd.textContent = item.latex;
+                        }
+                    }
+                }, 10);
+            });
+        }
+
+        function toggleHistoryStep(index) {
+            const row = document.getElementById(`histStepRow_${index}`);
+            if (row) {
+                row.classList.toggle('hidden');
+            }
+        }
+
+        function restartPractice() {
+            history = [];
+            questionCounter = 1;
+            totalSeconds = 0;
+            document.getElementById('headerCorrect').textContent = '0';
+            document.getElementById('headerIncorrect').textContent = '0';
+
+            document.getElementById('reportView').classList.add('hidden');
+            document.getElementById('practiceView').classList.remove('hidden');
+
+            startTimer();
+            generateNewProblem();
+        }
+
+        let canvas, ctx;
+        let isDrawing = false;
+        let drawColor = '#1e293b';
+
+        function initScratchpad() {
+            canvas = document.getElementById('scratchpadCanvas');
+            if (!canvas) return;
+
+            ctx = canvas.getContext('2d');
+
+            function resizeCanvas() {
+                const rect = canvas.parentElement.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                ctx.lineWidth = 2.5;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = drawColor;
+            }
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseleave', stopDrawing);
+
+            // Touch events for tablet/mobile
+            canvas.addEventListener('touchstart', (e) => {
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousedown', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: true });
+
+            canvas.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent('mousemove', {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                });
+                canvas.dispatchEvent(mouseEvent);
+            }, { passive: true });
+
+            canvas.addEventListener('touchend', () => {
+                const mouseEvent = new MouseEvent('mouseup', {});
+                canvas.dispatchEvent(mouseEvent);
+            });
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearScratchpad() {
+            if (ctx && canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function setCanvasColor(color) {
+            drawColor = color;
+            if (ctx) ctx.strokeStyle = drawColor;
+        }
+
+        /* Toast notifications */
+        function showTemporaryToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-6 right-6 bg-slate-800 text-white text-xs px-4 py-3 rounded-xl shadow-xl z-50 transition transform duration-300 translate-y-2 opacity-0";
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

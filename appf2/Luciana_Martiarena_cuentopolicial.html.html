@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expediente N° 16 - La misteriosa lapicera de la directora</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Special+Elite&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #f5eedc;
+            --card-bg: #fffbf0;
+            --text-color: #2c251e;
+            --accent-color: #1e3a8a;
+            --accent-red: #8b0000;
+            --border-color: #d6c5a3;
+            --font-size-base: 16px;
+            --paper-shadow: 0 4px 12px rgba(60, 45, 20, 0.15);
+        }
+
+        body.theme-dark {
+            --bg-main: #121620;
+            --card-bg: #1c2230;
+            --text-color: #e2e8f0;
+            --accent-color: #3b82f6;
+            --accent-red: #ef4444;
+            --border-color: #374151;
+            --paper-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+        }
+
+        body.theme-high-contrast {
+            --bg-main: #000000;
+            --card-bg: #111111;
+            --text-color: #ffff00;
+            --accent-color: #00ffff;
+            --accent-red: #ff0055;
+            --border-color: #ffffff;
+            --paper-shadow: 0 0 0 2px #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            font-size: var(--font-size-base);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .typewriter-font {
+            font-family: 'Courier Prime', monospace;
+        }
+
+        .stamp-font {
+            font-family: 'Special Elite', cursive;
+        }
+
+        .folder-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            box-shadow: var(--paper-shadow);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .stamp-mark {
+            border: 3px double var(--accent-red);
+            color: var(--accent-red);
+            transform: rotate(-3deg);
+            display: inline-block;
+            padding: 4px 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            opacity: 0.9;
+        }
+
+        .stamp-blue {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .highlight-text {
+            background-color: rgba(254, 240, 138, 0.95);
+            color: #000;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        body.theme-dark .highlight-text {
+            background-color: #d97706;
+            color: #fff;
+        }
+
+        .nav-tab {
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab.active {
+            border-bottom: 4px solid var(--accent-color);
+            font-weight: bold;
+            color: var(--accent-color);
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(30, 58, 138, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(30, 58, 138, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(30, 58, 138, 0); }
+        }
+
+        .mentor-pulse {
+            animation: pulse-border 2s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <header class="bg-blue-950 text-stone-100 p-3 shadow-lg sticky top-0 z-40 border-b-2 border-blue-800">
+        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-magnifying-glass text-amber-400 text-2xl" aria-hidden="true"></i>
+                <div>
+                    <h1 class="text-base md:text-lg font-bold tracking-wider stamp-font leading-tight" id="header-school-title">EXPEDIENTE N° 16: ESCUELA 16 D.E. 9</h1>
+                    <p class="text-[11px] text-blue-200">Prácticas del Lenguaje | Cuento Policial Clásico</p>
+                </div>
+            </div>
+
+            <!-- Panel de Controles DUA & Editor -->
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+                <button onclick="openEditorModal()" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded font-bold flex items-center gap-1 shadow transition-colors" title="Personalizar datos del caso, pistas y preguntas">
+                    <i class="fa-solid fa-pen-to-square"></i> <span class="hidden sm:inline">✍️ Editar Caso</span>
+                </button>
+
+                <!-- Tamaño de Texto DUA -->
+                <div class="flex items-center bg-blue-900/80 rounded px-2 py-1 border border-blue-700">
+                    <span class="mr-2 text-[10px] text-blue-200 font-semibold hidden md:inline">TEXTO:</span>
+                    <button onclick="changeFontSize(-1)" class="px-2 py-0.5 hover:bg-blue-800 rounded font-bold" title="Disminuir texto">A-</button>
+                    <button onclick="resetFontSize()" class="px-2 py-0.5 hover:bg-blue-800 rounded text-[10px]" title="Tamaño normal">A</button>
+                    <button onclick="changeFontSize(1)" class="px-2 py-0.5 hover:bg-blue-800 rounded font-bold" title="Aumentar texto">A+</button>
+                </div>
+
+                <!-- Lector de Voz Text-to-Speech -->
+                <div class="flex items-center bg-blue-900/80 rounded px-2 py-1 border border-blue-700">
+                    <span class="mr-2 text-[10px] text-blue-200 font-semibold hidden md:inline">VOZ DUA:</span>
+                    <button onclick="speakText()" class="px-2 py-0.5 text-green-400 hover:bg-blue-800 rounded" title="Escuchar pantalla actual"><i class="fa-solid fa-play"></i></button>
+                    <button onclick="pauseSpeech()" class="px-2 py-0.5 text-yellow-300 hover:bg-blue-800 rounded" title="Pausar / Reanudar voz"><i class="fa-solid fa-pause"></i></button>
+                    <button onclick="stopSpeech()" class="px-2 py-0.5 text-red-400 hover:bg-blue-800 rounded" title="Detener voz"><i class="fa-solid fa-stop"></i></button>
+                </div>
+
+                <!-- Selector de Modos Visuales -->
+                <div class="flex items-center bg-blue-900/80 rounded px-2 py-1 border border-blue-700">
+                    <span class="mr-2 text-[10px] text-blue-200 font-semibold hidden md:inline">TEMA:</span>
+                    <button onclick="setTheme('sepia')" class="px-1.5 py-0.5 hover:bg-blue-800 rounded" title="Libreta Vintage Sepia">📜</button>
+                    <button onclick="setTheme('dark')" class="px-1.5 py-0.5 hover:bg-blue-800 rounded" title="Modo Oscuro Policial">🌙</button>
+                    <button onclick="setTheme('high-contrast')" class="px-1.5 py-0.5 hover:bg-blue-800 rounded font-bold text-yellow-300" title="Alto Contraste DUA">👁️</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto w-full px-4 pt-4">
+        <div class="folder-card p-4 mb-4 border-l-8 border-l-blue-900 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="stamp-mark stamp-blue text-xs">SUMARIO CONFIDENCIAL</span>
+                    <span class="text-xs font-bold px-2.5 py-0.5 bg-amber-200 text-amber-900 rounded">7.° Grado - Primaria</span>
+                </div>
+                <h2 class="text-xl md:text-2xl font-bold typewriter-font" id="case-title-display">Caso: La misteriosa lapicera de la directora</h2>
+                <p class="text-xs opacity-80 mt-0.5" id="case-subtitle-display">Investigación en la Escuela 16 D.E. 9 | Enigma de la lapicera desaparecida</p>
+            </div>
+            
+            <div class="w-full md:w-56 flex flex-col items-start md:items-end">
+                <span id="progress-text" class="text-xs font-bold mb-1">FASE: 1/4 - Escena del Crimen</span>
+                <div class="w-full bg-stone-300 dark:bg-stone-700 h-3 rounded-full overflow-hidden border border-stone-400">
+                    <div id="progress-bar" class="bg-blue-700 h-full w-1/4 transition-all duration-500"></div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="flex border-b border-stone-400 overflow-x-auto mb-6 bg-stone-200/60 dark:bg-stone-800/60 rounded-t-lg p-1 gap-1" aria-label="Secciones del expediente">
+            <button onclick="switchTab('tab-escena')" id="btn-tab-escena" class="nav-tab active px-4 py-2.5 text-xs md:text-sm font-semibold whitespace-nowrap flex items-center gap-2">
+                <i class="fa-solid fa-book-open"></i> 1. Escena del Crimen
+            </button>
+            <button onclick="switchTab('tab-evidencias')" id="btn-tab-evidencias" class="nav-tab px-4 py-2.5 text-xs md:text-sm font-semibold whitespace-nowrap flex items-center gap-2">
+                <i class="fa-solid fa-folder-closed"></i> 2. Evidencias e Interrogatorio
+            </button>
+            <button onclick="switchTab('tab-deduccion')" id="btn-tab-deduccion" class="nav-tab px-4 py-2.5 text-xs md:text-sm font-semibold whitespace-nowrap flex items-center gap-2">
+                <i class="fa-solid fa-brain"></i> 3. Tablero de Deducción
+            </button>
+            <button onclick="switchTab('tab-acusacion')" id="btn-tab-acusacion" class="nav-tab px-4 py-2.5 text-xs md:text-sm font-semibold whitespace-nowrap flex items-center gap-2">
+                <i class="fa-solid fa-gavel"></i> 4. Acusación Final
+            </button>
+        </nav>
+    </div>
+
+    <main class="max-w-6xl mx-auto w-full px-4 mb-8 flex-grow">
+
+        <section id="tab-escena" class="tab-content block">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 folder-card p-6">
+                    <div class="flex justify-between items-center mb-4 border-b border-stone-300 pb-2">
+                        <h3 class="text-lg font-bold flex items-center gap-2 typewriter-font">
+                            <i class="fa-solid fa-file-lines text-blue-900 dark:text-blue-400"></i> INFORME DEL HECHO ENIGMÁTICO
+                        </h3>
+                        <button onclick="speakElement('relato-text')" class="text-xs bg-blue-900 text-white px-3 py-1 rounded hover:bg-blue-800 flex items-center gap-1">
+                            <i class="fa-solid fa-volume-high"></i> Escuchar relato completo
+                        </button>
+                    </div>
+
+                    <div id="relato-text" class="space-y-4 text-justify leading-relaxed">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+
+                    <div class="mt-6 p-4 bg-blue-50 dark:bg-stone-800 border-l-4 border-l-blue-800 rounded-r-lg text-xs leading-normal">
+                        <h4 class="font-bold text-sm text-blue-950 dark:text-blue-200 mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-user-ninja"></i> Misión del Investigador:
+                        </h4>
+                        <p>
+                            Para resolver este caso, no debes guiarte por acusaciones ni corazonadas. Examina minuciosamente los **testimonios de las coartadas** y contrástalos con las **pistas reales** recolectadas en la oficina.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="folder-card p-5 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 border-b pb-3 mb-4">
+                            <div class="w-12 h-12 bg-blue-900 text-white rounded-full flex items-center justify-center font-bold text-xl stamp-font">
+                                IM
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm">Inspector Mentor</h4>
+                                <span class="text-xs text-stone-500">Guía de Análisis Policial</span>
+                            </div>
+                        </div>
+
+                        <div id="mentor-box-escena" class="bg-amber-100/70 dark:bg-stone-800 p-3 rounded text-xs leading-relaxed border-l-4 border-amber-600">
+                            "¡Bienvenido, detective! Recordá que en los cuentos policiales existen **pistas reales** que revelan la verdad y **pistas falsas (distractores)** diseñadas para confundir. ¡Avanzá a la pestaña 2 para revisar las pruebas!"
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <button onclick="switchTab('tab-evidencias')" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded shadow flex items-center justify-center gap-2 transition-all">
+                            Ir a Libreta de Evidencias <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-evidencias" class="tab-content hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="folder-card p-5">
+                    <h3 class="text-base font-bold mb-4 flex items-center gap-2 typewriter-font border-b pb-2">
+                        <i class="fa-solid fa-address-card text-blue-900 dark:text-blue-400"></i> FICHAS Y COARTADAS DE SOSPECHOSOS
+                    </h3>
+
+                    <div id="sospechosos-container" class="space-y-4">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+
+                <div class="folder-card p-5">
+                    <h3 class="text-base font-bold mb-4 flex items-center gap-2 typewriter-font border-b pb-2">
+                        <i class="fa-solid fa-box-open text-blue-900 dark:text-blue-400"></i> PRUEBAS RECOLECTADAS EN LA ESCENA
+                    </h3>
+
+                    <div id="pistas-container" class="space-y-3">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+
+                    <div class="mt-6 flex justify-end">
+                        <button onclick="switchTab('tab-deduccion')" class="bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 px-4 rounded text-xs flex items-center gap-2">
+                            Ir al Tablero de Deducción <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-deduccion" class="tab-content hidden">
+            <div class="folder-card p-6">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-4 border-b pb-2">
+                    <h3 class="text-lg font-bold flex items-center gap-2 typewriter-font">
+                        <i class="fa-solid fa-brain text-blue-900 dark:text-blue-400"></i> TABLERO DE ANÁLISIS Y DEDUCCIÓN
+                    </h3>
+                    
+                    <button id="btn-mentor-help" onclick="triggerMentorScaffold()" class="mentor-pulse bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-2 rounded flex items-center gap-2 shadow">
+                        <i class="fa-solid fa-hand-holding-hand"></i> Pista del Inspector Mentor (Nivel <span id="mentor-level-num">1</span>/3)
+                    </button>
+                </div>
+
+                <div id="scaffold-display" class="hidden mb-6 p-4 bg-amber-50 dark:bg-amber-950/70 border-2 border-amber-500 rounded-lg text-xs leading-relaxed">
+                    <div class="flex items-start gap-3">
+                        <i class="fa-solid fa-lightbulb text-amber-600 text-2xl mt-0.5"></i>
+                        <div>
+                            <h4 id="scaffold-title" class="font-bold text-amber-900 dark:text-amber-200">Ayuda Didáctica Nivel 1</h4>
+                            <p id="scaffold-text" class="mt-1 text-stone-800 dark:text-amber-100"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="preguntas-deduccion-container" class="space-y-6 text-xs">
+                    <!-- Se llena dinámicamente -->
+                </div>
+
+                <div class="mt-6 flex flex-wrap justify-between items-center gap-3">
+                    <div id="deduction-feedback" class="text-xs font-bold"></div>
+                    <button onclick="verificarDeducciones()" class="bg-blue-900 hover:bg-blue-800 text-white font-bold py-2.5 px-5 rounded text-xs shadow">
+                        Validar Deducciones e Ir a Acusación <i class="fa-solid fa-shield-halved ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-acusacion" class="tab-content hidden">
+            <div class="folder-card p-6 border-t-8 border-t-blue-900">
+                <h3 class="text-lg font-bold mb-2 flex items-center gap-2 typewriter-font">
+                    <i class="fa-solid fa-gavel text-blue-900 dark:text-blue-400"></i> ACUSACIÓN Y SENTENCIA FORMAL
+                </h3>
+                <p class="text-xs opacity-80 mb-6">Fundamenta tu veredicto final utilizando citas y datos precisos obtenidos del texto.</p>
+
+                <form id="form-acusacion" onsubmit="procesarAcusacion(event)" class="space-y-5 text-xs">
+                    <div>
+                        <label class="block font-bold text-sm mb-2 text-blue-950 dark:text-blue-300">1. ¿Quién fue la persona que tomó la lapicera?</label>
+                        <select id="select-culpable" class="w-full p-2.5 border rounded-lg bg-stone-50 dark:bg-stone-800 font-semibold focus:ring-2 focus:ring-blue-600">
+                            <!-- Carga dinámica -->
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-sm mb-2 text-blue-950 dark:text-blue-300">2. Selección de la Evidencia Decisiva:</label>
+                        <select id="select-evidencia" class="w-full p-2.5 border rounded-lg bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-blue-600">
+                            <option value="">-- Selecciona la prueba irrefutable --</option>
+                            <option value="bts_bonobon">Pin de BTS + Empaque de Bon o Bon + Testimonio de Anto</option>
+                            <option value="examen">El examen desaprobado en el tacho de basura</option>
+                            <option value="escritorio">El desorden general del escritorio</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-sm mb-2 text-blue-950 dark:text-blue-300">3. Redacta la Fundamentación del Detective (Mínimo 2 oraciones):</label>
+                        <p class="text-[11px] text-stone-500 mb-1">Explica por qué cae la coartada del culpable y cómo las pistas halladas lo comprometen directamente:</p>
+                        <textarea id="texto-justificacion" rows="4" class="w-full p-3 border rounded-lg bg-stone-50 dark:bg-stone-800 focus:ring-2 focus:ring-blue-600" placeholder="Ejemplo: La persona culpable mintió sobre su coartada porque Anto declaró que... Además, las evidencias físicas como el pin de BTS prueban que..."></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded text-sm shadow flex justify-center items-center gap-2">
+                        <i class="fa-solid fa-stamp"></i> PRESENTAR DICTAMEN FINAL AL DOCENTE
+                    </button>
+                </form>
+
+                <div id="feedback-acusacion" class="hidden mt-6 p-4 rounded-lg border-2"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-950 text-blue-200 py-4 px-4 text-center text-xs border-t border-blue-800">
+        <p>Aplicación Interactiva de Análisis Lectora | Escuela N° 16 D.E. 9 | Diseñada bajo pautas DUA y Educación Inclusiva</p>
+    </footer>
+
+    <div id="modal-interrogatorio" class="fixed inset-0 bg-black/75 hidden items-center justify-center p-4 z-50">
+        <div class="bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 max-w-lg w-full rounded-lg p-6 folder-card border-2 border-stone-400 shadow-2xl">
+            <div class="flex justify-between items-center border-b pb-2 mb-3">
+                <h4 id="modal-title" class="font-bold text-sm typewriter-font">TRANSCRIPCIÓN DE INTERROGATORIO</h4>
+                <button onclick="closeModal()" class="text-stone-500 hover:text-red-600 font-bold text-xl">&times;</button>
+            </div>
+            <div id="modal-body" class="text-xs space-y-3 leading-relaxed text-justify max-h-64 overflow-y-auto pr-1">
+                <!-- Se llena dinámicamente -->
+            </div>
+            <div class="mt-4 flex justify-between items-center pt-2 border-t">
+                <button onclick="speakElement('modal-body')" class="text-xs bg-blue-900 text-white px-3 py-1 rounded flex items-center gap-1">
+                    <i class="fa-solid fa-volume-high"></i> Escuchar voz
+                </button>
+                <button onclick="closeModal()" class="bg-stone-700 text-white text-xs px-4 py-1.5 rounded font-bold">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-editor" class="fixed inset-0 bg-black/80 hidden items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 max-w-3xl w-full rounded-lg p-6 folder-card border-2 border-stone-400 shadow-2xl my-6">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h4 class="font-bold text-base typewriter-font flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-amber-600"></i> EDITOR COMPLETO DEL CASO (CONFIGURACIÓN DOCENTE)
+                </h4>
+                <button onclick="closeEditorModal()" class="text-stone-500 hover:text-red-600 font-bold text-xl">&times;</button>
+            </div>
+
+            <p class="text-xs text-stone-600 dark:text-stone-300 mb-4">
+                Modifica cualquier aspecto de la historia, sospechosos o preguntas. Los cambios se guardarán automáticamente en tu navegador.
+            </p>
+
+            <form onsubmit="guardarCasoPersonalizado(event)" class="space-y-4 text-xs max-h-[65vh] overflow-y-auto pr-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="font-bold block mb-1">Título del Enigma:</label>
+                        <input type="text" id="edit-titulo" class="w-full p-2 border rounded bg-white dark:bg-stone-900" required>
+                    </div>
+                    <div>
+                        <label class="font-bold block mb-1">Escuela / Subtítulo:</label>
+                        <input type="text" id="edit-subtitulo" class="w-full p-2 border rounded bg-white dark:bg-stone-900" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="font-bold block mb-1">Relato Principal de la Escena del Crimen (Párrafos separados por líneas):</label>
+                    <textarea id="edit-relato" rows="5" class="w-full p-2 border rounded bg-white dark:bg-stone-900" required></textarea>
+                </div>
+
+                <div class="p-3 bg-amber-50 dark:bg-stone-900 border rounded">
+                    <h5 class="font-bold text-amber-900 dark:text-amber-300 mb-2">Interrogatorio Clave (Culpable - Bibiana):</h5>
+                    <textarea id="edit-decl-bibiana" rows="3" class="w-full p-2 border rounded bg-white dark:bg-stone-800" required></textarea>
+                </div>
+
+                <div class="p-3 bg-blue-50 dark:bg-stone-900 border rounded space-y-2">
+                    <h5 class="font-bold text-blue-900 dark:text-blue-300 mb-1">Pistas del Inspector Mentor (Andamiaje):</h5>
+                    <div>
+                        <label class="font-semibold block text-[11px]">Nivel 1 (Pregunta orientadora):</label>
+                        <input type="text" id="edit-mentor-1" class="w-full p-1.5 border rounded bg-white dark:bg-stone-800" required>
+                    </div>
+                    <div>
+                        <label class="font-semibold block text-[11px]">Nivel 2 (Pista de relectura):</label>
+                        <input type="text" id="edit-mentor-2" class="w-full p-1.5 border rounded bg-white dark:bg-stone-800" required>
+                    </div>
+                    <div>
+                        <label class="font-semibold block text-[11px]">Nivel 3 (Explicación detallada):</label>
+                        <input type="text" id="edit-mentor-3" class="w-full p-1.5 border rounded bg-white dark:bg-stone-800" required>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-between items-center gap-2 pt-3 border-t">
+                    <div class="flex gap-2">
+                        <button type="button" onclick="exportarCasoJSON()" class="px-3 py-1.5 rounded bg-stone-700 text-white font-bold text-xs">
+                            <i class="fa-solid fa-download"></i> Exportar JSON
+                        </button>
+                        <button type="button" onclick="solicitarRestauracion()" class="px-3 py-1.5 rounded bg-red-700 text-white font-bold text-xs">
+                            <i class="fa-solid fa-rotate-left"></i> Resetear por Defecto
+                        </button>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button type="button" onclick="closeEditorModal()" class="px-4 py-2 rounded bg-stone-400 text-white font-bold">Cancelar</button>
+                        <button type="submit" class="px-5 py-2 rounded bg-blue-900 hover:bg-blue-800 text-white font-bold">
+                            Guardar y Aplicar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast de Notificación Personalizado -->
+    <div id="toast-notification" class="fixed bottom-5 right-5 bg-stone-900 text-white text-xs px-4 py-3 rounded-lg shadow-2xl hidden transition-all duration-300 z-50 flex items-center gap-2 border border-stone-700">
+        <i id="toast-icon" class="fa-solid fa-info-circle text-amber-400"></i>
+        <span id="toast-message">Mensaje de notificación</span>
+    </div>
+
+    <!-- Modal Personalizado de Confirmación -->
+    <div id="modal-confirm" class="fixed inset-0 bg-black/75 hidden items-center justify-center p-4 z-50">
+        <div class="bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 max-w-sm w-full rounded-lg p-5 folder-card border-2 border-stone-400 shadow-2xl">
+            <h4 class="font-bold text-sm typewriter-font mb-2 text-red-700 dark:text-red-400">⚠️ Confirmar Acción</h4>
+            <p id="confirm-message-text" class="text-xs mb-4">¿Estás seguro de resetear el caso a los datos por defecto?</p>
+            <div class="flex justify-end gap-2 text-xs">
+                <button onclick="cerrarConfirmacion(false)" class="px-3 py-1.5 rounded bg-stone-300 dark:bg-stone-700 text-stone-800 dark:text-stone-200 font-bold">Cancelar</button>
+                <button onclick="cerrarConfirmacion(true)" class="px-3 py-1.5 rounded bg-red-700 text-white font-bold">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DEFAULT_CASO_CONFIG = {
+            titulo: "La misteriosa lapicera de la directora",
+            subtitulo: "Investigación en la Escuela 16 D.E. 9 | Enigma de la lapicera desaparecida",
+            escuelaHeader: "EXPEDIENTE N° 16: ESCUELA 16 D.E. 9",
+            relatoParrafos: [
+                "En la <strong>Escuela N° 16 D.E. 9</strong> circulaba un rumor antiguo que preocupaba a todos los alumnos: se decía que cada vez que la Directora corregía un cuaderno utilizando su antigua lapicera de pluma, el estudiante resultaba misteriosamente <strong>desaprobado</strong>. Para la mayoría de los chicos de 7.° grado, esa lapicera tenía una especie de 'mala suerte' o maldición escolar.",
+                "El martes pasado, durante el recreo largo de las 10:00 hs, la famosa lapicera <strong>desapareció sin dejar rastro</strong> del escritorio de la Dirección. La Directora, sumamente enfadada, acusó de inmediato a todo el grupo de 7.° grado de haber planeado un robo para evitar futuras evaluaciones.",
+                "Sin embargo, la investigación restringió el círculo a tres sospechosos principales. El primero es <strong>Pedro</strong>, quien argumenta que no pudo haber sido porque estuvo todo el recreo en la biblioteca buscando juegos de mesa con la bibliotecaria.",
+                "La segunda sospechosa es <strong>María</strong>, de quien se encontró una <em>evaluación con nota desaprobada</em> dentro de la papelera de la dirección, lo que generó sospechas inmediatas de venganza. No obstante, María asegura que durante los 15 minutos del recreo estuvo rindiendo un examen en el aula junto a la <strong>Seño Miri</strong>.",
+                "Por último se encuentra <strong>Bibiana</strong>, quien declaró que pasó todo el recreo conversando en el pasillo junto a <strong>Anto</strong>, la auxiliar del colegio. Pero las evidencias físicas encontradas en la escena del crimen sugieren que alguien ingresó apresuradamente al despacho..."
+            ],
+            sospechosos: [
+                {
+                    id: "pedro",
+                    nombre: "1. Pedro (Estudiante de 7.°)",
+                    movil: "Había tenido mala nota en la entrega anterior.",
+                    coartadaLugar: "Biblioteca",
+                    declaracionResumen: "Estuve todo el recreo con la bibliotecaria buscando juegos de mesa.",
+                    interrogatorio: `
+                        <strong>Oficial de Guardia:</strong> "Pedro, ¿dónde estabas exactamente entre las 10:00 y las 10:15 hs?"<br><br>
+                        <strong>Pedro:</strong> "Estuve adentro de la biblioteca durante todo el recreo. La bibliotecaria me ayudó a buscar juegos de mesa. Ella puede atestiguar que no salí ni un minuto."<br><br>
+                        <em>(Verificación: La bibliotecaria confirmó que Pedro estuvo con ella en la mesa central durante todo el recreo).</em>
+                    `
+                },
+                {
+                    id: "maria",
+                    nombre: "2. María (Estudiante de 7.°)",
+                    movil: "ENOJO por su examen desaprobado.",
+                    coartadaLugar: "Aula con Seño Miri",
+                    declaracionResumen: "Estaba en el aula rindiendo recuperatorio con la Seño Miri.",
+                    interrogatorio: `
+                        <strong>Oficial de Guardia:</strong> "María, encontramos un examen tuyo desaprobado en la papelera de la Dirección."<br><br>
+                        <strong>María:</strong> "Ese examen era del mes pasado, la Directora ya lo había tirado. Hoy durante el recreo estuve en el aula rindiendo el examen recuperatorio junto a la Seño Miri. Nunca fui a la dirección."<br><br>
+                        <em>(Verificación: La Seño Miri ratificó que María estuvo sentada a su lado en el aula de 10:00 a 10:15 hs).</em>
+                    `
+                },
+                {
+                    id: "bibiana",
+                    nombre: "3. Bibiana (Estudiante de 7.°)",
+                    movil: "Creía que la lapicera tenía la maldición del desapruebo.",
+                    coartadaLugar: "Pasillo con Anto",
+                    declaracionResumen: "Estuve charlando todo el tiempo con Anto, la auxiliar del colegio.",
+                    interrogatorio: `
+                        <strong>Oficial de Guardia:</strong> "Bibiana, ¿cuál fue tu recorrido durante el recreo?"<br><br>
+                        <strong>Bibiana:</strong> "Estuve charlando en el pasillo con Anto, la auxiliar del colegio, de principio a fin."<br><br>
+                        <em>(Verificación crucial: Anto declaró que a las 10:05 hs Bibiana le dijo que 'iba un segundo a la Dirección a pedir abrochadora' y tardó casi 10 minutos en volver. Además, Anto notó que Bibiana llevaba varios <strong>pines de BTS</strong> en su cartuchera y comía un <strong>Bon o Bon</strong>).</em>
+                    `
+                }
+            ],
+            pistas: [
+                {
+                    id: "p1",
+                    tipo: "real",
+                    titulo: "PISTA REAL 1: Empaque de 'Bon o Bon'",
+                    lugar: "Hallazgo en escritorio",
+                    descripcion: "Se encontró un envoltorio recién abierto de golosina 'Bon o Bon' justo al lado del tintero de la Directora.",
+                    icono: "fa-candy-cane"
+                },
+                {
+                    id: "p2",
+                    tipo: "real",
+                    titulo: "PISTA REAL 2: Pin metálico de BTS",
+                    lugar: "Hallazgo bajo la silla",
+                    descripcion: "Un enganche metálico decorativo con la frase de la banda de K-Pop 'BTS' tirado en la alfombra de la oficina.",
+                    icono: "fa-music"
+                },
+                {
+                    id: "p3",
+                    tipo: "real",
+                    titulo: "PISTA REAL 3: Escritorio Desordenado",
+                    lugar: "Estado físico",
+                    descripcion: "Hojas revueltas y cajones abiertos con apuro, señal de que alguien buscaba la lapicera rápidamente.",
+                    icono: "fa-folder-open"
+                },
+                {
+                    id: "p4",
+                    tipo: "falsa",
+                    titulo: "PISTA FALSA / DISTRACTOR: Examen de María",
+                    lugar: "En la papelera",
+                    descripcion: "Una evaluación previa desaprobada a nombre de María tirada en el tacho de basura de la dirección.",
+                    icono: "fa-file-circle-xmark"
+                }
+            ],
+            preguntasDeduccion: [
+                {
+                    id: "p1",
+                    pregunta: "1. ¿Qué evidencia o testimonio deja completamente AFUERA de la lista de sospechosos a María?",
+                    opciones: [
+                        { val: "a", texto: "a) Que María demostró no saber cómo utilizar lapiceras de pluma antigua." },
+                        { val: "b", texto: "b) La confirmación de la Seño Miri de que María estuvo en el aula rindiendo examen durante todo el recreo, y que su examen en el tacho era viejo." },
+                        { val: "c", texto: "c) Que el empaque de Bon o Bon no pertenece a la marca de golosinas que compra María." }
+                    ],
+                    correcta: "b"
+                },
+                {
+                    id: "p2",
+                    pregunta: "2. ¿Cuál es la pista física MÁS IMPORTANTE encontrada en la escena para identificar al responsable y por qué?",
+                    opciones: [
+                        { val: "a", texto: "a) El examen desaprobado, porque demuestra el enojo de quien cometió el robo." },
+                        { val: "b", texto: "b) El empaque de Bon o Bon y el pin de BTS, pues son objetos personales específicos que revelan quién estuvo allí." },
+                        { val: "c", texto: "c) El escritorio desordenado, porque prueba que la persona que entró tenía apuro." }
+                    ],
+                    correcta: "b"
+                }
+            ],
+            mentorHints: {
+                nivel1: "¿Has verificado si la coartada de Bibiana coincide exactamente con lo declarado por Anto, la auxiliar?",
+                nivel2: "Revisa el interrogatorio de Bibiana. Anto señaló que Bibiana se alejó 10 minutos a la dirección y que llevaba un pin de BTS y golosinas.",
+                nivel3: "El testimonio de Anto desmiente la coartada de Bibiana y conecta el pin de BTS y el empaque de Bon o Bon directamente con ella."
+            },
+            culpableCorrecto: "bibiana",
+            evidenciaCorrecta: "bts_bonobon"
+        };
+
+        let CASO_CONFIG = JSON.parse(localStorage.getItem('CASO_CONFIG_DATA')) || JSON.parse(JSON.stringify(DEFAULT_CASO_CONFIG));
+        let currentFontSize = 16;
+        let mentorHelpLevel = 1;
+        let speechSynth = window.speechSynthesis;
+        let currentUtterance = null;
+        let pendingConfirmCallback = null;
+
+        function renderizarCaso() {
+            document.getElementById('case-title-display').innerText = "Caso: " + CASO_CONFIG.titulo;
+            document.getElementById('case-subtitle-display').innerText = CASO_CONFIG.subtitulo;
+            document.getElementById('header-school-title').innerText = CASO_CONFIG.escuelaHeader || "EXPEDIENTE POLICIAL";
+
+            const relatoBox = document.getElementById('relato-text');
+            relatoBox.innerHTML = CASO_CONFIG.relatoParrafos.map((p, idx) => `<p id="parrafo-relato-${idx}">${p}</p>`).join('');
+
+            const sospContainer = document.getElementById('sospechosos-container');
+            sospContainer.innerHTML = CASO_CONFIG.sospechosos.map(s => `
+                <div class="p-3 border rounded-lg bg-stone-50 dark:bg-stone-800/60 hover:border-blue-500 transition-all">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-bold text-sm">${s.nombre}</h4>
+                            <p class="text-[11px] text-stone-500">Móvil supuesto: ${s.movil}</p>
+                        </div>
+                        <span class="text-[10px] font-semibold bg-stone-200 dark:bg-stone-700 px-2 py-0.5 rounded">Coartada: ${s.coartadaLugar}</span>
+                    </div>
+                    <p class="text-xs mt-2"><strong>Declaración resumida:</strong> "${s.declaracionResumen}"</p>
+                    <button onclick="interrogar('${s.id}')" class="mt-2 text-xs bg-blue-900 text-white px-2.5 py-1 rounded hover:bg-blue-800 flex items-center gap-1">
+                        <i class="fa-solid fa-comments"></i> Escuchar / Leer interrogatorio
+                    </button>
+                </div>
+            `).join('');
+
+            const pistasContainer = document.getElementById('pistas-container');
+            pistasContainer.innerHTML = CASO_CONFIG.pistas.map(p => `
+                <div class="p-3 border-l-4 ${p.tipo === 'real' ? 'border-l-amber-600 bg-stone-100 dark:bg-stone-800' : 'border-l-red-600 bg-red-50 dark:bg-stone-800/90'} rounded">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-xs ${p.tipo === 'real' ? 'text-amber-900 dark:text-amber-300' : 'text-red-900 dark:text-red-300'} flex items-center gap-1">
+                            <i class="fa-solid ${p.icono}"></i> ${p.titulo}
+                        </h4>
+                        <span class="text-[10px] ${p.tipo === 'real' ? 'bg-amber-200 text-amber-900' : 'bg-red-200 text-red-900'} px-1.5 py-0.5 rounded font-bold">${p.lugar}</span>
+                    </div>
+                    <p class="text-xs mt-1">${p.descripcion}</p>
+                </div>
+            `).join('');
+
+            const deducContainer = document.getElementById('preguntas-deduccion-container');
+            deducContainer.innerHTML = CASO_CONFIG.preguntasDeduccion.map(q => `
+                <div class="p-4 bg-stone-50 dark:bg-stone-800/40 rounded-lg border border-stone-300 dark:border-stone-700">
+                    <label class="block font-bold text-sm mb-3 text-blue-950 dark:text-blue-300">
+                        ${q.pregunta}
+                    </label>
+                    <div class="space-y-2">
+                        ${q.opciones.map(opt => `
+                            <label class="flex items-start gap-2 p-2 rounded hover:bg-stone-200 dark:hover:bg-stone-700 cursor-pointer">
+                                <input type="radio" name="${q.id}" value="${opt.val}" class="mt-0.5 accent-blue-800">
+                                <span>${opt.texto}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            const selectCulpable = document.getElementById('select-culpable');
+            selectCulpable.innerHTML = `
+                <option value="">-- Selecciona un sospechoso --</option>
+                ${CASO_CONFIG.sospechosos.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('')}
+            `;
+        }
+
+        function changeFontSize(delta) {
+            currentFontSize = Math.min(Math.max(12, currentFontSize + delta * 2), 24);
+            document.body.style.fontSize = currentFontSize + 'px';
+        }
+
+        function resetFontSize() {
+            currentFontSize = 16;
+            document.body.style.fontSize = '16px';
+        }
+
+        function setTheme(theme) {
+            document.body.classList.remove('theme-dark', 'theme-high-contrast');
+            if (theme === 'dark') {
+                document.body.classList.add('theme-dark');
+            } else if (theme === 'high-contrast') {
+                document.body.classList.add('theme-high-contrast');
+            }
+        }
+
+        function speakText(textToRead) {
+            stopSpeech();
+
+            if (!textToRead) {
+                const activeTab = document.querySelector('.tab-content:not(.hidden)');
+                textToRead = activeTab ? activeTab.innerText : document.body.innerText;
+            }
+
+            if ('speechSynthesis' in window) {
+                currentUtterance = new SpeechSynthesisUtterance(textToRead);
+                currentUtterance.lang = 'es-AR';
+                currentUtterance.rate = 0.95;
+                speechSynth.speak(currentUtterance);
+            }
+        }
+
+        function speakElement(elementId) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                speakText(el.innerText || el.textContent);
+            }
+        }
+
+        function pauseSpeech() {
+            if (speechSynth.speaking && !speechSynth.paused) {
+                speechSynth.pause();
+            } else if (speechSynth.paused) {
+                speechSynth.resume();
+            }
+        }
+
+        function stopSpeech() {
+            if (speechSynth) {
+                speechSynth.cancel();
+            }
+        }
+
+        function switchTab(tabId) {
+            stopSpeech();
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+                tab.classList.remove('block');
+            });
+            document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+
+            const target = document.getElementById(tabId);
+            const targetBtn = document.getElementById('btn-' + tabId);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('block');
+            }
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+            }
+
+            updateProgress(tabId);
+        }
+
+        function updateProgress(tabId) {
+            const bar = document.getElementById('progress-bar');
+            const text = document.getElementById('progress-text');
+
+            const progressMap = {
+                'tab-escena': { percent: '25%', label: 'FASE: 1/4 - Escena del Crimen' },
+                'tab-evidencias': { percent: '50%', label: 'FASE: 2/4 - Libreta de Evidencias' },
+                'tab-deduccion': { percent: '75%', label: 'FASE: 3/4 - Tablero de Deducción' },
+                'tab-acusacion': { percent: '100%', label: 'FASE: 4/4 - Acusación Final' }
+            };
+
+            if (progressMap[tabId]) {
+                bar.style.width = progressMap[tabId].percent;
+                text.innerText = progressMap[tabId].label;
+            }
+        }
+
+        function procesarAcusacion(e) {
+            e.preventDefault();
+
+            const culpable = document.getElementById('select-culpable').value;
+            const evidencia = document.getElementById('select-evidencia').value;
+            const justificacion = document.getElementById('texto-justificacion').value.trim();
+            const feedbackBox = document.getElementById('feedback-acusacion');
+
+            feedbackBox.classList.remove('hidden');
+
+            if (!culpable || !evidencia || justificacion.length < 15) {
+                feedbackBox.className = "mt-4 p-4 rounded-lg border-2 border-amber-500 bg-amber-50 dark:bg-amber-950 text-amber-900 dark:text-amber-200 text-xs";
+                feedbackBox.innerHTML = `
+                    <p class="font-bold mb-1">⚠️ Declaración Incompleta:</p>
+                    <p>Por favor seleccioná al culpable, la prueba irrefutable y escribí una fundamentación explicativa de al menos dos oraciones.</p>
+                `;
+                return;
+            }
+
+            if (culpable === CASO_CONFIG.culpableCorrecto && evidencia === CASO_CONFIG.evidenciaCorrecta) {
+                feedbackBox.className = "mt-4 p-4 rounded-lg border-2 border-green-600 bg-green-50 dark:bg-green-950 text-green-900 dark:text-green-200 text-xs";
+                feedbackBox.innerHTML = `
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="stamp-mark text-green-700 border-green-700">¡CASO RESUELTO CON ÉXITO!</span>
+                    </div>
+                    <p class="font-bold text-sm mb-1">Demostración Incontestable:</p>
+                    <p class="mb-3">Bibiana mintió en su coartada. Anto (la auxiliar) confirmó que Bibiana se ausentó hacia la Dirección a las 10:05 hs. Además, el pin de BTS hallado bajo la silla y el envoltorio de Bon o Bon pertenecen indiscutiblemente a ella.</p>
+                    <button onclick="copiarInformeFinal()" class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-4 rounded text-xs flex items-center gap-2 shadow">
+                        <i class="fa-solid fa-copy"></i> Copiar Informe de Investigación para mi Docente
+                    </button>
+                `;
+            } else {
+                feedbackBox.className = "mt-4 p-4 rounded-lg border-2 border-red-500 bg-red-50 dark:bg-red-950 text-red-900 dark:text-red-200 text-xs";
+                feedbackBox.innerHTML = `
+                    <p class="font-bold text-sm mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question"></i> Hipótesis Rechazada:
+                    </p>
+                    <p class="mb-2">Esa acusación no concuerda con las evidencias. Reflexioná socráticamente:</p>
+                    <ul class="list-disc list-inside space-y-1 pl-1">
+                        <li>¿Ese sospechoso realmente estuvo solo en la Dirección o tenía una coartada confirmada por un docente?</li>
+                        <li>¿A quién pertenecían las golosinas Bon o Bon y los objetos de BTS según el testimonio de la auxiliar Anto?</li>
+                    </ul>
+                `;
+            }
+        }
+
+        function copiarInformeFinal() {
+            const culpableSelect = document.getElementById('select-culpable');
+            const culpableNombre = culpableSelect.options[culpableSelect.selectedIndex]?.text || 'No especificado';
+            const justificacion = document.getElementById('texto-justificacion').value || 'Sin redactar';
+
+            const texto = `=== INFORME DE INVESTIGACIÓN POLICIAL - ESCUELA N° 16 D.E. 9 ===
+Estudiante: [Completar Nombre]
+Curso: 7.° Grado - Prácticas del Lenguaje
+
+ACUSACIÓN Y DICTAMEN FINAL:
+- Sospechoso Culpable: ${culpableNombre}
+- Fundamentación: ${justificacion}
+=============================================================`;
+
+            const area = document.createElement('textarea');
+            area.value = texto;
+            document.body.appendChild(area);
+            area.select();
+            document.execCommand('copy');
+            document.body.removeChild(area);
+
+            showToast('¡Informe copiado al portapapeles!');
+        }
+
+        window.onload = function() {
+            renderizarCaso();
+            updateProgress('tab-escena');
+        };
+    </script>
+</body>
+</html>
