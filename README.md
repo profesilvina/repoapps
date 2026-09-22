@@ -2,7 +2,7 @@
 
 > **Coordinación y Compilación:** Prof. Silvina Elena Busto  
 > **Asistencia Técnica y Vibe Coding:** Antigravity CLI  
-> **Enfoque Pedagógico:** Mediadores didácticos para el andamiaje cognitivo, "Socias del Pensamiento" (Perkins) y Diseño Universal para el Aprendizaje (DUA - Res. 860/25).
+> **Enfoque Pedagógico:** Mediadores didácticos para el andamiaje cognitivo y Diseño Universal para el Aprendizaje (DUA - Res. 860/25).
 
 Este repositorio contiene una colección de aplicaciones web interactivas y mediadores didácticos desarrollados mediante la metodología **Vibe Coding** (desarrollo asistido por Inteligencia Artificial con soporte de Antigravity CLI y lenguaje natural).
 
