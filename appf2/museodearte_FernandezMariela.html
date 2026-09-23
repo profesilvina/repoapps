@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MI PRIMER MUSEO INTERACTIVO - ARTES VISUALES</title>
+    <style>
+        :root {
+            --bg-museum: #F5F2EB;       /* Pared crema clara */
+            --wall-card: #FFFFFF;        
+            --gold-frame: #C5A059;       /* Marco dorado */
+            --text-color: #2C2C2C;       
+            --btn-primary: #27AE60;
+            --btn-secondary: #2980B9;
+            --btn-accent: #E67E22;
+            --btn-disabled: #BDC3C7;
+            --card-border: #E0DACE;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+            text-transform: uppercase;
+        }
+
+        body {
+            background-color: var(--bg-museum);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+        }
+
+        header {
+            background-color: #FFFFFF;
+            width: 100%;
+            max-width: 900px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 4px solid var(--gold-frame);
+            text-align: center;
+            color: #2C2C2C;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            color: #4A3E3D;
+        }
+
+        .round-badge {
+            display: inline-block;
+            background-color: var(--gold-frame);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 6px;
+        }
+
+        main {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex-grow: 1;
+        }
+
+        /* SALA DEL MUSEO */
+        .gallery-container {
+            background-color: #FFFFFF;
+            border-radius: 12px;
+            border: 4px solid var(--gold-frame);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .artwork-wrapper {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            max-height: 40vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background-color: #FFFFFF;
+            border: 8px solid var(--gold-frame);
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .artwork-svg-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease;
+            transform-origin: center;
+        }
+
+        .artwork-svg-container svg {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .image-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .info-card {
+            background-color: #F8F5EF;
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            text-align: center;
+            border: 2px solid var(--card-border);
+        }
+
+        .info-title {
+            font-size: 0.95rem;
+            color: #2C2C2C;
+        }
+
+        .info-author {
+            font-size: 0.85rem;
+            color: #666666;
+            margin-top: 4px;
+        }
+
+        /* ÁREA DE INTERACCIÓN PEDAGÓGICA */
+        .interaction-container {
+            background-color: var(--wall-card);
+            border-radius: 12px;
+            padding: 15px;
+            border: 3px solid var(--card-border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .question-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #EBF5FB;
+            padding: 14px;
+            border-radius: 10px;
+            border: 2px solid #AED6F1;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            color: #1B4F72;
+            flex-grow: 1;
+            line-height: 1.3;
+        }
+
+        .audio-btn {
+            background-color: var(--btn-accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 52px;
+            height: 52px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+
+        .audio-btn:active {
+            transform: scale(0.95);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 500px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-btn {
+            background-color: #FAFAFA;
+            border: 3px solid #D5D8DC;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            color: #2C3E50;
+        }
+
+        .option-btn:hover {
+            background-color: #EAEDED;
+            border-color: #BDC3C7;
+        }
+
+        .option-btn.correct {
+            background-color: #D4EFDF !important;
+            border-color: #27AE60 !important;
+            color: #1E8449 !important;
+        }
+
+        .option-btn.incorrect {
+            background-color: #FADBD8 !important;
+            border-color: #CB4335 !important;
+            color: #78281F !important;
+        }
+
+        .hint-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .hint-btn {
+            background-color: #F4D03F;
+            color: #7D6608;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            align-self: flex-start;
+        }
+
+        .hint-text {
+            background-color: #FCF3CF;
+            border: 2px dashed #F1C40F;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            color: #7D6608;
+            display: none;
+        }
+
+        /* PANTALLA DE VICTORIA Y PREMIO */
+        .victory-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #FFFFFF;
+            border-radius: 12px;
+            padding: 25px;
+            border: 4px solid var(--gold-frame);
+            text-align: center;
+            gap: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .trophy-icon {
+            font-size: 4.5rem;
+            animation: bounce 1s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-12px); }
+        }
+
+        .victory-title {
+            color: #27AE60;
+            font-size: 1.4rem;
+        }
+
+        .victory-msg {
+            color: #2C2C2C;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .restart-btn {
+            background-color: var(--btn-primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* NAVEGACIÓN SLIDER */
+        .navigation-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #FFFFFF;
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 4px solid var(--gold-frame);
+            width: 100%;
+            max-width: 900px;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .nav-btn {
+            background-color: var(--btn-secondary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .nav-btn:disabled {
+            background-color: var(--btn-disabled);
+            cursor: not-allowed;
+        }
+
+        .counter {
+            color: #2C2C2C;
+            font-size: 0.95rem;
+        }
+
+        .zoom-btn {
+            background-color: #3498DB;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 1rem;
+            min-height: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🏛️ MI PRIMER MUSEO INTERACTIVO</h1>
+        <div id="round-badge" class="round-badge">RONDA 1 DE 3</div>
+    </header>
+
+    <main>
+        <!-- VISTA DE JUEGO PRINCIPAL -->
+        <div id="game-view" style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
+            <!-- SALA DE EXPOSICIÓN -->
+            <section class="gallery-container">
+                <div class="artwork-wrapper">
+                    <div id="artwork-svg-box" class="artwork-svg-container"></div>
+                </div>
+                
+                <div class="image-controls">
+                    <button class="zoom-btn" onclick="zoomIn()">🔍 ACERCAR</button>
+                    <button class="zoom-btn" onclick="zoomOut()">🔍 ALEJAR</button>
+                    <button class="zoom-btn" onclick="resetZoom()">🔄 REINICIAR</button>
+                </div>
+
+                <div class="info-card">
+                    <div id="art-title" class="info-title">TÍTULO</div>
+                    <div id="art-author" class="info-author">ARTISTA</div>
+                </div>
+            </section>
+
+            <!-- PREGUNTAS E INTERACCIÓN -->
+            <section class="interaction-container">
+                <div class="question-box">
+                    <button class="audio-btn" onclick="speakQuestion()" title="ESCUCHAR PREGUNTA">🔊</button>
+                    <div id="question" class="question-text">CARGANDO PREGUNTA...</div>
+                </div>
+
+                <div id="options" class="options-grid"></div>
+
+                <div id="feedback" class="feedback"></div>
+
+                <div class="hint-container">
+                    <button class="hint-btn" onclick="toggleHint()">💡 ¿NECESITÁS UNA PISTA?</button>
+                    <div id="hint-text" class="hint-text"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- PANTALLA DE GANADOR / RECOMPENSA -->
+        <div id="victory-view" class="victory-screen">
+            <div class="trophy-icon">🏆✨</div>
+            <div id="victory-title" class="victory-title">¡FELICITACIONES! ¡MIRA ATENTA CONSEGUIDA!</div>
+            <div id="victory-msg" class="victory-msg">COMPLETUSTE CON ÉXITO TODAS LAS OBRAS DE ESTA RONDA. DEMOSTRASTE SER UN GRAN OBSERVADOR DE ARTE.</div>
+            <button id="restart-btn" class="restart-btn" onclick="nextRound()">🎨 IR A LA SIGUIENTE RONDA DE OBRAS</button>
+        </div>
+    </main>
+
+    <!-- NAVEGACIÓN ENTRE OBRAS -->
+    <nav id="navigation-bar" class="navigation-bar">
+        <button id="prev-btn" class="nav-btn" onclick="prevArtwork()">⬅️ ANTERIOR</button>
+        <span id="counter" class="counter">OBRA 1 / 4</span>
+        <button id="next-btn" class="nav-btn" onclick="nextArtwork()">SIGUIENTE ➡️</button>
+    </nav>
+
+    <script>
+        // BASE DE DATOS DE 3 RONDAS DE 4 OBRAS CADA UNA (12 OBRAS EN TOTAL - 100% VECTORIAL AUTÓNOMO)
+        const rounds = [
+            // RONDA 1: FORMAS Y COLORES PRIMARIOS
+            [
+                {
+                    title: "COMPOSICIÓN EN ROJO, AZUL Y AMARILLO",
+                    author: "PIET MONDRIAN (1930)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="300" fill="#F0EFE9"/><rect x="80" y="0" width="220" height="200" fill="#DD1A22"/><rect x="0" y="200" width="80" height="100" fill="#004586"/><rect x="250" y="250" width="50" height="50" fill="#FFCC00"/><rect x="70" y="0" width="10" height="300" fill="#111"/><rect x="0" y="190" width="300" height="10" fill="#111"/><rect x="240" y="190" width="10" height="110" fill="#111"/><rect x="70" y="240" width="230" height="10" fill="#111"/></svg>`,
+                    question: "¿QUÉ FORMAS Y COLORES PREDOMINAN EN ESTA OBRA?",
+                    options: [
+                        "CUADRADOS Y RECTÁNGULOS CON ROJO, AZUL Y AMARILLO",
+                        "CÍRCULOS SUAVES CON COLORES PASTEL",
+                        "TRIÁNGULOS GRANDES Y VERDES",
+                        "FORMAS DE ANIMALES Y FLORES"
+                    ],
+                    correctIndex: 0,
+                    hint: "MIRÁ BIEN LAS LÍNEAS NEGRAS RECTAS: SE CRUZAN FORMANDO CUADRADOS DE COLORES PRIMARIOS."
+                },
+                {
+                    title: "ALGUNOS CÍRCULOS",
+                    author: "VASSILY KANDINSKY (1926)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="300" fill="#1A1A24"/><circle cx="150" cy="150" r="80" fill="#2E5B88" opacity="0.8"/><circle cx="150" cy="150" r="50" fill="#E74C3C" opacity="0.9"/><circle cx="80" cy="90" r="35" fill="#F1C40F" opacity="0.85"/><circle cx="210" cy="80" r="25" fill="#27AE60" opacity="0.8"/><circle cx="220" cy="200" r="40" fill="#8E44AD" opacity="0.75"/><circle cx="90" cy="220" r="20" fill="#E67E22" opacity="0.9"/><circle cx="130" cy="70" r="12" fill="#3498DB"/><circle cx="170" cy="230" r="15" fill="#2ECC71"/></svg>`,
+                    question: "¿QUÉ FORMA GEOMÉTRICA SE REPITE EN TODA LA PINTURA?",
+                    options: [
+                        "CUADRADOS NEGROS",
+                        "CÍRCULOS DE DIFERENTES TAMAÑOS Y COLORES",
+                        "TRIÁNGULOS DE COLOR ROJO",
+                        "ESTRELLAS BRILLANTES"
+                    ],
+                    correctIndex: 1,
+                    hint: "TODAS LAS FORMAS SON REDONDAS COMO PELOTAS O BURBUJAS SOBRE UN FONDO OSCURO."
+                },
+                {
+                    title: "SUPREMATISMO",
+                    author: "KAZIMIR MALEVICH (1915)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="300" fill="#F4F1EA"/><rect x="70" y="70" width="90" height="90" fill="#C0392B" transform="rotate(12 115 115)"/><polygon points="150,120 250,180 160,250" fill="#111111"/><rect x="50" y="200" width="120" height="25" fill="#2980B9" transform="rotate(-15 110 212)"/><rect x="180" y="50" width="60" height="12" fill="#27AE60" transform="rotate(35 210 56)"/></svg>`,
+                    question: "¿QUÉ FIGURAS GEOMÉTRICAS SE RECONOCEN EN ESTA COMPOSICIÓN?",
+                    options: [
+                        "CARAS Y PAISAJES",
+                        "UN CUADRADO ROJO, UN TRIÁNGULO NEGRO Y RECTÁNGULOS",
+                        "CÍRCULOS CON FLORES",
+                        "LÍNEAS ONDULADAS COMO EL MAR"
+                    ],
+                    correctIndex: 1,
+                    hint: "OBSERVÁ LAS FIGURAS RECTAS: HAY UN CUADRADO ROJO Y UN TRIÁNGULO NEGRO SOBRE FONDO CLARO."
+                },
+                {
+                    title: "SENECIO",
+                    author: "PAUL KLEE (1922)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="300" fill="#E59866"/><circle cx="150" cy="140" r="100" fill="#F5CBA7" stroke="#7E5109" stroke-width="4"/><line x1="150" y1="40" x2="150" y2="240" stroke="#7E5109" stroke-width="3"/><line x1="50" y1="140" x2="250" y2="140" stroke="#7E5109" stroke-width="3"/><circle cx="110" cy="110" r="20" fill="#E74C3C"/><circle cx="110" cy="110" r="8" fill="#111"/><rect x="175" y="95" width="30" height="30" fill="#F1C40F"/><circle cx="190" cy="110" r="8" fill="#111"/><rect x="100" y="240" width="45" height="50" fill="#27AE60"/><rect x="155" y="240" width="45" height="50" fill="#E67E22"/></svg>`,
+                    question: "¿EN QUÉ FORMA GEOMÉTRICA ESTÁ DIVIDIDA LA CARA DEL PERSONAJE?",
+                    options: [
+                        "EN UN CÍRCULO DIVIDIDO CON LÍNEAS",
+                        "EN UN CORAZÓN ROJO",
+                        "EN LÍNEAS ONDULADAS COMO AGUA",
+                        "EN MUCHAS ESTRELLAS"
+                    ],
+                    correctIndex: 0,
+                    hint: "MIRÁ LA CABEZA: ES REDONDA COMO UN CÍRCULO Y ADENTRO TIENE DIVISIONES Y CUADRADOS."
+                }
+            ],
+            // RONDA 2: LÍNEAS, DIRECCIONES Y COMPOSICIÓN
+            [
+                {
+                    title: "AMARILLO, ROJO Y AZUL",
+                    author: "VASSILY KANDINSKY (1925)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="300" fill="#F7F5EC"/><rect x="40" y="50" width="90" height="180" fill="#F1C40F" opacity="0.85"/><circle cx="210" cy="150" r="65" fill="#2980B9" opacity="0.85"/><path d="M 120 70 Q 180 120 130 220" stroke="#E74C3C" stroke-width="25" fill="none"/><path d="M 30 220 C 100 100 200 260 270 90" stroke="#111" stroke-width="5" fill="none"/><circle cx="80" cy="100" r="15" fill="#111"/></svg>`,
+                    question: "¿QUÉ TIPO DE LÍNEA NEGRA ATRAVIESA CASI TODA LA PINTURA?",
+                    options: [
+                        "UNA LÍNEA CURVA Y ONDULADA QUE PARECE UNA SERPIENTE",
+                        "UNA LÍNEA TOTALMENTE RECTA Y VERTICAL",
+                        "PUNTOS SEPARADOS",
+                        "NO HAY LÍNEAS NEGRAS"
+                    ],
+                    correctIndex: 0,
+                    hint: "SIGUE LA LÍNEA NEGRA FINA CON TU DEDO: SE MUEVE CURVÁNDOSE DE UN LADO A OTRO."
+                },
+                {
+                    title: "EL RITMO DE LAS LÍNEAS",
+                    author: "PIET MONDRIAN (1935)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="300" fill="#FAFAFA"/><rect x="0" y="0" width="50" height="40" fill="#E74C3C"/><rect x="230" y="220" width="70" height="80" fill="#3498DB"/><rect x="260" y="0" width="40" height="60" fill="#F1C40F"/><line x1="50" y1="0" x2="50" y2="300" stroke="#111" stroke-width="8"/><line x1="140" y1="0" x2="140" y2="300" stroke="#111" stroke-width="8"/><line x1="230" y1="0" x2="230" y2="300" stroke="#111" stroke-width="8"/><line x1="0" y1="40" x2="300" y2="40" stroke="#111" stroke-width="8"/><line x1="0" y1="220" x2="300" y2="220" stroke="#111" stroke-width="8"/></svg>`,
+                    question: "¿HACIA DÓNDE VAN LAS LÍNEAS NEGRAS EN ESTA OBRA?",
+                    options: [
+                        "SOLO VAN EN DIAGONAL INCLINADA",
+                        "VAN EN DIRECCIÓN VERTICAL (ARRIBA-ABAJO) Y HORIZONTAL (COSTADOS)",
+                        "SON CÍRICULOS CERRADOS",
+                        "VAN EN FORMA DE ZIG ZAG"
+                    ],
+                    correctIndex: 1,
+                    hint: "LAS LÍNEAS FORMAN UNA REJILLA RECTA: ALGUNAS VAN PARADAS Y OTRAS ACOSTADAS."
+                },
+                {
+                    title: "ESTRELLA DE MAR Y FIGURA",
+                    author: "JOAN MIRÓ (1934)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="300" fill="#EAECEE"/><circle cx="200" cy="100" r="45" fill="#E74C3C"/><circle cx="90" cy="190" r="30" fill="#111"/><path d="M 80 80 Q 150 30 220 180" stroke="#111" stroke-width="4" fill="none"/><path d="M 60 210 Q 180 280 250 200" stroke="#111" stroke-width="4" fill="none"/><circle cx="200" cy="100" r="12" fill="#F1C40F"/><polygon points="120,70 130,90 110,85" fill="#2980B9"/></svg>`,
+                    question: "¿CÓMO ES EL FONDO DE ESTA OBRA EN COMPARACIÓN CON LAS FIGURAS?",
+                    options: [
+                        "ES UN FONDO SIMPLE Y CLARO CON POCO ELEMENTOS FLOTANDO",
+                        "ESTÁ LLENO DE EDIFICIOS Y AUTOS",
+                        "ES TOTALMENTE NEGRO SIN NINGÚN COLOR",
+                        "SON MUCHOS CUADRADOS APILADOS"
+                    ],
+                    correctIndex: 0,
+                    hint: "MIRÁ EL ESPACIO: LAS FORMAS Y PUNTOS PARECEN FLOTAR LIBREMENTE EN UN ESPACIO LIMPIO."
+                },
+                {
+                    title: "CASTILLO Y SOL",
+                    author: "PAUL KLEE (1928)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="300" fill="#34495E"/><circle cx="210" cy="70" r="35" fill="#E67E22"/><rect x="40" y="180" width="40" height="80" fill="#E74C3C"/><polygon points="40,180 60,130 80,180" fill="#F1C40F"/><rect x="80" y="150" width="50" height="110" fill="#2980B9"/><polygon points="80,150 105,100 130,150" fill="#27AE60"/><rect x="130" y="120" width="60" height="140" fill="#F39C12"/><polygon points="130,120 160,60 190,120" fill="#C0392B"/><rect x="190" y="160" width="50" height="100" fill="#8E44AD"/></svg>`,
+                    question: "¿QUÉ FIGURA GEOMÉTRICA FORMA LOS TECHOS DE LAS TORRES DEL CASTILLO?",
+                    options: [
+                        "TRIÁNGULOS DE COLORES CON PUNTA HACIA ARRIBA",
+                        "CÍRCULOS AZULES",
+                        "CUADRADOS NEGROS",
+                        "ESTRELLAS DE CINCO PUNTAS"
+                    ],
+                    correctIndex: 0,
+                    hint: "MIRÁ LA PARTE SUPERIOR DE LAS TORRES: TIENEN TRES LADOS Y TERMINAN EN PUNTA."
+                }
+            ],
+            // RONDA 3: COMPOSICIÓN, TAMAÑOS Y FIGURA-FONDO
+            [
+                {
+                    title: "CUADRADO NEGRO SOBRE FONDO BLANCO",
+                    author: "KAZIMIR MALEVICH (1915)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="300" fill="#EDEDED"/><rect x="60" y="60" width="180" height="180" fill="#111111"/></svg>`,
+                    question: "¿QUÉ MUESTRA ESTA OBRA TAN FAMOSA DE ARTE MODERNO?",
+                    options: [
+                        "UN ÚNICO Y GRANDE CUADRADO NEGRO EN EL CENTRO",
+                        "UN PAISAJE CON MONTAÑAS Y UN RÍO",
+                        "MUCHOS ANIMALES CORRIENDO",
+                        "TRES CÍRCULOS ROJOS"
+                    ],
+                    correctIndex: 0,
+                    hint: "ES UNA OBRA MUY SIMPLE: SOLO HAY UNA GRAN FIGURA RECTA Y OSCURA EN EL MEDIO."
+                },
+                {
+                    title: "EL CAZADOR (PAISAJE CATALÁN)",
+                    author: "JOAN MIRÓ (1924)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="150" fill="#F5CBA7"/><rect x="0" y="150" width="300" height="150" fill="#F9E79F"/><circle cx="100" cy="100" r="30" fill="#E74C3C"/><line x1="100" y1="70" x2="100" y2="200" stroke="#111" stroke-width="3"/><circle cx="210" cy="180" r="15" fill="#2980B9"/><path d="M 50 220 L 90 250 L 70 280 Z" fill="#27AE60"/><line x1="30" y1="120" x2="270" y2="120" stroke="#111" stroke-width="2" stroke-dasharray="5,5"/></svg>`,
+                    question: "¿CÓMO ESTÁ DIVIDIDO EL FONDO DE ESTA PINTURA?",
+                    options: [
+                        "EN DOS PARTES: UNA ARRIBA MÁS OSCURA Y OTRA ABAJO MÁS CLARA",
+                        "EN DIEZ STRIPAS VERTICALES DE COLORES",
+                        "ES UN CÍRCULO ENORME",
+                        "NO TIENE FONDO"
+                    ],
+                    correctIndex: 0,
+                    hint: "MIRA LA LÍNEA DEL HORIZONTE: SEPARA LA PARTE SUPERIOR DE LA INFERIOR."
+                },
+                {
+                    title: "SALA DE ESTAR CON RECTÁNGULOS",
+                    author: "PIET MONDRIAN (1921)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="300" fill="#F2F1EC"/><rect x="0" y="0" width="120" height="150" fill="#2980B9"/><rect x="130" y="160" width="170" height="140" fill="#E74C3C"/><line x1="120" y1="0" x2="120" y2="300" stroke="#111" stroke-width="10"/><line x1="0" y1="150" x2="300" y2="150" stroke="#111" stroke-width="10"/><line x1="250" y1="0" x2="250" y2="150" stroke="#111" stroke-width="8"/></svg>`,
+                    question: "¿CUAL DE LOS RECTÁNGULOS DE COLOR ES EL MÁS GRANDE EN ESTA PINTURA?",
+                    options: [
+                        "EL RECTÁNGULO ROJO EN LA PARTE INFERIOR",
+                        "EL RECTÁNGULO AZUL ARRIBA",
+                        "SON TODOS EXACTAMENTE DEL MISMO TAMAÑO",
+                        "UN RECTÁNGULO VERDE"
+                    ],
+                    correctIndex: 0,
+                    hint: "COMPARA EL TAMAÑO DE LAS MANCHAS DE COLOR: EL ROJO OCUPA MÁS ESPACIO QUE EL AZUL."
+                },
+                {
+                    title: "SENSACIÓN DE ARMONÍA",
+                    author: "PAUL KLEE (1931)",
+                    svg: `<svg viewBox="0 0 300 300" width="280" height="280"><rect width="300" height="300" fill="#7FB3D5"/><rect x="30" y="30" width="60" height="60" fill="#F1C40F"/><rect x="100" y="30" width="80" height="60" fill="#E67E22"/><rect x="190" y="30" width="80" height="60" fill="#E74C3C"/><rect x="30" y="100" width="110" height="80" fill="#27AE60"/><rect x="150" y="100" width="120" height="80" fill="#8E44AD"/><rect x="30" y="190" width="240" height="70" fill="#D35400"/></svg>`,
+                    question: "¿CÓMO ESTÁN ACOMODADOS LOS CUADRADOS DE COLORES?",
+                    options: [
+                        "ORDENADOS EN FILAS COMO BALDOSAS O MOSAICOS",
+                        "DESORDENADOS Y ENCIMADOS UNOS SOBRE OTROS",
+                        "EN FORMA DE CÍRCULOS CONCÉNTRICOS",
+                        "MEZCLADOS COMO PINTURA DERRAMADA"
+                    ],
+                    correctIndex: 0,
+                    hint: "OBSERVÁ LAS LÍNEAS: CADA BLOQUE DE COLOR ESTÁ ACOMODADO UNO AL LADO DEL OTRO ORGANIZADAMENTE."
+                }
+            ]
+        ];
+
+        let currentRound = 0;
+        let currentIndex = 0;
+        let zoomLevel = 1;
+        let roundAnswersCount = 0;
+
+        // ELEMENTOS DOM
+        const gameView = document.getElementById('game-view');
+        const victoryView = document.getElementById('victory-view');
+        const navigationBar = document.getElementById('navigation-bar');
+        const roundBadge = document.getElementById('round-badge');
+
+        const artworkSvgBox = document.getElementById('artwork-svg-box');
+        const artTitle = document.getElementById('art-title');
+        const artAuthor = document.getElementById('art-author');
+        const questionText = document.getElementById('question');
+        const optionsGrid = document.getElementById('options');
+        const feedbackDiv = document.getElementById('feedback');
+        const hintTextDiv = document.getElementById('hint-text');
+        const counterSpan = document.getElementById('counter');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // CARGAR OBRA DE LA RONDA ACTUAL
+        function loadArtwork(index) {
+            resetZoom();
+            window.speechSynthesis.cancel();
+
+            const item = rounds[currentRound][index];
+            artworkSvgBox.innerHTML = item.svg;
+            artTitle.textContent = item.title;
+            artAuthor.textContent = item.author;
+            questionText.textContent = item.question;
+            hintTextDiv.textContent = item.hint;
+            hintTextDiv.style.display = 'none';
+            feedbackDiv.textContent = '';
+
+            optionsGrid.innerHTML = '';
+            item.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(idx, btn);
+                optionsGrid.appendChild(btn);
+            });
+
+            counterSpan.textContent = `OBRA ${index + 1} / ${rounds[currentRound].length}`;
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === rounds[currentRound].length - 1;
+            roundBadge.textContent = `RONDA ${currentRound + 1} DE 3`;
+        }
+
+        // CONTROL DE ZOOMS
+        function zoomIn() {
+            if (zoomLevel < 2.5) {
+                zoomLevel += 0.3;
+                artworkSvgBox.style.transform = `scale(${zoomLevel})`;
+            }
+        }
+
+        function zoomOut() {
+            if (zoomLevel > 1) {
+                zoomLevel -= 0.3;
+                artworkSvgBox.style.transform = `scale(${zoomLevel})`;
+            }
+        }
+
+        function resetZoom() {
+            zoomLevel = 1;
+            artworkSvgBox.style.transform = `scale(1)`;
+        }
+
+        // EVALUACIÓN DE RESPUESTA
+        function checkAnswer(selectedIndex, button) {
+            const item = rounds[currentRound][currentIndex];
+            const buttons = optionsGrid.querySelectorAll('.option-btn');
+            
+            buttons.forEach(b => b.style.pointerEvents = 'none');
+
+            if (selectedIndex === item.correctIndex) {
+                button.classList.add('correct');
+                feedbackDiv.textContent = "🌟 ¡EXCELENTE MIRADA! ¡DESCUBRISTE LA RESPUESTA!";
+                feedbackDiv.style.color = "#27AE60";
+                speakText("¡Excelente mirada! ¡Descubriste la respuesta!");
+
+                // Verificar si completó las 4 obras de la ronda
+                roundAnswersCount++;
+                if (currentIndex === rounds[currentRound].length - 1) {
+                    setTimeout(() => {
+                        showVictoryScreen();
+                    }, 1800);
+                }
+            } else {
+                button.classList.add('incorrect');
+                feedbackDiv.textContent = "💡 ¡CASI! USÁ LA PISTA O MIRÁ CON MÁS ATENCIÓN LA OBRA.";
+                feedbackDiv.style.color = "#E67E22";
+                speakText("¡Casi! Usá la pista o mirá con más atención la obra.");
+                
+                setTimeout(() => {
+                    buttons.forEach(b => b.style.pointerEvents = 'auto');
+                }, 1500);
+            }
+        }
+
+        // MOSTRAR PANTALLA DE GANADOR AL COMPLETAR CADA RONDA
+        function showVictoryScreen() {
+            window.speechSynthesis.cancel();
+            gameView.style.display = 'none';
+            navigationBar.style.display = 'none';
+            victoryView.style.display = 'flex';
+
+            const victoryTitle = document.getElementById('victory-title');
+            const victoryMsg = document.getElementById('victory-msg');
+            const restartBtn = document.getElementById('restart-btn');
+
+            if (currentRound < rounds.length - 1) {
+                victoryTitle.textContent = "🏆 ¡GANASTE LA RONDA " + (currentRound + 1) + "! 🏆";
+                victoryMsg.textContent = "¡DEMOSTRASTE UNA MIRADA MUY ATENTA! COMPLETASTE LAS 4 OBRAS DE ESTA SALA.";
+                restartBtn.textContent = "🎨 IR A LA RONDA " + (currentRound + 2) + " DE OBRAS";
+                speakText("¡Felicitaciones! Ganaste la ronda " + (currentRound + 1) + ". Demostraste una mirada muy atenta.");
+            } else {
+                victoryTitle.textContent = "👑 ¡FELICITACIONES! ¡MÁSTER DEL MUSEO! 👑";
+                victoryMsg.textContent = "COMPLETASTE LAS 3 RONDAS Y RECONOCISTE TODAS LAS FORMAS, LÍNEAS Y COLORES DE LOS GRANDES ARTISTAS.";
+                restartBtn.textContent = "🔄 REINICIAR DESDE LA RONDA 1";
+                speakText("¡Felicitaciones! Sos un Máster del Museo. Completaste todas las rondas.");
+            }
+        }
+
+        // AVANZAR DE RONDA O REINICIAR
+        function nextRound() {
+            if (currentRound < rounds.length - 1) {
+                currentRound++;
+            } else {
+                currentRound = 0; // Reiniciar
+            }
+
+            currentIndex = 0;
+            roundAnswersCount = 0;
+            
+            victoryView.style.display = 'none';
+            gameView.style.display = 'flex';
+            navigationBar.style.display = 'flex';
+
+            loadArtwork(currentIndex);
+        }
+
+        // SÍNTESIS DE VOZ
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.8; 
+                utterance.pitch = 1.0; 
+
+                const voices = window.speechSynthesis.getVoices();
+                const spanishVoice = voices.find(voice => 
+                    voice.lang.includes('es-AR') || 
+                    voice.lang.includes('es-419') || 
+                    voice.lang.includes('es-MX') || 
+                    voice.lang.startsWith('es')
+                );
+
+                if (spanishVoice) {
+                    utterance.voice = spanishVoice;
+                }
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function speakQuestion() {
+            const currentItem = rounds[currentRound][currentIndex];
+            speakText(currentItem.question);
+        }
+
+        function toggleHint() {
+            if (hintTextDiv.style.display === 'none' || hintTextDiv.style.display === '') {
+                hintTextDiv.style.display = 'block';
+                speakText("Pista: " + hintTextDiv.textContent);
+            } else {
+                hintTextDiv.style.display = 'none';
+            }
+        }
+
+        function nextArtwork() {
+            if (currentIndex < rounds[currentRound].length - 1) {
+                currentIndex++;
+                loadArtwork(currentIndex);
+            }
+        }
+
+        function prevArtwork() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadArtwork(currentIndex);
+            }
+        }
+
+        window.onload = () => {
+            loadArtwork(currentIndex);
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.onvoiceschanged = () => {};
+            }
+        };
+    </script>
+</body>
+</html>
