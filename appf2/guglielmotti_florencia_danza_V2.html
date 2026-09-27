@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bailemos juntos - Posiciones de Ballet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --pantone-151c: #FF6A00;
+            --pantone-warm-red: #FA4616;
+            --pantone-purple: #BB29BB;
+            --text-scale: 1;
+        }
+
+        body {
+            font-family: 'Comic Neue', 'Inter', cursive, sans-serif;
+            font-size: calc(1rem * var(--text-scale));
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFF1F2 50%, #FDF4FF 100%);
+            min-height: 100vh;
+            color: #2E1065;
+            transition: font-size 0.2s ease, background 0.3s ease;
+        }
+
+        body.high-contrast {
+            background: #000000 !important;
+            color: #FFFF00 !important;
+        }
+        body.high-contrast .bg-contrast-card {
+            background-color: #121212 !important;
+            border: 3px solid #FFFF00 !important;
+            color: #FFFFFF !important;
+        }
+        body.high-contrast .text-contrast {
+            color: #FFFF00 !important;
+        }
+        body.high-contrast button {
+            border: 2px solid #FFFF00 !important;
+        }
+
+        body.easy-reading {
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            word-spacing: 0.1em;
+        }
+
+        .bg-pantone-gradient {
+            background: linear-gradient(135deg, var(--pantone-151c) 0%, var(--pantone-warm-red) 50%, var(--pantone-purple) 100%);
+        }
+        .text-pantone-gradient {
+            background: linear-gradient(135deg, var(--pantone-151c) 0%, var(--pantone-warm-red) 50%, var(--pantone-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: floatSlow 3s ease-in-out infinite;
+        }
+
+        *:focus-visible {
+            outline: 4px solid var(--pantone-151c) !important;
+            outline-offset: 3px !important;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen pb-12 selection:bg-orange-200">
+
+    <header class="bg-white/90 backdrop-blur-md shadow-md sticky top-0 z-40 border-b-2 border-orange-200">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-pantone-gradient p-1 flex items-center justify-center shadow-lg animate-float">
+                    <span class="text-2xl" role="img" aria-label="Bailarina">🩰</span>
+                </div>
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-pantone-gradient leading-tight">
+                        Bailemos juntos
+                    </h1>
+                    <p class="text-xs md:text-sm text-purple-900 font-bold">Posiciones de Ballet con Maia</p>
+                </div>
+            </div>
+
+            <!-- DUA Control Panel -->
+            <div class="flex items-center gap-2 flex-wrap">
+                <div class="flex items-center bg-orange-100 rounded-xl p-1 border border-orange-300 shadow-sm" role="group" aria-label="Ajustar tamaño de letra">
+                    <button onclick="changeFontSize(-0.1)" class="w-9 h-9 flex items-center justify-center bg-white rounded-lg font-extrabold text-orange-700 hover:bg-orange-200 transition active:scale-95 shadow-sm" title="Disminuir tamaño de letra" aria-label="Disminuir tamaño de letra">
+                        A-
+                    </button>
+                    <button onclick="resetFontSize()" class="px-2 text-xs font-bold text-orange-800" title="Tamaño normal">
+                        100%
+                    </button>
+                    <button onclick="changeFontSize(0.1)" class="w-9 h-9 flex items-center justify-center bg-white rounded-lg font-extrabold text-orange-700 hover:bg-orange-200 transition active:scale-95 shadow-sm" title="Aumentar tamaño de letra" aria-label="Aumentar tamaño de letra">
+                        A+
+                    </button>
+                </div>
+
+                <button id="tts-btn" onclick="toggleTTS()" class="flex items-center gap-2 px-3 py-2 bg-purple-100 border border-purple-300 hover:bg-purple-200 text-purple-900 rounded-xl font-bold transition shadow-sm" aria-pressed="true">
+                    <span id="tts-icon" class="text-lg">🔊</span>
+                    <span id="tts-label" class="text-xs md:text-sm">Voz: Activada</span>
+                </button>
+
+                <button id="easy-reading-btn" onclick="toggleEasyReading()" class="flex items-center gap-1 px-3 py-2 bg-blue-100 border border-blue-300 hover:bg-blue-200 text-blue-900 rounded-xl font-bold text-xs md:text-sm transition shadow-sm" title="Activar lectura fácil en mayúsculas">
+                    <span>🔠</span>
+                    <span>Lectura Fácil</span>
+                </button>
+
+                <button onclick="toggleContrast()" class="flex items-center gap-2 px-3 py-2 bg-gray-800 text-yellow-300 hover:bg-black rounded-xl font-bold text-xs md:text-sm transition shadow-sm">
+                    <span>👁️</span>
+                    <span>Contraste</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 pt-6 flex-grow w-full">
+        
+        <nav class="flex justify-center mb-6" aria-label="Secciones del juego">
+            <div class="bg-orange-100 p-2.5 rounded-3xl flex flex-wrap gap-3 border-2 border-orange-300 shadow-md max-w-4xl w-full justify-center">
+                <button id="tab-explore" onclick="switchTab('explore')" class="flex-1 min-w-[200px] py-4 px-6 rounded-2xl font-black text-base md:text-lg transition-all shadow-md bg-white text-purple-900 flex items-center justify-center gap-2 hover:scale-[1.02]">
+                    <span class="text-2xl">🔍</span> Explorar Posiciones
+                </button>
+                <button id="tab-game" onclick="switchTab('game')" class="flex-1 min-w-[200px] py-4 px-6 rounded-2xl font-black text-base md:text-lg transition-all text-purple-800 hover:bg-white/60 flex items-center justify-center gap-2 hover:scale-[1.02]">
+                    <span class="text-2xl">🎮</span> Juego Memotest
+                </button>
+                <button id="tab-connect" onclick="switchTab('connect')" class="flex-1 min-w-[200px] py-4 px-6 rounded-2xl font-black text-base md:text-lg transition-all text-purple-800 hover:bg-white/60 flex items-center justify-center gap-2 hover:scale-[1.02]">
+                    <span class="text-2xl">🧩</span> Conectar Brazos y Pies
+                </button>
+            </div>
+        </nav>
+
+        <section id="section-explore" class="space-y-6">
+            <div class="bg-white/80 backdrop-blur rounded-3xl p-6 shadow-xl border-2 border-orange-100 bg-contrast-card">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-black text-purple-900 text-contrast">Aprende las Posiciones Básicas</h2>
+                        <p class="text-gray-600 text-contrast font-medium">Haz clic en cada tarjeta para abrir la Lupa Mágica o escuchar la explicación de Maia.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="btn-cat-feet" onclick="setExploreCategory('feet')" class="px-5 py-2.5 rounded-full font-extrabold text-sm transition bg-pantone-gradient text-white shadow-md">
+                            🦶 Pies (5 Posiciones)
+                        </button>
+                        <button id="btn-cat-arms" onclick="setExploreCategory('arms')" class="px-5 py-2.5 rounded-full font-extrabold text-sm transition bg-gray-200 text-purple-900 hover:bg-gray-300">
+                            💪 Brazos (5 Posiciones)
+                        </button>
+                    </div>
+                </div>
+
+                <div id="explore-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Explore cards rendered via JS -->
+                </div>
+            </div>
+        </section>
+
+        <section id="section-game" class="hidden space-y-6">
+            <div class="bg-white/90 backdrop-blur rounded-3xl p-6 shadow-xl border-2 border-purple-100 bg-contrast-card">
+                
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-orange-100">
+                    <div>
+                        <h2 class="text-2xl font-black text-purple-900 text-contrast">Juego de Memoria de Danza</h2>
+                        <p class="text-gray-600 text-contrast font-medium">¡Encuentra las parejas correctas para completar el desafío!</p>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="initGame('feet')" class="px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold text-xs shadow-md transition">
+                            🦶 Pies
+                        </button>
+                        <button onclick="initGame('arms')" class="px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold text-xs shadow-md transition">
+                            💪 Brazos
+                        </button>
+                        <button onclick="initGame('mixed')" class="px-3 py-2 bg-pantone-gradient text-white rounded-xl font-extrabold text-xs shadow-md transition">
+                            🌟 Desafío Mixto
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between bg-orange-50 p-4 rounded-2xl border border-orange-200 my-4 flex-wrap gap-3">
+                    <div class="flex items-center gap-6 font-bold text-purple-950 text-contrast">
+                        <span id="score-matches">Parejas: 0 / 5</span>
+                        <span id="score-attempts">Intentos: 0</span>
+                    </div>
+
+                    <button onclick="requestHint()" class="flex items-center gap-2 px-4 py-2 bg-amber-400 hover:bg-amber-500 text-purple-950 font-black rounded-xl shadow-md transition active:scale-95">
+                        <span>💡</span>
+                        <span>Pista Mágica</span>
+                    </button>
+                </div>
+
+                <div id="game-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 py-4 min-h-[400px]">
+                    <!-- Game cards rendered via JS -->
+                </div>
+            </div>
+        </section>
+
+        <section id="section-connect" class="hidden space-y-6">
+            <div class="bg-white/90 backdrop-blur rounded-3xl p-6 shadow-xl border-2 border-pink-200 bg-contrast-card">
+                
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 pb-4 border-b border-orange-100">
+                    <div>
+                        <h2 class="text-2xl font-black text-purple-900 text-contrast">🧩 Conecta Brazos y Pies</h2>
+                        <p class="text-gray-600 text-contrast font-medium">Haz clic en una posición de <b>Brazos</b> y luego en su correspondiente posición de <b>Pies</b> (del 1 al 5) para unirlas.</p>
+                    </div>
+
+                    <button onclick="initConnectGame()" class="px-4 py-2.5 bg-pantone-gradient text-white rounded-xl font-extrabold text-sm shadow-md transition">
+                        🔄 Reiniciar Juego
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between bg-purple-50 p-4 rounded-2xl border border-purple-200 my-4 flex-wrap gap-3">
+                    <div class="font-bold text-purple-950 text-contrast" id="connect-status">
+                        Parejas conectadas: <span id="connect-score">0</span> / 5
+                    </div>
+                    <div class="text-xs font-bold text-purple-800" id="connect-instruction">
+                        👉 Selecciona primero un brazo de la columna izquierda.
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-4">
+                    <!-- Left Column: Arms -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-black text-purple-900 text-contrast flex items-center gap-2">
+                            <span>💪</span> Posiciones de Brazos
+                        </h3>
+                        <div id="connect-arms-list" class="space-y-3">
+                            <!-- Rendered via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Feet -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-black text-orange-900 text-contrast flex items-center gap-2">
+                            <span>🦶</span> Posiciones de Pies
+                        </h3>
+                        <div id="connect-feet-list" class="space-y-3">
+                            <!-- Rendered via JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <div id="maia-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border-4 border-orange-400 relative bg-contrast-card">
+            
+            <button onclick="closeMaiaModal()" class="absolute top-4 right-4 text-2xl font-black text-gray-500 hover:text-red-500 p-2">
+                ✖
+            </button>
+
+            <div class="flex items-start gap-4">
+                <div class="w-16 h-16 rounded-full bg-pantone-gradient flex-shrink-0 flex items-center justify-center text-3xl shadow-lg">
+                    🩰
+                </div>
+                <div class="space-y-2">
+                    <span class="inline-block px-3 py-1 bg-orange-100 text-orange-800 rounded-full font-black text-xs">
+                        Maia la Bailarina
+                    </span>
+                    <h3 id="maia-title" class="text-xl font-extrabold text-purple-950 text-contrast">
+                        ¡Hola! Sigamos aprendiendo juntas
+                    </h3>
+                    <p id="maia-text" class="text-base text-gray-700 text-contrast font-medium leading-relaxed">
+                        ¿Qué descubres al observar con atención los talones?
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="speakCurrentMaiaMessage()" class="px-4 py-2 bg-purple-100 text-purple-900 font-bold rounded-xl hover:bg-purple-200 transition">
+                    🔊 Escuchar
+                </button>
+                <button onclick="closeMaiaModal()" class="px-6 py-2 bg-pantone-gradient text-white font-extrabold rounded-xl shadow-md hover:opacity-90 transition">
+                    ¡Entendido! 👍
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lupa Mágica Modal -->
+    <div id="zoom-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border-4 border-purple-500 relative bg-contrast-card">
+            
+            <button onclick="closeZoomModal()" class="absolute top-4 right-4 text-3xl font-black text-gray-600 hover:text-red-500 p-2">
+                ✖
+            </button>
+
+            <div class="text-center space-y-4">
+                <span class="inline-block px-4 py-1.5 bg-purple-100 text-purple-900 rounded-full font-black text-sm">
+                    🔍 Lupa Mágica - Vista Ampliada
+                </span>
+                <h3 id="zoom-title" class="text-2xl font-black text-pantone-gradient">
+                    Nombre de la Posición
+                </h3>
+
+                <div id="zoom-svg-container" class="bg-orange-50 rounded-2xl p-6 border-2 border-orange-200 shadow-inner flex items-center justify-center min-h-[280px]">
+                    <!-- Large SVG -->
+                </div>
+
+                <p id="zoom-desc" class="text-lg text-gray-800 text-contrast font-semibold px-4">
+                    Descripción clara de la posición.
+                </p>
+
+                <div class="flex justify-center gap-4 pt-2">
+                    <button id="zoom-audio-btn" onclick="" class="px-6 py-3 bg-purple-600 text-white font-extrabold rounded-2xl shadow-lg hover:bg-purple-700 transition flex items-center gap-2">
+                        <span>🔊</span> Escuchar Explicación
+                    </button>
+                    <button onclick="closeZoomModal()" class="px-6 py-3 bg-gray-200 text-gray-800 font-extrabold rounded-2xl hover:bg-gray-300 transition">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentExploreCategory = 'feet';
+        let currentTab = 'explore';
+        let ttsEnabled = true;
+        let fontScale = 1.0;
+        let highContrast = false;
+        let easyReading = false;
+
+        let flippedCards = [];
+        let matchedPairsCount = 0;
+        let attemptsCount = 0;
+        let hintsUsedCount = 0;
+        let isProcessingFlip = false;
+        let totalPairs = 5;
+        let activeCardsData = [];
+        let currentMaiaSpeechText = "";
+
+        // Connect game state
+        let selectedArmId = null;
+        let connectedPairs = [];
+
+        const POSITIONS_DATA = {
+            feet: [
+                {
+                    id: "feet-1",
+                    name: "1ª Posición de Pies",
+                    shortDesc: "Talones Juntos",
+                    fullDesc: "Los talones se tocan suavemente formando una línea horizontal continua y las puntas de los pies miran hacia los lados opuestos (en dehors).",
+                    maiaTip: "¡Los talones se tocan en el centro formando una línea recta horizontal!",
+                    type: "feet",
+                    posNumber: 1
+                },
+                {
+                    id: "feet-2",
+                    name: "2ª Posición de Pies",
+                    shortDesc: "Pies Separados de Lado",
+                    fullDesc: "Misma apertura de puntas que la primera posición, pero los pies se separan horizontalmente dejando un espacio libre exacto entre sus talones.",
+                    maiaTip: "¡Deja un espacio libre exacto entre tus talones manteniendo la rotación!",
+                    type: "feet",
+                    posNumber: 2
+                },
+                {
+                    id: "feet-3",
+                    name: "3ª Posición de Pies",
+                    shortDesc: "Talón al Arco del Pie",
+                    fullDesc: "Un pie se coloca adelante. El talón del pie de adelante toca la parte media (el arco) del pie de atrás sin encimarse.",
+                    maiaTip: "El talón del frente descansa suavemente contra el arco central del pie de atrás.",
+                    type: "feet",
+                    posNumber: 3
+                },
+                {
+                    id: "feet-4",
+                    name: "4ª Posición de Pies",
+                    shortDesc: "Un Paso al Frente",
+                    fullDesc: "Los pies están separados verticalmente a la distancia de un paso, manteniendo las puntas hacia lados opuestos en rotación.",
+                    maiaTip: "¡Un paso exacto hacia adelante manteniendo los pies bien rotados hacia afuera!",
+                    type: "feet",
+                    posNumber: 4
+                },
+                {
+                    id: "feet-5",
+                    name: "5ª Posición de Pies",
+                    shortDesc: "Talón a la Punta Cruzados",
+                    fullDesc: "Los pies están totalmente cruzados. El talón del pie de adelante cruza a la altura de la punta del de atrás, y viceversa.",
+                    maiaTip: "¡Súper cruzados punta-talón! El talón del frente cruza exactamente a la altura de la punta del pie de atrás.",
+                    type: "feet",
+                    posNumber: 5
+                }
+            ],
+            arms: [
+                {
+                    id: "arms-1",
+                    name: "1ª Posición de Brazos",
+                    shortDesc: "Círculo al Ombligo",
+                    fullDesc: "Los brazos salen de los hombros y forman una figura redonda y suave frente al ombligo, como sosteniendo una pelota grande.",
+                    maiaTip: "Imagínate sosteniendo un gran globo redondo frente a tu pancita.",
+                    type: "arms",
+                    posNumber: 1
+                },
+                {
+                    id: "arms-2",
+                    name: "2ª Posición de Brazos",
+                    shortDesc: "Brazos Abiertos a los Lados",
+                    fullDesc: "Los brazos se abren suavemente hacia los lados desde los hombros, manteniendo los codos y muñecas un poco curvos.",
+                    maiaTip: "¡Abre los brazos como si fueras a darle un abrazo gigante al mundo!",
+                    type: "arms",
+                    posNumber: 2
+                },
+                {
+                    id: "arms-3",
+                    name: "3ª Posición de Brazos",
+                    shortDesc: "Un Brazo Arriba, Otro al Lado",
+                    fullDesc: "Un brazo permanece curvado sobre la cabeza (en corona) y el otro se abre hacia un lado en segunda posición.",
+                    maiaTip: "¡Combinamos! Un brazo arriba en la corona y el otro abierto a un lado.",
+                    type: "arms",
+                    posNumber: 3
+                },
+                {
+                    id: "arms-4",
+                    name: "4ª Posición de Brazos",
+                    shortDesc: "Un Brazo Arriba, Otro al Ombligo",
+                    fullDesc: "Un brazo se eleva sobre la cabeza en corona y el otro se coloca frente al ombligo en primera posición.",
+                    maiaTip: "Un brazo saluda al sol por arriba y el otro cuida tu pancita.",
+                    type: "arms",
+                    posNumber: 4
+                },
+                {
+                    id: "arms-5",
+                    name: "5ª Posición de Brazos",
+                    shortDesc: "Corona sobre la Cabeza",
+                    fullDesc: "Ambos brazos se elevan sobre la cabeza formando un óvalo perfecto y suave desde los hombros.",
+                    maiaTip: "¡Forma una corona mágica sobre tu cabeza sin tocar tu cabello!",
+                    type: "arms",
+                    posNumber: 5
+                }
+            ]
+        };
+
+        const drawSlipperCorrect = (isRight = false, fillColor = '#FF6B8B') => {
+            // isRight = true: toe points right, heel on left
+            // isRight = false: toe points left, heel on right
+            return `
+                <g transform="scale(${isRight ? 1 : -1}, 1)">
+                    <rect x="-30" y="-13" width="60" height="26" rx="13" fill="${fillColor}" stroke="#7A0032" stroke-width="2.5" />
+                    <path d="M 17 -13 A 13 13 0 0 1 17 13 L 30 13 L 30 -13 Z" fill="#C4004B" />
+                    <path d="M -6 -8 L 6 8 M -6 8 L 6 -8" stroke="#9E003E" stroke-width="2" stroke-linecap="round" />
+                    <circle cx="-16" cy="0" r="6" fill="#C4004B" stroke="#FFFFFF" stroke-width="1.8" />
+                </g>
+            `;
+        };
+
+        function createPositionSVG(item, isZoomed = false) {
+            const width = isZoomed ? 320 : 200;
+            const height = isZoomed ? 320 : 200;
+            const isFeet = item.type === 'feet';
+
+            let svgContent = '';
+
+            if (isFeet) {
+                svgContent = `
+                    <svg viewBox="0 0 200 200" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" class="select-none">
+                        ${renderFeetByNumber(item.posNumber)}
+                    </svg>
+                `;
+            } else {
+                svgContent = `
+                    <svg viewBox="0 0 200 200" width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg" class="select-none">
+                        <circle cx="100" cy="22" r="12" fill="#5B21B6" />
+                        <circle cx="100" cy="40" r="16" fill="#FDBA74" stroke="#EA580C" stroke-width="2" />
+                        <rect x="94" y="54" width="12" height="10" rx="3" fill="#FDBA74" />
+                        <path d="M 72 64 Q 100 68 128 64 L 118 135 Q 100 140 82 135 Z" fill="#FF4081" stroke="#BB29BB" stroke-width="2" />
+                        <circle cx="72" cy="64" r="6" fill="#E11D48" stroke="#FFFFFF" stroke-width="2" />
+                        <circle cx="128" cy="64" r="6" fill="#E11D48" stroke="#FFFFFF" stroke-width="2" />
+                        ${renderArmsByNumber(item.posNumber)}
+                    </svg>
+                `;
+            }
+
+            return svgContent;
+        }
+
+        function renderFeetByNumber(num) {
+            switch (num) {
+                case 1: // 1ª Posición: Talones juntos colineales (en dehors)
+                    return `
+                        <g transform="translate(100, 100)">
+                            <g transform="translate(-28, 0)">${drawSlipperCorrect(false, '#FF6B8B')}</g>
+                            <g transform="translate(28, 0)">${drawSlipperCorrect(true, '#FF9EAF')}</g>
+                            <text x="0" y="55" text-anchor="middle" font-size="12" font-weight="bold" fill="#2E1065">1ª: Talones Juntos</text>
+                        </g>
+                    `;
+                case 2: // 2ª Posición: Separados de lado con espacio libre
+                    return `
+                        <g transform="translate(100, 100)">
+                            <g transform="translate(-48, 0)">${drawSlipperCorrect(false, '#FF6B8B')}</g>
+                            <g transform="translate(48, 0)">${drawSlipperCorrect(true, '#FF9EAF')}</g>
+                            <line x1="-22" y1="-22" x2="22" y2="-22" stroke="#9333EA" stroke-width="2" stroke-dasharray="3,3" />
+                            <path d="M -16 -27 L -22 -22 L -16 -17" fill="none" stroke="#9333EA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M 16 -27 L 22 -22 L 16 -17" fill="none" stroke="#9333EA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <text x="0" y="-28" text-anchor="middle" font-size="10" font-weight="bold" fill="#7C3AED">Espacio libre</text>
+                            <text x="0" y="55" text-anchor="middle" font-size="12" font-weight="bold" fill="#2E1065">2ª: Talones Separados</text>
+                        </g>
+                    `;
+                case 3: // 3ª Posición: Talón al arco del pie
+                    return `
+                        <g transform="translate(100, 100)">
+                            <g transform="translate(-16, -12)">${drawSlipperCorrect(false, '#FF6B8B')}</g>
+                            <g transform="translate(12, 10)">${drawSlipperCorrect(true, '#FF9EAF')}</g>
+                            <text x="0" y="55" text-anchor="middle" font-size="12" font-weight="bold" fill="#2E1065">3ª: Talón al Arco</text>
+                        </g>
+                    `;
+                case 4: // 4ª Posición: Un paso al frente
+                    return `
+                        <g transform="translate(100, 95)">
+                            <g transform="translate(0, 34)">${drawSlipperCorrect(true, '#FF9EAF')}</g>
+                            <g transform="translate(0, -34)">${drawSlipperCorrect(false, '#FF6B8B')}</g>
+                            <g transform="translate(-48, 0)">
+                                <line x1="0" y1="-34" x2="0" y2="34" stroke="#9333EA" stroke-width="2" stroke-dasharray="3,3" />
+                                <path d="M -4 -28 L 0 -34 L 4 -28" fill="none" stroke="#9333EA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M -4 28 L 0 34 L 4 28" fill="none" stroke="#9333EA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <text x="-8" y="3" text-anchor="middle" font-size="10" font-weight="bold" fill="#7C3AED" transform="rotate(-90 -8 3)">1 Paso</text>
+                            </g>
+                            <text x="0" y="65" text-anchor="middle" font-size="12" font-weight="bold" fill="#2E1065">4ª: Un Paso Adelante</text>
+                        </g>
+                    `;
+                case 5: // 5ª Posición: Cruzados punta-talón exactos
+                    return `
+                        <g transform="translate(100, 100)">
+                            <g transform="translate(-14, -12)">${drawSlipperCorrect(false, '#FF6B8B')}</g>
+                            <g transform="translate(14, 12)">${drawSlipperCorrect(true, '#FF9EAF')}</g>
+                            <path d="M -30 -12 A 12 12 0 0 1 -30 12" fill="none" stroke="#9333EA" stroke-width="2" stroke-dasharray="2,2" />
+                            <path d="M 30 -12 A 12 12 0 0 0 30 12" fill="none" stroke="#9333EA" stroke-width="2" stroke-dasharray="2,2" />
+                            <text x="0" y="58" text-anchor="middle" font-size="12" font-weight="bold" fill="#2E1065">5ª: Cruzados Punta-Talón</text>
+                        </g>
+                    `;
+            }
+        }
+
+        function renderArmsByNumber(num) {
+            const renderHand = (cx, cy) => `<circle cx="${cx}" cy="${cy}" r="6" fill="#FDBA74" stroke="#EA580C" stroke-width="1.5" />`;
+
+            switch(num) {
+                case 1:
+                    return `
+                        <path d="M 72 64 Q 42 100 92 108" fill="none" stroke="#FDBA74" stroke-width="8" stroke-linecap="round" />
+                        <path d="M 128 64 Q 158 100 108 108" fill="none" stroke="#FDBA74" stroke-width="8" stroke-linecap="round" />
+                        ${renderHand(92, 108)}
+                        ${renderHand(108, 108)}
+                        <text x="100" y="166" text-anchor="middle" font-size="12" font-weight="bold" fill="#2E1065">1ª: Círculo al Ombligo</text>
+                    `;
+                case 2:
+                    return `
+                        <path d="M 72 64 Q 40 70 20 74" fill="none" stroke="#FDBA74" stroke-width="8" stroke-linecap="round" />
+                        <path d="M 128 64 Q 160 70 180 74" fill="none" stroke="#FDBA74" stroke-width="8" stroke-linecap="round" />
+                        ${renderHand(18, 74)}
+                        ${renderHand(182, 74)}
+                        <line x1="18" y1="74" x2="182" y2="74" stroke="#BB29BB" stroke-width="2" stroke-dasharray="3,3" />
+                        <text x="100" y="166" text-anchor="middle" font-size="12" font-weight="bold" fill="#2E1065">2ª: Abiertos a los Lados</text>
+                    `;
+                case 3:
+                    return `
+                        <path d="M 72 64 Q 40 70 20 74" fill="none" stroke="#FDBA74" stroke-width="8" stroke-linecap="round" />
+                        <path d="M 128 64 Q 160 20 106 14" fill="none" stroke="#FDBA74" stroke-width="8" stroke-linecap="round" />
+                        ${renderHand(18, 74)}
+                        ${renderHand(106, 14)}
+                        <text x="100" y="166" text-anchor="middle" font-size="12" font-weight="bold" fill="#2E1065">3ª: Un Brazo Arriba, Otro al Lado</text>
+                    `;
+                case 4:
+                    return `
+                        <path d="M 72 64 Q 42 100 92 108" fill="none" stroke="#FDBA74" stroke-width="8" stroke-linecap="round" />
+                        <path d="M 128 64 Q 160 20 106 14" fill="none" stroke="#FDBA74" stroke-width="8" stroke-linecap="round" />
+                        ${renderHand(92, 108)}
+                        ${renderHand(106, 14)}
+                        <text x="100" y="166" text-anchor="middle" font-size="12" font-weight="bold" fill="#2E1065">4ª: Un Brazo Arriba, Otro al Ombligo</text>
+                    `;
+                case 5:
+                    return `
+                        <path d="M 72 64 Q 40 22 92 14" fill="none" stroke="#FDBA74" stroke-width="8" stroke-linecap="round" />
+                        <path d="M 128 64 Q 160 22 108 14" fill="none" stroke="#FDBA74" stroke-width="8" stroke-linecap="round" />
+                        ${renderHand(94, 14)}
+                        ${renderHand(106, 14)}
+                        <ellipse cx="100" cy="15" rx="20" ry="10" fill="none" stroke="#FA4616" stroke-dasharray="2,2" stroke-width="2" />
+                        <text x="100" y="166" text-anchor="middle" font-size="12" font-weight="bold" fill="#2E1065">5ª: Corona sobre Cabeza</text>
+                    `;
+            }
+        }
+
+        function getLatAmFemaleVoice() {
+            if (!('speechSynthesis' in window)) return null;
+            const voices = window.speechSynthesis.getVoices();
+            const femaleKeywords = ['paulina', 'dalia', 'salma', 'paloma', 'monica', 'mónica', 'sabina', 'angelica', 'francisca', 'luciana', 'camila', 'sofia', 'sofía', 'lupe', 'mia', 'female', 'femenina', 'google español'];
+            const latAmLocales = ['es-mx', 'es-419', 'es-ar', 'es-co', 'es-cl', 'es-pe', 'es-us', 'es-uy', 'es-ve'];
+
+            for (const loc of latAmLocales) {
+                const match = voices.find(v => {
+                    const lang = (v.lang || '').replace('_', '-').toLowerCase();
+                    const name = (v.name || '').toLowerCase();
+                    return lang.startsWith(loc) && femaleKeywords.some(kw => name.includes(kw));
+                });
+                if (match) return match;
+            }
+
+            for (const loc of latAmLocales) {
+                const match = voices.find(v => (v.lang || '').replace('_', '-').toLowerCase().startsWith(loc));
+                if (match) return match;
+            }
+
+            const spanishFemale = voices.find(v => {
+                const lang = (v.lang || '').toLowerCase();
+                const name = (v.name || '').toLowerCase();
+                return lang.startsWith('es') && femaleKeywords.some(kw => name.includes(kw));
+            });
+            if (spanishFemale) return spanishFemale;
+
+            return voices.find(v => v.lang && v.lang.toLowerCase().startsWith('es')) || null;
+        }
+
+        function speakText(text) {
+            if (!ttsEnabled || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-MX';
+            
+            const voice = getLatAmFemaleVoice();
+            if (voice) {
+                utterance.voice = voice;
+                utterance.lang = voice.lang;
+            }
+
+            utterance.rate = 0.92;
+            utterance.pitch = 1.25;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function toggleTTS() {
+            ttsEnabled = !ttsEnabled;
+            const btn = document.getElementById('tts-btn');
+            const icon = document.getElementById('tts-icon');
+            const label = document.getElementById('tts-label');
+
+            if (ttsEnabled) {
+                icon.textContent = '🔊';
+                label.textContent = 'Voz: Activada';
+                btn.setAttribute('aria-pressed', 'true');
+                speakText("Voz activada. ¡Bailemos juntos!");
+            } else {
+                window.speechSynthesis.cancel();
+                icon.textContent = '🔇';
+                label.textContent = 'Voz: Desactivada';
+                btn.setAttribute('aria-pressed', 'false');
+            }
+        }
+
+        function changeFontSize(delta) {
+            fontScale = Math.min(Math.max(0.8, fontScale + delta), 1.5);
+            document.documentElement.style.setProperty('--text-scale', fontScale);
+        }
+
+        function resetFontSize() {
+            fontScale = 1.0;
+            document.documentElement.style.setProperty('--text-scale', fontScale);
+        }
+
+        function toggleContrast() {
+            highContrast = !highContrast;
+            document.body.classList.toggle('high-contrast', highContrast);
+        }
+
+        function toggleEasyReading() {
+            easyReading = !easyReading;
+            document.body.classList.toggle('easy-reading', easyReading);
+            const btn = document.getElementById('easy-reading-btn');
+            if (easyReading) {
+                btn.classList.add('bg-blue-300', 'ring-2', 'ring-blue-600');
+                speakText("Lectura fácil activada");
+            } else {
+                btn.classList.remove('bg-blue-300', 'ring-2', 'ring-blue-600');
+                speakText("Lectura fácil desactivada");
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            const secExplore = document.getElementById('section-explore');
+            const secGame = document.getElementById('section-game');
+            const secConnect = document.getElementById('section-connect');
+
+            const btnExplore = document.getElementById('tab-explore');
+            const btnGame = document.getElementById('tab-game');
+            const btnConnect = document.getElementById('tab-connect');
+
+            secExplore.classList.add('hidden');
+            secGame.classList.add('hidden');
+            secConnect.classList.add('hidden');
+
+            btnExplore.className = "flex-1 min-w-[200px] py-4 px-6 rounded-2xl font-black text-base md:text-lg transition-all text-purple-800 hover:bg-white/60 flex items-center justify-center gap-2 hover:scale-[1.02]";
+            btnGame.className = "flex-1 min-w-[200px] py-4 px-6 rounded-2xl font-black text-base md:text-lg transition-all text-purple-800 hover:bg-white/60 flex items-center justify-center gap-2 hover:scale-[1.02]";
+            btnConnect.className = "flex-1 min-w-[200px] py-4 px-6 rounded-2xl font-black text-base md:text-lg transition-all text-purple-800 hover:bg-white/60 flex items-center justify-center gap-2 hover:scale-[1.02]";
+
+            if (tab === 'explore') {
+                secExplore.classList.remove('hidden');
+                btnExplore.className = "flex-1 min-w-[200px] py-4 px-6 rounded-2xl font-black text-base md:text-lg transition-all shadow-md bg-white text-purple-900 flex items-center justify-center gap-2 hover:scale-[1.02]";
+                renderExploreGrid();
+            } else if (tab === 'game') {
+                secGame.classList.remove('hidden');
+                btnGame.className = "flex-1 min-w-[200px] py-4 px-6 rounded-2xl font-black text-base md:text-lg transition-all shadow-md bg-white text-purple-900 flex items-center justify-center gap-2 hover:scale-[1.02]";
+                if (activeCardsData.length === 0) {
+                    initGame('feet');
+                }
+            } else if (tab === 'connect') {
+                secConnect.classList.remove('hidden');
+                btnConnect.className = "flex-1 min-w-[200px] py-4 px-6 rounded-2xl font-black text-base md:text-lg transition-all shadow-md bg-white text-purple-900 flex items-center justify-center gap-2 hover:scale-[1.02]";
+                initConnectGame();
+            }
+        }
+
+        function setExploreCategory(cat) {
+            currentExploreCategory = cat;
+            const btnFeet = document.getElementById('btn-cat-feet');
+            const btnArms = document.getElementById('btn-cat-arms');
+
+            if (cat === 'feet') {
+                btnFeet.className = "px-5 py-2.5 rounded-full font-extrabold text-sm transition bg-pantone-gradient text-white shadow-md";
+                btnArms.className = "px-5 py-2.5 rounded-full font-extrabold text-sm transition bg-gray-200 text-purple-900 hover:bg-gray-300";
+            } else {
+                btnArms.className = "px-5 py-2.5 rounded-full font-extrabold text-sm transition bg-pantone-gradient text-white shadow-md";
+                btnFeet.className = "px-5 py-2.5 rounded-full font-extrabold text-sm transition bg-gray-200 text-purple-900 hover:bg-gray-300";
+            }
+            renderExploreGrid();
+        }
+
+        function renderExploreGrid() {
+            const container = document.getElementById('explore-grid');
+            const items = POSITIONS_DATA[currentExploreCategory];
+
+            container.innerHTML = items.map(item => `
+                <div class="bg-orange-50/60 rounded-3xl p-5 border-2 border-orange-200 shadow-lg hover:shadow-xl transition flex flex-col items-center text-center bg-contrast-card">
+                    <div class="w-full bg-white rounded-2xl p-4 shadow-inner border border-orange-100 flex items-center justify-center cursor-pointer hover:scale-105 transition relative" onclick="openZoomModal('${item.id}')">
+                        <div class="absolute top-2 right-2 bg-purple-100 px-2.5 py-1 rounded-full text-purple-900 font-bold text-xs flex items-center gap-1 shadow-sm">
+                            <span>🔍</span> Lupa
+                        </div>
+                        ${createPositionSVG(item)}
+                    </div>
+                    <h3 class="text-xl font-extrabold text-purple-950 text-contrast mt-4">${item.name}</h3>
+                    <p class="text-sm font-bold text-orange-600 my-1">${item.shortDesc}</p>
+                    <p class="text-xs text-gray-700 text-contrast leading-relaxed mb-4">${item.fullDesc}</p>
+                    
+                    <div class="flex gap-2 w-full mt-auto">
+                        <button onclick="speakText('${item.name}. ${item.fullDesc}')" class="flex-1 py-2 bg-purple-100 hover:bg-purple-200 text-purple-900 rounded-xl font-bold text-xs transition flex items-center justify-center gap-1">
+                            <span>🔊</span> Escuchar
+                        </button>
+                        <button onclick="openZoomModal('${item.id}')" class="flex-1 py-2 bg-pantone-gradient text-white rounded-xl font-bold text-xs shadow-md transition flex items-center justify-center gap-1">
+                            <span>🔍</span> Lupa Mágica
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initConnectGame() {
+            selectedArmId = null;
+            connectedPairs = [];
+            updateConnectUI();
+            speakText("Conectemos cada posición de brazos con su correspondiente posición de pies.");
+        }
+
+        function updateConnectUI() {
+            const armsList = document.getElementById('connect-arms-list');
+            const feetList = document.getElementById('connect-feet-list');
+            const scoreSpan = document.getElementById('connect-score');
+            const instruction = document.getElementById('connect-instruction');
+
+            scoreSpan.textContent = connectedPairs.length;
+
+            if (connectedPairs.length === 5) {
+                instruction.textContent = "🎉 ¡Excelente! Has conectado todas las posiciones correctamente.";
+            } else if (selectedArmId) {
+                instruction.textContent = "👉 Ahora haz clic en la posición de pies correspondiente a ese brazo.";
+            } else {
+                instruction.textContent = "👉 Selecciona primero un brazo de la columna izquierda.";
+            }
+
+            if (!window.shuffledArms) {
+                window.shuffledArms = [...POSITIONS_DATA.arms];
+            }
+            if (!window.shuffledFeet) {
+                window.shuffledFeet = [...POSITIONS_DATA.feet].sort(() => Math.random() - 0.5);
+            }
+
+            armsList.innerHTML = window.shuffledArms.map(arm => {
+                const isConnected = connectedPairs.includes(arm.posNumber);
+                const isSelected = selectedArmId === arm.posNumber;
+
+                let cardClasses = "p-3 rounded-2xl border-2 transition flex items-center gap-4 bg-white bg-contrast-card ";
+                if (isConnected) {
+                    cardClasses += "border-green-400 bg-green-50 opacity-75 cursor-default";
+                } else if (isSelected) {
+                    cardClasses += "border-purple-600 ring-4 ring-purple-200 bg-purple-50 shadow-md cursor-pointer";
+                } else {
+                    cardClasses += "border-orange-200 hover:border-orange-400 shadow-sm cursor-pointer";
+                }
+
+                return `
+                    <div class="${cardClasses}" onclick="${isConnected ? '' : `selectArm(${arm.posNumber})`}">
+                        <div class="w-20 h-20 bg-orange-50 rounded-xl p-1 flex items-center justify-center flex-shrink-0 border border-orange-100">
+                            ${createPositionSVG(arm)}
+                        </div>
+                        <div class="flex-grow">
+                            <span class="text-xs font-bold text-orange-600">BRAZOS</span>
+                            <h4 class="font-black text-purple-950 text-sm text-contrast">${arm.name}</h4>
+                            <p class="text-xs text-gray-600 text-contrast">${arm.shortDesc}</p>
+                        </div>
+                        ${isConnected ? '<span class="text-2xl">✅</span>' : ''}
+                    </div>
+                `;
+            }).join('');
+
+            feetList.innerHTML = window.shuffledFeet.map(foot => {
+                const isConnected = connectedPairs.includes(foot.posNumber);
+
+                let cardClasses = "p-3 rounded-2xl border-2 transition flex items-center gap-4 bg-white bg-contrast-card ";
+                if (isConnected) {
+                    cardClasses += "border-green-400 bg-green-50 opacity-75 cursor-default";
+                } else if (selectedArmId) {
+                    cardClasses += "border-orange-300 hover:border-orange-500 shadow-md cursor-pointer animate-pulse";
+                } else {
+                    cardClasses += "border-orange-200 shadow-sm opacity-90 cursor-pointer";
+                }
+
+                return `
+                    <div class="${cardClasses}" onclick="${isConnected ? '' : `selectFoot(${foot.posNumber})`}">
+                        <div class="w-20 h-20 bg-orange-50 rounded-xl p-1 flex items-center justify-center flex-shrink-0 border border-orange-100">
+                            ${createPositionSVG(foot)}
+                        </div>
+                        <div class="flex-grow">
+                            <span class="text-xs font-bold text-orange-600">PIES</span>
+                            <h4 class="font-black text-purple-950 text-sm text-contrast">${foot.name}</h4>
+                            <p class="text-xs text-gray-600 text-contrast">${foot.shortDesc}</p>
+                        </div>
+                        ${isConnected ? '<span class="text-2xl">✅</span>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectArm(posNum) {
+            selectedArmId = posNum;
+            const armItem = POSITIONS_DATA.arms.find(a => a.posNumber === posNum);
+            speakText(`Seleccionaste ${armItem.name}. Ahora busca su pie correspondiente.`);
+            updateConnectUI();
+        }
+
+        function selectFoot(posNum) {
+            if (!selectedArmId) {
+                speakText("Primero selecciona un brazo de la izquierda.");
+                return;
+            }
+
+            if (selectedArmId === posNum) {
+                connectedPairs.push(posNum);
+                speakText(`¡Excelente! Coinciden perfectamente en la posición ${posNum}.`);
+                selectedArmId = null;
+                updateConnectUI();
+
+                if (connectedPairs.length === 5) {
+                    setTimeout(showConnectCompleteModal, 600);
+                }
+            } else {
+                speakText("Esos no corresponden. ¡Inténtalo de nuevo!");
+                showMaiaGuidance({
+                    maiaTip: `El brazo número ${selectedArmId} debe unirse con su respectiva ${selectedArmId}ª posición de pies.`
+                });
+                selectedArmId = null;
+                updateConnectUI();
+            }
+        }
+
+        function showConnectCompleteModal() {
+            const modal = document.getElementById('maia-modal');
+            const title = document.getElementById('maia-title');
+            const text = document.getElementById('maia-text');
+
+            title.textContent = "🏆 ¡Felicitaciones! ¡Completaste todas las conexiones!";
+            const msg = "¡Increíble trabajo! Lograste unir todas las posiciones de brazos con sus respectivos pies del 1 al 5.";
+            text.textContent = msg;
+            currentMaiaSpeechText = msg;
+
+            modal.classList.remove('hidden');
+            speakText(msg);
+        }
+
+        function initGame(mode = 'feet') {
+            flippedCards = [];
+            matchedPairsCount = 0;
+            attemptsCount = 0;
+            hintsUsedCount = 0;
+            isProcessingFlip = false;
+
+            let sourceItems = [];
+            let deck = [];
+
+            if (mode === 'feet') {
+                sourceItems = POSITIONS_DATA.feet;
+            } else if (mode === 'arms') {
+                sourceItems = POSITIONS_DATA.arms;
+            } else {
+                sourceItems = [...POSITIONS_DATA.feet.slice(0, 3), ...POSITIONS_DATA.arms.slice(0, 3)];
+            }
+
+            totalPairs = sourceItems.length;
+            sourceItems.forEach((item) => {
+                deck.push({
+                    uid: `card-${item.id}-text`,
+                    pairId: item.id,
+                    cardType: 'text',
+                    title: item.name,
+                    itemData: item
+                });
+                deck.push({
+                    uid: `card-${item.id}-image`,
+                    pairId: item.id,
+                    cardType: 'image',
+                    title: item.name,
+                    itemData: item
+                });
+            });
+
+            deck.sort(() => Math.random() - 0.5);
+            activeCardsData = deck;
+
+            renderGameGrid();
+            speakText("¡Comencemos el memotest! Encuentra el nombre y la imagen correspondientes.");
+            updateScoreboard();
+        }
+
+        function renderGameGrid() {
+            const grid = document.getElementById('game-grid');
+            grid.innerHTML = activeCardsData.map((card, idx) => `
+                <div id="card-elem-${idx}" class="card h-48 cursor-pointer perspective-1000" onclick="handleCardFlip(${idx})">
+                    <div class="card-inner w-full h-full relative rounded-2xl shadow-md border-2 border-orange-200">
+                        <div class="card-front absolute inset-0 bg-pantone-gradient rounded-2xl flex flex-col items-center justify-center p-3 text-white">
+                            <span class="text-4xl mb-1">🩰</span>
+                            <span class="font-extrabold text-sm text-center">Bailemos juntos</span>
+                        </div>
+                        <div class="card-back absolute inset-0 bg-white rounded-2xl p-3 flex flex-col items-center justify-center text-center bg-contrast-card">
+                            ${card.cardType === 'text' 
+                                ? `<div class="p-2 border-2 border-purple-200 rounded-xl bg-purple-50 w-full h-full flex flex-col items-center justify-center">
+                                     <span class="text-xs font-bold text-orange-600 mb-1">POSICIÓN</span>
+                                     <h4 class="font-black text-purple-950 text-base text-contrast leading-tight">${card.title}</h4>
+                                   </div>`
+                                : `<div class="w-full h-full flex flex-col items-center justify-center p-1">
+                                     ${createPositionSVG(card.itemData)}
+                                   </div>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleCardFlip(index) {
+            if (isProcessingFlip) return;
+            const cardElem = document.getElementById(`card-elem-${index}`);
+            
+            if (cardElem.classList.contains('flipped') || cardElem.classList.contains('matched')) return;
+
+            cardElem.classList.add('flipped');
+            flippedCards.push({ index, data: activeCardsData[index] });
+
+            if (flippedCards.length === 1) {
+                if (flippedCards[0].data.cardType === 'text') {
+                    speakText(flippedCards[0].data.title);
+                } else {
+                    speakText("Posición de " + flippedCards[0].data.title);
+                }
+            } else if (flippedCards.length === 2) {
+                isProcessingFlip = true;
+                attemptsCount++;
+                updateScoreboard();
+
+                const [c1, c2] = flippedCards;
+
+                if (c1.data.pairId === c2.data.pairId) {
+                    matchedPairsCount++;
+                    updateScoreboard();
+
+                    document.getElementById(`card-elem-${c1.index}`).classList.add('matched');
+                    document.getElementById(`card-elem-${c2.index}`).classList.add('matched');
+
+                    speakText("¡Excelente pareja! Bien hecho.");
+
+                    flippedCards = [];
+                    isProcessingFlip = false;
+
+                    if (matchedPairsCount === totalPairs) {
+                        setTimeout(showGameCompleteModal, 800);
+                    }
+                } else {
+                    setTimeout(() => {
+                        document.getElementById(`card-elem-${c1.index}`).classList.remove('flipped');
+                        document.getElementById(`card-elem-${c2.index}`).classList.remove('flipped');
+                        
+                        showMaiaGuidance(c1.data.itemData);
+
+                        flippedCards = [];
+                        isProcessingFlip = false;
+                    }, 1200);
+                }
+            }
+        }
+
+        function updateScoreboard() {
+            document.getElementById('score-matches').textContent = `Parejas: ${matchedPairsCount} / ${totalPairs}`;
+            document.getElementById('score-attempts').textContent = `Intentos: ${attemptsCount}`;
+        }
+
+        function showMaiaGuidance(item) {
+            const modal = document.getElementById('maia-modal');
+            const title = document.getElementById('maia-title');
+            const text = document.getElementById('maia-text');
+
+            title.textContent = "¡Casi lo logras! Maia te ayuda:";
+            text.textContent = item.maiaTip;
+            currentMaiaSpeechText = item.maiaTip;
+
+            modal.classList.remove('hidden');
+            speakText(item.maiaTip);
+        }
+
+        function requestHint() {
+            hintsUsedCount++;
+            const unMatched = activeCardsData.find((card, idx) => {
+                const elem = document.getElementById(`card-elem-${idx}`);
+                return !elem.classList.contains('matched');
+            });
+
+            if (unMatched) {
+                const modal = document.getElementById('maia-modal');
+                const title = document.getElementById('maia-title');
+                const text = document.getElementById('maia-text');
+
+                title.textContent = "💡 Pista Mágica de Maia";
+                const hintMsg = `Busca la pareja para ${unMatched.itemData.name}. Recuerda: ${unMatched.itemData.shortDesc}.`;
+                text.textContent = hintMsg;
+                currentMaiaSpeechText = hintMsg;
+
+                modal.classList.remove('hidden');
+                speakText(hintMsg);
+            }
+        }
+
+        function closeMaiaModal() {
+            document.getElementById('maia-modal').classList.add('hidden');
+        }
+
+        function speakCurrentMaiaMessage() {
+            speakText(currentMaiaSpeechText);
+        }
+
+        function showGameCompleteModal() {
+            const modal = document.getElementById('maia-modal');
+            const title = document.getElementById('maia-title');
+            const text = document.getElementById('maia-text');
+
+            title.textContent = "🎉 ¡Felicitaciones! ¡Completaste el desafío!";
+            const completeMsg = `¡Increíble! Lograste encontrar todas las parejas en ${attemptsCount} intentos. Pregunta para Pensar: ¿Cuál fue tu posición favorita de hoy?`;
+            text.textContent = completeMsg;
+            currentMaiaSpeechText = completeMsg;
+
+            modal.classList.remove('hidden');
+            speakText(completeMsg);
+        }
+
+        function openZoomModal(itemId) {
+            let item = POSITIONS_DATA.feet.find(x => x.id === itemId);
+            if (!item) {
+                item = POSITIONS_DATA.arms.find(x => x.id === itemId);
+            }
+            if (!item) return;
+
+            document.getElementById('zoom-title').textContent = item.name;
+            document.getElementById('zoom-desc').textContent = item.fullDesc;
+            document.getElementById('zoom-svg-container').innerHTML = createPositionSVG(item, true);
+
+            const audioBtn = document.getElementById('zoom-audio-btn');
+            audioBtn.onclick = () => speakText(`${item.name}. ${item.fullDesc}`);
+
+            document.getElementById('zoom-modal').classList.remove('hidden');
+            speakText(`${item.name}. ${item.fullDesc}`);
+        }
+
+        function closeZoomModal() {
+            document.getElementById('zoom-modal').classList.add('hidden');
+        }
+
+        window.onload = function() {
+            renderExploreGrid();
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+                if (window.speechSynthesis.onvoiceschanged !== undefined) {
+                    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+                }
+            }
+        };
+    </script>
+</body>
+</html>

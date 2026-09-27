@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detectives de flores - Sala de 5</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fff8fc;
+    color: #263238;
+  }
+  header {
+    background: #f7d9ee;
+    padding: 22px 18px;
+    text-align: center;
+    border-bottom: 4px solid #d8a8ca;
+  }
+  h1 { margin: 0 0 8px; font-size: 2.2rem; }
+  .subtitle { margin: 0; font-size: 1.15rem; }
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 14px;
+    background: #fff;
+  }
+  button {
+    border: 2px solid #5c3568;
+    background: #fff;
+    color: #3d2446;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  button:hover, button:focus {
+    outline: 3px solid #f0a9d9;
+    outline-offset: 2px;
+  }
+  .container {
+    max-width: 980px;
+    margin: 22px auto;
+    padding: 0 18px 30px;
+  }
+  .card {
+    background: #fff;
+    border: 2px solid #e1c7dc;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.08);
+  }
+  .progress {
+    font-weight: bold;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .question {
+    font-size: 1.35rem;
+    text-align: center;
+    line-height: 1.4;
+    margin: 14px 0 18px;
+  }
+  .options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .flower-option {
+    min-height: 220px;
+    padding: 12px;
+    background: #fff;
+    border: 3px solid #d8c0d7;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .15s ease;
+  }
+  .flower-option:hover { transform: scale(1.02); }
+  .flower-option svg {
+    width: 100%;
+    max-width: 210px;
+    height: 170px;
+  }
+  .flower-option.correct {
+    border-width: 4px;
+  }
+  .flower-option.wrong {
+    opacity: .7;
+  }
+  .feedback {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    line-height: 1.45;
+    background: #f5eef7;
+  }
+  .hidden { display: none; }
+  .next {
+    display: block;
+    margin: 18px auto 0;
+    background: #ead7f0;
+  }
+  .metacog {
+    margin-top: 20px;
+    padding: 18px;
+    background: #eef7f1;
+    border-radius: 16px;
+  }
+  .reflection-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .small { font-size: .95rem; }
+  .counter { text-align:center; margin-top:10px; }
+  .hint-button {
+    display: block;
+    margin: 14px auto 0;
+    background: #fff7d9;
+  }
+  @media (max-width: 700px) {
+    .options { grid-template-columns: 1fr; }
+    .reflection-options { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌸 Detectives de flores 🌸</h1>
+  <p class="subtitle">Sala de 5 · Observamos, comparamos y descubrimos</p>
+</header>
+
+<div class="controls" aria-label="Opciones de accesibilidad">
+  <button onclick="changeFont(1)">A+ Aumentar letra</button>
+  <button onclick="changeFont(-1)">A- Disminuir letra</button>
+  <button onclick="speak()">🔊 Escuchar consigna</button>
+  <button onclick="restart()">🔄 Empezar de nuevo</button>
+</div>
+
+<main class="container">
+  <section class="card">
+    <div class="progress" id="progress"></div>
+    <p class="question" id="question"></p>
+
+    <div class="options" id="options"></div>
+
+    <button class="hint-button" id="hintBtn" onclick="showHint()">💡 Necesito una pista</button>
+
+    <div class="feedback" id="feedback" aria-live="polite">
+      Observá las flores y pensá antes de elegir.
+    </div>
+
+    <button class="next hidden" id="nextBtn" onclick="nextQuestion()">➡️ Siguiente desafío</button>
+
+    <div class="metacog hidden" id="metacog">
+      <h2>🌱 ¿Cómo descubriste la respuesta?</h2>
+      <p>Elegí qué te ayudó a pensar:</p>
+      <div class="reflection-options">
+        <button onclick="finishReflection('El color')">👀 El color</button>
+        <button onclick="finishReflection('La forma')">🌸 La forma</button>
+        <button onclick="finishReflection('Las hojas')">🌿 Las hojas</button>
+        <button onclick="finishReflection('Otra característica')">🔎 Otra característica</button>
+      </div>
+      <p id="reflection" class="counter"></p>
+    </div>
+  </section>
+</main>
+
+<script>
+function flowerSVG(type) {
+  const common = 'viewBox="0 0 240 180" role="img"';
+  if (type === 'rosa') return `<svg ${common} aria-label="Ilustración de una rosa">
+    <rect width="240" height="180" rx="18" fill="#fff7fb"/>
+    <path d="M120 160 C116 130 120 105 120 78" stroke="#4f7f4f" stroke-width="7" fill="none"/>
+    <path d="M120 118 C90 105 78 123 101 135 C112 141 119 137 120 134" fill="#76a85e"/>
+    <g transform="translate(120 70)">
+      <circle r="48" fill="#e97a9f"/>
+      <circle r="39" fill="#f29ab6"/>
+      <path d="M-25 -5 C-7 -36 30 -26 24 -2 C18 19 -18 23 -27 3 C-35 -14 -11 -28 5 -15 C19 -4 10 14 -5 14 C-20 14 -28 1 -17 -9 C-6 -19 10 -10 7 1 C4 11 -8 11 -12 4 C-16 -3 -8 -9 -2 -5 C3 -2 1 5 -3 5" fill="#d94f7f"/>
+    </g>
+  </svg>`;
+  if (type === 'magnolia') return `<svg ${common} aria-label="Ilustración de una magnolia">
+    <rect width="240" height="180" rx="18" fill="#fffdf7"/>
+    <path d="M42 154 C75 125 82 91 112 70 C144 48 176 44 205 57" stroke="#5c8051" stroke-width="9" fill="none"/>
+    <ellipse cx="67" cy="128" rx="34" ry="16" fill="#77a65e" transform="rotate(-28 67 128)"/>
+    <ellipse cx="166" cy="67" rx="38" ry="17" fill="#77a65e" transform="rotate(24 166 67)"/>
+    <g transform="translate(120 78)">
+      <ellipse rx="29" ry="54" fill="#fffaf0" stroke="#dfd4c4" stroke-width="2" transform="rotate(0)"/>
+      <ellipse rx="29" ry="54" fill="#fffaf0" stroke="#dfd4c4" stroke-width="2" transform="rotate(60)"/>
+      <ellipse rx="29" ry="54" fill="#fffaf0" stroke="#dfd4c4" stroke-width="2" transform="rotate(120)"/>
+      <circle r="13" fill="#e6b34f"/>
+    </g>
+  </svg>`;
+  if (type === 'azalea') return `<svg ${common} aria-label="Ilustración de una azalea">
+    <rect width="240" height="180" rx="18" fill="#fff8fc"/>
+    <path d="M120 160 C118 135 116 110 120 84" stroke="#56824e" stroke-width="7" fill="none"/>
+    <ellipse cx="91" cy="122" rx="27" ry="12" fill="#72a85e" transform="rotate(-28 91 122)"/>
+    <ellipse cx="153" cy="112" rx="27" ry="12" fill="#72a85e" transform="rotate(28 153 112)"/>
+    ${[[-55,-30],[0,-42],[55,-30],[-28,12],[28,12],[0,30]].map(([x,y])=>`<g transform="translate(${120+x} ${80+y})">
+      <circle r="25" fill="#ed82ae"/>
+      <circle r="19" fill="#f3a1c0"/>
+      <circle cx="-8" cy="-5" r="4" fill="#fff"/>
+      <circle cx="8" cy="4" r="4" fill="#fff"/>
+      <circle r="6" fill="#f1c34d"/>
+    </g>`).join('')}
+  </svg>`;
+  if (type === 'ceibo') return `<svg ${common} aria-label="Ilustración de una flor de ceibo">
+    <rect width="240" height="180" rx="18" fill="#fff7f7"/>
+    <path d="M120 160 C119 126 124 102 120 74" stroke="#4f7e4d" stroke-width="8" fill="none"/>
+    <path d="M120 120 C93 108 80 119 96 133 C106 141 115 137 120 132" fill="#70a45b"/>
+    <g transform="translate(120 70)">
+      <path d="M0 8 C-38 -6 -54 -34 -36 -45 C-18 -56 -4 -35 0 -18 C4 -35 18 -56 36 -45 C54 -34 38 -6 0 8Z" fill="#d93632"/>
+      <path d="M-5 4 C-39 19 -54 4 -46 -10 C-37 -26 -15 -18 0 -5 C15 -18 37 -26 46 -10 C54 4 39 19 5 4Z" fill="#e34b43"/>
+      <path d="M0 2 C-5 30 7 38 18 25 C26 15 19 5 8 -2" fill="#c9252b"/>
+      <circle cx="0" cy="0" r="8" fill="#f2c84b"/>
+    </g>
+  </svg>`;
+  if (type === 'lapacho') return `<svg ${common} aria-label="Ilustración de una flor de lapacho rosado">
+    <rect width="240" height="180" rx="18" fill="#fff7fb"/>
+    <path d="M25 145 C65 112 95 88 133 66 C168 46 193 39 215 35" stroke="#6d5b46" stroke-width="9" fill="none"/>
+    ${[[65,115,0],[104,90,-12],[143,68,10],[176,53,-8],[197,43,12]].map(([x,y,r])=>`
+      <g transform="translate(${x} ${y}) rotate(${r})">
+        <path d="M0 5 C-16 -13 -9 -31 0 -34 C9 -31 16 -13 0 5Z" fill="#ef8fbd"/>
+        <path d="M0 5 C-18 0 -29 -15 -23 -24 C-17 -33 -3 -23 0 -8Z" fill="#f3a4c9"/>
+        <path d="M0 5 C18 0 29 -15 23 -24 C17 -33 3 -23 0 -8Z" fill="#f3a4c9"/>
+        <circle cx="0" cy="-5" r="4" fill="#e1b04b"/>
+      </g>`).join('')}
+  </svg>`;
+  return '';
+}
+
+const flowers = [
+  {
+    name: "Lapacho rosado",
+    type: "lapacho",
+    question: "Observá las tres imágenes. ¿Cuál corresponde al lapacho rosado?",
+    options: ["rosa", "lapacho", "magnolia"],
+    answer: "lapacho",
+    clues: [
+      "Pista 1: Buscá una flor de color rosado que aparece formando grupos sobre una rama.",
+      "Pista 2: Sus flores pueden verse agrupadas en un árbol.",
+      "Pista 3: El nombre incluye el color rosado."
+    ]
+  },
+  {
+    name: "Rosa",
+    type: "rosa",
+    question: "Observá las tres imágenes. ¿Cuál de estas flores es una rosa?",
+    options: ["azalea", "rosa", "ceibo"],
+    answer: "rosa",
+    clues: [
+      "Pista 1: Tiene muchos pétalos que se enrollan hacia el centro.",
+      "Pista 2: Puede presentarse en distintos colores.",
+      "Pista 3: Su forma tiene un centro muy arremolinado."
+    ]
+  },
+  {
+    name: "Azalea",
+    type: "azalea",
+    question: "Observá las tres imágenes. ¿Cuál corresponde a la azalea?",
+    options: ["magnolia", "azalea", "ceibo"],
+    answer: "azalea",
+    clues: [
+      "Pista 1: Podés encontrar muchas flores pequeñas formando un grupo.",
+      "Pista 2: Sus flores pueden ser rosadas, rojas o blancas.",
+      "Pista 3: Cada flor tiene varios pétalos y un centro visible."
+    ]
+  },
+  {
+    name: "Magnolia",
+    type: "magnolia",
+    question: "Observá las tres imágenes. ¿Cuál corresponde a la magnolia?",
+    options: ["magnolia", "lapacho", "rosa"],
+    answer: "magnolia",
+    clues: [
+      "Pista 1: Tiene pétalos grandes y anchos.",
+      "Pista 2: Algunas magnolias tienen flores blancas o claras.",
+      "Pista 3: Su flor se destaca por tener pocos pétalos grandes."
+    ]
+  },
+  {
+    name: "Ceibo",
+    type: "ceibo",
+    question: "Observá las tres imágenes. ¿Cuál corresponde al ceibo?",
+    options: ["azalea", "ceibo", "magnolia"],
+    answer: "ceibo",
+    clues: [
+      "Pista 1: Sus flores son de color rojo.",
+      "Pista 2: Tiene una forma particular, con pétalos alargados.",
+      "Pista 3: Es una flor que crece en un árbol."
+    ]
+  }
+];
+
+let current = 0;
+let attempts = 0;
+let hintIndex = 0;
+let fontSize = 1;
+
+function render() {
+  const f = flowers[current];
+  attempts = 0;
+  hintIndex = 0;
+  document.getElementById("progress").textContent =
+    "Desafío " + (current + 1) + " de " + flowers.length;
+  document.getElementById("question").textContent = f.question;
+
+  const options = document.getElementById("options");
+  options.innerHTML = "";
+  f.options.forEach((opt, i) => {
+    const b = document.createElement("button");
+    b.className = "flower-option";
+    b.setAttribute("aria-label", "Opción " + (i + 1));
+    b.innerHTML = flowerSVG(opt);
+    b.onclick = () => checkAnswer(opt, b);
+    options.appendChild(b);
+  });
+
+  document.getElementById("feedback").textContent =
+    "🔎 Observá las imágenes con atención y elegí la que pensás que corresponde.";
+  document.getElementById("nextBtn").classList.add("hidden");
+  document.getElementById("metacog").classList.add("hidden");
+  document.getElementById("reflection").textContent = "";
+  document.getElementById("hintBtn").disabled = false;
+}
+
+function checkAnswer(choice, button) {
+  const f = flowers[current];
+  const feedback = document.getElementById("feedback");
+
+  if (choice === f.answer) {
+    button.classList.add("correct");
+    feedback.textContent =
+      "🎉 ¡Muy bien! Observaste, comparaste y encontraste la respuesta. Ahora contá qué característica te ayudó.";
+    document.getElementById("nextBtn").classList.remove("hidden");
+    document.getElementById("metacog").classList.remove("hidden");
+    document.getElementById("hintBtn").disabled = true;
+  } else {
+    attempts++;
+    button.classList.add("wrong");
+    feedback.textContent =
+      "🌱 Todavía no. " + f.clues[Math.min(hintIndex, f.clues.length - 1)] +
+      " Volvé a observar y probá otra vez.";
+  }
+}
+
+function showHint() {
+  const f = flowers[current];
+  const feedback = document.getElementById("feedback");
+  feedback.textContent = "💡 " + f.clues[Math.min(hintIndex, f.clues.length - 1)];
+  hintIndex = Math.min(hintIndex + 1, f.clues.length - 1);
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= flowers.length) {
+    current = 0;
+    alert("🌷 ¡Completaste todos los desafíos! Podés volver a empezar para seguir observando las flores.");
+  }
+  render();
+}
+
+function finishReflection(answer) {
+  document.getElementById("reflection").textContent =
+    "¡Genial! Pensaste usando: " + answer + ". Cada observación nos ayuda a aprender.";
+}
+
+function changeFont(direction) {
+  fontSize = Math.max(.85, Math.min(1.35, fontSize + direction * .1));
+  document.body.style.fontSize = fontSize + "em";
+}
+
+function speak() {
+  const text = document.getElementById("question").textContent;
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "es-AR";
+    utter.rate = .9;
+    window.speechSynthesis.speak(utter);
+  } else {
+    alert("La lectura en voz alta no está disponible en este navegador.");
+  }
+}
+
+function restart() {
+  current = 0;
+  render();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+render();
+</script>
+</body>
+</html>

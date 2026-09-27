@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-id="th-modified">Present Simple Practice</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-color: #2c3e50;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #16a34a;
+      --error: #dc2626;
+      --font-scale: 1rem;
+      --btn-scale: 1;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      font-size: var(--font-scale);
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .main-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .main-header h1 {
+      color: var(--primary);
+      margin: 0 0 5px 0;
+      font-size: calc(var(--font-scale) * 2);
+    }
+
+    .accessibility-bar {
+      background-color: var(--card-bg);
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .acc-btn {
+      background-color: #e2e8f0;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      padding: calc(8px * var(--btn-scale)) calc(12px * var(--btn-scale));
+      font-size: var(--font-scale);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .acc-btn:hover {
+      background-color: #cbd5e1;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: calc(12px * var(--btn-scale));
+      font-size: calc(var(--font-scale) * 1.1);
+      background-color: #cbd5e1;
+      border: none;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      font-weight: bold;
+      color: var(--text-color);
+    }
+
+    .tab-btn.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      background-color: var(--card-bg);
+      padding: 24px;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .theory-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .sub-btn {
+      background-color: #e2e8f0;
+      border: 1px solid #cbd5e1;
+      padding: calc(8px * var(--btn-scale)) calc(14px * var(--btn-scale));
+      font-size: var(--font-scale);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .sub-btn.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .sub-content {
+      display: none;
+      padding: 15px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+
+    .sub-content.active {
+      display: block;
+    }
+
+    .img-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin: 15px 0;
+      padding: 15px;
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+
+    .img-card {
+      text-align: center;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+    }
+
+    .img-card svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f1f5f9;
+    }
+
+    .exercise-card {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      font-size: var(--font-scale);
+      border: 1px solid #94a3b8;
+      border-radius: 4px;
+      width: 60%;
+      max-width: 320px;
+    }
+
+    .feedback {
+      margin-top: 5px;
+      font-weight: bold;
+      display: none;
+    }
+
+    .feedback.correct {
+      color: var(--success);
+      display: block;
+    }
+
+    .feedback.incorrect {
+      color: var(--error);
+      display: block;
+    }
+
+    .check-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: calc(14px * var(--btn-scale)) calc(24px * var(--btn-scale));
+      font-size: calc(var(--font-scale) * 1.1);
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    .check-btn:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .warning-msg {
+      color: var(--error);
+      font-weight: bold;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+<meta property="og:title" content="Present Simple Practice" data-id="th-modified" ><meta name="description" content="gemini-code-1789308799514" data-id="th-modified" ><meta property="og:description" content="gemini-code-1789308799514" data-id="th-modified" ><meta property="og:image" content="https://tiiny.host/assets/logo-purple-bg.png" data-id="th-modified" ><meta property="og:image:width" content="1501" data-id="th-modified" ><meta property="og:image:height" content="1501" data-id="th-modified" ><meta property="og:image:type" content="image/png" data-id="th-modified" ><meta property="og:url" content="https://tomato-carri-48.tiiny.site/" data-id="th-modified" ><meta property="og:type" content="website" data-id="th-modified" ><script defer data-domain="tomato-carri-48.tiiny.site" src="https://analytics.tiiny.net/js/plausible.js"></script><script type="text/javascript" src="https://tiiny.host/ad-script.js"></script></head>
+<body>
+
+<div class="container">
+  <div class="main-header">
+    <h1>Present Simple Practice</h1>
+  </div>
+
+  <div class="accessibility-bar" role="region" aria-label="Controles de accesibilidad">
+    <span><strong>Accesibilidad:</strong></span>
+    <button class="acc-btn" onclick="changeFontSize(1)" aria-label="Aumentar tamaño de texto">A+</button>
+    <button class="acc-btn" onclick="changeFontSize(-1)" aria-label="Reducir tamaño de texto">A-</button>
+    <button class="acc-btn" onclick="changeBtnSize(0.1)" aria-label="Aumentar tamaño de botones">Botones +</button>
+    <button class="acc-btn" onclick="changeBtnSize(-0.1)" aria-label="Reducir tamaño de botones">Botones -</button>
+    <button class="acc-btn" onclick="speakText()" aria-label="Leer texto en voz alta">🔊 Leer en voz alta</button>
+    <button class="acc-btn" onclick="stopSpeech()" aria-label="Detener voz">⏹️ Detener voz</button>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('theory-tab')">Theory Hub</button>
+    <button class="tab-btn" onclick="switchTab('practice-tab')">Practice Area</button>
+  </div>
+
+  <div id="theory-tab" class="tab-content active">
+    <div class="theory-nav">
+      <button class="sub-btn active" onclick="switchSub('use-content')">Use</button>
+      <button class="sub-btn" onclick="switchSub('form-aff-neg-content')">Form: Aff & Neg</button>
+      <button class="sub-btn" onclick="switchSub('form-int-content')">Form: Interrogative</button>
+      <button class="sub-btn" onclick="switchSub('adverbs-content')">Adverbs of Frequency</button>
+      <button class="sub-btn" onclick="switchSub('time-content')">Time Expressions</button>
+    </div>
+
+    <div id="use-content" class="sub-content active">
+      <h2>Use</h2>
+      <p>Present Simple is used to talk about habits (I brush my teeth every day) and routines (I go to school in the morning).</p>
+    </div>
+
+    <div id="form-aff-neg-content" class="sub-content">
+      <h2>Form: affirmative and negative</h2>
+      <p><strong>I / You / We / They</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>verb=infinitive</strong> (it does not change, it stays the same. E.g. play-play)<br>
+      I play football on Monday.<br>
+      <strong>don’t/ do not + verb in the infinitive</strong><br>
+      I don’t go to the club on Sunday.</p>
+
+      <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 15px 0;">
+
+      <p><strong>He / She / It</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>verb+-s</strong><br>
+      She dances every day.<br>
+      <strong>verb+-es</strong> (verbs ending in -z, -ss, -sh, -ch, -x, -o (preceded by a consonant)<br>
+      E.g. whiz-whizzes, possess-possesses, wash-washes, teach-teaches, mix-mixes, go-goes.<br>
+      Marcos does homework at four.<br>
+      Lara washes her clothes at the weekend.</p>
+
+      <p>Verbs ending in a <strong>consonant+-y</strong><br>
+      Change <strong>–y to -i and add –es</strong>. E.g. study- studies<br>
+      She studies English on Monday.</p>
+
+      <p><strong>doesn’t/does not+verb in the infinitive</strong><br>
+      Juan doesn’t study Maths on Saturday.</p>
+    </div>
+
+    <div id="form-int-content" class="sub-content">
+      <h2>Form: interrogative</h2>
+      <p><strong>Auxiliary verbs</strong></p>
+      <p><strong>I / You / We / They</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>do</strong><br>
+      <strong>He / She / It</strong> &nbsp;&nbsp;&nbsp;&nbsp; <strong>does</strong></p>
+
+      <p>Questions are formed like this:<br>
+      <strong>An auxiliary verb + a subject + a verb + …?</strong></p>
+      <p><strong>Do</strong> you go to school at seven? Yes, I/we <strong>do</strong>. / No, I/we <strong>don’t</strong>.<br>
+      <strong>Does</strong> he/she play tennis on Saturday? Yes, he/she <strong>does</strong>. / No, he/she <strong>doesn’t</strong>.<br>
+      <strong>Do</strong> they do homework in the evening? Yes, they <strong>do</strong>. / No, they <strong>don’t</strong>.</p>
+
+      <p><strong>A wh-word + an auxiliary verb + a subject + a verb + …?</strong><br>
+      What <strong>do</strong> you do <strong>on Monday</strong>? I study Geography.<br>
+      Where <strong>do</strong> you play football? I play football <strong>at the club</strong>.<br>
+      When <strong>do</strong> you visit your friends? I visit my friends <strong>on Saturday</strong>.<br>
+      Who cooks dinner <strong>on Monday</strong>? My father <strong>does</strong>. / My parents <strong>do</strong>.</p>
+    </div>
+
+    <div id="adverbs-content" class="sub-content">
+      <h2>Adverbs of frequency</h2>
+      <table>
+        <tr><td><strong>Always</strong></td><td>100%</td></tr>
+        <tr><td><strong>Usually</strong></td><td>80%</td></tr>
+        <tr><td><strong>Often</strong></td><td>60%</td></tr>
+        <tr><td><strong>Sometimes</strong></td><td>30%</td></tr>
+        <tr><td><strong>Never</strong></td><td>0%</td></tr>
+      </table>
+      <p>Pay attention to their position in the sentence:</p>
+      <p><strong>Verb to be + adverb</strong> (Verb to be is an exception)<br>
+      I am <strong>always</strong> busy.</p>
+      <p><strong>Adverb + verb</strong><br>
+      I <strong>usually</strong> get up at seven.</p>
+    </div>
+
+    <div id="time-content" class="sub-content">
+      <h2>Time expressions</h2>
+      
+      <p><strong>Days of the week:</strong> <strong>on Monday</strong>, <strong>Tuesday</strong>, <strong>Wednesday</strong>, <strong>Thursday</strong>, <strong>Friday</strong>, <strong>Saturday</strong>, <strong>Sunday</strong>, <strong>at the weekend</strong> (Saturday and Sunday).</p>
+      <div class="img-container">
+        <div class="img-card">
+          <svg width="220" height="150" viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="200" height="130" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="3"></rect>
+            <rect x="10" y="10" width="200" height="35" rx="10" fill="#2563eb"></rect>
+            <text x="110" y="33" fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle">CALENDAR</text>
+            <circle cx="40" cy="20" r="4" fill="#ffffff"></circle>
+            <circle cx="180" cy="20" r="4" fill="#ffffff"></circle>
+            <text x="25" y="65" font-size="11" fill="#2563eb" font-weight="bold">Mon</text>
+            <text x="53" y="65" font-size="11" fill="#2563eb" font-weight="bold">Tue</text>
+            <text x="81" y="65" font-size="11" fill="#2563eb" font-weight="bold">Wed</text>
+            <text x="112" y="65" font-size="11" fill="#2563eb" font-weight="bold">Thu</text>
+            <text x="142" y="65" font-size="11" fill="#2563eb" font-weight="bold">Fri</text>
+            <text x="170" y="65" font-size="11" fill="#dc2626" font-weight="bold">Sat</text>
+            <text x="193" y="65" font-size="11" fill="#dc2626" font-weight="bold">Sun</text>
+            <line x1="20" y1="75" x2="200" y2="75" stroke="#cbd5e1" stroke-width="1"></line>
+            <text x="28" y="95" font-size="12" fill="#334155">1</text>
+            <text x="56" y="95" font-size="12" fill="#334155">2</text>
+            <text x="84" y="95" font-size="12" fill="#334155">3</text>
+            <text x="115" y="95" font-size="12" fill="#334155">4</text>
+            <text x="145" y="95" font-size="12" fill="#334155">5</text>
+            <rect x="165" y="82" width="45" height="20" rx="4" fill="#fee2e2"></rect>
+            <text x="171" y="95" font-size="12" fill="#dc2626" font-weight="bold">6</text>
+            <text x="195" y="95" font-size="12" fill="#dc2626" font-weight="bold">7</text>
+            <text x="110" y="128" font-size="11" fill="#64748b" font-weight="bold" text-anchor="middle">ON Monday... / AT the weekend</text>
+          </svg>
+        </div>
+      </div>
+
+      <p><strong>Moments of the day:</strong> <strong>in the morning</strong>, <strong>in the afternoon</strong>, <strong>in the evening</strong>, <strong>at night</strong>.</p>
+      <div class="img-container">
+        <div class="img-card">
+          <svg width="280" height="110" viewBox="0 0 280 110" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(10,10)">
+              <rect width="55" height="70" rx="5" fill="#e0f2fe"></rect>
+              <circle cx="27.5" cy="45" r="14" fill="#f59e0b"></circle>
+              <line x1="5" y1="45" x2="50" y2="45" stroke="#0284c7" stroke-width="2"></line>
+              <text x="27.5" y="92" font-size="10" font-weight="bold" fill="#0369a1" text-anchor="middle">in the morning</text>
+            </g>
+            <g transform="translate(77,10)">
+              <rect width="55" height="70" rx="5" fill="#fef3c7"></rect>
+              <circle cx="27.5" cy="22" r="14" fill="#f59e0b"></circle>
+              <text x="27.5" y="92" font-size="10" font-weight="bold" fill="#b45309" text-anchor="middle">in the afternoon</text>
+            </g>
+            <g transform="translate(144,10)">
+              <rect width="55" height="70" rx="5" fill="#ffedd5"></rect>
+              <circle cx="27.5" cy="45" r="14" fill="#ea580c"></circle>
+              <line x1="5" y1="45" x2="50" y2="45" stroke="#c2410c" stroke-width="2"></line>
+              <text x="27.5" y="92" font-size="10" font-weight="bold" fill="#c2410c" text-anchor="middle">in the evening</text>
+            </g>
+            <g transform="translate(211,10)">
+              <rect width="55" height="70" rx="5" fill="#1e293b"></rect>
+              <path d="M 30 20 A 12 12 0 1 0 42 32 A 10 10 0 0 1 30 20 Z" fill="#fef08a"></path>
+              <text x="27.5" y="92" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">at night</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <p><strong>Time:</strong><br>
+      <strong>at four / at four o’clock</strong><br>
+      <strong>at quarter past seven</strong><br>
+      <strong>at half past five</strong><br>
+      <strong>at quarter to eight</strong></p>
+      
+      <div class="img-container">
+        <div class="img-card">
+          <svg width="320" height="110" viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(10,5)">
+              <circle cx="32" cy="32" r="28" fill="#ffffff" stroke="#2563eb" stroke-width="3"></circle>
+              <line x1="32" y1="32" x2="32" y2="12" stroke="#1e293b" stroke-width="3"></line>
+              <line x1="32" y1="32" x2="48" y2="40" stroke="#2563eb" stroke-width="3"></line>
+              <text x="32" y="78" font-size="10" font-weight="bold" fill="#1e293b" text-anchor="middle">at four o'clock</text>
+            </g>
+            <g transform="translate(87,5)">
+              <circle cx="32" cy="32" r="28" fill="#ffffff" stroke="#2563eb" stroke-width="3"></circle>
+              <line x1="32" y1="32" x2="48" y2="32" stroke="#1e293b" stroke-width="3"></line>
+              <line x1="32" y1="32" x2="18" y2="44" stroke="#2563eb" stroke-width="3"></line>
+              <text x="32" y="78" font-size="10" font-weight="bold" fill="#1e293b" text-anchor="middle">quarter past 7</text>
+            </g>
+            <g transform="translate(164,5)">
+              <circle cx="32" cy="32" r="28" fill="#ffffff" stroke="#2563eb" stroke-width="3"></circle>
+              <line x1="32" y1="32" x2="32" y2="52" stroke="#1e293b" stroke-width="3"></line>
+              <line x1="32" y1="32" x2="44" y2="44" stroke="#2563eb" stroke-width="3"></line>
+              <text x="32" y="78" font-size="10" font-weight="bold" fill="#1e293b" text-anchor="middle">half past 5</text>
+            </g>
+            <g transform="translate(241,5)">
+              <circle cx="32" cy="32" r="28" fill="#ffffff" stroke="#2563eb" stroke-width="3"></circle>
+              <line x1="32" y1="32" x2="12" y2="32" stroke="#1e293b" stroke-width="3"></line>
+              <line x1="32" y1="32" x2="22" y2="18" stroke="#2563eb" stroke-width="3"></line>
+              <text x="32" y="78" font-size="10" font-weight="bold" fill="#1e293b" text-anchor="middle">quarter to 8</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="practice-tab" class="tab-content">
+    
+    <h3>Practice 1</h3>
+    <div class="exercise-card">
+      <p><strong>1- Use the following phrases to complete the sentences:</strong><br>
+      <em>brush my teeth | plant a tree | has lunch | go to bed | prepares tasty snacks</em></p>
+      <div>
+        a- I watch TV after dinner and then <input type="text" data-ans="go to bed" id="p1_1a">.
+        <div class="feedback" id="fb_p1_1a"></div>
+      </div><br>
+      <div>
+        b- At school we <input type="text" data-ans="plant a tree" id="p1_1b"> to celebrate the Earth Day.
+        <div class="feedback" id="fb_p1_1b"></div>
+      </div><br>
+      <div>
+        c- She hardly ever <input type="text" data-ans="has lunch" id="p1_1c"> at the canteen.
+        <div class="feedback" id="fb_p1_1c"></div>
+      </div><br>
+      <div>
+        d- Grandma <input type="text" data-ans="prepares tasty snacks" id="p1_1d"> for Easter.
+        <div class="feedback" id="fb_p1_1d"></div>
+      </div><br>
+      <div>
+        e- I always <input type="text" data-ans="brush my teeth" id="p1_1e"> before going to bed.
+        <div class="feedback" id="fb_p1_1e"></div>
+      </div>
+    </div>
+
+    <div class="exercise-card">
+      <p><strong>2- Put the adverb of frequency in the right place:</strong></p>
+      <div>
+        a- Bobby does his homework. (always)<br>
+        <input type="text" data-ans="Bobby always does his homework." id="p1_2a">
+        <div class="feedback" id="fb_p1_2a"></div>
+      </div><br>
+      <div>
+        b- He eats vegetables. (often)<br>
+        <input type="text" data-ans="He often eats vegetables." id="p1_2b">
+        <div class="feedback" id="fb_p1_2b"></div>
+      </div><br>
+      <div>
+        c- He uses his mobile. (sometimes)<br>
+        <input type="text" data-ans="He sometimes uses his mobile." id="p1_2c">
+        <div class="feedback" id="fb_p1_2c"></div>
+      </div><br>
+      <div>
+        d- He is late for school. (never)<br>
+        <input type="text" data-ans="He is never late for school." id="p1_2d">
+        <div class="feedback" id="fb_p1_2d"></div>
+      </div>
+    </div>
+
+    <h3>Practice 2</h3>
+    <div class="exercise-card">
+      <p><strong>1- Complete the sentences with the verbs in brackets in the correct form and the adverbs if necessary:</strong></p>
+      <div>
+        Lucas <input type="text" data-ans="usually cooks" id="p2_1a"> dinner on Friday. (usually/cook)
+        <div class="feedback" id="fb_p2_1a"></div>
+      </div><br>
+      <div>
+        Marcos and Juan <input type="text" data-ans="play" id="p2_1b"> football in the evening. (play)
+        <div class="feedback" id="fb_p2_1b"></div>
+      </div><br>
+      <div>
+        I <input type="text" data-ans="do not watch|don't watch" id="p2_1c"> TV in the morning. (not watch)
+        <div class="feedback" id="fb_p2_1c"></div>
+      </div><br>
+      <div>
+        Juana <input type="text" data-ans="doesn't study|does not study" id="p2_1d"> at the weekend. (not study)
+        <div class="feedback" id="fb_p2_1d"></div>
+      </div><br>
+      <div>
+        Susana <input type="text" data-ans="works" id="p2_1e"> every day. (work)
+        <div class="feedback" id="fb_p2_1e"></div>
+      </div>
+    </div>
+
+    <div class="exercise-card">
+      <p><strong>2- Look at the chart. Complete the sentences and answer the question:</strong></p>
+      <p><strong>Marina´s week</strong></p>
+      <table>
+        <tr><th>Activities \ Days</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th><th>Sunday</th></tr>
+        <tr><td>watch TV</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+        <tr><td>do homework</td><td>✓</td><td></td><td>✓</td><td>✓</td><td>✓</td><td></td><td></td></tr>
+        <tr><td>do exercise</td><td></td><td>✓</td><td></td><td>✓</td><td></td><td>✓</td><td></td></tr>
+        <tr><td>cook dinner</td><td>✓</td><td></td><td></td><td></td><td>✓</td><td></td><td></td></tr>
+        <tr><td>work</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      </table>
+      <div>
+        Marina <input type="text" data-ans="always watches" id="p2_2a"> TV.
+        <div class="feedback" id="fb_p2_2a"></div>
+      </div><br>
+      <div>
+        She <input type="text" data-ans="often does" id="p2_2b"> exercise.
+        <div class="feedback" id="fb_p2_2b"></div>
+      </div><br>
+      <div>
+        She <input type="text" data-ans="usually does" id="p2_2c"> homework.
+        <div class="feedback" id="fb_p2_2c"></div>
+      </div><br>
+      <div>
+        How often does Marina work?<br>
+        <input type="text" data-ans="She never works." id="p2_2d">
+        <div class="feedback" id="fb_p2_2d"></div>
+      </div><br>
+      <div>
+        When does she cook dinner?<br>
+        <input type="text" data-ans="She cooks dinner on Monday and Friday." id="p2_2e">
+        <div class="feedback" id="fb_p2_2e"></div>
+      </div>
+    </div>
+
+    <h3>Practice 3</h3>
+    <div class="exercise-card">
+      <p><strong>1- Write about Juan, Marcos and Sebastián’s routine. Include each idea in a different sentence:</strong></p>
+      <table>
+        <tr>
+          <th>Juan</th>
+          <th>Marcos and Sebastián</th>
+        </tr>
+        <tr>
+          <td style="text-align:left;">
+            get up-seven<br>have breakfast-eight<br>go to the office-nine<br>go home-six<br>have tea-half past six<br>have dinner-nine<br>go to bed-eleven
+          </td>
+          <td style="text-align:left;">
+            get up-six<br>have breakfast-half past six<br>go to school-seven<br>go back home-one<br>do homework-two<br>have dinner-nine<br>go to bed-eleven
+          </td>
+        </tr>
+      </table>
+
+      <p><strong>Juan’s Routine:</strong></p>
+      <input type="text" style="width:100%; max-width:none;" data-ans="Juan gets up at seven. He has breakfast at eight. He goes to the office at nine. He goes home at 6. He has tea at half past six. He has dinner at nine. He goes to bed at eleven.|Juan gets up at seven. He has breakfast at eight. He goes to the office at nine. He goes home at six. He has tea at half past six. He has dinner at nine. He goes to bed at eleven." id="p3_1a">
+      <div class="feedback" id="fb_p3_1a"></div>
+
+      <p><strong>Marcos and Sebastián’s Routine:</strong></p>
+      <input type="text" style="width:100%; max-width:none;" data-ans="Marcos and Sebastián get up at six. They have breakfast at half past six. They go to school at seven. They go back home at one. They do homework at two. They have dinner at nine. They go to bed at eleven." id="p3_1b">
+      <div class="feedback" id="fb_p3_1b"></div>
+    </div>
+
+    <div class="exercise-card">
+      <p><strong>2- Read the text. Write questions and answer them:</strong></p>
+      <p style="background: #ffffff; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+        <em>The Slaters are not always on holiday! They usually work very hard. They live and work in Coventry. Mr Slater is a teacher in the centre of town and Mrs Slater is a doctor in a local hospital. Rose and Richard go to the same school near their home. They like school a lot. They all like travelling and go to a different country every year. This year they are having a great holiday in Spain. Right now they are sitting in a street café. Mr and Mrs Slater are having some coffee. Richard is eating an ice-cream. Rose is looking at a dog. The dog looks hungry. It wants some ice-cream.</em>
+      </p>
+      <div>
+        a- Where/ the Slaters/ live?<br>
+        <input type="text" style="width:100%; max-width:none;" data-ans="Where do the Slaters live? The Slaters live in Coventry." id="p3_2a">
+        <div class="feedback" id="fb_p3_2a"></div>
+      </div><br>
+      <div>
+        b- Who/like/school?<br>
+        <input type="text" style="width:100%; max-width:none;" data-ans="Who likes school? Rose and Richard do." id="p3_2b">
+        <div class="feedback" id="fb_p3_2b"></div>
+      </div><br>
+      <div>
+        c- What/ the Slaters/usually/do?<br>
+        <input type="text" style="width:100%; max-width:none;" data-ans="What does Mr Slater do? He works at school.|What does Mr Slaters do? He works at school." id="p3_2c">
+        <div class="feedback" id="fb_p3_2c"></div>
+      </div><br>
+      <div>
+        d- the Slaters/ work/hard?<br>
+        <input type="text" style="width:100%; max-width:none;" data-ans="Do the Slaters work hard? Yes, they do." id="p3_2d">
+        <div class="feedback" id="fb_p3_2d"></div>
+      </div>
+    </div>
+
+    <button class="check-btn" onclick="checkAnswers()">Let´s check!</button>
+    <div id="warning" class="warning-msg">Por favor, completa todos los campos antes de verificar las respuestas.</div>
+  </div>
+</div>
+
+<script>
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function switchSub(subId) {
+    document.querySelectorAll('.sub-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.sub-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(subId).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  let fontScale = 1;
+  let btnScale = 1;
+
+  function changeFontSize(delta) {
+    fontScale += delta * 0.1;
+    fontScale = Math.min(Math.max(0.8, fontScale), 1.5);
+    document.documentElement.style.setProperty('--font-scale', `${fontScale}rem`);
+  }
+
+  function changeBtnSize(delta) {
+    btnScale += delta;
+    btnScale = Math.min(Math.max(0.8, btnScale), 1.6);
+    document.documentElement.style.setProperty('--btn-scale', btnScale);
+  }
+
+  let synth = window.speechSynthesis;
+  function speakText() {
+    synth.cancel();
+    let selectedText = window.getSelection().toString();
+    let textToRead = selectedText || document.querySelector('.tab-content.active').innerText;
+    
+    let utterance = new SpeechSynthesisUtterance(textToRead);
+    utterance.lang = 'en-US';
+    synth.speak(utterance);
+  }
+
+  function stopSpeech() {
+    synth.cancel();
+  }
+
+  const feedbackMessages = {
+    "p1_1a": { ok: "Great! We do not add –s/-es in this case.", err: "Pensá que el sujeto es I y que la acción ocurre después de cenar." },
+    "p1_1b": { ok: "Perfect! We do not add –s/-es in this case.", err: "Pensá que hacen la acción para celebrar el Día de La Tierra." },
+    "p1_1c": { ok: "Excellent! The subject is she, so we use has.", err: "Pensá que el sujeto es She." },
+    "p1_1d": { ok: "Great! We add –s/-es in this case.", err: "Pensá con qué pronombre reemplazamos Grandma, y cómo se conjuga el verbo." },
+    "p1_1e": { ok: "Great! The pronoun is I, so de do not add –s/-es.", err: "Pensá que el pronombre es I." },
+    "p1_2a": { ok: "Perfect! The adverb goes before the verb.", err: "Fijate dónde tenés que ubicar el adverbio con respect al verbo." },
+    "p1_2b": { ok: "Great! We write the adverb first, and then the adverb.", err: "Pensá dónde ubicas el adverbio." },
+    "p1_2c": { ok: "Perfect!", err: "¿El adverbio va antes o después del verbo?" },
+    "p1_2d": { ok: "Great! The adverb goes after verb to be.", err: "Fijate que está el verbo to be en la oración." },
+    "p2_1a": { ok: "Great! We add –s to the verb in this case.", err: "Fijate que el sujeto es Lucas." },
+    "p2_1b": { ok: "Perfect! They replaces Marcos and Juan, so we do not add –s/-es.", err: "Pensá qué pronombre reemplaza a Marcos y Lucas." },
+    "p2_1c": { ok: "Excellent! We use don’t because the subject is I.", err: "Pensá qué palabra usamos para negar con sujeto I." },
+    "p2_1d": { ok: "Great! We use doesn’t in this case.", err: "Fijate que el sujeto es Juana. ¿Con qué palabra negamos?" },
+    "p2_1e": { ok: "Excellent! We add –s because the subject is Susana.", err: "Pensá con qué pronombre reemplazamos Susana, y cómo conjugamos el verbo." },
+    "p2_2a": { ok: "Great! The adverb goes before the verb.", err: "Pensá con qué frecuencia hace la acción y cómo conjugamos el verbo si el sujeto es Marina." },
+    "p2_2b": { ok: "Perfect! We add –es because the subject is She.", err: "Fijate la cantidad de ticks que obsevás en el cuadro y cómo conjugar el verbo ." },
+    "p2_2c": { ok: "Excellent!", err: "Pensá con qué frecuencia hace la acción." },
+    "p2_2d": { ok: "Great! How often refers to frequency.", err: "¿Qué significa how often?" },
+    "p2_2e": { ok: "Perfect! When refers to the moment when we do the action.", err: "Fijate qué significa when." },
+    "p3_1a": { ok: "Perfect! We add –s/-es becuase the subject is Juan. We use has instead of have.", err: "¿Cómo conjugamos los verbos si el sujeto es Juan? ¿Qué pasa con el verbo have?" },
+    "p3_1b": { ok: "Great! We do not add –s/-es in this case.", err: "¿Cómo conjugamos los verbos si el sujeto es Marcos y Juan?" },
+    "p3_2a": { ok: "Great! The auxiliary verb is do.", err: "¿Cuál es el verbo auxiliar a utilizar con el sujeto the Slaters?" },
+    "p3_2b": { ok: "Perfect! We do not use do/does in this case.", err: "¿Usamos do o does con Who?" },
+    "p3_2c": { ok: "Great! We use does in this case.", err: "¿Qué verbo auxiliar usamos con sujeto el Mr Slater?" },
+    "p3_2d": { ok: "Excellent! We use do in this case.", err: "¿Cuál es el verbo auxiliar correcto para utilizar con el sujeto the Slaters?" }
+  };
+
+  function checkAnswers() {
+    let inputs = document.querySelectorAll('#practice-tab input[type="text"]');
+    let warning = document.getElementById('warning');
+    let allFilled = true;
+
+    inputs.forEach(input => {
+      if (input.value.trim() === "") {
+        allFilled = false;
+      }
+    });
+
+    if (!allFilled) {
+      warning.style.display = "block";
+      return;
+    }
+
+    warning.style.display = "none";
+
+    inputs.forEach(input => {
+      let userVal = input.value.trim().toLowerCase().replace(/\s+/g, ' ');
+      let allowedAns = input.getAttribute('data-ans').toLowerCase().split('|');
+      let fbDiv = document.getElementById('fb_' + input.id);
+      let msgs = feedbackMessages[input.id] || { ok: "Correct!", err: "Incorrect." };
+
+      if (allowedAns.includes(userVal)) {
+        fbDiv.className = "feedback correct";
+        fbDiv.innerText = msgs.ok;
+      } else {
+        fbDiv.className = "feedback incorrect";
+        fbDiv.innerText = msgs.err;
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploradores del Movimiento - DUA</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts: Fredoka & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Fredoka', 'cursive'],
+                    },
+                    colors: {
+                        brand: {
+                            purple: '#6D28D9',
+                            yellow: '#F59E0B',
+                            green: '#10B981',
+                            blue: '#0284C7',
+                            pink: '#EC4899',
+                        }
+                    },
+                    keyframes: {
+                        bounceSoft: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' }
+                        },
+                        shakeDice: {
+                            '0%': { transform: 'rotate(0deg) scale(1)' },
+                            '25%': { transform: 'rotate(-12deg) scale(1.1)' },
+                            '50%': { transform: 'rotate(12deg) scale(1.1)' },
+                            '75%': { transform: 'rotate(-6deg) scale(1.05)' },
+                            '100%': { transform: 'rotate(0deg) scale(1)' }
+                        }
+                    },
+                    animation: {
+                        bounceSoft: 'bounceSoft 2s infinite ease-in-out',
+                        shakeDice: 'shakeDice 0.4s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Dyslexic friendly font helper */
+        .font-dyslexic {
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif !important;
+            letter-spacing: 0.05em;
+            word-spacing: 0.1em;
+        }
+
+        /* Focus rings for keyboard navigation accessibility */
+        *:focus-visible {
+            outline: 4px solid #F59E0B !important;
+            outline-offset: 3px !important;
+        }
+
+        /* Dynamic Font Size Controls */
+        html.text-sm-mode { font-size: 14px; }
+        html.text-base-mode { font-size: 16px; }
+        html.text-lg-mode { font-size: 19px; }
+        html.text-xl-mode { font-size: 22px; }
+
+        /* High contrast mode overrides */
+        body.high-contrast {
+            background-color: #000000 !important;
+            color: #FFFFFF !important;
+        }
+        body.high-contrast .hc-card {
+            background-color: #121212 !important;
+            border: 3px solid #FFFF00 !important;
+            color: #FFFFFF !important;
+        }
+        body.high-contrast .hc-btn {
+            background-color: #FFFF00 !important;
+            color: #000000 !important;
+            font-weight: bold !important;
+        }
+        body.high-contrast .hc-subcard {
+            background-color: #1A1A1A !important;
+            border: 2px solid #00FFFF !important;
+            color: #FFFFFF !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-full flex flex-col transition-colors duration-300">
+
+    <header class="bg-indigo-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-400 text-slate-900 p-2.5 rounded-2xl flex items-center justify-center shadow-lg">
+                    <i class="fa-solid font-bold text-2xl fa-dice-d20 animate-bounceSoft"></i>
+                </div>
+                <div>
+                    <h1 class="font-display text-xl sm:text-2xl font-bold tracking-wide text-amber-300">
+                        Exploradores del Movimiento 🎲
+                    </h1>
+                    <p class="text-xs text-indigo-200 hidden sm:block">Aprende jugando con tu cuerpo - Primer Ciclo DUA</p>
+                </div>
+            </div>
+
+            <!-- DUA Accessibility Toolbar -->
+            <div class="flex items-center gap-2 bg-indigo-950/70 p-1.5 rounded-2xl border border-indigo-700/50 flex-wrap">
+                <span class="text-xs text-indigo-300 font-semibold px-2 hidden md:inline"><i class="fa-solid fa-universal-access"></i> DUA:</span>
+                
+                <!-- Font Size Controls -->
+                <div class="flex bg-indigo-900 rounded-xl p-1 border border-indigo-700" title="Tamaño de Texto">
+                    <button onclick="changeFontSize(-1)" class="px-2 py-1 hover:bg-indigo-700 rounded-lg text-xs font-bold transition" aria-label="Disminuir letra">A-</button>
+                    <button onclick="changeFontSize(1)" class="px-2 py-1 hover:bg-indigo-700 rounded-lg text-xs font-bold transition" aria-label="Aumentar letra">A+</button>
+                </div>
+
+                <!-- Text to Speech Voice Toggle -->
+                <button id="tts-toggle-btn" onclick="toggleAudioNarration()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow" aria-label="Activar/Desactivar lectura en voz alta">
+                    <i class="fa-solid fa-volume-high" id="tts-icon"></i>
+                    <span id="tts-status">Voz: ON</span>
+                </button>
+
+                <!-- High Contrast Toggle -->
+                <button onclick="toggleHighContrast()" class="px-3 py-1.5 bg-indigo-800 hover:bg-indigo-700 rounded-xl text-xs font-semibold transition border border-indigo-600" aria-label="Cambiar alto contraste">
+                    <i class="fa-solid fa-circle-half-stroke"></i> Contraste
+                </button>
+
+                <!-- Font Dyslexic Toggle -->
+                <button onclick="toggleDyslexicFont()" class="px-3 py-1.5 bg-indigo-800 hover:bg-indigo-700 rounded-xl text-xs font-semibold transition border border-indigo-600" aria-label="Tipografía para dislexia">
+                    <i class="fa-solid fa-font"></i> Lectura Fácil
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 flex flex-col gap-6">
+        
+        <nav class="flex justify-center" aria-label="Secciones del juego">
+            <div class="bg-white p-1.5 rounded-3xl shadow-md border border-slate-200 flex flex-wrap gap-2 justify-center w-full max-w-xl hc-card">
+                <button onclick="switchTab('tab-guia')" id="btn-tab-guia" class="tab-btn active font-display px-4 sm:px-5 py-3 rounded-2xl font-bold text-sm sm:text-base transition flex items-center gap-2 bg-indigo-600 text-white shadow-md">
+                    <i class="fa-solid fa-book-open text-emerald-300"></i>
+                    <span>📖 Biblioteca del Movimiento</span>
+                </button>
+                <button onclick="switchTab('tab-desafio')" id="btn-tab-desafio" class="tab-btn font-display px-4 sm:px-5 py-3 rounded-2xl font-bold text-sm sm:text-base transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-brain text-purple-600"></i>
+                    <span>🧠 Preguntas Pista</span>
+                </button>
+                <button onclick="switchTab('tab-dados')" id="btn-tab-dados" class="tab-btn font-display px-4 sm:px-5 py-3 rounded-2xl font-bold text-sm sm:text-base transition flex items-center gap-2 text-slate-600 hover:bg-slate-100">
+                    <i class="fa-solid fa-dice text-amber-500"></i>
+                    <span>🎲 Juego de Dados</span>
+                </button>
+            </div>
+        </nav>
+
+        <section id="tab-guia" class="tab-content flex flex-col gap-6">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-2 border-emerald-200 hc-card">
+                <div class="flex items-center gap-3 border-b border-slate-200 pb-4 mb-6">
+                    <div class="bg-emerald-100 text-emerald-700 p-3 rounded-2xl text-2xl">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-display font-bold text-2xl text-slate-900">Biblioteca del Movimiento</h2>
+                        <p class="text-sm text-slate-600">Haz clic en cada elemento para explorar su voz, concepto y cómo realizarlo con tu cuerpo.</p>
+                    </div>
+                </div>
+
+                <div class="space-y-8">
+                    <!-- CATEGORIA 1: DESPLAZAMIENTO -->
+                    <div>
+                        <h3 class="font-display font-bold text-xl text-purple-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-person-running text-purple-600"></i> 1. Tipos de Desplazamiento
+                        </h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div onclick="exploreConcept('Caminar', 'Un pie se apoya y luego el otro a un ritmo tranquilo y constante.', '🚶')" class="p-4 bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group hc-subcard">
+                                <span class="text-4xl mb-2 group-hover:scale-125 transition transform">🚶</span>
+                                <h4 class="font-bold text-purple-900">Caminar</h4>
+                                <p class="text-xs text-purple-700 mt-1">Tranquilo y constante</p>
+                            </div>
+                            <div onclick="exploreConcept('Correr', 'Movimiento rápido donde por un instante ambos pies despegan del suelo.', '🏃')" class="p-4 bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group hc-subcard">
+                                <span class="text-4xl mb-2 group-hover:scale-125 transition transform">🏃</span>
+                                <h4 class="font-bold text-purple-900">Correr</h4>
+                                <p class="text-xs text-purple-700 mt-1">Ágil y veloz</p>
+                            </div>
+                            <div onclick="exploreConcept('Saltar', 'Impulsas tu cuerpo con fuerza para dar brincos despegan del suelo.', '🦘')" class="p-4 bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group hc-subcard">
+                                <span class="text-4xl mb-2 group-hover:scale-125 transition transform">🦘</span>
+                                <h4 class="font-bold text-purple-900">Saltar</h4>
+                                <p class="text-xs text-purple-700 mt-1">Brincos despegando</p>
+                            </div>
+                            <div onclick="exploreConcept('Cámara Lenta', 'Te mueves super despacio, sintiendo el control de cada músculo.', '🦥')" class="p-4 bg-purple-50 hover:bg-purple-100 border-2 border-purple-200 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group hc-subcard">
+                                <span class="text-4xl mb-2 group-hover:scale-125 transition transform">🦥</span>
+                                <h4 class="font-bold text-purple-900">Cámara Lenta</h4>
+                                <p class="text-xs text-purple-700 mt-1">Muy suave y despacio</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORIA 2: DIRECCIONES -->
+                    <div>
+                        <h3 class="font-display font-bold text-xl text-emerald-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-compass text-emerald-600"></i> 2. Direcciones en el Espacio
+                        </h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div onclick="exploreConcept('Adelante', 'Te mueves hacia el frente, siguiendo la dirección de tus ojos.', '⬆️')" class="p-4 bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group hc-subcard">
+                                <span class="text-4xl mb-2 group-hover:scale-125 transition transform">⬆️</span>
+                                <h4 class="font-bold text-emerald-900">Adelante</h4>
+                            </div>
+                            <div onclick="exploreConcept('Atrás', 'Te mueves retrocediendo con cuidado hacia tu espalda.', '⬇️')" class="p-4 bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group hc-subcard">
+                                <span class="text-4xl mb-2 group-hover:scale-125 transition transform">⬇️</span>
+                                <h4 class="font-bold text-emerald-900">Atrás</h4>
+                            </div>
+                            <div onclick="exploreConcept('Derecha', 'Te mueves hacia tu lado derecho.', '➡️')" class="p-4 bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group hc-subcard">
+                                <span class="text-4xl mb-2 group-hover:scale-125 transition transform">➡️</span>
+                                <h4 class="font-bold text-emerald-900">Derecha</h4>
+                            </div>
+                            <div onclick="exploreConcept('Izquierda', 'Te mueves hacia tu lado izquierdo.', '⬅️')" class="p-4 bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-200 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group hc-subcard">
+                                <span class="text-4xl mb-2 group-hover:scale-125 transition transform">⬅️</span>
+                                <h4 class="font-bold text-emerald-900">Izquierda</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CATEGORIA 3: NIVELES -->
+                    <div>
+                        <h3 class="font-display font-bold text-xl text-blue-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-blue-600"></i> 3. Niveles de Altura
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div onclick="exploreConcept('Nivel Alto', 'En el nivel alto te mueves de pie o en puntitas, buscando el punto más alto.', '🦒')" class="p-5 bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group hc-subcard">
+                                <span class="text-5xl mb-2 group-hover:scale-125 transition transform">🦒</span>
+                                <h4 class="font-display font-bold text-lg text-blue-900">Nivel Alto</h4>
+                                <p class="text-xs text-blue-700 mt-1">De pie, estirándote hacia arriba como jirafa.</p>
+                            </div>
+                            <div onclick="exploreConcept('Nivel Medio', 'En el nivel medio flexionas las rodillas, moviéndote a la altura de tu cintura.', '🐕')" class="p-5 bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group hc-subcard">
+                                <span class="text-5xl mb-2 group-hover:scale-125 transition transform">🐕</span>
+                                <h4 class="font-display font-bold text-lg text-blue-900">Nivel Medio</h4>
+                                <p class="text-xs text-blue-700 mt-1">Agachado a la altura de un perrito.</p>
+                            </div>
+                            <div onclick="exploreConcept('Nivel Bajo', 'En el nivel bajo te mueves en el piso, reptando o muy cerca del suelo.', '🐍')" class="p-5 bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-2xl cursor-pointer transition flex flex-col items-center text-center group hc-subcard">
+                                <span class="text-5xl mb-2 group-hover:scale-125 transition transform">🐍</span>
+                                <h4 class="font-display font-bold text-lg text-blue-900">Nivel Bajo</h4>
+                                <p class="text-xs text-blue-700 mt-1">Pegadito al suelo como una serpiente.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-desafio" class="tab-content hidden flex-col gap-6">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-2 border-purple-200 hc-card flex flex-col gap-6">
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-purple-100 text-purple-700 p-3 rounded-2xl text-2xl">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-display font-bold text-2xl text-slate-900">Preguntas Pista (Trivia)</h2>
+                            <p class="text-xs sm:text-sm text-slate-600">Adivina y piensa con tu cuerpo. Si fallas, obtendrás una pista de ayuda.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tanda Selectors -->
+                    <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-300 self-stretch sm:self-auto justify-center">
+                        <span class="text-xs font-bold text-slate-500 px-1 hidden sm:inline">Tandas:</span>
+                        <button onclick="selectTanda(0)" id="tanda-btn-0" class="tanda-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-purple-600 text-white shadow">Tanda 1</button>
+                        <button onclick="selectTanda(1)" id="tanda-btn-1" class="tanda-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-700 hover:bg-slate-200">Tanda 2</button>
+                        <button onclick="selectTanda(2)" id="tanda-btn-2" class="tanda-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-700 hover:bg-slate-200">Tanda 3</button>
+                        <button onclick="selectTanda(3)" id="tanda-btn-3" class="tanda-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-700 hover:bg-slate-200">Tanda 4</button>
+                    </div>
+                </div>
+
+                <!-- Quiz Progress Bar & Score -->
+                <div class="flex items-center justify-between bg-purple-50 p-3.5 rounded-2xl border border-purple-200 hc-subcard">
+                    <div class="flex items-center gap-2">
+                        <span id="quiz-tanda-badge" class="bg-purple-700 text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Tanda 1</span>
+                        <span id="quiz-question-badge" class="text-xs font-bold text-purple-900">Pregunta 1 de 4</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-amber-500 text-sm font-bold" id="quiz-stars-counter">
+                        <span>Estrellas:</span>
+                        <i class="fa-solid fa-star"></i>
+                        <span id="quiz-score-val">0</span>/4
+                    </div>
+                </div>
+
+                <!-- Question Box -->
+                <div class="bg-indigo-50/80 rounded-2xl p-5 border border-indigo-200 relative hc-subcard">
+                    <div class="flex items-start justify-between gap-3">
+                        <h3 id="quiz-question-text" class="font-display font-bold text-xl sm:text-2xl text-indigo-950 leading-snug">
+                            Cargando pregunta...
+                        </h3>
+                        <button onclick="speakCurrentQuestion()" class="p-2.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-900 rounded-xl transition flex-shrink-0" title="Escuchar pregunta">
+                            <i class="fa-solid fa-volume-high text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Options Grid -->
+                <div id="quiz-options-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <!-- Dynamic Answer Buttons rendered via JavaScript -->
+                </div>
+
+                <!-- Hint Button & Socratic Box -->
+                <div class="flex flex-col gap-3">
+                    <button id="btn-quiz-hint" onclick="toggleQuizHint()" class="self-start px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 font-bold rounded-xl text-xs transition flex items-center gap-2">
+                        <i class="fa-solid fa-lightbulb text-amber-600"></i>
+                        <span>💡 Pedir Pista para pensar</span>
+                    </button>
+
+                    <div id="quiz-hint-box" class="hidden bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 text-amber-950 text-sm">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">🦉</span>
+                            <div>
+                                <h4 class="font-bold text-amber-900 mb-0.5">Pista de ayuda:</h4>
+                                <p id="quiz-hint-text">...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formative Feedback Container -->
+                <div id="quiz-feedback-box" class="hidden p-5 rounded-2xl border-2 transition-all">
+                    <!-- Rendered by JS -->
+                </div>
+
+                <!-- Next Question Button / Next Tanda -->
+                <div class="flex items-center justify-between border-t border-slate-200 pt-4">
+                    <button onclick="prevQuizQuestion()" id="btn-prev-q" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-left"></i> Anterior
+                    </button>
+
+                    <button id="btn-next-question" onclick="nextQuizQuestion()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold transition flex items-center gap-2 shadow-md">
+                        <span id="btn-next-q-text">Siguiente Pregunta</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-dados" class="tab-content hidden flex-col gap-6">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border-2 border-indigo-200 hc-card flex flex-col gap-6">
+                
+                <!-- Header & Roll Button -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-slate-200 pb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="bg-amber-100 text-amber-800 p-3 rounded-2xl text-2xl">🎲</span>
+                        <div>
+                            <h2 class="font-display font-bold text-2xl text-indigo-950">Juego de Dados del Movimiento</h2>
+                            <p class="text-xs sm:text-sm text-slate-600">Lanza los 4 dados para armar tu desafío en orden correcto.</p>
+                        </div>
+                    </div>
+                    
+                    <button id="btn-roll" onclick="rollAllDice()" class="w-full sm:w-auto px-6 py-3.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-display font-bold text-lg rounded-2xl shadow-lg hover:scale-105 active:scale-95 transition flex items-center justify-center gap-3 border-b-4 border-amber-600 hc-btn">
+                        <i class="fa-solid fa-dice text-2xl animate-bounce"></i>
+                        <span>¡Lanzar los 4 Dados!</span>
+                    </button>
+                </div>
+
+                <!-- 4 DICE CARDS IN STRICT ORDER:
+                     1. Desplazamiento
+                     2. Cantidad de pasos
+                     3. Dirección
+                     4. Nivel
+                -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Dado 1: Desplazamiento -->
+                    <div id="dice-tipo" class="p-4 sm:p-5 bg-gradient-to-b from-purple-50 to-purple-100 border-2 border-purple-300 rounded-2xl shadow-md flex flex-col items-center text-center transition transform hc-subcard">
+                        <span class="text-xs font-bold text-purple-700 uppercase tracking-wider mb-2">1. Desplazamiento</span>
+                        <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex items-center justify-center text-purple-600 mb-2">
+                            <i id="icon-tipo" class="fa-solid fa-person-walking text-3xl"></i>
+                        </div>
+                        <span id="text-tipo" class="font-display font-bold text-purple-950 text-base sm:text-lg">Caminar</span>
+                    </div>
+
+                    <!-- Dado 2: Cantidad de Pasos -->
+                    <div id="dice-pasos" class="p-4 sm:p-5 bg-gradient-to-b from-pink-50 to-pink-100 border-2 border-pink-300 rounded-2xl shadow-md flex flex-col items-center text-center transition transform hc-subcard">
+                        <span class="text-xs font-bold text-pink-700 uppercase tracking-wider mb-2">2. Cantidad</span>
+                        <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex flex-col items-center justify-center text-pink-600 mb-1">
+                            <span id="icon-pasos-dots" class="text-xs font-bold tracking-widest leading-none text-pink-500">••••</span>
+                        </div>
+                        <span id="text-pasos" class="font-display font-bold text-pink-950 text-base sm:text-lg">4 pasos</span>
+                    </div>
+
+                    <!-- Dado 3: Dirección -->
+                    <div id="dice-direccion" class="p-4 sm:p-5 bg-gradient-to-b from-emerald-50 to-emerald-100 border-2 border-emerald-300 rounded-2xl shadow-md flex flex-col items-center text-center transition transform hc-subcard">
+                        <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2">3. Dirección</span>
+                        <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex items-center justify-center text-emerald-600 mb-2">
+                            <i id="icon-direccion" class="fa-solid fa-arrow-up text-3xl"></i>
+                        </div>
+                        <span id="text-direccion" class="font-display font-bold text-emerald-950 text-base sm:text-lg">Adelante</span>
+                    </div>
+
+                    <!-- Dado 4: Nivel -->
+                    <div id="dice-nivel" class="p-4 sm:p-5 bg-gradient-to-b from-blue-50 to-blue-100 border-2 border-blue-300 rounded-2xl shadow-md flex flex-col items-center text-center transition transform hc-subcard">
+                        <span class="text-xs font-bold text-blue-700 uppercase tracking-wider mb-2">4. Nivel</span>
+                        <div class="w-16 h-16 bg-white rounded-2xl shadow-inner flex items-center justify-center text-blue-600 mb-2">
+                            <i id="icon-nivel" class="fa-solid fa-angles-up text-3xl"></i>
+                        </div>
+                        <span id="text-nivel" class="font-display font-bold text-blue-950 text-base sm:text-lg">Alto</span>
+                    </div>
+                </div>
+
+                <!-- Mission Card (STRICTLY ALIGNED IN ORDER AND VOICE) -->
+                <div class="bg-indigo-50 border-2 border-indigo-200 rounded-2xl p-5 shadow-sm hc-subcard">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-indigo-100 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🎯</span>
+                            <h3 class="font-display font-bold text-lg text-indigo-950">Tu Misión Corporal:</h3>
+                        </div>
+                        <button onclick="readCurrentMission()" class="px-3.5 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-900 rounded-xl font-bold text-xs transition flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-volume-high text-indigo-600"></i> Escuchar Misión
+                        </button>
+                    </div>
+
+                    <div class="py-4 text-center">
+                        <p id="mission-text" class="font-display font-bold text-xl sm:text-2xl text-indigo-900 leading-relaxed">
+                            ¡Presiona el botón de arriba para lanzar los dados! 🚀
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons: Hint & Completed -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <button onclick="showDiceHint()" class="w-full py-3.5 bg-amber-50 hover:bg-amber-100 border-2 border-amber-400 text-amber-900 font-bold rounded-2xl transition flex items-center justify-center gap-2 text-sm sm:text-base shadow-sm hc-btn">
+                        <i class="fa-solid fa-lightbulb text-amber-500 text-xl"></i>
+                        <span>¿Cómo hago este movimiento? (Pista)</span>
+                    </button>
+
+                    <button onclick="completeMission()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-display font-bold rounded-2xl transition flex items-center justify-center gap-2 text-base sm:text-lg shadow-lg hover:scale-[1.02] active:scale-95 border-b-4 border-emerald-700 hc-btn">
+                        <i class="fa-solid fa-circle-check text-2xl"></i>
+                        <span>¡Ya lo hice con mi cuerpo!</span>
+                    </button>
+                </div>
+
+                <!-- Hint Box -->
+                <div id="dice-hint-box" class="hidden bg-amber-100 border-2 border-amber-300 rounded-2xl p-4 text-slate-800 text-base leading-relaxed shadow-sm">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">🦉</span>
+                        <div>
+                            <h4 class="font-bold text-amber-900 mb-1">Búho Sabio te orienta:</h4>
+                            <p id="dice-hint-text" class="font-medium text-sm sm:text-base">...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formative Feedback Alert Box -->
+                <div id="dice-feedback-box" class="hidden bg-emerald-100 border-2 border-emerald-400 rounded-2xl p-4 text-emerald-950 text-base shadow-sm">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">🌟</span>
+                        <div>
+                            <h4 class="font-bold text-emerald-900 mb-1">¡Excelente Trabajo Corporal!</h4>
+                            <p id="dice-feedback-text" class="font-medium text-sm sm:text-base">...</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 px-4 mt-auto border-t border-slate-800">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-xs">
+            <div>
+                <p class="font-bold text-slate-200">Exploradores del Movimiento - Educación Inclusiva (DUA)</p>
+                <p class="mt-0.5">Diseñado para 1° Ciclo de Educación Primaria (6 a 8 años)</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="px-3 py-1 bg-indigo-950 text-indigo-300 rounded-full border border-indigo-800">
+                    <i class="fa-solid fa-heart text-pink-500"></i> DUA / Diseño Universal para el Aprendizaje
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* ================= APP STATE ================= */
+        let state = {
+            ttsEnabled: true,
+            fontSizeLevel: 1, // 0: sm, 1: base, 2: lg, 3: xl
+            highContrast: false,
+            dyslexicFont: false,
+            
+            // Dice current state (Strict order: tipo -> pasos -> direccion -> nivel)
+            currentDice: {
+                tipo: null,
+                pasos: null,
+                direccion: null,
+                nivel: null
+            },
+
+            // Quiz state
+            currentTanda: 0,
+            currentQuestionIndex: 0,
+            tandaScores: [0, 0, 0, 0]
+        };
+
+        /* ================= DATA ARRAYS ================= */
+        const DATA_TIPOS = [
+            { id: 'caminar', text: 'Caminar', icon: 'fa-person-walking', description: 'Tranquilo apoyando un pie tras otro' },
+            { id: 'correr', text: 'Correr', icon: 'fa-person-running', description: 'Rápido despegando ágilmente del suelo' },
+            { id: 'saltar', text: 'Saltar', icon: 'fa-person-walking-luggage', description: 'Brincando con los dos pies' },
+            { id: 'camara_lenta', text: 'Cámara lenta', icon: 'fa-person-cane', description: 'Súper despacio con control total' }
+        ];
+
+        const DATA_PASOS = [1, 2, 3, 4, 5, 6, 7, 8];
+
+        const DATA_DIRECCIONES = [
+            { id: 'adelante', text: 'Adelante', icon: 'fa-arrow-up', description: 'Siguiendo la mirada de tus ojos' },
+            { id: 'atras', text: 'Atrás', icon: 'fa-arrow-down', description: 'Mirando con cuidado hacia tu espalda' },
+            { id: 'derecha', text: 'Derecha', icon: 'fa-arrow-right', description: 'Hacia tu lado derecho' },
+            { id: 'izquierda', text: 'Izquierda', icon: 'fa-arrow-left', description: 'Hacia tu lado izquierdo' }
+        ];
+
+        const DATA_NIVELES = [
+            { id: 'alto', name: 'Alto', text: 'Alto (🦒)', icon: 'fa-angles-up', description: 'Erguido de pie o en puntitas' },
+            { id: 'medio', name: 'Medio', text: 'Medio (🐕)', icon: 'fa-grip-lines', description: 'Agachado a la altura de la cintura' },
+            { id: 'bajo', name: 'Bajo', text: 'Bajo (🐍)', icon: 'fa-angles-down', description: 'Pegadito al suelo o reptando' }
+        ];
+
+        /* ================= 16 QUESTIONS IN 4 TANDAS ================= */
+        const QUIZ_TANDAS = [
+            // TANDA 1
+            [
+                {
+                    question: "1. Si caminas agachado a la altura de tus rodillas como un perro, ¿en qué NIVEL te estás moviendo?",
+                    options: [
+                        { text: "Nivel Alto", correct: false, hint: "Las jirafas altas están cerca del techo. Los perritos están más cerca del piso." },
+                        { text: "Nivel Medio", correct: true, feedback: "¡Correcto! Flexionar tus rodillas a la mitad es el Nivel Medio." },
+                        { text: "Nivel Bajo", correct: false, hint: "El nivel bajo es reptar pegado completamente al suelo como una serpiente." }
+                    ]
+                },
+                {
+                    question: "2. Si das pasos caminando hacia donde apunta tu espalda con mucho cuidado, ¿hacia qué DIRECCIÓN vas?",
+                    options: [
+                        { text: "Atrás", correct: true, feedback: "¡Excelente! Desplazarse hacia la espalda es ir hacia ATRÁS." },
+                        { text: "Adelante", correct: false, hint: "Caminar hacia adelante es seguir el camino de tus ojos." },
+                        { text: "Izquierda", correct: false, hint: "La izquierda es uno de tus lados laterales." }
+                    ]
+                },
+                {
+                    question: "3. Cuando te desplazas súper rápido en la cancha despegan tus dos pies del suelo por instantes, ¿qué movimiento haces?",
+                    options: [
+                        { text: "Cámara Lenta", correct: false, hint: "La cámara lenta se hace súper despacito." },
+                        { text: "Correr", correct: true, feedback: "¡Muy bien! Correr es un desplazamiento ágil y veloz." },
+                        { text: "Nivel Bajo", correct: false, hint: "El nivel bajo describe la altura, no la velocidad." }
+                    ]
+                },
+                {
+                    question: "4. Si cuentas '1, 2, 3, 4, 5' saltos consecutivos, ¿cuántos PASOS diste en total?",
+                    options: [
+                        { text: "3 pasos", correct: false, hint: "Cuenta nuevamente con tus dedos: 1, 2, 3, 4, 5." },
+                        { text: "5 pasos", correct: true, feedback: "¡Perfecto! Has realizado exactamente 5 pasos o saltos." },
+                        { text: "8 pasos", correct: false, hint: "8 pasos es un camino más largo. Te detuviste en el número 5." }
+                    ]
+                }
+            ],
+
+            // TANDA 2
+            [
+                {
+                    question: "1. Si te estiras en puntitas de pie intentando alcanzar una fruta de la rama más alta de un árbol, ¿qué NIVEL usas?",
+                    options: [
+                        { text: "Nivel Alto", correct: true, feedback: "¡Fantástico! Buscar altura estirándote hacia arriba es el Nivel Alto." },
+                        { text: "Nivel Medio", correct: false, hint: "En nivel medio bajamos a la altura de la cintura." },
+                        { text: "Nivel Bajo", correct: false, hint: "En nivel bajo nos acostamos o reptamos en el piso." }
+                    ]
+                },
+                {
+                    question: "2. Si avanzas hacia el brazo con el que NO usas el reloj (tu lado izquierdo), ¿hacia qué DIRECCIÓN te mueves?",
+                    options: [
+                        { text: "Derecha", correct: false, hint: "La derecha es el lado opuesto." },
+                        { text: "Izquierda", correct: true, feedback: "¡Súper bien! Te estás moviendo hacia la IZQUIERDA." },
+                        { text: "Adelante", correct: false, hint: "Adelante es la dirección hacia donde mira tu cara." }
+                    ]
+                },
+                {
+                    question: "3. Si te mueves muy despacio como un perezoso en la selva, controlando cada musculo, ¿qué TIPO de movimiento haces?",
+                    options: [
+                        { text: "Correr", correct: false, hint: "Correr es un movimiento rápido." },
+                        { text: "Cámara Lenta", correct: true, feedback: "¡Exacto! La cámara lenta consiste en moverse a velocidad muy reducida." },
+                        { text: "Saltar", correct: false, hint: "Saltar requiere impulsos para despegar." }
+                    ]
+                },
+                {
+                    question: "4. Si das 2 pasos adelante y luego agregas otros 2 pasos más, ¿cuántos PASOS diste en total?",
+                    options: [
+                        { text: "4 pasos", correct: true, feedback: "¡Estupendo! 2 pasos más 2 pasos hacen un total de 4 pasos." },
+                        { text: "2 pasos", correct: false, hint: "Recuerda sumar los dos primeros pasos más los dos siguientes." },
+                        { text: "6 pasos", correct: false, hint: "Suma con tus dedos: 2 + 2." }
+                    ]
+                }
+            ],
+
+            // TANDA 3
+            [
+                {
+                    question: "1. Una serpiente que se desliza rozando el pasto está utilizando el...",
+                    options: [
+                        { text: "Nivel Bajo", correct: true, feedback: "¡Muy bien! Moverse a la altura del piso es Nivel Bajo." },
+                        { text: "Nivel Medio", correct: false, hint: "Nivel medio es como caminar a cuatro patas como un perro." },
+                        { text: "Nivel Alto", correct: false, hint: "En nivel alto caminamos de pie." }
+                    ]
+                },
+                {
+                    question: "2. Cuando sigues el camino al que apuntan directamente tus ojos hacia el frente, avanzas hacia...",
+                    options: [
+                        { text: "Atrás", correct: false, hint: "Atrás es caminar hacia tu espalda." },
+                        { text: "Adelante", correct: true, feedback: "¡Excelente! Ir hacia la dirección de tus ojos es avanzar Adelante." },
+                        { text: "Derecha", correct: false, hint: "La derecha es hacia tu costado derecho." }
+                    ]
+                },
+                {
+                    question: "3. Si despegas tus dos pies al mismo tiempo dando impulsos hacia arriba como un canguro, estás...",
+                    options: [
+                        { text: "Saltando", correct: true, feedback: "¡Exacto! Brincar despegando los dos pies es Saltar." },
+                        { text: "Caminando", correct: false, hint: "Al caminar siempre mantienes un pie tocando el suelo." },
+                        { text: "Corriendo", correct: false, hint: "Correr es avanzar en velocidad alternando pies." }
+                    ]
+                },
+                {
+                    question: "4. Si contaste respetando el ritmo: '1, 2, 3, 4, 5, 6, 7', ¿cuántos PASOS realizaste?",
+                    options: [
+                        { text: "6 pasos", correct: false, hint: "Cuenta el último número que pronunciaste en voz alta." },
+                        { text: "7 pasos", correct: true, feedback: "¡Genial! Has contado y ejecutado 7 pasos." },
+                        { text: "8 pasos", correct: false, hint: "Faltaría un paso más para llegar a 8." }
+                    ]
+                }
+            ],
+
+            // TANDA 4
+            [
+                {
+                    question: "1. Un perro que camina apoyando sus cuatro patas en el suelo se encuentra en el...",
+                    options: [
+                        { text: "Nivel Medio", correct: true, feedback: "¡Correcto! La altura a cuatro patas sobre las rodillas es el Nivel Medio." },
+                        { text: "Nivel Bajo", correct: false, hint: "El nivel bajo es reptar completamente acostado en el piso." },
+                        { text: "Nivel Alto", correct: false, hint: "El nivel alto es estar de pie como una persona erguida." }
+                    ]
+                },
+                {
+                    question: "2. Si giras hacia el lado del brazo con el que levantas la mano derecha, te mueves hacia la...",
+                    options: [
+                        { text: "Derecha", correct: true, feedback: "¡Eso es! Tu dirección es hacia la Derecha." },
+                        { text: "Izquierda", correct: false, hint: "La izquierda es tu otro costado lateral." },
+                        { text: "Atrás", correct: false, hint: "Atrás es el camino hacia tu espalda." }
+                    ]
+                },
+                {
+                    question: "3. Si te trasladas apoyando tranquilamente un pie y luego el otro sin prisa, estás...",
+                    options: [
+                        { text: "Caminando", correct: true, feedback: "¡Muy bien! Apoyar un pie tras otro a ritmo tranquilo es Caminar." },
+                        { text: "Corriendo", correct: false, hint: "Correr requiere ir más rápido." },
+                        { text: "Saltando", correct: false, hint: "Saltar exige dar brincos en el aire." }
+                    ]
+                },
+                {
+                    question: "4. ¿Cuál es la cantidad MÁXIMA de pasos que puedes obtener al tirar nuestro dado de pasos?",
+                    options: [
+                        { text: "8 pasos", correct: true, feedback: "¡Fantástico! El número máximo en nuestro dado es el 8." },
+                        { text: "5 pasos", correct: false, hint: "Hay números más grandes que el 5 en el dado." },
+                        { text: "10 pasos", correct: false, hint: "Nuestro dado llega desde el 1 hasta el 8." }
+                    ]
+                }
+            ]
+        ];
+
+        /* ================= AUDIO & WEB AUDIO API ================= */
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                if (type === 'roll') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(160 + Math.random() * 180, now);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.07);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.07);
+                } else if (type === 'victory') {
+                    const freqs = [261.63, 329.63, 392.00, 523.25];
+                    freqs.forEach((f, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(f, now + idx * 0.09);
+                        gain.gain.setValueAtTime(0.18, now + idx * 0.09);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.28);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.09);
+                        osc.stop(now + idx * 0.09 + 0.28);
+                    });
+                } else if (type === 'click') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(420, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                }
+            } catch (e) {
+                console.log('Audio error:', e);
+            }
+        }
+
+        /* ================= SPEECH SYNTHESIS (TTS) ================= */
+        function speakText(text) {
+            if (!state.ttsEnabled) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Cancel any ongoing speech
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.92;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleAudioNarration() {
+            state.ttsEnabled = !state.ttsEnabled;
+            const statusElem = document.getElementById('tts-status');
+            const iconElem = document.getElementById('tts-icon');
+            const btn = document.getElementById('tts-toggle-btn');
+
+            if (state.ttsEnabled) {
+                if (statusElem) statusElem.textContent = 'Voz: ON';
+                if (iconElem) iconElem.className = 'fa-solid fa-volume-high';
+                if (btn) btn.className = 'px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow';
+                speakText('Lectura en voz alta activada.');
+            } else {
+                if (statusElem) statusElem.textContent = 'Voz: OFF';
+                if (iconElem) iconElem.className = 'fa-solid fa-volume-xmark';
+                if (btn) btn.className = 'px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5';
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            }
+        }
+
+        /* ================= DUA TOOLBAR FUNCTIONS ================= */
+        function changeFontSize(direction) {
+            const fontClasses = ['text-sm-mode', 'text-base-mode', 'text-lg-mode', 'text-xl-mode'];
+            state.fontSizeLevel = Math.max(0, Math.min(3, state.fontSizeLevel + direction));
+            
+            const html = document.documentElement;
+            fontClasses.forEach(c => html.classList.remove(c));
+            html.classList.add(fontClasses[state.fontSizeLevel]);
+            playSound('click');
+        }
+
+        function toggleHighContrast() {
+            state.highContrast = !state.highContrast;
+            document.body.classList.toggle('high-contrast', state.highContrast);
+            playSound('click');
+        }
+
+        function toggleDyslexicFont() {
+            state.dyslexicFont = !state.dyslexicFont;
+            document.body.classList.toggle('font-dyslexic', state.dyslexicFont);
+            playSound('click');
+        }
+
+        function switchTab(tabId) {
+            playSound('click');
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            });
+            
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) {
+                activeTab.classList.remove('hidden');
+                activeTab.classList.add('flex');
+            }
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = 'tab-btn font-display px-4 sm:px-5 py-3 rounded-2xl font-bold text-sm sm:text-base transition flex items-center gap-2 text-slate-600 hover:bg-slate-100';
+            });
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.className = 'tab-btn active font-display px-4 sm:px-5 py-3 rounded-2xl font-bold text-sm sm:text-base transition flex items-center gap-2 bg-indigo-600 text-white shadow-md';
+            }
+
+            if (tabId === 'tab-desafio') {
+                renderQuizQuestion();
+            }
+        }
+
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        /* ================= JUEGO DE DADOS LOGIC (STRICT 4-PART ALIGNMENT) ================= */
+        /* Order strictly required:
+           1. Desplazamiento
+           2. Cantidad de Pasos
+           3. Dirección
+           4. Nivel
+        */
+        function rollAllDice() {
+            playSound('click');
+            const rollBtn = document.getElementById('btn-roll');
+            if (rollBtn) rollBtn.disabled = true;
+
+            const hintBox = document.getElementById('dice-hint-box');
+            const feedbackBox = document.getElementById('dice-feedback-box');
+            if (hintBox) hintBox.classList.add('hidden');
+            if (feedbackBox) feedbackBox.classList.add('hidden');
+
+            const diceElements = [
+                document.getElementById('dice-tipo'),
+                document.getElementById('dice-pasos'),
+                document.getElementById('dice-direccion'),
+                document.getElementById('dice-nivel')
+            ].filter(Boolean);
+
+            diceElements.forEach(el => el.classList.add('animate-shakeDice'));
+
+            let count = 0;
+            const rollInterval = setInterval(() => {
+                count++;
+                playSound('roll');
+
+                const tempTipo = getRandomElement(DATA_TIPOS);
+                const tempPasos = getRandomElement(DATA_PASOS);
+                const tempDir = getRandomElement(DATA_DIRECCIONES);
+                const tempNivel = getRandomElement(DATA_NIVELES);
+
+                const textTipo = document.getElementById('text-tipo');
+                const textPasos = document.getElementById('text-pasos');
+                const textDir = document.getElementById('text-direccion');
+                const textNivel = document.getElementById('text-nivel');
+
+                if (textTipo) textTipo.textContent = tempTipo.text;
+                if (textPasos) textPasos.textContent = tempPasos + ' pasos';
+                if (textDir) textDir.textContent = tempDir.text;
+                if (textNivel) textNivel.textContent = tempNivel.name;
+
+                if (count > 10) {
+                    clearInterval(rollInterval);
+                    diceElements.forEach(el => el.classList.remove('animate-shakeDice'));
+                    
+                    // Assign finalized results in EXACT order
+                    state.currentDice.tipo = getRandomElement(DATA_TIPOS);
+                    state.currentDice.pasos = getRandomElement(DATA_PASOS);
+                    state.currentDice.direccion = getRandomElement(DATA_DIRECCIONES);
+                    state.currentDice.nivel = getRandomElement(DATA_NIVELES);
+
+                    renderDiceResults();
+                    if (rollBtn) rollBtn.disabled = false;
+                }
+            }, 80);
+        }
+
+        function renderDiceResults() {
+            const { tipo, pasos, direccion, nivel } = state.currentDice;
+            if (!tipo || !pasos || !direccion || !nivel) return;
+
+            // 1. Desplazamiento
+            const textTipo = document.getElementById('text-tipo');
+            const iconTipo = document.getElementById('icon-tipo');
+            if (textTipo) textTipo.textContent = tipo.text;
+            if (iconTipo) iconTipo.className = `fa-solid ${tipo.icon} text-3xl`;
+
+            // 2. Cantidad de Pasos
+            const textPasos = document.getElementById('text-pasos');
+            const iconPasosDots = document.getElementById('icon-pasos-dots');
+            if (textPasos) textPasos.textContent = `${pasos} ${pasos === 1 ? 'paso' : 'pasos'}`;
+            if (iconPasosDots) {
+                let dotsStr = '';
+                for (let i = 0; i < pasos; i++) dotsStr += '• ';
+                iconPasosDots.textContent = dotsStr.trim();
+            }
+
+            // 3. Dirección
+            const textDir = document.getElementById('text-direccion');
+            const iconDir = document.getElementById('icon-direccion');
+            if (textDir) textDir.textContent = direccion.text;
+            if (iconDir) iconDir.className = `fa-solid ${direccion.icon} text-3xl`;
+
+            // 4. Nivel
+            const textNivel = document.getElementById('text-nivel');
+            const iconNivel = document.getElementById('icon-nivel');
+            if (textNivel) textNivel.textContent = nivel.name;
+            if (iconNivel) iconNivel.className = `fa-solid ${nivel.icon} text-3xl`;
+
+            /* STRICT REQUIREMENT:
+               Exact format and spoken voice sequence:
+               "¡Tu misión es: [Desplazamiento] [Cantidad] pasos hacia [Dirección] en nivel [Nivel]!"
+            */
+            const pasosStr = `${pasos} ${pasos === 1 ? 'paso' : 'pasos'}`;
+            const missionStr = `¡Tu misión es: ${tipo.text} ${pasosStr} hacia ${direccion.text} en nivel ${nivel.name}!`;
+
+            const missionText = document.getElementById('mission-text');
+            if (missionText) missionText.textContent = missionStr;
+
+            // Voice narration uses the EXACT same string
+            speakText(missionStr);
+        }
+
+        function readCurrentMission() {
+            const missionText = document.getElementById('mission-text');
+            if (missionText) speakText(missionText.textContent);
+        }
+
+        function showDiceHint() {
+            if (!state.currentDice.tipo) {
+                speakText('Primero debes lanzar los dados para obtener una misión.');
+                return;
+            }
+
+            const { tipo, pasos, direccion, nivel } = state.currentDice;
+            
+            let hint = `Para completar tu misión corporal en orden:\n`;
+            hint += `1. Prepara tus piernas para hacer el movimiento: ${tipo.text} (${tipo.description}).\n`;
+            hint += `2. Cuenta despacio en voz alta hasta el número ${pasos}.\n`;
+            hint += `3. Mira hacia la dirección: ${direccion.text} (${direccion.description}).\n`;
+            hint += `4. Mantén tu cuerpo en la altura del nivel: ${nivel.name} (${nivel.description}).`;
+
+            const hintText = document.getElementById('dice-hint-text');
+            const hintBox = document.getElementById('dice-hint-box');
+            const feedbackBox = document.getElementById('dice-feedback-box');
+
+            if (hintText) hintText.innerText = hint;
+            if (hintBox) hintBox.classList.remove('hidden');
+            if (feedbackBox) feedbackBox.classList.add('hidden');
+            
+            playSound('click');
+            speakText('Pista de ayuda: ' + hint);
+        }
+
+        function completeMission() {
+            if (!state.currentDice.tipo) {
+                speakText('Lanza los dados primero para completar un desafío.');
+                return;
+            }
+
+            playSound('victory');
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+
+            const { tipo, pasos, direccion, nivel } = state.currentDice;
+            const pasosStr = `${pasos} ${pasos === 1 ? 'paso' : 'pasos'}`;
+            
+            const feedbackMsg = `¡Formidable! Has realizado exitosamente la acción de ${tipo.text} ${pasosStr} hacia ${direccion.text} en nivel ${nivel.name}. Este ejercicio fortalece tu esquema corporal, tu coordinación motriz y tu noción del espacio. ¡Presiona 'Lanzar' para una nueva misión!`;
+
+            const feedbackText = document.getElementById('dice-feedback-text');
+            const feedbackBox = document.getElementById('dice-feedback-box');
+            const hintBox = document.getElementById('dice-hint-box');
+
+            if (feedbackText) feedbackText.innerText = feedbackMsg;
+            if (feedbackBox) feedbackBox.classList.remove('hidden');
+            if (hintBox) hintBox.classList.add('hidden');
+
+            speakText('¡Felicitaciones! ' + feedbackMsg);
+        }
+
+        /* ================= QUIZ (PREGUNTAS PISTA) LOGIC ================= */
+        function selectTanda(tandaIdx) {
+            playSound('click');
+            state.currentTanda = tandaIdx;
+            state.currentQuestionIndex = 0;
+
+            // Highlight buttons
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`tanda-btn-${i}`);
+                if (btn) {
+                    if (i === tandaIdx) {
+                        btn.className = 'tanda-btn px-3 py-1.5 rounded-xl text-xs font-bold transition bg-purple-600 text-white shadow';
+                    } else {
+                        btn.className = 'tanda-btn px-3 py-1.5 rounded-xl text-xs font-bold transition text-slate-700 hover:bg-slate-200';
+                    }
+                }
+            }
+
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const currentQuestions = QUIZ_TANDAS[state.currentTanda];
+            const q = currentQuestions[state.currentQuestionIndex];
+
+            const tandaBadge = document.getElementById('quiz-tanda-badge');
+            const questionBadge = document.getElementById('quiz-question-badge');
+            const questionText = document.getElementById('quiz-question-text');
+            const hintBox = document.getElementById('quiz-hint-box');
+            const hintText = document.getElementById('quiz-hint-text');
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            const scoreVal = document.getElementById('quiz-score-val');
+            const btnPrev = document.getElementById('btn-prev-q');
+            const btnNext = document.getElementById('btn-next-question');
+            const btnNextText = document.getElementById('btn-next-q-text');
+
+            if (tandaBadge) tandaBadge.textContent = `Tanda ${state.currentTanda + 1}`;
+            if (questionBadge) questionBadge.textContent = `Pregunta ${state.currentQuestionIndex + 1} de 4`;
+            if (questionText) questionText.textContent = q.question;
+            if (scoreVal) scoreVal.textContent = state.tandaScores[state.currentTanda];
+
+            if (hintText) hintText.textContent = q.options.find(o => !o.correct)?.hint || "Piensa en las características de tu propio cuerpo.";
+            if (hintBox) hintBox.classList.add('hidden');
+            if (feedbackBox) feedbackBox.classList.add('hidden');
+
+            // Render options
+            const optionsGrid = document.getElementById('quiz-options-grid');
+            if (optionsGrid) {
+                optionsGrid.innerHTML = '';
+                q.options.forEach((opt) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'p-4 bg-white hover:bg-purple-50 border-2 border-purple-200 hover:border-purple-400 rounded-2xl font-bold text-slate-900 text-center transition shadow-sm flex flex-col items-center justify-center gap-1.5 hc-card';
+                    btn.innerHTML = `
+                        <span class="text-base sm:text-lg">${opt.text}</span>
+                    `;
+                    btn.onclick = () => handleQuizAnswer(opt);
+                    optionsGrid.appendChild(btn);
+                });
+            }
+
+            // Controls visibility
+            if (btnPrev) {
+                if (state.currentQuestionIndex === 0) {
+                    btnPrev.classList.add('opacity-50', 'pointer-events-none');
+                } else {
+                    btnPrev.classList.remove('opacity-50', 'pointer-events-none');
+                }
+            }
+
+            if (btnNext) {
+                if (state.currentQuestionIndex === currentQuestions.length - 1) {
+                    if (btnNextText) btnNextText.textContent = state.currentTanda < 3 ? 'Siguiente Tanda 🔄' : 'Reiniciar Quiz 🔄';
+                } else {
+                    if (btnNextText) btnNextText.textContent = 'Siguiente Pregunta';
+                }
+            }
+
+            speakText(q.question);
+        }
+
+        function speakCurrentQuestion() {
+            const currentQuestions = QUIZ_TANDAS[state.currentTanda];
+            const q = currentQuestions[state.currentQuestionIndex];
+            if (q) speakText(q.question);
+        }
+
+        function toggleQuizHint() {
+            playSound('click');
+            const hintBox = document.getElementById('quiz-hint-box');
+            if (hintBox) {
+                const isHidden = hintBox.classList.contains('hidden');
+                if (isHidden) {
+                    hintBox.classList.remove('hidden');
+                    const hintText = document.getElementById('quiz-hint-text')?.textContent;
+                    if (hintText) speakText('Pista de ayuda: ' + hintText);
+                } else {
+                    hintBox.classList.add('hidden');
+                }
+            }
+        }
+
+        function handleQuizAnswer(option) {
+            playSound('click');
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            if (!feedbackBox) return;
+
+            feedbackBox.classList.remove('hidden');
+
+            if (option.correct) {
+                playSound('victory');
+                feedbackBox.className = 'p-5 rounded-2xl border-2 bg-emerald-100 border-emerald-400 text-emerald-950 font-medium';
+                feedbackBox.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">🎉</span>
+                        <div>
+                            <h4 class="font-bold text-emerald-900 mb-0.5">¡Respuesta Correcta!</h4>
+                            <p class="text-sm sm:text-base">${option.feedback}</p>
+                        </div>
+                    </div>
+                `;
+                speakText('¡Respuesta correcta! ' + option.feedback);
+
+                // Add score star if not max
+                if (state.tandaScores[state.currentTanda] < 4) {
+                    state.tandaScores[state.currentTanda] = Math.min(4, state.tandaScores[state.currentTanda] + 1);
+                    const scoreVal = document.getElementById('quiz-score-val');
+                    if (scoreVal) scoreVal.textContent = state.tandaScores[state.currentTanda];
+                }
+
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+                }
+            } else {
+                feedbackBox.className = 'p-5 rounded-2xl border-2 bg-amber-100 border-amber-400 text-amber-950 font-medium';
+                feedbackBox.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">🦉</span>
+                        <div>
+                            <h4 class="font-bold text-amber-900 mb-0.5">Pista para reflexionar:</h4>
+                            <p class="text-sm sm:text-base">${option.hint}</p>
+                        </div>
+                    </div>
+                `;
+                speakText('Pista para reflexionar: ' + option.hint);
+            }
+        }
+
+        function prevQuizQuestion() {
+            if (state.currentQuestionIndex > 0) {
+                state.currentQuestionIndex--;
+                renderQuizQuestion();
+            }
+        }
+
+        function nextQuizQuestion() {
+            const currentQuestions = QUIZ_TANDAS[state.currentTanda];
+            if (state.currentQuestionIndex < currentQuestions.length - 1) {
+                state.currentQuestionIndex++;
+                renderQuizQuestion();
+            } else {
+                // Advance to next Tanda
+                if (state.currentTanda < 3) {
+                    selectTanda(state.currentTanda + 1);
+                } else {
+                    // Loop back to Tanda 1
+                    selectTanda(0);
+                }
+            }
+        }
+
+        function exploreConcept(title, description, emoji) {
+            playSound('click');
+            const msg = `${title}. ${description}`;
+            speakText(msg);
+        }
+
+        window.onload = function() {
+            console.log("Exploradores del Movimiento - DUA Inicializado con éxito.");
+            
+            // Set initial state for dice strictly in order
+            state.currentDice.tipo = DATA_TIPOS[0];
+            state.currentDice.pasos = DATA_PASOS[3]; // 4 pasos
+            state.currentDice.direccion = DATA_DIRECCIONES[0]; // Adelante
+            state.currentDice.nivel = DATA_NIVELES[0]; // Alto
+
+            renderDiceResults();
+        };
+    </script>
+</body>
+</html>

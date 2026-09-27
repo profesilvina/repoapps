@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Simulador Ciberseguridad DUA</title>
+<style>
+:root{--b:#f4f7f6;--t:#2c3e50;--p:#2980b9;--s:#27ae60;--d:#c0392b;--w:#d35400;--f:15px}
+body{font-family:sans-serif;background:var(--b);color:var(--t);font-size:var(--f);margin:0;padding:10px;line-height:1.4}
+header{background:#34495e;color:#fff;padding:8px;display:flex;justify-content:space-between;align-items:center;border-radius:4px}
+main{max-width:700px;margin:10px auto;background:#fff;padding:15px;border-radius:8px;box-shadow:0 2px 5px #0002}
+.s{display:none}.s.a{display:block}
+.g{margin-bottom:12px}label{display:block;font-weight:700;margin-bottom:4px}
+select,button{width:100%;padding:10px;margin:4px 0;border:1px solid #ccc;border-radius:4px;font-size:1em;box-sizing:border-box}
+button{background:var(--p);color:#fff;font-weight:700;cursor:pointer;border:none}
+button:hover,button:focus{outline:3px solid #f1c40f}
+.b-ok{background:var(--s)}.b-no{background:var(--d)}.b-w{background:var(--w)}
+.b-acc{width:auto;padding:4px 8px;background:#ecf0f1;color:#2c3e50;border:1px solid #bdc3c7}
+.box{padding:10px;margin:10px 0;border-radius:4px;display:none}
+.box-d{background:#fadbd8;color:#78281f;border-left:4px solid var(--d);display:block}
+.box-i{background:#d4efdf;color:#145a32;border-left:4px solid var(--s);display:block}
+.box-w{background:#fdebd0;color:#7e5109;border-left:4px solid var(--w);display:block}
+.em{border:1px dashed #95a5a6;background:#fafafa;padding:10px;margin:10px 0;font-size:.9em}
+</style>
+</head>
+<body>
+<header>
+<h2 style="margin:0;font-size:1em">Ciberseguridad SI - DUA</h2>
+<div>
+<button class="b-acc" onclick="adjF(1)" aria-label="Aumentar texto">A+</button>
+<button class="b-acc" onclick="adjF(-1)" aria-label="Disminuir texto">A-</button>
+<button class="b-acc" id="tb" onclick="togTTS()">🔊 Voz</button>
+</div>
+</header>
+<main>
+<!-- Nivel 1 -->
+<section id="s1" class="s a">
+<h3>Nivel 1: Configuración de la Empresa</h3>
+<div class="box box-w">
+<strong>Objetivo de la simulación:</strong> Asumirás el rol de Administrador/a de Empresas para tomar decisiones estratégicas de ciberseguridad. Aplicarás conceptos de Sistemas de Información (SI), detección de malware, protocolos de defensa y prevención de ingeniería social.
+</div>
+<form onsubmit="event.preventDefault();go(2)">
+<div class="g"><label>Actividad de la Organización:</label>
+<select id="co" required><option value="">-- Seleccionar --</option><option>Servicios</option><option>Fábrica</option><option>Comercio Minorista</option><option>E-commerce</option></select></div>
+<div class="g"><label>Sistema de Información (SI) a Implementar:</label>
+<select id="si" required><option value="">-- Seleccionar --</option><option>TPS (Transaccional)</option><option>MIS (Gerencial)</option><option>ERP (Integrado)</option></select></div>
+<button type="submit" class="b-ok">Implementar y Comenzar &rarr;</button>
+</form>
+</section>
+
+<!-- Nivel 2 -->
+<section id="s2" class="s">
+<h3>Nivel 2: Ataque Técnico al SI</h3>
+<div class="box box-d"><strong>¡ALERTA!</strong> Los archivos del SI han sido cifrados por un atacante y se exige un rescate económico.</div>
+<p><strong>1. Identifica el tipo de ataque:</strong></p>
+<button onclick="ckM('Spyware')">Spyware</button>
+<button onclick="ckM('Ransomware')">Ransomware</button>
+<button onclick="ckM('Adware')">Adware</button>
+<div id="mf" class="box"></div>
+
+<div id="ds" style="display:none">
+<p><strong>2. Selecciona la estrategia de defensa:</strong></p>
+<button onclick="ckD('p')">Pagar el rescate inmediatamente.</button>
+<button onclick="ckD('a')">Descargar un antivirus no oficial para desinfectar.</button>
+<button onclick="ckD('c')">Aislar la red, ejecutar antivirus oficial y restaurar Copias de Seguridad (Backups).</button>
+</div>
+<div id="df" class="box"></div>
+<button class="b-w" onclick="hin('l2')">💡 Pista Socrática</button>
+<div id="h2" class="box box-w" style="display:none"></div>
+<button id="b2" class="b-ok" style="display:none" onclick="go(3)">Avanzar al Nivel 3 &rarr;</button>
+</section>
+
+<!-- Nivel 3 -->
+<section id="s3" class="s">
+<h3>Nivel 3: Ingeniería Social</h3>
+<div class="em">
+<strong>De:</strong> soporte@banc0-seguro.com<br><strong>Asunto:</strong> URGENTE: Bloqueo de cuenta bancaria corporativa<br>
+<p>Estimado Administrador, ingrese urgente para evitar el bloqueo de sus fondos: <a href="#" onclick="alert('¡Phishing!');return false">banc0-seguro.com/login</a></p>
+</div>
+<p><strong>¿Cómo respondes ante esta situación?</strong></p>
+<button onclick="ckP('c')">Ingresar al enlace e introducir las claves de la empresa.</button>
+<button onclick="ckP('r')">Responder el correo pidiendo que no bloqueen la cuenta.</button>
+<button onclick="ckP('ok')">Reportar Phishing, no abrir el enlace y verificar por el canal oficial.</button>
+<div id="pf" class="box"></div>
+<button class="b-w" onclick="hin('l3')">💡 Pista Socrática</button>
+<div id="h3" class="box box-w" style="display:none"></div>
+<button id="bf" class="b-ok" style="display:none" onclick="fin()">Finalizar Evaluación</button>
+</section>
+
+<!-- Nivel 4 -->
+<section id="s4" class="s">
+<h3>Resultado de la Auditoría</h3>
+<div id="res"></div>
+<div style="display:flex;gap:10px;margin-top:10px">
+<button class="b-ok" onclick="rst()">🔄 Reiniciar</button>
+<button class="b-no" onclick="ext()">❌ Salir</button>
+</div>
+</section>
+</main>
+
+<script>
+let st={f:15,co:'',si:'',l2:0,l3:0,v:0};
+function $(i){return document.getElementById(i)}
+function adjF(d){st.f=Math.max(12,Math.min(22,st.f+d));document.documentElement.style.setProperty('--f',st.f+'px');spk("Texto ajustado")}
+function togTTS(){st.v=!st.v;$('tb').style.background=st.v?'#27ae60':'#ecf0f1';spk(st.v?"Voz activada":"")}
+function spk(t){if(!st.v||!t)return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang='es-ES';window.speechSynthesis.speak(u)}
+document.addEventListener('mouseover',e=>{if(st.v&&['P','BUTTON','LABEL','H3','DIV'].includes(e.target.tagName))spk(e.target.innerText)});
+
+function go(n){
+ document.querySelectorAll('.s').forEach(s=>s.classList.remove('a'));
+ $('s'+n).classList.add('a');
+ if(n==2){st.co=$('co').value;st.si=$('si').value}
+ spk($('s'+n).querySelector('h3').innerText);
+}
+
+function ckM(x){
+ let f=$('mf');f.style.display='block';
+ if(x=='Ransomware'){
+  f.className='box box-i';f.innerHTML='<b>¡Correcto!</b> Es Ransomware.<br><i>Justificación:</i> Es un código malicioso que cifra la información para exigir un rescate (ransom), afectando la disponibilidad del SI.';
+  $('ds').style.display='block';spk(f.innerText);
+ }else{
+  f.className='box box-d';f.innerHTML=`<b>Incorrecto.</b> El ${x} no secuestra datos.<br><i>Justificación:</i> El Spyware espía información y el Adware muestra publicidad. El software que bloquea y pide un pago es Ransomware.`;
+  spk(f.innerText);
+ }
+}
+
+function ckD(x){
+ let f=$('df');f.style.display='block';
+ if(x=='c'){
+  f.className='box box-i';f.innerHTML='<b>¡Defensa Adecuada!</b><br><i>Justificación:</i> Aislar los equipos detiene la propagación del ataque por la red corporativa. Usar Backups permite recuperar la información del SI de forma segura sin ceder al chantaje.';
+  st.l2=1;$('b2').style.display='block';spk(f.innerText);
+ }else{
+  let txt=x=='p'?'Pagar no garantiza la clave de descifrado y financia a ciberdelincuentes.':'Bajar software no oficial puede instalar troyanos e infectar aún más el SI.';
+  f.className='box box-d';f.innerHTML=`<b>Defensa Inadecuada.</b><br><i>Justificación:</i> ${txt}`;
+  st.l2=0;spk(f.innerText);
+ }
+}
+
+function ckP(x){
+ let f=$('pf');f.style.display='block';
+ if(x=='ok'){
+  f.className='box box-i';f.innerHTML='<b>¡Acción Correcta!</b><br><i>Justificación:</i> Identificaste un ataque de Phishing. Analizaste el dominio falso ("banc0" con cero) y no caíste en la presión por urgencia.';
+  st.l3=1;spk(f.innerText);
+ }else{
+  let txt=x=='c'?'Entregaste las credenciales bancarias de la empresa al ciberdelincuente en un sitio fraudulento.':'Confirmas al atacante que tu cuenta está activa y sigues expuesto al engaño.';
+  f.className='box box-d';f.innerHTML=`<b>Acción Inadecuada.</b><br><i>Justificación:</i> ${txt} Es una trampa de Ingeniería Social.`;
+  st.l3=0;spk(f.innerText);
+ }
+ $('bf').style.display='block';
+}
+
+function hin(l){
+ let h=l=='l2'?$('h2'):$('h3');h.style.display='block';
+ h.innerHTML=l=='l2'?'<b>Impulso Socrático:</b><br>1. ¿Qué significa "Ransom" en inglés?<br>2. ¿El pago garantiza la devolución del acceso?<br>3. ¿Qué copia de seguridad previene la pérdida total?'
+ :'<b>Impulso Socrático:</b><br>1. ¿Notas el uso del número cero "banc0"?<br>2. ¿Un banco pide claves confidenciales por email?<br>3. ¿Por qué el mensaje genera pánico y urgencia?';
+ spk(h.innerText);
+}
+
+function fin(){
+ go(4);let r=$('res');
+ if(st.l2&&st.l3){
+  r.innerHTML=`<div class="box box-i"><h3>🎉 ¡Felicitaciones!</h3><p>Protegiste la organización (<strong>${st.co}</strong>) y garantizaste la seguridad de su sistema <strong>${st.si}</strong> ante amenazas técnicas y de ingeniería social.</p></div>`;
+  spk("¡Felicitaciones! Auditoría completada con éxito.");
+ }else{
+  r.innerHTML=`<div class="box box-d"><h3>⚠️ SI Vulnerado</h3><p>Las decisiones expusieron los datos de <strong>${st.co}</strong> (${st.si}). Revisa los fundamentos de seguridad e inténtalo nuevamente.</p></div>`;
+  spk("El sistema ha sido vulnerado. Vuelve a intentarlo.");
+ }
+}
+
+function rst(){
+ st.l2=st.l3=0;
+ $('mf').style.display=$('df').style.display=$('pf').style.display=$('ds').style.display=$('b2').style.display=$('bf').style.display=$('h2').style.display=$('h3').style.display='none';
+ go(1);
+}
+
+function ext(){$('s4').innerHTML='<h3>Sesión Finalizada</h3><p>Puedes cerrar la pestaña.</p>';spk("Sesión finalizada");}
+</script>
+</body>
+</html>
