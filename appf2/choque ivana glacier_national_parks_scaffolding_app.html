@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nature Quest: Comparatives & Superlatives</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        ice: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        glacier: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            300: '#7dd3fc',
+                            500: '#0ea5e9',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: font-size 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* High Contrast Theme Override */
+        body.high-contrast {
+            background-color: #000000 !important;
+            color: #ffff00 !important;
+        }
+        body.high-contrast .hc-element {
+            background-color: #111111 !important;
+            border-color: #ffff00 !important;
+            color: #ffff00 !important;
+        }
+        body.high-contrast .hc-accent {
+            background-color: #ffff00 !important;
+            color: #000000 !important;
+            font-weight: bold !important;
+        }
+        body.high-contrast button {
+            border: 2px solid #ffff00 !important;
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0ea5e9;
+            border-radius: 4px;
+        }
+
+        /* Focus rings for enhanced accessibility */
+        *:focus-visible {
+            outline: 3px solid #f59e0b !important;
+            outline-offset: 2px;
+        }
+
+        /* Interactive card transitions */
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Modal backdrop blur */
+        .backdrop-blur-custom {
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- Accessible Top Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-800/90 border-b border-slate-200 dark:border-slate-700 backdrop-blur-md hc-element shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+            
+            <!-- Branding -->
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-cyan-500 to-blue-600 p-2.5 rounded-xl text-white shadow-md hc-accent">
+                    <i class="fa-solid fa-mountain-sun text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white hc-element">EcoQuest: Comparatives & Superlatives</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Explore Argentina's National Parks & Glaciers</p>
+                </div>
+            </div>
+
+            <!-- Accessibility Toolbar (DUA / UDL Guidelines) -->
+            <div class="flex items-center flex-wrap gap-2 bg-slate-100 dark:bg-slate-700/50 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-600 hc-element">
+                
+                <!-- Font Size Controls -->
+                <div class="flex items-center bg-white dark:bg-slate-800 rounded-xl p-1 shadow-sm border border-slate-200 dark:border-slate-600 hc-element">
+                    <button id="btn-font-down" title="Decrease font size (A-)" aria-label="Decrease font size" class="px-2.5 py-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition">
+                        A-
+                    </button>
+                    <span class="text-xs px-1 text-slate-400 font-mono">|</span>
+                    <button id="btn-font-reset" title="Reset font size" aria-label="Reset font size" class="px-2 py-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition">
+                        A
+                    </button>
+                    <span class="text-xs px-1 text-slate-400 font-mono">|</span>
+                    <button id="btn-font-up" title="Increase font size (A+)" aria-label="Increase font size" class="px-2.5 py-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition">
+                        A+
+                    </button>
+                </div>
+
+                <!-- Text to Speech -->
+                <button id="btn-tts" title="Listen to paragraph / Pause speech" aria-label="Listen to page text" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-white dark:bg-slate-800 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-50 dark:hover:bg-slate-700 rounded-xl border border-slate-200 dark:border-slate-600 shadow-sm transition hc-element">
+                    <i class="fa-solid fa-volume-high text-cyan-600 dark:text-cyan-400"></i>
+                    <span id="tts-label" class="hidden sm:inline">Audio Read</span>
+                </button>
+
+                <!-- High Contrast / Theme Switcher -->
+                <div class="flex items-center bg-white dark:bg-slate-800 rounded-xl p-1 shadow-sm border border-slate-200 dark:border-slate-600 hc-element">
+                    <button id="btn-mode-light" title="Light Mode" aria-label="Light Mode" class="px-2 py-1 text-xs rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700">
+                        <i class="fa-solid fa-sun"></i>
+                    </button>
+                    <button id="btn-mode-dark" title="Dark Mode" aria-label="Dark Mode" class="px-2 py-1 text-xs rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button id="btn-mode-hc" title="High Contrast Mode" aria-label="High Contrast Mode" class="px-2 py-1 text-xs font-bold rounded-lg bg-yellow-400 text-black hover:bg-yellow-300">
+                        HC
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+        <!-- Progress and Pedagogical Status Bar -->
+        <section class="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-700 shadow-sm hc-element">
+            <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                
+                <!-- Autonomy Level & Progress -->
+                <div class="flex-grow max-w-xl">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-xs font-bold uppercase tracking-wider text-cyan-700 dark:text-cyan-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-compass"></i> Mission Progress
+                        </span>
+                        <span id="progress-percentage" class="text-xs font-extrabold text-slate-600 dark:text-slate-300">0% Completed</span>
+                    </div>
+                    <!-- Accessible Progress Bar -->
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-3.5 p-0.5 overflow-hidden border border-slate-200 dark:border-slate-600">
+                        <div id="progress-bar" class="bg-gradient-to-r from-cyan-500 to-teal-500 h-full rounded-full transition-all duration-500 w-0"></div>
+                    </div>
+                </div>
+
+                <!-- Gamified Stars & Support Indicators -->
+                <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 hc-element">
+                    <div class="text-center px-2 border-r border-slate-200 dark:border-slate-700">
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Effort Stars</p>
+                        <div class="flex text-amber-400 text-sm gap-0.5 justify-center mt-0.5" id="stars-container">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="text-center px-2">
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Hints Requested</p>
+                        <span id="hints-count" class="text-sm font-bold text-teal-600 dark:text-teal-400">0 used</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Main Grid: Visual Reference Cards + Interactive Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Left Column: Visual Reference Cards (Multi-representation UDL) -->
+            <section class="lg:col-span-4 flex flex-col gap-4">
+                
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm hc-element">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-map-location-dot text-cyan-600 dark:text-cyan-400"></i>
+                            Park Fact Cards
+                        </h2>
+                        <span class="text-xs bg-cyan-100 dark:bg-cyan-900/50 text-cyan-800 dark:text-cyan-200 px-2 py-0.5 rounded-full font-medium">Explore</span>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 mb-4">
+                        Read these facts to compare natural wonders in Argentina.
+                    </p>
+
+                    <!-- Accordion or Visual Info Cards -->
+                    <div class="space-y-3" id="cards-container">
+                        
+                        <!-- Card 1: Perito Moreno Glacier -->
+                        <div class="bg-gradient-to-r from-sky-50 to-cyan-50 dark:from-slate-800 dark:to-slate-700/60 p-3.5 rounded-xl border border-sky-100 dark:border-slate-600 card-hover hc-element">
+                            <div class="flex items-start gap-3">
+                                <div class="bg-cyan-500 text-white p-2 rounded-lg mt-0.5 shadow-sm">
+                                    <i class="fa-solid fa-snowflake text-lg"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100">Perito Moreno Glacier</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Los Glaciares National Park (Santa Cruz)</p>
+                                    <ul class="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-temperature-arrow-down text-cyan-600 text-[10px]"></i> <strong>Temperature:</strong> Very cold (-2°C average)</li>
+                                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-star text-cyan-600 text-[10px]"></i> <strong>Fame:</strong> Famous worldwide for ice ruptures</li>
+                                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-users text-cyan-600 text-[10px]"></i> <strong>Visitors:</strong> Millions of tourists yearly</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Los Glaciares National Park & Mount Fitz Roy -->
+                        <div class="bg-gradient-to-r from-blue-50 to-sky-50 dark:from-slate-800 dark:to-slate-700/60 p-3.5 rounded-xl border border-blue-100 dark:border-slate-600 card-hover hc-element">
+                            <div class="flex items-start gap-3">
+                                <div class="bg-blue-600 text-white p-2 rounded-lg mt-0.5 shadow-sm">
+                                    <i class="fa-solid fa-mountain text-lg"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100">Los Glaciares & Mt. Fitz Roy</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Patagonia Region</p>
+                                    <ul class="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-expand text-blue-600 text-[10px]"></i> <strong>Size:</strong> 726,927 hectares (Largest park in Argentina)</li>
+                                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-up-long text-blue-600 text-[10px]"></i> <strong>Mount Fitz Roy:</strong> 3,405 meters high</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Iguazú National Park -->
+                        <div class="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-slate-800 dark:to-slate-700/60 p-3.5 rounded-xl border border-emerald-100 dark:border-slate-600 card-hover hc-element">
+                            <div class="flex items-start gap-3">
+                                <div class="bg-emerald-600 text-white p-2 rounded-lg mt-0.5 shadow-sm">
+                                    <i class="fa-solid fa-water text-lg"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100">Iguazú National Park</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Misiones Jungle</p>
+                                    <ul class="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-sun text-emerald-600 text-[10px]"></i> <strong>Climate:</strong> Very humid & warm (24°C average)</li>
+                                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-gem text-emerald-600 text-[10px]"></i> <strong>Attraction:</strong> Stunning Iguazú Falls</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Nahuel Huapi National Park -->
+                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-slate-800 dark:to-slate-700/60 p-3.5 rounded-xl border border-indigo-100 dark:border-slate-600 card-hover hc-element">
+                            <div class="flex items-start gap-3">
+                                <div class="bg-indigo-600 text-white p-2 rounded-lg mt-0.5 shadow-sm">
+                                    <i class="fa-solid fa-tree-city text-lg"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100">Nahuel Huapi Park</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Bariloche / Lake District</p>
+                                    <ul class="text-xs space-y-1 text-slate-700 dark:text-slate-300">
+                                        <li class="flex items-center gap-1.5"><i class="fa-solid fa-clock-rotate-left text-indigo-600 text-[10px]"></i> <strong>History:</strong> Created in 1934 (Oldest park)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Visual Grammar Guide Button -->
+                <button id="btn-show-grammar" class="w-full py-3 px-4 bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-semibold rounded-2xl shadow-md hover:from-teal-700 hover:to-cyan-700 transition flex items-center justify-center gap-2 hc-accent">
+                    <i class="fa-solid fa-lightbulb text-amber-300"></i>
+                    <span>Grammar Guide: Rules & Structures</span>
+                </button>
+
+            </section>
+
+            <!-- Right Column: Interactive Text Completion -->
+            <section class="lg:col-span-8 flex flex-col gap-5">
+                
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm hc-element flex-grow flex flex-col justify-between">
+                    
+                    <div>
+                        <!-- Header & Instructions -->
+                        <div class="border-b border-slate-100 dark:border-slate-700 pb-4 mb-5">
+                            <div class="flex items-center gap-2 text-cyan-600 dark:text-cyan-400 font-bold text-xs uppercase tracking-wider mb-1">
+                                <i class="fa-solid fa-pen-to-square"></i> Sentence Completion Activity
+                            </div>
+                            <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                                Exploring Argentina's Natural Wonders
+                            </h2>
+                            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
+                                Read the paragraph carefully. Select the correct comparative or superlative form for each blank space based on the facts provided.
+                            </p>
+                        </div>
+
+                        <!-- Interactive Paragraph with Select Dropdowns -->
+                        <div id="paragraph-container" class="leading-relaxed text-sm sm:text-base space-y-4 text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 hc-element">
+                            
+                            <p>
+                                Argentina has amazing national parks. Los Glaciares is 
+                                
+                                <!-- Gap 1 -->
+                                <span class="inline-block my-1">
+                                    <select id="gap-0" data-index="0" class="gap-select px-3 py-1.5 rounded-xl border-2 border-cyan-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer">
+                                        <option value="">-- Choose correct form --</option>
+                                        <option value="large">large</option>
+                                        <option value="larger than">larger than</option>
+                                        <option value="the largest">the largest</option>
+                                        <option value="more large than">more large than</option>
+                                    </select>
+                                </span>
+                                
+                                national park in the country, covering over 720,000 hectares. Inside this park, the famous Perito Moreno Glacier is 
+
+                                <!-- Gap 2 -->
+                                <span class="inline-block my-1">
+                                    <select id="gap-1" data-index="1" class="gap-select px-3 py-1.5 rounded-xl border-2 border-cyan-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer">
+                                        <option value="">-- Choose correct form --</option>
+                                        <option value="colder than">colder than</option>
+                                        <option value="more cold than">more cold than</option>
+                                        <option value="the coldest">the coldest</option>
+                                    </select>
+                                </span>
+
+                                the tropical forests in Misiones.
+                            </p>
+
+                            <p>
+                                When comparing landscapes, Iguazú Falls are 
+
+                                <!-- Gap 3 -->
+                                <span class="inline-block my-1">
+                                    <select id="gap-2" data-index="2" class="gap-select px-3 py-1.5 rounded-xl border-2 border-cyan-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer">
+                                        <option value="">-- Choose correct form --</option>
+                                        <option value="humidest">humidest</option>
+                                        <option value="more humid than">more humid than</option>
+                                        <option value="the most humid">the most humid</option>
+                                    </select>
+                                </span>
+
+                                the dry Patagonian steppe. Meanwhile, many travelers say that the view from Mount Fitz Roy is 
+
+                                <!-- Gap 4 -->
+                                <span class="inline-block my-1">
+                                    <select id="gap-3" data-index="3" class="gap-select px-3 py-1.5 rounded-xl border-2 border-cyan-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer">
+                                        <option value="">-- Choose correct form --</option>
+                                        <option value="famouser than">famouser than</option>
+                                        <option value="more famous than">more famous than</option>
+                                        <option value="the most famous">the most famous</option>
+                                    </select>
+                                </span>
+
+                                spectacle for mountain climbers from around the globe.
+                            </p>
+
+                            <p>
+                                Finally, Nahuel Huapi National Park is 
+
+                                <!-- Gap 5 -->
+                                <span class="inline-block my-1">
+                                    <select id="gap-4" data-index="4" class="gap-select px-3 py-1.5 rounded-xl border-2 border-cyan-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 cursor-pointer">
+                                        <option value="">-- Choose correct form --</option>
+                                        <option value="oldest">oldest</option>
+                                        <option value="the oldest">the oldest</option>
+                                        <option value="older than">older than</option>
+                                    </select>
+                                </span>
+
+                                national park in Argentina, established back in 1934!
+                            </p>
+
+                        </div>
+                    </div>
+
+                    <!-- Action Bar & Tiered Scaffolding System -->
+                    <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        
+                        <!-- Request Tiered Hint Button -->
+                        <button id="btn-request-hint" class="w-full sm:w-auto px-4 py-2.5 bg-amber-100 hover:bg-amber-200 dark:bg-amber-900/40 dark:hover:bg-amber-900/70 text-amber-900 dark:text-amber-200 text-xs font-bold rounded-xl border border-amber-300 dark:border-amber-700 flex items-center justify-center gap-2 transition hc-element">
+                            <i class="fa-solid fa-hand-holding-hand text-amber-600 dark:text-amber-400 text-sm"></i>
+                            <span>Request Tiered Hint</span>
+                        </button>
+
+                        <!-- Verify Answers Button -->
+                        <button id="btn-verify" class="w-full sm:w-auto px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2 hc-accent">
+                            <i class="fa-solid fa-circle-check text-sm"></i>
+                            <span>Check My Answers</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Formative Feedback Panel -->
+                <div id="feedback-panel" class="hidden rounded-2xl p-4 sm:p-5 border shadow-sm transition-all duration-300">
+                    <div class="flex items-start gap-3">
+                        <div id="feedback-icon" class="p-2 rounded-xl text-white text-lg"></div>
+                        <div class="flex-grow">
+                            <h3 id="feedback-title" class="font-bold text-sm sm:text-base"></h3>
+                            <div id="feedback-body" class="text-xs sm:text-sm mt-1 space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- MODAL 1: Grammar Rules Guide (UDL Representation) -->
+    <div id="grammar-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-custom z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-2xl w-full p-6 border border-slate-200 dark:border-slate-700 shadow-2xl hc-element flex flex-col max-h-[90vh]">
+            
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-cyan-600"></i>
+                    Grammar Rules: Comparatives & Superlatives
+                </h3>
+                <button id="btn-close-grammar" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="overflow-y-auto space-y-4 pr-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                
+                <p class="bg-cyan-50 dark:bg-slate-900 p-3 rounded-xl border border-cyan-100 dark:border-slate-700">
+                    💡 <strong>Quick Reminder:</strong> Use <em>Comparatives</em> to compare 2 things (e.g., A is colder than B). Use <em>Superlatives</em> to pick the #1 in a whole group (e.g., A is the coldest in the country).
+                </p>
+
+                <!-- Grammar Rule Table -->
+                <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-100 dark:bg-slate-700 font-bold text-slate-900 dark:text-white">
+                            <tr>
+                                <th class="p-2.5 border-b border-slate-200 dark:border-slate-600">Adjective Type</th>
+                                <th class="p-2.5 border-b border-slate-200 dark:border-slate-600">Comparative (2 things)</th>
+                                <th class="p-2.5 border-b border-slate-200 dark:border-slate-600">Superlative (The #1)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                            <tr>
+                                <td class="p-2.5 font-medium">Short (1 syllable)<br><span class="text-slate-400 text-[11px]">cold, old, large</span></td>
+                                <td class="p-2.5 text-cyan-700 dark:text-cyan-400 font-semibold">Adjective + -er + than<br><span class="text-slate-500 font-normal">cold<strong>er than</strong></span></td>
+                                <td class="p-2.5 text-teal-700 dark:text-teal-400 font-semibold">the + Adjective + -est<br><span class="text-slate-500 font-normal"><strong>the</strong> cold<strong>est</strong></span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-medium">Long (2+ syllables)<br><span class="text-slate-400 text-[11px]">famous, humid</span></td>
+                                <td class="p-2.5 text-cyan-700 dark:text-cyan-400 font-semibold">more + Adjective + than<br><span class="text-slate-500 font-normal"><strong>more</strong> famous <strong>than</strong></span></td>
+                                <td class="p-2.5 text-teal-700 dark:text-teal-400 font-semibold">the most + Adjective<br><span class="text-slate-500 font-normal"><strong>the most</strong> famous</span></td>
+                            </tr>
+                            <tr>
+                                <td class="p-2.5 font-medium">Irregulars<br><span class="text-slate-400 text-[11px]">good, bad</span></td>
+                                <td class="p-2.5 text-cyan-700 dark:text-cyan-400 font-semibold">better than</td>
+                                <td class="p-2.5 text-teal-700 dark:text-teal-400 font-semibold">the best</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-amber-50 dark:bg-amber-950/30 p-3 rounded-xl border border-amber-200 dark:border-amber-800/50">
+                    <h4 class="font-bold text-amber-900 dark:text-amber-300 mb-1 flex items-center gap-1">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Common Mistakes to Avoid!
+                    </h4>
+                    <ul class="list-disc list-inside space-y-1 text-amber-900/80 dark:text-amber-200/80">
+                        <li>Never double up: Do not say <s>"more colder"</s> or <s>"the most oldest"</s>.</li>
+                        <li>Check for key words: Use <strong>than</strong> for comparatives and <strong>the</strong> for superlatives.</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 text-right">
+                <button id="btn-close-grammar-2" class="px-5 py-2 bg-slate-800 dark:bg-slate-700 text-white font-medium rounded-xl text-xs hover:bg-slate-700 transition">
+                    Got it, back to the quest
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL 2: Tiered Hints Modal (Socratic Scaffolding) -->
+    <div id="hint-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-custom z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-lg w-full p-6 border border-slate-200 dark:border-slate-700 shadow-2xl hc-element">
+            
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <div class="p-2 bg-amber-100 text-amber-700 rounded-xl">
+                        <i class="fa-solid fa-compass-drafting text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-base">Tiered Help System</h3>
+                        <p class="text-xs text-slate-500" id="hint-level-indicator">Level 1 Support</p>
+                    </div>
+                </div>
+                <button id="btn-close-hint" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div id="hint-content" class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 space-y-3 my-4">
+                <!-- Injected via JavaScript -->
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                <button id="btn-next-hint-level" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl text-xs transition flex items-center gap-1.5">
+                    <span>Deeper Support (Next Level)</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <button id="btn-close-hint-2" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-medium rounded-xl text-xs hover:bg-slate-300 transition">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL 3: Metacognitive Reflection Modal -->
+    <div id="metacognition-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-custom z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-xl w-full p-6 border border-slate-200 dark:border-slate-700 shadow-2xl hc-element">
+            
+            <div class="text-center mb-5">
+                <div class="w-16 h-16 bg-gradient-to-tr from-emerald-400 to-teal-500 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl shadow-lg mb-3">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Great Job on Your Analysis!</h3>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
+                    Take a minute to reflect on how you solved these grammar challenges today.
+                </p>
+            </div>
+
+            <form id="metacognition-form" class="space-y-4 text-xs sm:text-sm">
+                
+                <div>
+                    <label class="block font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                        1. What strategy helped you the most today?
+                    </label>
+                    <select id="meta-strategy" required class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-medium focus:ring-2 focus:ring-emerald-500">
+                        <option value="">-- Select a strategy --</option>
+                        <option value="cards">Reading the facts in the Park Cards</option>
+                        <option value="grammar">Counting syllables & checking the rule table</option>
+                        <option value="socratic">Answering the Socratic hint questions</option>
+                        <option value="speech">Using Audio Read aloud to listen to the sentence rhythm</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                        2. How confident do you feel using comparatives and superlatives now?
+                    </label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <label class="border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50 flex flex-col items-center gap-1">
+                            <input type="radio" name="feeling" value="super" class="text-emerald-600" required>
+                            <span class="text-lg">🌟</span>
+                            <span class="text-[11px]">Super Confident</span>
+                        </label>
+                        <label class="border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50 flex flex-col items-center gap-1">
+                            <input type="radio" name="feeling" value="getting-there" class="text-emerald-600">
+                            <span class="text-lg">👍</span>
+                            <span class="text-[11px]">Getting Better</span>
+                        </label>
+                        <label class="border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-center cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50 flex flex-col items-center gap-1">
+                            <input type="radio" name="feeling" value="need-practice" class="text-emerald-600">
+                            <span class="text-lg">🧗</span>
+                            <span class="text-[11px]">Need More Practice</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                        3. Which glacier or national park would you like to explore next?
+                    </label>
+                    <textarea id="meta-text" rows="2" required placeholder="I would like to visit..." class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs focus:ring-2 focus:ring-emerald-500"></textarea>
+                </div>
+
+                <div class="pt-2 text-center">
+                    <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition hc-accent">
+                        Save Reflection & Finish Quest
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- Pedagogical State & Answer Key ---
+        const CORRECT_ANSWERS = {
+            0: "the largest",
+            1: "colder than",
+            2: "more humid than",
+            3: "the most famous",
+            4: "the oldest"
+        };
+
+        // Tiered Socratic Hints System (3 Levels per gap)
+        const TIERED_HINTS = [
+            {
+                gap: 0,
+                tier1: "🔍 <strong>Level 1 (Rule Reminder):</strong> We are describing Los Glaciares among ALL national parks in Argentina. Is this a comparison between 2 parks or picking the #1 in the whole group?",
+                tier2: "❓ <strong>Level 2 (Socratic Question):</strong> The adjective is <em>large</em> (1 syllable). When we talk about the #1 in a group, do we add <em>-est</em> or <em>-er</em>?",
+                tier3: "🛠️ <strong>Level 3 (Structure Skeleton):</strong> <code>the + [short adjective] + est</code> ➔ <em>the + large + st</em> = <strong>the largest</strong>."
+            },
+            {
+                gap: 1,
+                tier1: "🔍 <strong>Level 1 (Fact Check):</strong> Check the Perito Moreno Card (-2°C) vs Misiones jungle (24°C). We are comparing 2 specific places.",
+                tier2: "❓ <strong>Level 2 (Socratic Question):</strong> For comparing two places with the short adjective <em>cold</em>, what suffix and signal word do we need?",
+                tier3: "🛠️ <strong>Level 3 (Structure Skeleton):</strong> <code>[short adjective] + er + than</code> ➔ <em>cold + er + than</em> = <strong>colder than</strong>."
+            },
+            {
+                gap: 2,
+                tier1: "🔍 <strong>Level 1 (Syllable Count):</strong> Count the syllables in <em>hu-mid</em> (2 syllables). We are comparing Iguazú Falls with the Patagonian steppe.",
+                tier2: "❓ <strong>Level 2 (Socratic Question):</strong> When comparing 2 things with a 2-syllable adjective like <em>humid</em>, do we say <em>humidest</em> or do we place <em>more</em> before it?",
+                tier3: "🛠️ <strong>Level 3 (Structure Skeleton):</strong> <code>more + [adjective] + than</code> ➔ <em>more + humid + than</em> = <strong>more humid than</strong>."
+            },
+            {
+                gap: 3,
+                tier1: "🔍 <strong>Level 1 (Context Reminder):</strong> Read carefully: 'spectacle for mountain climbers from around the globe'. Is this picking the #1 spectacle worldwide or comparing 2 mountains?",
+                tier2: "❓ <strong>Level 2 (Socratic Question):</strong> <em>Famous</em> has 2 syllables. To make a superlative (the #1), do we use <em>the most</em> or <em>more</em>?",
+                tier3: "🛠️ <strong>Level 3 (Structure Skeleton):</strong> <code>the most + [long adjective]</code> ➔ <em>the most + famous</em> = <strong>the most famous</strong>."
+            },
+            {
+                gap: 4,
+                tier1: "🔍 <strong>Level 1 (Fact Check):</strong> Nahuel Huapi was established in 1934, making it the #1 first park created in Argentina.",
+                tier2: "❓ <strong>Level 2 (Socratic Question):</strong> <em>Old</em> is a 1-syllable adjective. What word must ALWAYS go in front of a superlative adjective?",
+                tier3: "🛠️ <strong>Level 3 (Structure Skeleton):</strong> <code>the + [short adjective] + est</code> ➔ <em>the + old + est</em> = <strong>the oldest</strong>."
+            }
+        ];
+
+        let currentHintGapIndex = 0;
+        let currentHintTier = 1;
+        let hintsRequestedCount = 0;
+        let userFontScale = 1.0;
+
+        // --- DOM Elements ---
+        const bodyEl = document.body;
+        const selects = document.querySelectorAll('.gap-select');
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercentage = document.getElementById('progress-percentage');
+        const hintsCountEl = document.getElementById('hints-count');
+        const starsContainer = document.getElementById('stars-container');
+        
+        const feedbackPanel = document.getElementById('feedback-panel');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackBody = document.getElementById('feedback-body');
+
+        // Modals
+        const grammarModal = document.getElementById('grammar-modal');
+        const hintModal = document.getElementById('hint-modal');
+        const metacognitionModal = document.getElementById('metacognition-modal');
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            setupAccessibilityControls();
+            setupInteractivity();
+            updateProgress();
+        });
+
+        // --- Accessibility & DUA Controls ---
+        function setupAccessibilityControls() {
+            // Font sizing
+            document.getElementById('btn-font-up').addEventListener('click', () => {
+                if (userFontScale < 1.3) {
+                    userFontScale += 0.1;
+                    document.documentElement.style.fontSize = `${userFontScale * 100}%`;
+                }
+            });
+            document.getElementById('btn-font-down').addEventListener('click', () => {
+                if (userFontScale > 0.85) {
+                    userFontScale -= 0.1;
+                    document.documentElement.style.fontSize = `${userFontScale * 100}%`;
+                }
+            });
+            document.getElementById('btn-font-reset').addEventListener('click', () => {
+                userFontScale = 1.0;
+                document.documentElement.style.fontSize = '100%';
+            });
+
+            // Themes / Contrast
+            document.getElementById('btn-mode-light').addEventListener('click', () => {
+                bodyEl.classList.remove('dark', 'high-contrast');
+            });
+            document.getElementById('btn-mode-dark').addEventListener('click', () => {
+                bodyEl.classList.remove('high-contrast');
+                bodyEl.classList.add('dark');
+            });
+            document.getElementById('btn-mode-hc').addEventListener('click', () => {
+                bodyEl.classList.remove('dark');
+                bodyEl.classList.toggle('high-contrast');
+            });
+
+            // Native Web Speech API (English TTS)
+            const btnTts = document.getElementById('btn-tts');
+            let isSpeaking = false;
+
+            btnTts.addEventListener('click', () => {
+                if ('speechSynthesis' in window) {
+                    if (isSpeaking) {
+                        window.speechSynthesis.cancel();
+                        isSpeaking = false;
+                        btnTts.classList.remove('bg-amber-100', 'text-amber-800');
+                    } else {
+                        const paragraphText = document.getElementById('paragraph-container').innerText;
+                        const utterance = new SpeechSynthesisUtterance(paragraphText);
+                        utterance.lang = 'en-US';
+                        utterance.rate = 0.9; // Clear rate for 6th grade EFL learners
+                        
+                        utterance.onend = () => {
+                            isSpeaking = false;
+                            btnTts.classList.remove('bg-amber-100', 'text-amber-800');
+                        };
+
+                        window.speechSynthesis.speak(utterance);
+                        isSpeaking = true;
+                        btnTts.classList.add('bg-amber-100', 'text-amber-800');
+                    }
+                } else {
+                    alert("Text-to-Speech is not supported by your browser.");
+                }
+            });
+        }
+
+        // --- Core Application Logic ---
+        function setupInteractivity() {
+            // Track choices
+            selects.forEach(select => {
+                select.addEventListener('change', () => {
+                    updateProgress();
+                    select.classList.remove('border-red-500', 'bg-red-50', 'border-emerald-500', 'bg-emerald-50');
+                });
+            });
+
+            // Grammar Modal toggle
+            document.getElementById('btn-show-grammar').addEventListener('click', () => {
+                grammarModal.classList.remove('hidden');
+            });
+            document.getElementById('btn-close-grammar').addEventListener('click', () => grammarModal.classList.add('hidden'));
+            document.getElementById('btn-close-grammar-2').addEventListener('click', () => grammarModal.classList.add('hidden'));
+
+            // Request Tiered Hint
+            document.getElementById('btn-request-hint').addEventListener('click', () => {
+                openTieredHintModal();
+            });
+
+            document.getElementById('btn-close-hint').addEventListener('click', () => hintModal.classList.add('hidden'));
+            document.getElementById('btn-close-hint-2').addEventListener('click', () => hintModal.classList.add('hidden'));
+            
+            document.getElementById('btn-next-hint-level').addEventListener('click', () => {
+                if (currentHintTier < 3) {
+                    currentHintTier++;
+                    renderHintContent();
+                }
+            });
+
+            // Verification Button
+            document.getElementById('btn-verify').addEventListener('click', () => {
+                evaluateStudentWork();
+            });
+
+            // Metacognition Form submit
+            document.getElementById('metacognition-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                metacognitionModal.classList.add('hidden');
+                
+                // Final Encouraging Feedback
+                feedbackPanel.className = "rounded-2xl p-5 border bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-100 shadow-sm";
+                feedbackIcon.className = "p-2 rounded-xl bg-emerald-600 text-white";
+                feedbackIcon.innerHTML = `<i class="fa-solid fa-award text-xl"></i>`;
+                feedbackTitle.innerText = "Mission Accomplished!";
+                feedbackBody.innerHTML = `
+                    <p class="font-medium">You have successfully analyzed Argentina's National Parks and recorded your metacognition reflections.</p>
+                    <p class="mt-1 text-xs text-emerald-700 dark:text-emerald-300">Keep up the awesome effort and curiosity in learning English!</p>
+                `;
+                feedbackPanel.classList.remove('hidden');
+                feedbackPanel.scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        // --- Progress Calculation ---
+        function updateProgress() {
+            let filledCount = 0;
+            selects.forEach(select => {
+                if (select.value !== "") filledCount++;
+            });
+
+            const percent = Math.round((filledCount / selects.length) * 100);
+            progressBar.style.width = `${percent}%`;
+            progressPercentage.innerText = `${percent}% Completed`;
+        }
+
+        // --- Tiered Hint System ---
+        function openTieredHintModal() {
+            let targetGapIndex = 0;
+            for (let i = 0; i < selects.length; i++) {
+                if (selects[i].value === "" || selects[i].value !== CORRECT_ANSWERS[i]) {
+                    targetGapIndex = i;
+                    break;
+                }
+            }
+
+            if (currentHintGapIndex !== targetGapIndex) {
+                currentHintGapIndex = targetGapIndex;
+                currentHintTier = 1;
+            }
+
+            hintsRequestedCount++;
+            hintsCountEl.innerText = `${hintsRequestedCount} used`;
+
+            // Adjust stars based on hints requested
+            if (hintsRequestedCount > 4) {
+                starsContainer.innerHTML = `<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>`;
+            } else if (hintsRequestedCount > 7) {
+                starsContainer.innerHTML = `<i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>`;
+            }
+
+            renderHintContent();
+            hintModal.classList.remove('hidden');
+        }
+
+        function renderHintContent() {
+            const hintData = TIERED_HINTS[currentHintGapIndex];
+            const indicator = document.getElementById('hint-level-indicator');
+            const hintContent = document.getElementById('hint-content');
+            const btnNext = document.getElementById('btn-next-hint-level');
+
+            indicator.innerText = `Focusing on Blank #${currentHintGapIndex + 1} • Tier ${currentHintTier} of 3 Support`;
+
+            let bodyHtml = "";
+            if (currentHintTier >= 1) {
+                bodyHtml += `<div class="p-3 bg-amber-50 dark:bg-slate-900 rounded-xl border border-amber-200 dark:border-slate-700">${hintData.tier1}</div>`;
+            }
+            if (currentHintTier >= 2) {
+                bodyHtml += `<div class="p-3 bg-cyan-50 dark:bg-slate-900 rounded-xl border border-cyan-200 dark:border-slate-700">${hintData.tier2}</div>`;
+            }
+            if (currentHintTier >= 3) {
+                bodyHtml += `<div class="p-3 bg-teal-50 dark:bg-slate-900 rounded-xl border border-teal-200 dark:border-slate-700">${hintData.tier3}</div>`;
+            }
+
+            hintContent.innerHTML = bodyHtml;
+
+            if (currentHintTier >= 3) {
+                btnNext.classList.add('hidden');
+            } else {
+                btnNext.classList.remove('hidden');
+            }
+        }
+
+        // --- Pedagogical Evaluation ---
+        function evaluateStudentWork() {
+            let correctCount = 0;
+            let totalGaps = selects.length;
+            let unresolvedGaps = [];
+
+            selects.forEach((select, index) => {
+                const userVal = select.value;
+                const correctVal = CORRECT_ANSWERS[index];
+
+                if (userVal === correctVal) {
+                    correctCount++;
+                    select.classList.remove('border-red-400', 'bg-red-50');
+                    select.classList.add('border-emerald-500', 'bg-emerald-50/50', 'dark:bg-emerald-950/30');
+                } else {
+                    unresolvedGaps.push(index + 1);
+                    if (userVal !== "") {
+                        select.classList.add('border-red-400', 'bg-red-50/50', 'dark:bg-red-950/30');
+                    }
+                }
+            });
+
+            feedbackPanel.classList.remove('hidden');
+
+            if (correctCount === totalGaps) {
+                // ALL CORRECT
+                feedbackPanel.className = "rounded-2xl p-5 border bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-100 shadow-sm";
+                feedbackIcon.className = "p-2 rounded-xl bg-emerald-600 text-white";
+                feedbackIcon.innerHTML = `<i class="fa-solid fa-circle-check text-xl"></i>`;
+                feedbackTitle.innerText = "Outstanding Grammar & Reasoning!";
+                feedbackBody.innerHTML = `
+                    <p class="font-medium">You correctly identified every comparative and superlative form in the paragraph!</p>
+                    <p class="mt-1 text-xs">Let's wrap up with a quick metacognitive reflection on your strategy.</p>
+                `;
+
+                setTimeout(() => {
+                    metacognitionModal.classList.remove('hidden');
+                }, 1200);
+
+            } else if (correctCount > 0) {
+                // PARTIAL SUCCESS
+                feedbackPanel.className = "rounded-2xl p-5 border bg-sky-50 dark:bg-slate-800 border-sky-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-sm";
+                feedbackIcon.className = "p-2 rounded-xl bg-sky-600 text-white";
+                feedbackIcon.innerHTML = `<i class="fa-solid fa-magnifying-glass text-xl"></i>`;
+                feedbackTitle.innerText = `You are getting there! (${correctCount} of ${totalGaps} correct)`;
+                
+                feedbackBody.innerHTML = `
+                    <p>Good progress! Re-read blank spaces: <strong>#${unresolvedGaps.join(', #')}</strong>.</p>
+                    <div class="mt-2 text-xs bg-white dark:bg-slate-900 p-3 rounded-xl border border-sky-100 dark:border-slate-700 space-y-1">
+                        <p class="font-semibold text-sky-800 dark:text-sky-300">💡 Self-Check Guide:</p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-300">
+                            <li>Are you comparing <strong>2 items</strong> (look for <em>than</em>) or picking <strong>the #1 in a group</strong> (look for <em>the</em>)?</li>
+                            <li>Count syllables to choose between <em>-er/-est</em> or <em>more/most</em>.</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                // ALL INCORRECT OR UNANSWERED
+                feedbackPanel.className = "rounded-2xl p-5 border bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 shadow-sm";
+                feedbackIcon.className = "p-2 rounded-xl bg-amber-500 text-white";
+                feedbackIcon.innerHTML = `<i class="fa-solid fa-seedling text-xl"></i>`;
+                feedbackTitle.innerText = "Making mistakes is part of learning!";
+                feedbackBody.innerHTML = `
+                    <p>Don't worry! Click the <strong>"Request Tiered Hint"</strong> button or check the <strong>Park Fact Cards</strong> on the left to gather information.</p>
+                `;
+            }
+
+            feedbackPanel.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
