@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -802,7 +803,13 @@
           <span class="sep">·</span>
           <span><i class="fa-brands fa-creative-commons"></i> Contenidos didácticos bajo <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons CC BY-SA 4.0</a></span>
         </p>
-        <p class="repo-footer-note">Se reconoce la autoría docente individual de cada aplicación interactiva compilada en este repositorio abierto (Recursos Educativos Abiertos - REA).</p>
+        <p class="repo-footer-ai" style="margin-top: 6px; font-size: 0.85rem; opacity: 0.95;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Desarrollado con metodología Vibe Coding y asistencia de <strong>Antigravity CLI</strong> y <strong>Google Gemini</strong> en septiembre-octubre de 2026. La docente coordinadora y los autores revisaron y validaron la corrección pedagógica de los contenidos curriculares, la ausencia de rastreo o recopilación de datos de estudiantes y la funcionalidad accesible de los apoyos DUA.
+        </p>
+        <p class="repo-footer-vcer" style="margin-top: 8px; font-size: 0.85rem;">
+          <i class="fa-solid fa-clipboard-check"></i> <a href="https://vibe-coding-educativo.github.io/vibe-responsable/vcer/?r=recomendable&p=85&f=2026-10&t=Repositorio%20de%20aplicaciones%20educativas" target="_blank" rel="noopener noreferrer" style="color: #67e8f9; text-decoration: underline; font-weight: 600;">Evaluación VCER: Recomendable (85 %), octubre de 2026</a> · <a href="DECISIONES.md" style="color: #cbd5e1; text-decoration: underline;">Nota de Decisiones (ADR)</a> · <a href="evaluacion-vcer.md" style="color: #cbd5e1; text-decoration: underline;">Informe Completo VCER</a>
+        </p>
+        <p class="repo-footer-note" style="margin-top: 6px;">Se reconoce la autoría docente individual de cada aplicación interactiva compilada en este repositorio abierto (Recursos Educativos Abiertos - REA).</p>
       </div>
     </footer>
 
@@ -852,33 +859,33 @@
       {
         id: "app-4",
         emoji: "🇬🇧",
-        titulo: "Aprende Present Simple (Inglés 1.º Año) — V1",
+        titulo: "Aprende Present Simple & Verb To Be (DUA) — V1",
         autor: "Silvina Valla",
-        descripcion: "Versión inicial interactiva para ejercitar la conjugación de verbos en Present Simple con retroalimentación inmediata según las reglas gramaticales para 1.º año.",
+        descripcion: "Laboratorio interactivo para ejercitar la conjugación de verbos en Present Simple incorporando el verbo 'To Be', fichas explicativas de reglas gramaticales, bloques secuenciados y retroalimentación formativa.",
         nivel: "Secundaria",
         materia: "Inglés",
         color: "#7c3aed", // Violeta inglés
-        url: "appf2/Silvina Valla_379948_assignsubmission_file_/Valla_Silvina_Presente Simple.html",
+        url: "appf2/Valla_SilvinaValeria_Present Simple_V2.html",
         version: "v1",
         hasV2: true,
-        v2Url: "appf2/Valla_SilvinaValeria_Present Simple_V2.html",
-        tags: ["Inglés", "Gramática", "Present Simple", "Versión 1", "Secundaria"]
+        v2Url: "appf2/Valla_SilvinaValeria_Present_Simple_V3.html",
+        tags: ["Inglés", "Gramática", "Present Simple", "Verb To Be", "Versión 1", "Secundaria"]
       },
       {
         id: "app-4-v2",
         emoji: "🇬🇧",
-        titulo: "Aprende Present Simple & Verb To Be (DUA) — V2",
+        titulo: "Present Simple Practice & Grammar Lab (DUA) — V2",
         autor: "Silvina Valla",
-        descripcion: "Versión 2 mejorada que amplía la propuesta didáctica incorporando el verbo 'To Be', fichas explicativas de reglas gramaticales, bloques secuenciados y retroalimentación formativa.",
+        descripcion: "Versión 2 evolucionada y optimizada con diseño responsivo adaptativo, selectores gramaticales de tercera persona con retroalimentación formativa inmediata y barra de accesibilidad DUA con controles de escalado tipográfico y botones adaptables.",
         nivel: "Secundaria",
         materia: "Inglés",
-        color: "#2563eb", // Azul royal
-        url: "appf2/Valla_SilvinaValeria_Present Simple_V2.html",
+        color: "#1d4ed8",
+        url: "appf2/Valla_SilvinaValeria_Present_Simple_V3.html",
         version: "v2",
         hasV1: true,
-        v1Url: "appf2/Silvina Valla_379948_assignsubmission_file_/Valla_Silvina_Presente Simple.html",
-        mejoras: "Incorpora Verb To Be, navegación por bloques, tarjetas de reglas de consulta rápida y diseño visual renovado.",
-        tags: ["Inglés", "Gramática", "Present Simple", "Verb To Be", "Versión 2", "Mejoras IA", "Secundaria"]
+        v1Url: "appf2/Valla_SilvinaValeria_Present Simple_V2.html",
+        mejoras: "Incorpora interfaz adaptativa, botones de escala DUA (font-scale, btn-scale), nuevos ejercicios de tercera persona con feedback en tiempo real y compatibilidad multiplataforma.",
+        tags: ["Inglés", "Gramática", "Present Simple", "DUA", "Escala DUA", "Versión 2", "Mejoras IA", "Secundaria"]
       },
       {
         id: "app-5",
@@ -1069,14 +1076,33 @@
       {
         id: "app-11",
         emoji: "🏛️",
-        titulo: "Mi Primer Museo Interactivo: Artes Visuales (DUA)",
+        titulo: "Mi Primer Museo Interactivo: Artes Visuales (DUA) — V1",
         autor: "Mariela Fernández",
         descripcion: "Museo virtual interactivo con 12 obras clásicas vectoriales en 3 rondas (Mondrian, Van Gogh, Da Vinci). Incluye zoom interactivo, lectura por voz TTS, pistas socráticas y trofeo al observador.",
         nivel: "Primaria",
         materia: "Educación Plástica",
         color: "#e11d48", // Rojo bermellón museo
         url: "appf2/museodearte_FernandezMariela.html",
-        tags: ["Educación Plástica", "Artes Visuales", "DUA", "Museo", "Pintura", "TTS", "Zoom"]
+        version: "v1",
+        hasV2: true,
+        v2Url: "appf2/Fernandez Mariela museo interactivo_v2.html",
+        tags: ["Educación Plástica", "Artes Visuales", "DUA", "Museo", "Pintura", "TTS", "Zoom", "Versión 1"]
+      },
+      {
+        id: "app-11-v2",
+        emoji: "🏛️",
+        titulo: "Mi Primer Museo Interactivo y Taller de Arte (DUA) — V2",
+        autor: "Mariela Fernández",
+        descripcion: "Versión 2 enriquecida que suma el modo «Taller de Dibujo Creativo» con lienzo digital, paleta de colores y grosores de pincel. Mantiene los 3 salones temáticos con 12 obras vectoriales, lupa interactiva de detective, audio-guía con voz TTS y pistas socráticas.",
+        nivel: "Primaria",
+        materia: "Educación Plástica",
+        color: "#9333ea",
+        url: "appf2/Fernandez Mariela museo interactivo_v2.html",
+        version: "v2",
+        hasV1: true,
+        v1Url: "appf2/museodearte_FernandezMariela.html",
+        mejoras: "Incorpora el modo interactivo 'Taller de Arte y Dibujo' con lienzo digital interactivo, paleta cromática inspirada en las obras, lupa de detective optimizada y navegación fluida entre salones.",
+        tags: ["Educación Plástica", "Artes Visuales", "DUA", "Museo", "Taller de Dibujo", "Canvas", "TTS", "Lupa Detective", "Versión 2", "Mejoras IA", "Primaria"]
       },
       {
         id: "app-12",
@@ -1239,14 +1265,33 @@
       {
         id: "app-22",
         emoji: "📈",
-        titulo: "Explorando la Función Lineal (DUA y Andamiaje)",
+        titulo: "Explorando la Función Lineal (DUA y Andamiaje) — V1",
         autor: "Denise Pedrotti",
         descripcion: "Laboratorio interactivo y gráfico para comprender la función lineal (f(x) = mx + b). Permite manipular la pendiente y ordenada al origen con sliders en tiempo real sobre canvas, con desafíos graduados, andamiaje cognitivo y soporte DUA con TTS.",
         nivel: "Secundaria",
         materia: "Matemática",
         color: "#0284c7", // Azul matemático
         url: "appf2/pedrotti_denise_funcion_lineal.html",
-        tags: ["Matemática", "Función Lineal", "Pendiente", "Canvas", "Sliders", "Andamiaje", "DUA", "TTS", "Secundaria"]
+        version: "v1",
+        hasV2: true,
+        v2Url: "appf2/pedrotti_denise_funcionlineal_V2.html",
+        tags: ["Matemática", "Función Lineal", "Pendiente", "Canvas", "Sliders", "Andamiaje", "DUA", "TTS", "Versión 1", "Secundaria"]
+      },
+      {
+        id: "app-22-v2",
+        emoji: "📈",
+        titulo: "Función Lineal: El Viaje en Automóvil (DUA y Andamiaje) — V2",
+        autor: "Denise Pedrotti",
+        descripcion: "Versión 2 ampliada con contextualización cotidiana («El Viaje en Automóvil»). Incluye simulación gráfica cartesiana, 5 fases de andamiaje cognitivo, resolución de viaje misterioso con pistas socráticas graduadas y cierre metacognitivo.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        color: "#0284c7",
+        url: "appf2/pedrotti_denise_funcionlineal_V2.html",
+        version: "v2",
+        hasV1: true,
+        v1Url: "appf2/pedrotti_denise_funcion_lineal.html",
+        mejoras: "Contextualización cotidiana narrativa ('Viaje en Automóvil'), 5 fases secuenciadas de andamiaje, tabla del viaje misterioso con pistas socráticas graduadas y cierre metacognitivo.",
+        tags: ["Matemática", "Función Lineal", "Andamiaje", "DUA", "TTS", "Viaje en Auto", "Sliders", "Versión 2", "Mejoras IA", "Secundaria"]
       },
       {
         id: "app-23",
@@ -1365,18 +1410,7 @@
         mejoras: "Diseño renovado con Tailwind, doble tipografía accesible (Fredoka y Atkinson), escalado de fuente DUA, audio nativo y nuevos desafíos de conteo.",
         tags: ["Nivel Inicial", "Sala de 4", "Matemática", "Conteo", "Serie Numérica", "DUA", "Versión 2", "Mejoras IA", "Fredoka", "Atkinson Hyperlegible", "Alto Contraste"]
       },
-      {
-        id: "app-28",
-        emoji: "🍰",
-        titulo: "Desafío Fracciones: Exploratorio Visual (DUA)",
-        autor: "José Luis Márquez",
-        descripcion: "Laboratorio interactivo para explorar el concepto y representación de fracciones mediante barras fraccionarias dinámicas, comparaciones gráficas, retos graduados y panel de accesibilidad DUA con modo oscuro y ajuste de tipografía.",
-        nivel: "Primaria",
-        materia: "Matemática",
-        color: "#2563eb", // Azul matemático
-        url: "appf2/desafío_fracciones_MarquezJose.html",
-        tags: ["Matemática", "Fracciones", "DUA", "Visualización", "Primaria", "Modo Oscuro", "Accesibilidad"]
-      },
+
       {
         id: "app-29",
         emoji: "✖️",
@@ -1403,15 +1437,15 @@
       },
       {
         id: "app-31",
-        emoji: "🎓",
-        titulo: "Celebración del Día del Maestro",
+        emoji: "🏔️",
+        titulo: "EcoQuest: Comparatives & Superlatives (DUA)",
         autor: "Ivana Choque",
-        descripcion: "Propuesta educativa interactiva diseñada en Canva para que las y los estudiantes exploren, reflexionen y completen actividades sobre la labor docente y el significado del Día del Maestro.",
-        nivel: "Primaria",
-        materia: "Formación Ética y Ciudadana",
-        color: "#ec4899", // Rosa vibrante
-        url: "appf2/choque_ivana_dia_del_maestro.html",
-        tags: ["Efemérides", "Día del Maestro", "Canva", "Formación Ética", "Primaria", "Interactiva"]
+        descripcion: "Laboratorio interactivo de inglés para ejercitar adjetivos comparativos y superlativos explorando los Parques Nacionales y Glaciares de Argentina (Perito Moreno y Fitz Roy). Incluye tarjetas de datos, barra de accesibilidad DUA (audio TTS, alto contraste, tamaño de fuente), pistas graduadas y reflexión metacognitiva.",
+        nivel: "Secundaria",
+        materia: "Inglés",
+        color: "#0ea5e9", // Azul glaciar
+        url: "appf2/glacier_national_parks_scaffolding_app.html",
+        tags: ["Inglés", "Comparativos", "Superlativos", "DUA", "TTS", "Glaciares", "Parques Nacionales", "Andamiaje", "Secundaria"]
       },
       {
         id: "app-32",
@@ -1428,14 +1462,33 @@
       {
         id: "app-33",
         emoji: "⚖️",
-        titulo: "Práctica Interactiva: Ecuaciones de Primer Grado",
+        titulo: "Práctica Interactiva: Ecuaciones de Primer Grado — V1",
         autor: "Silvana Rodríguez",
         descripcion: "Laboratorio interactivo para resolver ecuaciones lineales paso a paso con renderizado matemático KaTeX, verificación inmediata de respuestas, resolución guiada con propiedades de las operaciones y calculadora de apoyo.",
         nivel: "Secundaria",
         materia: "Matemática",
         color: "#0284c7", // Azul matemático
         url: "appf2/Rodriguez_Silvana_Ecuaciones_primer_grado.html",
-        tags: ["Matemática", "Ecuaciones", "Primer Grado", "KaTeX", "Paso a Paso", "Secundaria", "Álgebra", "Propiedades"]
+        version: "v1",
+        hasV2: true,
+        v2Url: "appf2/Rodriguez silvana practica algebra.html",
+        tags: ["Matemática", "Ecuaciones", "Primer Grado", "KaTeX", "Paso a Paso", "Secundaria", "Álgebra", "Propiedades", "Versión 1"]
+      },
+      {
+        id: "app-33-v2",
+        emoji: "⚖️",
+        titulo: "Práctico de Álgebra: Ecuaciones de Primer Grado (DUA) — V2",
+        autor: "Silvana Rodríguez",
+        descripcion: "Versión 2 evolucionada con 3 niveles de dificultad seleccionables (Fácil, Intermedio y Avanzado con paréntesis), pizarra borrador digital interactiva, sistema de rachas y temporizador, pistas dinámicas y reporte final detallado con soluciones paso a paso en KaTeX e impresión.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        color: "#4338ca",
+        url: "appf2/Rodriguez silvana practica algebra.html",
+        version: "v2",
+        hasV1: true,
+        v1Url: "appf2/Rodriguez_Silvana_Ecuaciones_primer_grado.html",
+        mejoras: "3 niveles de dificultad graduados, pizarra digital interactiva de borrador sobre canvas, sistema de racha y cronómetro, reporte imprimible de resultados y soluciones detalladas paso a paso con KaTeX.",
+        tags: ["Matemática", "Ecuaciones", "Álgebra", "KaTeX", "Pizarra Digital", "Niveles", "DUA", "Versión 2", "Mejoras IA", "Secundaria"]
       },
       {
         id: "app-34",
@@ -1467,22 +1520,6 @@
         v1Url: "appf2/montivero_paz_detectives_flores.html",
         mejoras: "Reemplazo de botones de solo texto por imágenes representativas de flores, consignas didácticas reformuladas para Sala de 5 y diseño visual alegre.",
         tags: ["Nivel Inicial", "Sala de 5", "Ciencias Naturales", "Botánica", "Flores", "Discriminación Visual", "Versión 2", "Mejoras IA"]
-      },
-      {
-        id: "app-4-v3",
-        emoji: "🇬🇧",
-        titulo: "Present Simple Practice & Grammar Lab (DUA) — V3",
-        autor: "Silvina Valla",
-        descripcion: "Versión 3 interactiva alojada y optimizada con diseño responsivo, selectores gramaticales de tercera persona, retroalimentación formativa y escala DUA de fuentes y botones.",
-        nivel: "Secundaria",
-        materia: "Inglés",
-        color: "#1d4ed8",
-        url: "appf2/Valla_SilvinaValeria_Present_Simple_V3.html",
-        version: "v2",
-        hasV1: true,
-        v1Url: "appf2/Valla_SilvinaValeria_Present Simple_V2.html",
-        mejoras: "Incorpora interfaz adaptativa, botones de escala DUA (font-scale, btn-scale), nuevos ejercicios con feedback en tiempo real y compatibilidad multiplataforma.",
-        tags: ["Inglés", "Gramática", "Present Simple", "Versión 3", "DUA", "Secundaria", "Mejoras IA"]
       }
     ];
 
