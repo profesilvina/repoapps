@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Función Lineal: El Viaje en Automóvil</title>
+    <style>
+        /* =========================================
+           VARIABLES DE TEMA Y ACCESIBILIDAD (DUA)
+           ========================================= */
+        :root {
+            --bg-color: #f4f7f6;
+            --text-color: #2c3e50;
+            --panel-bg: #ffffff;
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --secondary-color: #e9ecef;
+            --accent-color: #28a745;
+            --error-color: #dc3545;
+            --border-color: #dee2e6;
+            --font-size-base: 16px;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --panel-bg: #1e1e1e;
+            --primary-color: #4da6ff;
+            --primary-hover: #1a8cff;
+            --secondary-color: #333333;
+            --accent-color: #4CAF50;
+            --error-color: #ff5252;
+            --border-color: #444444;
+        }
+
+        [data-theme="hc"] { /* Alto Contraste */
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --panel-bg: #000000;
+            --primary-color: #ffff00;
+            --primary-hover: #cccc00;
+            --secondary-color: #222222;
+            --accent-color: #00ff00;
+            --error-color: #ff0000;
+            --border-color: #ffffff;
+        }
+
+        /* =========================================
+           ESTILOS GENERALES
+           ========================================= */
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: var(--font-size-base);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--panel-bg);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .title-container h1 { margin: 0; font-size: 1.5rem; }
+
+        .accessibility-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        
+        [data-theme="hc"] button { color: #000; }
+
+        button:hover { background-color: var(--primary-hover); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        .btn-icon { padding: 0.5rem; font-size: 1.2rem; }
+        .btn-secondary { background-color: #6c757d; }
+        .btn-secondary:hover { background-color: #5a6268; }
+
+        .progress-bar {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 1rem;
+            background: var(--secondary-color);
+            flex-wrap: wrap;
+        }
+
+        .step-indicator {
+            padding: 5px 12px;
+            border-radius: 20px;
+            background-color: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            font-weight: bold;
+            opacity: 0.5;
+            font-size: 0.85rem;
+        }
+        .step-indicator.active {
+            opacity: 1;
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        [data-theme="hc"] .step-indicator.active { color: #000; }
+
+        main { max-width: 1100px; width: 100%; margin: 2rem auto; padding: 0 1rem; flex: 1; }
+
+        .step-content { display: none; }
+        .step-content.active { display: block; animation: fadeIn 0.5s; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .panel {
+            background: var(--panel-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        /* Layouts flexibles */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) { .workspace { grid-template-columns: 1fr; } }
+
+        .workspace-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) { .workspace-3 { grid-template-columns: 1fr; } }
+
+        /* Controles y Sliders */
+        .controls { display: flex; flex-direction: column; gap: 1.2rem; }
+        .control-group {
+            background: var(--secondary-color);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .control-group label { font-weight: bold; display: block; margin-bottom: 0.5rem; }
+        
+        input[type=range], input[type=number] { width: 100%; margin: 5px 0; cursor: pointer; }
+        input[type=number] { padding: 0.4rem; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-color); }
+
+        .formula-display {
+            font-size: 1.6rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 0.5rem 0;
+            padding: 0.8rem;
+            background: var(--bg-color);
+            border: 2px dashed var(--primary-color);
+            border-radius: 10px;
+        }
+
+        .highlight-m { color: #d35400; }
+        .highlight-b { color: #8e44ad; }
+        [data-theme="dark"] .highlight-m { color: #e67e22; }
+        [data-theme="dark"] .highlight-b { color: #af7ac5; }
+        [data-theme="hc"] .highlight-m { color: #ff5555; }
+        [data-theme="hc"] .highlight-b { color: #ff55ff; }
+
+        /* Canvas del gráfico */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #fff;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        [data-theme="dark"] .canvas-container { background: #222; }
+        [data-theme="hc"] .canvas-container { background: #000; border-color: #fff; }
+        
+        canvas { width: 100%; height: 100%; }
+
+        /* Estilos de Tabla de Valores */
+        .table-container {
+            background: var(--secondary-color);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        table.math-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            background: var(--panel-bg);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        table.math-table th, table.math-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+        }
+        table.math-table th {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+        [data-theme="hc"] table.math-table th { color: #000; }
+
+        /* Retroalimentación y Pistas */
+        .feedback-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+        }
+        .feedback-box.show { display: block; }
+        .feedback-box.error { background-color: rgba(220, 53, 69, 0.1); border-left: 5px solid var(--error-color); }
+        .feedback-box.success { background-color: rgba(40, 167, 69, 0.1); border-left: 5px solid var(--accent-color); }
+
+        .hints-container { margin-top: 1rem; display: flex; flex-direction: column; gap: 8px; }
+        .hint {
+            background-color: var(--secondary-color);
+            padding: 0.8rem;
+            border-radius: 5px;
+            display: none;
+            border-left: 4px solid var(--primary-color);
+            font-size: 0.95rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 90px;
+            padding: 0.8rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+            resize: vertical;
+        }
+
+        .readable-text { font-size: 1.1em; max-width: 800px; }
+        .nav-buttons { display: flex; justify-content: space-between; gap: 10px; margin-top: 2rem; }
+
+        .info-card {
+            background-color: var(--secondary-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Estilos del Pie de Página (Footer) */
+        footer {
+            background-color: var(--panel-bg);
+            color: var(--text-color);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            padding: 1.2rem 1rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-top: auto;
+        }
+
+        footer p {
+            margin: 0;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CABECERA: Controles DUA de Accesibilidad -->
+    <header>
+        <div class="title-container">
+            <h1>🚗 Función Lineal: El Viaje en Automóvil</h1>
+        </div>
+        <div class="accessibility-controls" aria-label="Controles de accesibilidad">
+            <button class="btn-icon" onclick="changeFontSize(2)" aria-label="Aumentar tamaño de letra">A+</button>
+            <button class="btn-icon" onclick="changeFontSize(-2)" aria-label="Disminuir tamaño de letra">A-</button>
+            <button class="btn-icon" id="btn-tts" onclick="toggleTTS()" aria-label="Activar o pausar lectura en voz alta">🔊 Leer</button>
+            <select id="theme-selector" onchange="changeTheme(this.value)" aria-label="Seleccionar contraste visual" style="padding: 0.5rem; border-radius: 5px;">
+                <option value="light">Claro</option>
+                <option value="dark">Oscuro</option>
+                <option value="hc">Alto Contraste</option>
+            </select>
+        </div>
+    </header>
+
+    <!-- INDICADOR DE PROGRESO VISUAL -->
+    <div class="progress-bar" aria-hidden="true">
+        <div class="step-indicator active" id="ind-1">1. Exploración del Viaje</div>
+        <div class="step-indicator" id="ind-2">2. Desafío Gráfico</div>
+        <div class="step-indicator" id="ind-3">3. Desafío de Tabla</div>
+        <div class="step-indicator" id="ind-4">4. Conexión Total</div>
+        <div class="step-indicator" id="ind-5">5. Reflexión</div>
+    </div>
+
+    <main>
+        <!-- ==============================================
+             PASO 1: EXPLORACIÓN
+             ============================================== -->
+        <section class="step-content active" id="step-1">
+            <div class="panel">
+                <h2 class="readable-text">Fase 1: Representando el viaje en el gráfico, la tabla y la fórmula</h2>
+                
+                <div class="info-card readable-text">
+                    <strong>Situación:</strong> Un automóvil inicia su recorrido en una ruta desde un determinado punto kilométrico (por ejemplo, el <strong>km 20</strong>) y avanza a velocidad constante (por ejemplo, <strong>60 km por cada hora</strong>).
+                    <br>• El <strong>tiempo (t)</strong> se representa en el eje horizontal X (en horas).
+                    <br>• La <strong>posición (km)</strong> se representa en el eje vertical Y (en kilómetros).
+                </div>
+
+                <p class="readable-text">Utiliza el deslizador de tiempo para simular la marcha del automóvil 🚗. Cambia los kilómetros iniciales o la velocidad desde la tabla para observar cómo cambia la fórmula y el gráfico con ejes numerados.</p>
+                
+                <div class="workspace-3">
+                    <div class="canvas-container">
+                        <canvas id="graphCanvas1" width="400" height="400"></canvas>
+                    </div>
+                    
+                    <div class="controls">
+                        <div class="formula-display" aria-live="polite">
+                            km = <span class="highlight-m"><span id="val-m1">60</span> · t</span> 
+                            <span class="highlight-b" id="val-b1-display">+ 20</span>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="slider-time1">⏱️ Recorrido del Auto (Tiempo t = <span id="time1-val">0</span> h):</label>
+                            <input type="range" id="slider-time1" min="0" max="5" step="0.25" value="0" oninput="updateExploration()">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Configuración del Viaje:</label>
+                            <p style="margin: 5px 0; font-size: 0.95rem;">Puedes modificar estos valores desde la tabla interactiva 👉</p>
+                            <p style="margin: 3px 0;">• Velocidad (m): <strong class="highlight-m"><span id="m1-text">60</span> km/h</strong></p>
+                            <p style="margin: 3px 0;">• Km de Salida (b): <strong class="highlight-b">Km <span id="b1-text">20</span></strong></p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <h3>Tabla de Registro</h3>
+                        <div style="margin-bottom: 10px;">
+                            <label for="table-m1" style="font-size: 0.85rem; font-weight: bold;">Velocidad (km/h):</label>
+                            <input type="number" id="table-m1" value="60" min="10" max="120" step="10" onchange="updateExploration()" oninput="updateExploration()">
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <label for="table-b1" style="font-size: 0.85rem; font-weight: bold;">Km Inicial (Salida):</label>
+                            <input type="number" id="table-b1" value="20" min="0" max="100" step="10" onchange="updateExploration()" oninput="updateExploration()">
+                        </div>
+                        <table class="math-table" id="table-exp">
+                            <thead>
+                                <tr><th>Tiempo (t)</th><th>Posición (km)</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <span></span>
+                    <button onclick="goToStep(2)">Ir al Desafío Gráfico →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             PASO 2: DESAFÍO GRÁFICO
+             ============================================== -->
+        <section class="step-content" id="step-2">
+            <div class="panel">
+                <h2 class="readable-text">Fase 2: Desafío de Gráficos de Viaje</h2>
+                <p class="readable-text"><strong>Misión:</strong> Un auto parte exactamente desde el <strong>km 30</strong> y viaja a una velocidad constante de <strong>40 km/h</strong>. Ajusta la velocidad y el km inicial para que la recta azul coincida con el recorrido real (línea punteada roja).</p>
+                
+                <div class="workspace">
+                    <div class="canvas-container">
+                        <canvas id="graphCanvas2" width="400" height="400"></canvas>
+                    </div>
+                    
+                    <div class="controls">
+                        <div class="formula-display" aria-live="polite">
+                            km = <span class="highlight-m"><span id="val-m2">10</span> · t</span> 
+                            <span class="highlight-b" id="val-b2-display">+ 0</span>
+                        </div>
+
+                        <div class="control-group">
+                            <label for="slider-time2">⏱️ Probar movimiento del Auto (t = <span id="time2-val">0</span> h):</label>
+                            <input type="range" id="slider-time2" min="0" max="5" step="0.25" value="0" oninput="updateGraph2()">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="slider-m2">Velocidad / Pendiente (m en km/h):</label>
+                            <input type="range" id="slider-m2" min="10" max="100" step="10" value="10" oninput="updateGraph2()">
+                        </div>
+
+                        <div class="control-group">
+                            <label for="slider-b2">Km Inicial / Ordenada al origen (b):</label>
+                            <input type="range" id="slider-b2" min="0" max="100" step="10" value="0" oninput="updateGraph2()">
+                        </div>
+
+                        <button onclick="checkChallenge2()">Verificar recorrido</button>
+                        
+                        <div id="feedback-message-2" class="feedback-box"></div>
+                        
+                        <!-- Pistas siempre disponibles -->
+                        <div class="hints-container">
+                            <button class="btn-secondary" onclick="showHint2()">💡 Ver Pista de Apoyo</button>
+                            <div id="hint-2-1" class="hint"><strong>Pista 1:</strong> El punto de partida en el eje vertical (Y) indica el km desde el cual sale el auto cuando t = 0 horas.</div>
+                            <div id="hint-2-2" class="hint"><strong>Pista 2:</strong> Ajusta el valor de 'b' a 30 y luego la velocidad 'm' a 40 para hacer coincidir las líneas.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="goToStep(1)">← Anterior</button>
+                    <button id="btn-next-3" onclick="goToStep(3)" style="display: none;">Siguiente: Desafío de Tabla →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             PASO 3: DESAFÍO DE TABLA
+             ============================================== -->
+        <section class="step-content" id="step-3">
+            <div class="panel">
+                <h2 class="readable-text">Fase 3: Completando la Tabla de Registro del Viaje</h2>
+                <p class="readable-text">Un automóvil parte del <strong>km 50</strong> y avanza a una velocidad de <strong>50 km/h</strong>. La fórmula del viaje es <strong>km = 50 · t + 50</strong>. Calcula en qué kilómetro se encuentra en cada hora indicada.</p>
+                
+                <div class="workspace">
+                    <div class="table-container">
+                        <h3>Función: km = 50 · t + 50</h3>
+                        <table class="math-table">
+                            <thead>
+                                <tr><th>Tiempo t (horas)</th><th>Posición Y (Kilómetros)</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>0 h</td><td><input type="number" id="t3-val1" placeholder="?"></td></tr>
+                                <tr><td>1 h</td><td><input type="number" id="t3-val2" placeholder="?"></td></tr>
+                                <tr><td>2 h</td><td><input type="number" id="t3-val3" placeholder="?"></td></tr>
+                                <tr><td>4 h</td><td><input type="number" id="t3-val4" placeholder="?"></td></tr>
+                            </tbody>
+                        </table>
+                        <br>
+                        <button onclick="checkChallenge3()">Comprobar valores de la tabla</button>
+                        <div id="feedback-message-3" class="feedback-box"></div>
+                    </div>
+
+                    <div class="controls" style="background: var(--secondary-color); padding: 1.5rem; border-radius: 8px;">
+                        <h3>💡 Guía de Apoyo</h3>
+                        <p>Multiplica el tiempo en horas <strong>(t)</strong> por la velocidad (50 km/h) y luego súmale la posición inicial (50 km).</p>
+                        
+                        <div class="hints-container">
+                            <button class="btn-secondary" onclick="showHint3()">💡 Ver Pista de Apoyo</button>
+                            <div id="hint-3-1" class="hint"><strong>Pista:</strong> Para t = 0 horas: 50 · 0 + 50 = 50. ¡Ese es el km inicial desde donde sale el auto!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="goToStep(2)">← Anterior</button>
+                    <button id="btn-next-4" onclick="goToStep(4)" style="display: none;">Siguiente fase →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             PASO 4: CONEXIÓN TOTAL
+             ============================================== -->
+        <section class="step-content" id="step-4">
+            <div class="panel">
+                <h2 class="readable-text">Fase 4: Descubriendo la Fórmula del Viaje Misterioso</h2>
+                <p class="readable-text">A continuación se presenta un registro de viaje en tabla. Tu misión es descubrir cuál es la <strong>velocidad del auto (m)</strong> y desde qué <strong>kilómetro partió (b)</strong>.</p>
+                
+                <div class="workspace">
+                    <div class="table-container">
+                        <h3>Tabla del Viaje Misterioso</h3>
+                        <table class="math-table">
+                            <thead>
+                                <tr><th>Tiempo t (horas)</th><th>Kilómetro en el que está el auto</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>0 h</td><td>40 km</td></tr>
+                                <tr><td>1 h</td><td>70 km</td></tr>
+                                <tr><td>2 h</td><td>100 km</td></tr>
+                                <tr><td>3 h</td><td>130 km</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="controls">
+                        <div class="control-group">
+                            <label for="mystery-m">¿A qué velocidad viaja el auto? (m en km/h):</label>
+                            <input type="number" id="mystery-m" step="5" placeholder="Ej: 30">
+                        </div>
+                        <div class="control-group">
+                            <label for="mystery-b">¿De qué km salió el auto cuando t = 0? (b):</label>
+                            <input type="number" id="mystery-b" step="5" placeholder="Ej: 40">
+                        </div>
+                        
+                        <button onclick="checkChallenge4()">Verificar fórmula misteriosa</button>
+                        <div id="feedback-message-4" class="feedback-box"></div>
+                        
+                        <div class="hints-container">
+                            <button class="btn-secondary" onclick="showHint4()">💡 Ver Pistas de Apoyo</button>
+                            <div id="hint-4-1" class="hint"><strong>Pista 1:</strong> Mira en qué kilómetro está el auto cuando han transcurrido 0 horas. Ese valor representa el parámetro 'b'.</div>
+                            <div id="hint-4-2" class="hint"><strong>Pista 2:</strong> Observa cuántos kilómetros recorre el auto por cada hora que pasa (cuánto aumenta la segunda columna). Esa es su velocidad constante 'm'.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" onclick="goToStep(3)">← Anterior</button>
+                    <button id="btn-next-5" onclick="goToStep(5)" style="display: none;">Ir a Reflexión Final →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================
+             PASO 5: METACOGNICIÓN
+             ============================================== -->
+        <section class="step-content" id="step-5">
+            <div class="panel">
+                <h2 class="readable-text">Fase 5: Metacognición y Cierre</h2>
+                <p class="readable-text"><strong>Consigna:</strong> Lee detenidamente las siguientes preguntas, piénsalas y <strong>escribe las respuestas en tu carpeta</strong>. También puedes dejar un borrador en los cuadros de texto de abajo antes de guardar.</p>
+                
+                <form onsubmit="finishActivity(event)">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="reflection-1" style="font-weight: bold; display: block; margin-bottom: 0.5rem;">1. ¿Qué representa en la realidad del viaje el punto donde la recta cruza el eje vertical Y (ordenada al origen b)?</label>
+                        <textarea id="reflection-1" required placeholder="Escribe tu reflexión aquí y en tu carpeta..."></textarea>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="reflection-2" style="font-weight: bold; display: block; margin-bottom: 0.5rem;">2. ¿Cómo se relaciona la velocidad del auto con la inclinación (pendiente m) de la recta en el gráfico cartesiano?</label>
+                        <textarea id="reflection-2" required placeholder="Escribe tu respuesta aquí y en tu carpeta..."></textarea>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="reflection-3" style="font-weight: bold; display: block; margin-bottom: 0.5rem;">3. ¿En qué otra situación podrías aplicar los conocimientos que obtuviste hoy?</label>
+                        <textarea id="reflection-3" required placeholder="Escribe en qué otra situación cotidiana o de estudio podrías aplicarlo..."></textarea>
+                    </div>
+                    <div class="nav-buttons" style="margin-top: 1rem;">
+                        <button type="button" class="btn-secondary" onclick="goToStep(4)">← Anterior</button>
+                        <button type="submit">Guardar y Finalizar</button>
+                    </div>
+                </form>
+
+                <div id="final-message" class="feedback-box success" style="margin-top: 2rem; display:none;">
+                    🎉 ¡Excelente trabajo! Has explorado con éxito la función lineal vinculando tablas, fórmulas y sus representaciones en el gráfico cartesiano. Recuerda verificar que tus respuestas hayan quedado registradas en la carpeta.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- PIE DE PÁGINA (FOOTER) -->
+    <footer>
+        <p>© 2026 Denise Pedrotti · Código bajo licencia GNU AGPL v3 · Contenidos bajo licencia CC BY-SA 4.0 · Desarrollado con asistencia de Gemini para el curso Crea apps educativas interactivas con lenguaje natural e IA</p>
+    </footer>
+
+    <script>
+        /* ==========================================================
+           ACCESIBILIDAD Y DUA
+           ========================================================== */
+        let currentFontSize = 16;
+        function changeFontSize(delta) {
+            currentFontSize += delta;
+            if (currentFontSize < 12) currentFontSize = 12;
+            if (currentFontSize > 26) currentFontSize = 26;
+            document.documentElement.style.setProperty('--font-size-base', currentFontSize + 'px');
+        }
+
+        function changeTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            updateExploration();
+            if (document.getElementById('step-2').classList.contains('active')) updateGraph2();
+        }
+
+        let synth = window.speechSynthesis;
+        let isSpeaking = false;
+        function toggleTTS() {
+            if (isSpeaking) {
+                synth.cancel();
+                isSpeaking = false;
+                document.getElementById('btn-tts').innerText = "🔊 Leer";
+                return;
+            }
+            let activeStep = document.querySelector('.step-content.active');
+            let textToRead = activeStep.innerText;
+            let utterance = new SpeechSynthesisUtterance(textToRead);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.9;
+            utterance.onend = () => {
+                isSpeaking = false;
+                document.getElementById('btn-tts').innerText = "🔊 Leer";
+            };
+            synth.speak(utterance);
+            isSpeaking = true;
+            document.getElementById('btn-tts').innerText = "⏸️ Pausar";
+        }
+
+        function goToStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.step-indicator').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('step-' + step).classList.add('active');
+            document.getElementById('ind-' + step).classList.add('active');
+            
+            if(step === 1) updateExploration();
+            if(step === 2) updateGraph2();
+            if(isSpeaking) toggleTTS();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ==========================================================
+           DIBUJO DEL AUTO EN CANVAS
+           ========================================================== */
+        function drawCar(ctx, cx, cy) {
+            ctx.save();
+            ctx.translate(cx, cy);
+            
+            // Sombra
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.beginPath();
+            ctx.ellipse(0, 8, 16, 4, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Chasis / Carrocería
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.roundRect(-16, -8, 32, 12, 4);
+            ctx.fill();
+
+            // Cabina
+            ctx.fillStyle = '#3498db';
+            ctx.beginPath();
+            ctx.roundRect(-10, -15, 20, 9, 3);
+            ctx.fill();
+
+            // Ruedas
+            ctx.fillStyle = '#2c3e50';
+            ctx.beginPath();
+            ctx.arc(-10, 5, 4, 0, Math.PI * 2);
+            ctx.arc(10, 5, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        /* ==========================================================
+           MOTOR GRÁFICO (CANVAS CON EJES NUMERADOS Y AUTO)
+           ========================================================== */
+        function drawGridAndLine(canvasId, m, b, currentTime, targetM = null, targetB = null) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            
+            const theme = document.documentElement.getAttribute('data-theme');
+            let axisColor = theme === 'dark' || theme === 'hc' ? '#fff' : '#000';
+            let gridColor = theme === 'dark' ? '#333' : (theme === 'hc' ? '#222' : '#e0e0e0');
+            let lineColor = theme === 'hc' ? '#ffff00' : '#007bff';
+            let bPointColor = theme === 'hc' ? '#ff55ff' : '#8e44ad';
+            let textColor = theme === 'dark' || theme === 'hc' ? '#fff' : '#333';
+
+            // Escalas fijas contextualizadas para el recorrido
+            // X (Tiempo): 0 a 5 horas
+            // Y (Posición): 0 a 300 km
+            const paddingLeft = 45;
+            const paddingBottom = 35;
+            const paddingTop = 25;
+            const paddingRight = 20;
+
+            const graphWidth = w - paddingLeft - paddingRight;
+            const graphHeight = h - paddingTop - paddingBottom;
+
+            const maxT = 5;
+            const maxKm = 300;
+
+            const toCx = (t) => paddingLeft + (t / maxT) * graphWidth;
+            const toCy = (km) => (h - paddingBottom) - (km / maxKm) * graphHeight;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Grilla secundaria y Números de Ejes
+            ctx.lineWidth = 1;
+            ctx.font = "11px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+
+            // Líneas verticales (Horas)
+            for (let t = 0; t <= maxT; t += 1) {
+                let x = toCx(t);
+                ctx.strokeStyle = gridColor;
+                ctx.beginPath();
+                ctx.moveTo(x, paddingTop);
+                ctx.lineTo(x, h - paddingBottom);
+                ctx.stroke();
+
+                // Numeración Eje X
+                ctx.fillStyle = textColor;
+                ctx.fillText(t + "h", x, h - paddingBottom + 15);
+            }
+
+            // Líneas horizontales (Kilómetros)
+            ctx.textAlign = "right";
+            for (let km = 0; km <= maxKm; km += 50) {
+                let y = toCy(km);
+                ctx.strokeStyle = gridColor;
+                ctx.beginPath();
+                ctx.moveTo(paddingLeft, y);
+                ctx.lineTo(w - paddingRight, y);
+                ctx.stroke();
+
+                // Numeración Eje Y
+                ctx.fillStyle = textColor;
+                ctx.fillText(km, paddingLeft - 8, y);
+            }
+
+            // Ejes Principales X e Y
+            ctx.beginPath();
+            ctx.strokeStyle = axisColor;
+            ctx.lineWidth = 2;
+            // Eje Y
+            ctx.moveTo(paddingLeft, paddingTop);
+            ctx.lineTo(paddingLeft, h - paddingBottom);
+            // Eje X
+            ctx.moveTo(paddingLeft, h - paddingBottom);
+            ctx.lineTo(w - paddingRight, h - paddingBottom);
+            ctx.stroke();
+
+            // Etiqueta de los ejes
+            ctx.fillStyle = textColor;
+            ctx.font = "bold 12px Arial";
+            ctx.textAlign = "right";
+            ctx.fillText("Posición (km)", paddingLeft + 80, paddingTop - 10);
+            ctx.textAlign = "right";
+            ctx.fillText("Tiempo (t en hs)", w - paddingRight, h - paddingBottom + 30);
+
+            // Recta Objetivo (si existe en fase 2)
+            if (targetM !== null && targetB !== null) {
+                ctx.beginPath();
+                ctx.strokeStyle = '#dc3545';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                let yStartTarget = targetM * 0 + targetB;
+                let yEndTarget = targetM * maxT + targetB;
+                ctx.moveTo(toCx(0), toCy(yStartTarget));
+                ctx.lineTo(toCx(maxT), toCy(yEndTarget));
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Recta Principal de la Función
+            ctx.beginPath();
+            ctx.strokeStyle = lineColor;
+            ctx.lineWidth = 3;
+            let yStart = m * 0 + b;
+            let yEnd = m * maxT + b;
+            ctx.moveTo(toCx(0), toCy(yStart));
+            ctx.lineTo(toCx(maxT), toCy(yEnd));
+            ctx.stroke();
+
+            // Punto de la Ordenada al Origen (km inicial)
+            ctx.beginPath();
+            ctx.arc(toCx(0), toCy(b), 6, 0, Math.PI * 2);
+            ctx.fillStyle = bPointColor;
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Auto animado según el tiempo t
+            if (currentTime !== null && currentTime !== undefined) {
+                let carKm = m * currentTime + b;
+                let carX = toCx(currentTime);
+                let carY = toCy(carKm);
+
+                // Dibujar punto en la trayectoria
+                ctx.beginPath();
+                ctx.arc(carX, carY, 5, 0, Math.PI * 2);
+                ctx.fillStyle = '#28a745';
+                ctx.fill();
+
+                // Dibujar figura del auto
+                drawCar(ctx, carX, carY);
+            }
+        }
+
+        function formatB(b) {
+            return b < 0 ? `- ${Math.abs(b)}` : `+ ${b}`;
+        }
+
+        function updateExploration() {
+            let m = parseFloat(document.getElementById('table-m1').value) || 0;
+            let b = parseFloat(document.getElementById('table-b1').value) || 0;
+            let t = parseFloat(document.getElementById('slider-time1').value);
+            
+            document.getElementById('val-m1').innerText = m;
+            document.getElementById('m1-text').innerText = m;
+            document.getElementById('val-b1-display').innerText = formatB(b);
+            document.getElementById('b1-text').innerText = b;
+            document.getElementById('time1-val').innerText = t;
+
+            drawGridAndLine('graphCanvas1', m, b, t);
+
+            let tbody = document.querySelector('#table-exp tbody');
+            tbody.innerHTML = '';
+            for (let time = 0; time <= 4; time++) {
+                let km = m * time + b;
+                let isCurrent = (time === Math.floor(t)) ? 'style="background-color: rgba(40, 167, 69, 0.2); font-weight: bold;"' : '';
+                tbody.innerHTML += `<tr ${isCurrent}><td>${time} h</td><td>${km} km</td></tr>`;
+            }
+        }
+
+        function updateGraph2() {
+            let m = parseFloat(document.getElementById('slider-m2').value);
+            let b = parseFloat(document.getElementById('slider-b2').value);
+            let t = parseFloat(document.getElementById('slider-time2').value);
+            
+            document.getElementById('val-m2').innerText = m;
+            document.getElementById('val-b2-display').innerText = formatB(b);
+            document.getElementById('time2-val').innerText = t;
+
+            // Desafío 2: coincide con velocidad = 40 km/h, km inicial = 30
+            drawGridAndLine('graphCanvas2', m, b, t, 40, 30);
+            document.getElementById('feedback-message-2').classList.remove('show');
+        }
+
+        let hintStep2 = 0;
+        function showHint2() {
+            hintStep2++;
+            if (hintStep2 === 1) document.getElementById('hint-2-1').style.display = 'block';
+            if (hintStep2 >= 2) document.getElementById('hint-2-2').style.display = 'block';
+        }
+
+        function checkChallenge2() {
+            let m = parseFloat(document.getElementById('slider-m2').value);
+            let b = parseFloat(document.getElementById('slider-b2').value);
+            let feedback = document.getElementById('feedback-message-2');
+            
+            if (b === 30 && m === 40) {
+                feedback.className = 'feedback-box success show';
+                feedback.innerHTML = "🎯 ¡Perfecto! El vehículo parte exactamente del km 30 y viaja a 40 km/h. Tu gráfico coincide perfectamente con la ruta esperada.";
+                document.getElementById('btn-next-3').style.display = 'inline-block';
+            } else {
+                feedback.className = 'feedback-box error show';
+                feedback.innerHTML = "Revisa los datos: ¿El punto de salida (b) está en 30 km y la velocidad (m) en 40 km/h? Observa la línea punteada roja.";
+            }
+        }
+
+        function showHint3() {
+            document.getElementById('hint-3-1').style.display = 'block';
+        }
+
+        function checkChallenge3() {
+            let v1 = parseFloat(document.getElementById('t3-val1').value);
+            let v2 = parseFloat(document.getElementById('t3-val2').value);
+            let v3 = parseFloat(document.getElementById('t3-val3').value);
+            let v4 = parseFloat(document.getElementById('t3-val4').value);
+            let feedback = document.getElementById('feedback-message-3');
+
+            if (v1 === 50 && v2 === 100 && v3 === 150 && v4 === 250) {
+                feedback.className = 'feedback-box success show';
+                feedback.innerHTML = "🎉 ¡Excelente! Calculaste correctamente la posición del automóvil en cada hora de su viaje.";
+                document.getElementById('btn-next-4').style.display = 'inline-block';
+            } else {
+                feedback.className = 'feedback-box error show';
+                feedback.innerHTML = "Hay algún valor que no coincide. Multiplica cada hora (t) por 50 y luego súmale los 50 km de la salida.";
+            }
+        }
+
+        let hintStep4 = 0;
+        function showHint4() {
+            hintStep4++;
+            if (hintStep4 === 1) document.getElementById('hint-4-1').style.display = 'block';
+            if (hintStep4 >= 2) document.getElementById('hint-4-2').style.display = 'block';
+        }
+
+        function checkChallenge4() {
+            let m = parseFloat(document.getElementById('mystery-m').value);
+            let b = parseFloat(document.getElementById('mystery-b').value);
+            let feedback = document.getElementById('feedback-message-4');
+
+            if (m === 30 && b === 40) {
+                feedback.className = 'feedback-box success show';
+                feedback.innerHTML = "🌟 ¡Impresionante! Deduciste correctamente la función del viaje: km = 30 · t + 40.";
+                document.getElementById('btn-next-5').style.display = 'inline-block';
+            } else {
+                feedback.className = 'feedback-box error show';
+                feedback.innerHTML = "No es del todo correcto. Fíjate en los km cuando t = 0 (para 'b') y cuántos km avanza en cada hora transcurrida (para 'm').";
+            }
+        }
+
+        function finishActivity(e) {
+            e.preventDefault();
+            document.getElementById('final-message').style.display = 'block';
+            document.querySelectorAll('#step-5 textarea, #step-5 button[type="submit"]').forEach(el => el.disabled = true);
+        }
+
+        window.onload = () => {
+            updateExploration();
+        };
+    </script>
+</body>
+</html>
