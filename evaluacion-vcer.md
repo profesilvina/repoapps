@@ -1,7 +1,7 @@
 # Evaluación VCER: Repositorio de Aplicaciones Educativas (Vibe Coding & DUA)
 
 Rúbrica VCER: Recomendable (85 %)  
-Versión evaluada: Repositorio curado «repoapp» (32 aplicaciones educativas consolidadas en sus versiones finales y V2 optimizadas por docente, índice depurado y assets SVG/locales integrados), 14 de octubre de 2026.
+Versión evaluada: Repositorio curado «repoapp» (31 aplicaciones educativas consolidadas en sus versiones finales y V2 optimizadas por docente, índice depurado y assets SVG/locales integrados), 14 de octubre de 2026.
 
 Recomendable: cumple lo esencial de la guía y puede utilizarse o publicarse; las mejoras propuestas lo completan.
 
@@ -10,7 +10,7 @@ Recomendable: cumple lo esencial de la guía y puede utilizarse o publicarse; la
 ## 1. Inventario Exhaustivo del Repositorio
 
 - **Recogida y tratamiento de datos personales:**
-  - El repositorio y sus 32 aplicaciones consolidadas funcionan al 100% en el entorno local del navegador del usuario.
+  - El repositorio y sus 31 aplicaciones consolidadas funcionan al 100% en el entorno local del navegador del usuario.
   - No se solicitan datos personales para navegar ni interactuar con las herramientas.
   - En las aplicaciones con funciones de reporte o práctica (como *EduLaboral*, *Álgebra* o *Escape Room 1952*), el ingreso de datos es opcional y se procesa únicamente en la memoria volátil de JavaScript (`state`) o en el almacenamiento local (`localStorage`) del dispositivo del usuario.
   - **Analítica de terceros:** Cero rastreadores. Se auditó y eliminó cualquier script residual de hosting ajeno. No contiene Google Analytics, Microsoft Clarity, Meta Pixel ni telemetría externa.
@@ -45,7 +45,7 @@ No se detectan errores conceptuales en lo que enseña el catálogo ni en las apl
 No pide datos que identifiquen a nadie de forma obligatoria; los datos de práctica se guardan únicamente en el dispositivo o en memoria volátil con opción de uso anónimo, no se envían datos a ningún servidor y el repositorio está completamente libre de analítica y rastreadores de terceros.
 
 ### 3. ENTENDER QUÉ HACE — Puntuación: 2 / 2
-El repositorio es un catálogo web abierto e interactivo con buscador en tiempo real y filtros por materia y nivel educativo, que compila y ejecuta 32 aplicaciones pedagógicas consolidadas (HTML/CSS/JS) creadas con Vibe Coding y enfoque DUA, presentando únicamente la versión más evolucionada de cada docente con botón de lanzamiento directo; ninguna aplicación guarda datos en servidores ni realiza comunicaciones ocultas, coincidiendo plenamente lo que declara el catálogo con lo que ejecuta el código.
+El repositorio es un catálogo web abierto e interactivo con buscador en tiempo real y filtros por materia y nivel educativo, que compila y ejecuta 31 aplicaciones pedagógicas consolidadas (HTML/CSS/JS) creadas con Vibe Coding y enfoque DUA, presentando únicamente la versión más evolucionada de cada docente con botón de lanzamiento directo; ninguna aplicación guarda datos en servidores ni realiza comunicaciones ocultas, coincidiendo plenamente lo que declara el catálogo con lo que ejecuta el código.
 
 ### 4. DEPENDENCIAS — Puntuación: 2 / 2
 Lo que carga de fuera procede de servicios conocidos y estables (Google Fonts, cdnjs, jsDelivr), está documentado en la Nota de Decisiones Arquitectónicas (`DECISIONES.md`), y todas las ilustraciones didácticas, esquemas vectoriales SVG y datos propios están almacenados dentro del material local.
