@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape Room: El Laboratorio del Tiempo 1952</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&amp;family=Outfit:wght@300;400;600;700&amp;display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        retroBg: '#1e1c18',
+                        retroCard: '#2a2620',
+                        retroGold: '#d4a359',
+                        retroTeal: '#2b6867',
+                        retroRed: '#b94a39',
+                        retroPaper: '#f2e6ce',
+                        retroDarkPaper: '#181613'
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['Courier Prime', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #12110e;
+            color: #f2e6ce;
+            font-family: 'Outfit', sans-serif;
+            user-select: none;
+        }
+
+        .font-mono-retro {
+            font-family: 'Courier Prime', monospace;
+        }
+
+        /* SVG Interactive Object Styles */
+        .svg-interactive {
+            transition: all 0.3s ease;
+        }
+
+        .glow-active {
+            animation: pulseGlow 1.8s infinite alternate;
+            filter: drop-shadow(0 0 10px #d4a359) drop-shadow(0 0 20px #d4a359);
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                filter: drop-shadow(0 0 4px #d4a359) drop-shadow(0 0 8px #d4a359);
+                opacity: 0.85;
+            }
+            100% {
+                filter: drop-shadow(0 0 14px #f59e0b) drop-shadow(0 0 28px #d4a359);
+                opacity: 1;
+            }
+        }
+
+        /* Modal transitions */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 300ms, transform 300ms;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e1c18;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4a359;
+            border-radius: 4px;
+        }
+
+        /* CRT Scanline Effect for 1952 aesthetic */
+        .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 10;
+            background-size: 100% 3px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Outfit, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:Courier Prime, monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.-top-5{top:-1.25rem}.bottom-2{bottom:0.5rem}.left-1\/2{left:50%}.left-2{left:0.5rem}.right-2{right:0.5rem}.right-4{right:1rem}.top-2{top:0.5rem}.top-4{top:1rem}.z-20{z-index:20}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.my-4{margin-top:1rem;margin-bottom:1rem}.my-auto{margin-top:auto;margin-bottom:auto}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mr-1{margin-right:0.25rem}.mr-2{margin-right:0.5rem}.mt-0\.5{margin-top:0.125rem}.mt-2{margin-top:0.5rem}.mt-6{margin-top:1.5rem}.flex{display:flex}.grid{display:grid}.hidden{display:none}.aspect-\[16\/9\]{aspect-ratio:16/9}.h-20{height:5rem}.h-full{height:100%}.max-h-\[90vh\]{max-height:90vh}.w-20{width:5rem}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-5xl{max-width:64rem}.flex-grow{flex-grow:1}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.space-x-1 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.25rem * var(--tw-space-x-reverse));margin-left:calc(0.25rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.375rem * var(--tw-space-x-reverse));margin-left:calc(0.375rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-3 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.75rem * var(--tw-space-x-reverse));margin-left:calc(0.75rem * calc(1 - var(--tw-space-x-reverse)))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.overflow-x-hidden{overflow-x:hidden}.whitespace-nowrap{white-space:nowrap}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-x{border-left-width:1px;border-right-width:1px}.border-y{border-top-width:1px;border-bottom-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-retroGold{--tw-border-opacity:1;border-color:rgb(212 163 89 / var(--tw-border-opacity, 1))}.border-retroGold\/20{border-color:rgb(212 163 89 / 0.2)}.border-retroGold\/30{border-color:rgb(212 163 89 / 0.3)}.border-retroGold\/40{border-color:rgb(212 163 89 / 0.4)}.border-retroGold\/50{border-color:rgb(212 163 89 / 0.5)}.border-retroTeal\/60{border-color:rgb(43 104 103 / 0.6)}.bg-black\/80{background-color:rgb(0 0 0 / 0.8)}.bg-retroBg{--tw-bg-opacity:1;background-color:rgb(30 28 24 / var(--tw-bg-opacity, 1))}.bg-retroBg\/60{background-color:rgb(30 28 24 / 0.6)}.bg-retroCard{--tw-bg-opacity:1;background-color:rgb(42 38 32 / var(--tw-bg-opacity, 1))}.bg-retroCard\/90{background-color:rgb(42 38 32 / 0.9)}.bg-retroGold{--tw-bg-opacity:1;background-color:rgb(212 163 89 / var(--tw-bg-opacity, 1))}.bg-retroGold\/20{background-color:rgb(212 163 89 / 0.2)}.bg-retroPaper{--tw-bg-opacity:1;background-color:rgb(242 230 206 / var(--tw-bg-opacity, 1))}.bg-retroTeal{--tw-bg-opacity:1;background-color:rgb(43 104 103 / var(--tw-bg-opacity, 1))}.object-cover{object-fit:cover}.p-1{padding:0.25rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-8{padding-left:2rem;padding-right:2rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.pb-3{padding-bottom:0.75rem}.pt-2{padding-top:0.5rem}.text-left{text-align:left}.text-center{text-align:center}.font-sans{font-family:Outfit, sans-serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.italic{font-style:italic}.leading-relaxed{line-height:1.625}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-amber-100{--tw-text-opacity:1;color:rgb(254 243 199 / var(--tw-text-opacity, 1))}.text-amber-100\/90{color:rgb(254 243 199 / 0.9)}.text-amber-200\/50{color:rgb(253 230 138 / 0.5)}.text-amber-200\/60{color:rgb(253 230 138 / 0.6)}.text-amber-200\/70{color:rgb(253 230 138 / 0.7)}.text-amber-200\/80{color:rgb(253 230 138 / 0.8)}.text-retroDarkPaper{--tw-text-opacity:1;color:rgb(24 22 19 / var(--tw-text-opacity, 1))}.text-retroGold{--tw-text-opacity:1;color:rgb(212 163 89 / var(--tw-text-opacity, 1))}.text-retroGold\/40{color:rgb(212 163 89 / 0.4)}.text-retroTeal{--tw-text-opacity:1;color:rgb(43 104 103 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-amber-100\/40{color:rgb(254 243 199 / 0.4)}.opacity-20{opacity:0.2}.shadow{--tw-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-inner{--tw-shadow:inset 0 2px 4px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:inset 0 2px 4px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:scale-105:hover{--tw-scale-x:1.05;--tw-scale-y:1.05;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:bg-amber-500:hover{--tw-bg-opacity:1;background-color:rgb(245 158 11 / var(--tw-bg-opacity, 1))}.hover\:bg-retroGold\/20:hover{background-color:rgb(212 163 89 / 0.2)}.hover\:bg-teal-700:hover{--tw-bg-opacity:1;background-color:rgb(15 118 110 / var(--tw-bg-opacity, 1))}.hover\:text-retroGold:hover{--tw-text-opacity:1;color:rgb(212 163 89 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:mb-0{margin-bottom:0px}.sm\:mt-0{margin-top:0px}.sm\:block{display:block}.sm\:w-auto{width:auto}.sm\:flex-row{flex-direction:row}}@media (min-width: 768px){.md\:block{display:block}.md\:inline{display:inline}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:space-x-3 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.75rem * var(--tw-space-x-reverse));margin-left:calc(0.75rem * calc(1 - var(--tw-space-x-reverse)))}.md\:p-6{padding:1.5rem}.md\:p-8{padding:2rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}.md\:text-base{font-size:1rem;line-height:1.5rem}.md\:text-sm{font-size:0.875rem;line-height:1.25rem}.md\:text-xl{font-size:1.25rem;line-height:1.75rem}}</style></head>
+<body class="h-full flex flex-col justify-between overflow-x-hidden crt text-base" id="app-body">
+
+    <!-- TOP NAVBAR & DUA ACCESSIBILITY BAR -->
+    <header class="bg-retroCard border-b border-retroGold/30 px-4 py-3 flex flex-wrap justify-between items-center z-20 shadow-lg">
+        <div class="flex items-center space-x-3">
+            <i class="fa-solid fa-flask-vial text-retroGold text-2xl"></i>
+            <div>
+                <h1 class="text-lg md:text-xl font-bold tracking-wide text-retroGold font-mono-retro">1952: EL LABORATORIO DEL TIEMPO</h1>
+                <p class="text-xs text-amber-200/60 hidden sm:block">Alegoría de la Caverna &amp; Falacias Informales</p>
+            </div>
+        </div>
+
+        <!-- DUA Controls & Screen controls -->
+        <div class="flex items-center space-x-2 md:space-x-3 mt-2 sm:mt-0">
+            <!-- DUA Text Size -->
+            <div class="flex items-center bg-retroBg border border-retroGold/40 rounded-lg p-1">
+                <button onclick="changeFontSize(-1)" title="Disminuir tamaño de texto" class="px-2 py-1 text-xs md:text-sm hover:bg-retroGold/20 rounded font-bold text-retroGold transition">
+                    A-
+                </button>
+                <span class="px-1 text-xs text-amber-200/60 border-x border-retroGold/20">Texto</span>
+                <button onclick="changeFontSize(1)" title="Aumentar tamaño de texto" class="px-2 py-1 text-xs md:text-sm hover:bg-retroGold/20 rounded font-bold text-retroGold transition">
+                    A+
+                </button>
+            </div>
+
+            <!-- DUA Voice Readout -->
+            <button id="tts-toggle" onclick="toggleTTS()" title="Activar/Desactivar Lectura en Voz Alta" class="bg-retroBg border border-retroGold/40 hover:bg-retroGold/20 text-retroGold px-3 py-1.5 rounded-lg text-xs md:text-sm flex items-center space-x-1.5 transition">
+                <i class="fa-solid fa-volume-high" id="tts-icon"></i>
+                <span id="tts-status" class="hidden md:inline">Voz: On</span>
+            </button>
+
+            <!-- Fullscreen Toggle Button -->
+            <button onclick="toggleFullScreen()" title="Pantalla Completa" class="bg-retroTeal hover:bg-teal-700 text-white px-3 py-1.5 rounded-lg text-xs md:text-sm flex items-center space-x-1 transition shadow">
+                <i class="fa-solid fa-expand"></i>
+                <span class="hidden md:inline">Pantalla Completa</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col justify-center items-center p-2 md:p-6 relative">
+
+        <!-- SCREEN 1: INTRO NARRATIVE & PLATONIC ALLEGORY -->
+        <section id="screen-intro" class="max-w-3xl w-full bg-retroCard border-2 border-retroGold/50 rounded-2xl p-6 md:p-8 shadow-2xl relative my-auto">
+            <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-retroGold text-retroDarkPaper px-4 py-1 rounded-full text-xs font-bold font-mono-retro uppercase tracking-widest shadow">
+                Informe de Misión 1952
+            </div>
+
+            <div class="text-center mb-6 mt-2">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-amber-100 font-mono-retro mb-2">¡ATRAPADO EN LA CAVERNA DEL TIEMPO!</h2>
+                <p class="text-retroGold text-sm font-semibold">Dr. Alexander Vance, Cambridge 1952</p>
+            </div>
+
+            <div class="space-y-4 text-amber-100/90 leading-relaxed text-sm md:text-base border-y border-retroGold/20 py-4 my-4 font-sans">
+                <p>
+                    <i class="fa-solid fa-quote-left text-retroGold/40 text-xl mr-2"></i>
+                    Has despertado en el laboratorio secreto del Dr. Vance. Un fallo en el condensador de cronones te ha dejado varado en **1952**. La puerta acorazada del laboratorio se ha bloqueado herméticamente.
+                </p>
+                <p class="bg-retroBg/60 p-4 rounded-xl border-l-4 border-retroGold italic">
+                    «Como explicaba Platón en la <strong>Alegoría de la Caverna</strong>, la mayoría de las personas viven encadenadas mirando sombras distorsionadas en la pared, creyendo que esas sombras son la única verdad. Las <strong>falacias informales</strong> son exactamente eso: ilusiones y sombras del lenguaje que engañan a la mente.»
+                </p>
+                <p>
+                    Para romper el bucle temporal y desbloquear la puerta, debes examinar <strong>10 objetos del laboratorio en orden secuencial</strong>. Cada objeto contiene una sombra lógica (una falacia) que debes desmontar.
+                </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                <div class="text-xs text-amber-200/60 flex items-center">
+                    <i class="fa-solid fa-key text-retroGold mr-2 text-base"></i>
+                    Resuelve del objeto 1 al 9 para desengranar la cerradura de la Puerta (Objeto 10).
+                </div>
+                <button onclick="startGame()" class="w-full sm:w-auto bg-retroGold hover:bg-amber-500 text-retroDarkPaper font-bold px-8 py-3 rounded-xl transition transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2 text-base">
+                    <span>INICIAR ESCAPE</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+
+        <!-- SCREEN 2: INTERACTIVE LABORATORY ROOM -->
+        <section id="screen-game" class="hidden w-full max-w-5xl flex flex-col items-center">
+            
+            <!-- Game HUD / Progress Bar -->
+            <div class="w-full bg-retroCard/90 border border-retroGold/30 rounded-xl p-3 mb-4 flex flex-wrap justify-between items-center shadow-lg">
+                <div class="flex items-center space-x-3 mb-2 sm:mb-0">
+                    <div class="bg-retroBg px-3 py-1 rounded-lg border border-retroGold/30 text-xs font-mono-retro">
+                        Progreso: <span id="progress-text" class="text-retroGold font-bold">0 / 10</span>
+                    </div>
+                    <div class="text-xs text-amber-200/70 hidden md:block">
+                        <i class="fa-solid fa-lightbulb text-retroGold mr-1"></i>
+                        Sigue el resplandor dorado para encontrar el objeto activo.
+                    </div>
+                </div>
+
+                <!-- Step Tracker Pills -->
+                <div class="flex space-x-1 overflow-x-auto py-1" id="step-pills"><div class="px-2 py-0.5 rounded text-xs font-mono-retro border font-bold flex items-center space-x-1 whitespace-nowrap bg-retroGold text-retroDarkPaper border-retroGold animate-pulse"><span>Desafío 1</span> </div><div class="px-2 py-0.5 rounded text-xs font-mono-retro border font-bold flex items-center space-x-1 whitespace-nowrap bg-retroBg border-retroGold/20 text-amber-100/40"><span>Desafío 2</span> </div><div class="px-2 py-0.5 rounded text-xs font-mono-retro border font-bold flex items-center space-x-1 whitespace-nowrap bg-retroBg border-retroGold/20 text-amber-100/40"><span>Desafío 3</span> </div><div class="px-2 py-0.5 rounded text-xs font-mono-retro border font-bold flex items-center space-x-1 whitespace-nowrap bg-retroBg border-retroGold/20 text-amber-100/40"><span>Desafío 4</span> </div><div class="px-2 py-0.5 rounded text-xs font-mono-retro border font-bold flex items-center space-x-1 whitespace-nowrap bg-retroBg border-retroGold/20 text-amber-100/40"><span>Desafío 5</span> </div><div class="px-2 py-0.5 rounded text-xs font-mono-retro border font-bold flex items-center space-x-1 whitespace-nowrap bg-retroBg border-retroGold/20 text-amber-100/40"><span>Desafío 6</span> </div><div class="px-2 py-0.5 rounded text-xs font-mono-retro border font-bold flex items-center space-x-1 whitespace-nowrap bg-retroBg border-retroGold/20 text-amber-100/40"><span>Desafío 7</span> </div><div class="px-2 py-0.5 rounded text-xs font-mono-retro border font-bold flex items-center space-x-1 whitespace-nowrap bg-retroBg border-retroGold/20 text-amber-100/40"><span>Desafío 8</span> </div><div class="px-2 py-0.5 rounded text-xs font-mono-retro border font-bold flex items-center space-x-1 whitespace-nowrap bg-retroBg border-retroGold/20 text-amber-100/40"><span>Desafío 9</span> </div><div class="px-2 py-0.5 rounded text-xs font-mono-retro border font-bold flex items-center space-x-1 whitespace-nowrap bg-retroBg border-retroGold/20 text-amber-100/40"><span>Desafío 10</span> </div></div>
+            </div>
+
+            <!-- SVG ROOM CONTAINER -->
+            <div class="relative w-full bg-retroBg border-2 border-retroGold/40 rounded-2xl overflow-hidden shadow-2xl aspect-[16/9] flex items-center justify-center">
+                
+                <!-- SVG Mid-Century Modern Room -->
+                <svg id="room-svg" class="w-full h-full object-cover" viewBox="0 0 1000 562.5" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <!-- Room Gradients -->
+                        <radialGradient id="windowGlow" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.25"></stop>
+                            <stop offset="100%" stop-color="#0f172a" stop-opacity="0"></stop>
+                        </radialGradient>
+                        <linearGradient id="wallGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#2a241e"></stop>
+                            <stop offset="100%" stop-color="#181512"></stop>
+                        </linearGradient>
+                        <linearGradient id="floorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#3d2b1f"></stop>
+                            <stop offset="100%" stop-color="#23170f"></stop>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Room Background Wall & Floor -->
+                    <rect width="1000" height="420" fill="url(#wallGrad)"></rect>
+                    <rect y="420" width="1000" height="142.5" fill="url(#floorGrad)"></rect>
+                    <line x1="0" y1="420" x2="1000" y2="420" stroke="#d4a359" stroke-opacity="0.3" stroke-width="2"></line>
+
+                    <!-- Big Wall Window (Mid Century Modern) -->
+                    <rect x="350" y="40" width="300" height="220" rx="10" fill="#0c1322" stroke="#d4a359" stroke-opacity="0.4" stroke-width="3"></rect>
+                    <rect x="350" y="40" width="300" height="220" rx="10" fill="url(#windowGlow)"></rect>
+                    <!-- Window Frames -->
+                    <line x1="500" y1="40" x2="500" y2="260" stroke="#1e1c18" stroke-width="4"></line>
+                    <line x1="350" y1="150" x2="650" y2="150" stroke="#1e1c18" stroke-width="4"></line>
+                    <!-- Night Stars in Window -->
+                    <circle cx="400" cy="80" r="1.5" fill="#ffffff" opacity="0.8"></circle>
+                    <circle cx="450" cy="120" r="1" fill="#ffffff" opacity="0.6"></circle>
+                    <circle cx="580" cy="90" r="2" fill="#ffffff" opacity="0.9"></circle>
+                    <circle cx="620" cy="180" r="1.5" fill="#ffffff" opacity="0.7"></circle>
+
+                    <!-- Carpet -->
+                    <ellipse cx="500" cy="480" rx="280" ry="50" fill="#2b6867" opacity="0.4" stroke="#d4a359" stroke-dasharray="6,4" stroke-width="2"></ellipse>
+
+                    <!-- ================= INTERACTIVE OBJECTS (1-10) ================= -->
+
+                    <!-- OBJ 1: LÁMPARA DE PIE -->
+                    <g id="obj-lampara" class="svg-interactive" onclick="handleObjectClick('lampara')">
+                        <circle id="glow-lampara" cx="120" cy="300" r="70" fill="none" stroke="#d4a359" stroke-width="3" class="glow-active" style="display:none;"></circle>
+                        <path d="M 120 490 L 120 220" stroke="#d4a359" stroke-width="6" stroke-linecap="round"></path>
+                        <polygon points="90,240 150,240 135,170 105,170" fill="#f59e0b" opacity="0.9"></polygon>
+                        <ellipse cx="120" cy="490" rx="35" ry="10" fill="#78350f"></ellipse>
+                        <text x="120" y="155" fill="#ffffff" text-anchor="middle" font-size="12" font-weight="bold" font-family="monospace">1</text>
+                        <g id="lock-lampara"><circle cx="120" cy="330" r="12" fill="#181613" stroke="#d4a359"></circle><text x="120" y="334" fill="#d4a359" text-anchor="middle" font-size="10">🔒</text></g>
+                    </g>
+
+                    <!-- OBJ 2: SOFÁ MID-CENTURY -->
+                    <g id="obj-sofa" class="svg-interactive" onclick="handleObjectClick('sofa')">
+                        <circle id="glow-sofa" cx="290" cy="420" r="75" fill="none" stroke="#d4a359" stroke-width="3" style="display:none;"></circle>
+                        <rect x="200" y="380" width="180" height="70" rx="15" fill="#b94a39" stroke="#78350f" stroke-width="2"></rect>
+                        <rect x="210" y="360" width="160" height="40" rx="10" fill="#991b1b"></rect>
+                        <!-- Legs -->
+                        <line x1="215" y1="450" x2="205" y2="480" stroke="#78350f" stroke-width="5"></line>
+                        <line x1="365" y1="450" x2="375" y2="480" stroke="#78350f" stroke-width="5"></line>
+                        <text x="290" y="425" fill="#ffffff" text-anchor="middle" font-size="12" font-weight="bold" font-family="monospace">2</text>
+                        <g id="lock-sofa"><circle cx="290" cy="415" r="12" fill="#181613" stroke="#d4a359"></circle><text x="290" y="419" fill="#d4a359" text-anchor="middle" font-size="10">🔒</text></g>
+                    </g>
+
+                    <!-- OBJ 3: TV DE TUBOS -->
+                    <g id="obj-tv" class="svg-interactive" onclick="handleObjectClick('tv')">
+                        <circle id="glow-tv" cx="500" cy="350" r="55" fill="none" stroke="#d4a359" stroke-width="3" style="display:none;"></circle>
+                        <!-- TV Wooden Cabinet -->
+                        <rect x="440" y="300" width="120" height="90" rx="10" fill="#78350f" stroke="#d4a359" stroke-width="2"></rect>
+                        <!-- TV Screen -->
+                        <rect x="452" y="312" width="75" height="66" rx="15" fill="#38bdf8" opacity="0.7"></rect>
+                        <!-- Knobs -->
+                        <circle cx="542" cy="325" r="6" fill="#181613"></circle>
+                        <circle cx="542" cy="345" r="6" fill="#181613"></circle>
+                        <!-- Table legs -->
+                        <line x1="455" y1="390" x2="445" y2="430" stroke="#d4a359" stroke-width="4"></line>
+                        <line x1="545" y1="390" x2="555" y2="430" stroke="#d4a359" stroke-width="4"></line>
+                        <text x="490" y="350" fill="#ffffff" text-anchor="middle" font-size="12" font-weight="bold" font-family="monospace">3</text>
+                        <g id="lock-tv"><circle cx="500" cy="350" r="12" fill="#181613" stroke="#d4a359"></circle><text x="500" y="354" fill="#d4a359" text-anchor="middle" font-size="10">🔒</text></g>
+                    </g>
+
+                    <!-- OBJ 4: RADIO DE VÁLVULAS -->
+                    <g id="obj-radio" class="svg-interactive" onclick="handleObjectClick('radio')">
+                        <circle id="glow-radio" cx="680" cy="360" r="45" fill="none" stroke="#d4a359" stroke-width="3" style="display:none;"></circle>
+                        <!-- Small Table -->
+                        <rect x="640" y="370" width="80" height="60" rx="4" fill="#451a03"></rect>
+                        <!-- Radio Body -->
+                        <rect x="650" y="330" width="60" height="40" rx="6" fill="#d4a359" stroke="#78350f" stroke-width="2"></rect>
+                        <rect x="658" y="338" width="28" height="24" rx="3" fill="#181613"></rect>
+                        <circle cx="698" cy="345" r="4" fill="#78350f"></circle>
+                        <circle cx="698" cy="358" r="4" fill="#78350f"></circle>
+                        <text x="680" y="355" fill="#ffffff" text-anchor="middle" font-size="12" font-weight="bold" font-family="monospace">4</text>
+                        <g id="lock-radio"><circle cx="680" cy="360" r="12" fill="#181613" stroke="#d4a359"></circle><text x="680" y="364" fill="#d4a359" text-anchor="middle" font-size="10">🔒</text></g>
+                    </g>
+
+                    <!-- OBJ 5: CUADRO GALAXIA -->
+                    <g id="obj-cuadro" class="svg-interactive" onclick="handleObjectClick('cuadro')">
+                        <circle id="glow-cuadro" cx="220" cy="130" r="50" fill="none" stroke="#d4a359" stroke-width="3" style="display:none;"></circle>
+                        <rect x="170" y="80" width="100" height="100" rx="5" fill="#0f172a" stroke="#d4a359" stroke-width="5"></rect>
+                        <ellipse cx="220" cy="130" rx="30" ry="12" fill="none" stroke="#38bdf8" stroke-width="2" transform="rotate(-20 220 130)"></ellipse>
+                        <circle cx="220" cy="130" r="8" fill="#f59e0b"></circle>
+                        <text x="220" y="135" fill="#ffffff" text-anchor="middle" font-size="12" font-weight="bold" font-family="monospace">5</text>
+                        <g id="lock-cuadro"><circle cx="220" cy="130" r="12" fill="#181613" stroke="#d4a359"></circle><text x="220" y="134" fill="#d4a359" text-anchor="middle" font-size="10">🔒</text></g>
+                    </g>
+
+                    <!-- OBJ 6: BIBLIOTECA / LIBROS -->
+                    <g id="obj-libros" class="svg-interactive" onclick="handleObjectClick('libros')">
+                        <circle id="glow-libros" cx="760" cy="160" r="60" fill="none" stroke="#d4a359" stroke-width="3" style="display:none;"></circle>
+                        <!-- Bookshelf Frame -->
+                        <rect x="700" y="70" width="120" height="180" fill="#451a03" stroke="#d4a359" stroke-width="3"></rect>
+                        <!-- Shelves -->
+                        <line x1="700" y1="130" x2="820" y2="130" stroke="#d4a359" stroke-width="3"></line>
+                        <line x1="700" y1="190" x2="820" y2="190" stroke="#d4a359" stroke-width="3"></line>
+                        <!-- Books -->
+                        <rect x="710" y="90" width="12" height="40" fill="#b94a39"></rect>
+                        <rect x="724" y="85" width="15" height="45" fill="#2b6867"></rect>
+                        <rect x="741" y="95" width="10" height="35" fill="#d4a359"></rect>
+                        <rect x="715" y="145" width="14" height="45" fill="#38bdf8"></rect>
+                        <rect x="731" y="140" width="18" height="50" fill="#b94a39"></rect>
+                        <text x="760" y="165" fill="#ffffff" text-anchor="middle" font-size="12" font-weight="bold" font-family="monospace">6</text>
+                        <g id="lock-libros"><circle cx="760" cy="160" r="12" fill="#181613" stroke="#d4a359"></circle><text x="760" y="164" fill="#d4a359" text-anchor="middle" font-size="10">🔒</text></g>
+                    </g>
+
+                    <!-- OBJ 7: TELÉFONO DE DISCO -->
+                    <g id="obj-telefono" class="svg-interactive" onclick="handleObjectClick('telefono')">
+                        <circle id="glow-telefono" cx="870" cy="380" r="40" fill="none" stroke="#d4a359" stroke-width="3" style="display:none;"></circle>
+                        <!-- Small Side Table -->
+                        <rect x="840" y="390" width="60" height="80" fill="#451a03"></rect>
+                        <!-- Phone Base -->
+                        <rect x="850" y="365" width="40" height="25" rx="5" fill="#181613" stroke="#d4a359"></rect>
+                        <circle cx="870" cy="377" r="7" fill="#ffffff"></circle>
+                        <!-- Receiver -->
+                        <path d="M 845 360 Q 870 350 895 360" stroke="#181613" stroke-width="6" fill="none" stroke-linecap="round"></path>
+                        <text x="870" y="380" fill="#ffffff" text-anchor="middle" font-size="12" font-weight="bold" font-family="monospace">7</text>
+                        <g id="lock-telefono"><circle cx="870" cy="380" r="12" fill="#181613" stroke="#d4a359"></circle><text x="870" y="384" fill="#d4a359" text-anchor="middle" font-size="10">🔒</text></g>
+                    </g>
+
+                    <!-- OBJ 8: ESPEJO VINTAGE -->
+                    <g id="obj-espejo" class="svg-interactive" onclick="handleObjectClick('espejo')">
+                        <circle id="glow-espejo" cx="100" cy="150" r="45" fill="none" stroke="#d4a359" stroke-width="3" style="display:none;"></circle>
+                        <ellipse cx="100" cy="150" rx="30" ry="45" fill="#94a3b8" stroke="#d4a359" stroke-width="4"></ellipse>
+                        <path d="M 85 130 L 115 170" stroke="#ffffff" stroke-width="2" opacity="0.6"></path>
+                        <text x="100" y="155" fill="#ffffff" text-anchor="middle" font-size="12" font-weight="bold" font-family="monospace">8</text>
+                        <g id="lock-espejo"><circle cx="100" cy="150" r="12" fill="#181613" stroke="#d4a359"></circle><text x="100" y="154" fill="#d4a359" text-anchor="middle" font-size="10">🔒</text></g>
+                    </g>
+
+                    <!-- OBJ 9: RELOJ DE PARED -->
+                    <g id="obj-reloj" class="svg-interactive" onclick="handleObjectClick('reloj')">
+                        <circle id="glow-reloj" cx="500" cy="110" r="40" fill="none" stroke="#d4a359" stroke-width="3" style="display:none;"></circle>
+                        <circle cx="500" cy="110" r="30" fill="#f2e6ce" stroke="#78350f" stroke-width="4"></circle>
+                        <!-- Clock Hands -->
+                        <line x1="500" y1="110" x2="500" y2="92" stroke="#181613" stroke-width="3"></line>
+                        <line x1="500" y1="110" x2="512" y2="110" stroke="#181613" stroke-width="2"></line>
+                        <text x="500" y="115" fill="#181613" text-anchor="middle" font-size="12" font-weight="bold" font-family="monospace">9</text>
+                        <g id="lock-reloj"><circle cx="500" cy="110" r="12" fill="#181613" stroke="#d4a359"></circle><text x="500" y="114" fill="#d4a359" text-anchor="middle" font-size="10">🔒</text></g>
+                    </g>
+
+                    <!-- OBJ 10: PUERTA DE SALIDA (THE FINAL ESCAPE ELEMENT #10) -->
+                    <g id="obj-puerta" class="svg-interactive" onclick="handleObjectClick('puerta')">
+                        <circle id="glow-puerta" cx="930" cy="280" r="80" fill="none" stroke="#d4a359" stroke-width="4" style="display:none;"></circle>
+                        <!-- Door Frame -->
+                        <rect x="880" y="140" width="100" height="280" fill="#292524" stroke="#d4a359" stroke-width="4"></rect>
+                        <!-- Inner Door Panel -->
+                        <rect x="890" y="150" width="80" height="260" fill="#44403c"></rect>
+                        <!-- Handle -->
+                        <circle cx="905" cy="280" r="6" fill="#d4a359"></circle>
+                        <!-- Door Lock Electronic Reader -->
+                        <rect x="898" y="240" width="14" height="20" fill="#181613" stroke="#f59e0b"></rect>
+                        <circle cx="905" cy="250" r="3" fill="#ef4444" id="door-led"></circle>
+                        <text x="930" y="275" fill="#ffffff" text-anchor="middle" font-size="14" font-weight="bold" font-family="monospace">10</text>
+                        <!-- Large Exit Lock Icon -->
+                        <g id="lock-puerta"><circle cx="930" cy="280" r="18" fill="#181613" stroke="#d4a359" stroke-width="2"></circle><text x="930" y="286" fill="#d4a359" text-anchor="middle" font-size="14">🔒</text></g>
+                    </g>
+
+                </svg>
+
+                <!-- Room Helper Overlay Footer -->
+                <div class="absolute bottom-2 left-2 right-2 bg-retroCard/90 border border-retroGold/30 p-2 rounded-lg text-xs flex justify-between items-center pointer-events-none">
+                    <span id="room-hint-status" class="text-amber-100">Haz clic en el objeto iluminado para activar el enigma.</span>
+                    <span class="text-retroGold font-mono-retro font-bold">Laboratorio 1952</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- MODAL DIALOG: CHALLENGES & SOCRATIC HINTS -->
+        <div id="challenge-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-retroCard border-2 border-retroGold rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+                
+                <!-- Close Button -->
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-amber-200/60 hover:text-retroGold text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <!-- Header -->
+                <div class="flex items-center space-x-3 border-b border-retroGold/30 pb-3 mb-4">
+                    <div class="bg-retroGold text-retroDarkPaper font-bold rounded-lg p-2 font-mono-retro text-base" id="modal-object-number">
+                        Objeto 1
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-amber-100" id="modal-object-title">Lámpara de Pie</h3>
+                        <p class="text-xs text-retroGold uppercase tracking-wider font-mono-retro" id="modal-challenge-type">Desafío Teórico / Analítico</p>
+                    </div>
+                </div>
+
+                <!-- Intro Story Text -->
+                <p class="text-sm text-amber-100/90 mb-3 italic" id="modal-intro-text">
+                    La lámpara de pie emite un tenue zumbido. Pegada a la pantalla hay una nota del Dr. Vance.
+                </p>
+
+                <!-- Quote / Article Clipping Box -->
+                <div class="bg-retroPaper text-retroDarkPaper p-4 rounded-xl border-l-4 border-retroGold font-mono-retro text-sm mb-4 shadow-inner relative" id="modal-quote-box">
+                    <i class="fa-solid fa-quote-left opacity-20 text-3xl absolute top-2 right-2"></i>
+                    <p id="modal-quote-text">"Cita del recorte o enunciado del argumento falaz..."</p>
+                </div>
+
+                <!-- Question -->
+                <h4 class="font-bold text-retroGold mb-3 text-sm md:text-base" id="modal-question">
+                    ¿Qué falacia informal se comete en este razonamiento?
+                </h4>
+
+                <!-- Options List -->
+                <div class="space-y-2 mb-5" id="modal-options-container">
+                    <!-- Javascript populates 4 option buttons -->
+                </div>
+
+                <!-- Socratic Feedback & Hint Box -->
+                <div id="socratic-box" class="hidden bg-retroBg border border-retroTeal/60 p-4 rounded-xl mb-4">
+                    <div class="flex items-start space-x-3">
+                        <i class="fa-solid fa-brain text-retroTeal text-xl mt-0.5"></i>
+                        <div>
+                            <h5 class="text-xs font-bold text-retroTeal uppercase tracking-wider mb-1">Guía Socrática</h5>
+                            <p class="text-xs md:text-sm text-amber-100/90" id="socratic-hint-text">
+                                Piensa: ¿La crítica se dirige al argumento o a las características personales de quien lo emite?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Footer Buttons -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-retroGold/20">
+                    <button onclick="requestSocraticHint()" class="bg-retroTeal hover:bg-teal-700 text-white text-xs md:text-sm px-4 py-2 rounded-lg transition flex items-center space-x-2">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>Pedir Ayuda Socrática</span>
+                    </button>
+
+                    <button onclick="readCurrentModalText()" class="bg-retroBg border border-retroGold/40 hover:bg-retroGold/20 text-retroGold text-xs md:text-sm px-3 py-2 rounded-lg transition flex items-center space-x-1">
+                        <i class="fa-solid fa-volume-high"></i>
+                        <span>Escuchar Enunciado</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- SCREEN 3: ESCAPE VICTORY SCREEN -->
+        <section id="screen-victory" class="hidden max-w-3xl w-full bg-retroCard border-2 border-retroGold rounded-2xl p-8 text-center shadow-2xl my-auto">
+            <div class="w-20 h-20 bg-retroGold/20 border-2 border-retroGold rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-door-open text-retroGold text-4xl"></i>
+            </div>
+
+            <h2 class="text-3xl font-extrabold text-amber-100 font-mono-retro mb-2">¡HAS ESCAPADO DE LA CAVERNA DE 1952!</h2>
+            <p class="text-retroGold font-semibold mb-6">El bucle temporal se ha disuelto gracias al pensamiento crítico.</p>
+
+            <div class="bg-retroBg p-5 rounded-xl border border-retroGold/30 text-left text-sm text-amber-100/90 space-y-3 mb-6 font-sans">
+                <p>
+                    <strong class="text-retroGold">Resumen Pedagógico:</strong> Has demostrado capacidad para reconocer las 10 sombras del pensamiento dogmático e identificar las falacias informales:
+                </p>
+                <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-mono-retro text-amber-200/80 pt-2 border-t border-retroGold/20">
+                    <li>1. Ad Hominem</li>
+                    <li>2. Hombre de Paja</li>
+                    <li>3. Apelación a la Autoridad</li>
+                    <li>4. Falso Dilema</li>
+                    <li>5. Ad Ignorantiam</li>
+                    <li>6. Pendiente Resbaladiza</li>
+                    <li>7. Ad Populum</li>
+                    <li>8. Causa Falsa (Post Hoc)</li>
+                    <li>9. Petición de Principio</li>
+                    <li class="text-retroGold font-bold">10. Generalización Apresurada (Puerta)</li>
+                </ul>
+            </div>
+
+            <button onclick="restartGame()" class="bg-retroGold hover:bg-amber-500 text-retroDarkPaper font-bold px-8 py-3 rounded-xl transition transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2 mx-auto text-base">
+                <i class="fa-solid fa-rotate-right"></i>
+                <span>JUGAR DE NUEVO</span>
+            </button>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-retroCard border-t border-retroGold/20 px-4 py-2 text-center text-xs text-amber-200/50">
+        Escape Room Educativo • Falacias Informales &amp; Alegoría de Platón • 1952
+    </footer>
+
+    <script>
+        // ================= GAME DATA & CHALLENGES =================
+        // Sequence strictly places Door as Object #10 (final escape)
+        const roomObjects = [
+            {
+                id: 'lampara',
+                number: 1,
+                name: 'Lámpara de Pie',
+                svgId: 'obj-lampara',
+                type: 'Desafío Teórico',
+                introText: 'La lámpara de pie emite un zumbido tenue. Una nota adhesiva vintage está pegada en la pantalla:',
+                quote: '«No debes confiar en los argumentos sobre energía atómica del Dr. Pérez; todos saben que es una persona extremadamente antipática y con mal carácter.»',
+                question: '¿Qué tipo de falacia comete esta nota al descalificar la propuesta técnica?',
+                options: [
+                    'Ad Hominem (Atacar a la persona)',
+                    'Hombre de Paja (Distorsionar el argumento)',
+                    'Falsa Equivalencia',
+                    'Apelación a la Autoridad'
+                ],
+                correctIndex: 0,
+                hint: 'Fíjate si se está criticando la teoría científica o la personalidad/carácter del individuo.',
+                explanation: 'Ataque Ad Hominem: Descalifica una idea o argumento criticando las características personales de quien lo emite en lugar de analizar su validez.'
+            },
+            {
+                id: 'sofa',
+                number: 2,
+                name: 'Sofá Mid-Century',
+                svgId: 'obj-sofa',
+                type: 'Prensa de 1952',
+                introText: 'Entre los cojines acolchados del sofá encuentras un folleto del Ministerio de Salud de 1952:',
+                quote: '«Los que proponen recortar la jornada laboral simplemente quieren que la sociedad entera se vuelva perezosa y nadie trabaje nunca más.»',
+                question: '¿Qué sesgo/falacia se aplica para desacreditar la propuesta laboral?',
+                options: [
+                    'Pendiente Resbaladiza',
+                    'Hombre de Paja (Caricaturizar la postura contraria)',
+                    'Ad Ignorantiam',
+                    'Falso Dilema'
+                ],
+                correctIndex: 1,
+                hint: 'Observa si la postura original sobre el horario ha sido exagerada a un extremo ridículo para poder atacarla.',
+                explanation: 'Falacia del Hombre de Paja: Consiste en caricaturizar o distorsionar la postura del oponente para que sea más fácil de refutar.'
+            },
+            {
+                id: 'tv',
+                number: 3,
+                name: 'Televisor a Tubo',
+                svgId: 'obj-tv',
+                type: 'Prensa de 1952',
+                introText: 'La pantalla de rayos catódicos del televisor blanco y negro proyecta un anuncio comercial:',
+                quote: '«Nueve de cada diez actores de cine famosos fuman cigarrillos marca "Gloria", por lo tanto, fumar es totalmente saludable para la garganta.»',
+                question: '¿Qué falacia lógica presenta este anuncio comercial?',
+                options: [
+                    'Apelación a la Falsa Autoridad (Ad Verecundiam)',
+                    'Falso Dilema',
+                    'Generalización Apresurada',
+                    'Causa Falsa (Post Hoc)'
+                ],
+                correctIndex: 0,
+                hint: '¿Son los actores de cine una autoridad médica válida para determinar la salud respiratoria?',
+                explanation: 'Apelación a la Falsa Autoridad: Usar el prestigio de figuras famosas en un campo que no es de su competencia científica.'
+            },
+            {
+                id: 'radio',
+                number: 4,
+                name: 'Radio Válvula',
+                svgId: 'obj-radio',
+                type: 'Prensa de 1952',
+                introText: 'Sintonizas la radio de baquelita. Entre la estática de radiofrecuencia se escucha el discurso de un diplomático:',
+                quote: '«O estamos al 100% a favor de la construcción inmediata del reactor, o estamos a favor de la ruina y el caos total de nuestra nación.»',
+                question: '¿Cómo se denomina esta falsa dicotomía?',
+                options: [
+                    'Ad Populum',
+                    'Falso Dilema (Blanco o Negro)',
+                    'Petición de Principio',
+                    'Pendiente Resbaladiza'
+                ],
+                correctIndex: 1,
+                hint: 'Evalúa si realmente existen únicamente dos opciones extremas o si hay alternativas intermedias.',
+                explanation: 'Falso Dilema: Reduce erróneamente un abanico complejo de posibilidades a solo dos opciones radicales e incompatibles.'
+            },
+            {
+                id: 'cuadro',
+                number: 5,
+                name: 'Cuadro Galaxia',
+                svgId: 'obj-cuadro',
+                type: 'Desafío Teórico',
+                introText: 'Detrás del marco del óleo con motivos espaciales encuentras una anotación del Dr. Vance:',
+                quote: '«Nadie ha podido demostrar de forma irrebatible que la telepatía no existe; por lo tanto, la telepatía es un fenómeno real demostrado.»',
+                question: '¿Qué falacia lógica está cometiendo esta afirmación?',
+                options: [
+                    'Ad Ignorantiam (Apelación a la Ignorancia)',
+                    'Ad Hominem',
+                    'Causa Falsa',
+                    'Generalización Apresurada'
+                ],
+                correctIndex: 0,
+                hint: 'Recuerda: la falta de prueba en contra no equivale automáticamente a la verdad de una afirmación.',
+                explanation: 'Apelación a la Ignorancia (Ad Ignorantiam): Argumentar que una afirmación es verdadera solo porque aún no se ha probado que sea falsa.'
+            },
+            {
+                id: 'libros',
+                number: 6,
+                name: 'Biblioteca / Libros',
+                svgId: 'obj-libros',
+                type: 'Desafío Teórico',
+                introText: 'Al extraer un encuadernado de cuero de la biblioteca, un pasaje del texto resalta:',
+                quote: '«Si permitimos que los estudiantes elijan una asignatura optativa hoy, mañana no querrán asistir a ninguna clase y la universidad colapsará por completo.»',
+                question: '¿Qué falacia encadena consecuencias extremas e inevitables sin justificación?',
+                options: [
+                    'Pendiente Resbaladiza',
+                    'Ad Populum',
+                    'Hombre de Paja',
+                    'Falsa Equivalencia'
+                ],
+                correctIndex: 0,
+                hint: 'Analiza si un pequeño primer paso conduce inevitablemente a una catástrofe exagerada.',
+                explanation: 'Pendiente Resbaladiza: Afirmar sin evidencia suficiente que un pequeño primer paso conducirá inevitablemente a una cadena de eventos catastróficos.'
+            },
+            {
+                id: 'telefono',
+                number: 7,
+                name: 'Teléfono de Disco',
+                svgId: 'obj-telefono',
+                type: 'Prensa de 1952',
+                introText: 'Descolgaste el auricular negro de disco giratorio. Una voz grabada transmite un mensaje comercial:',
+                quote: '«La mayoría de los ciudadanos de la ciudad consume el tónico vital del Dr. Vance; por ende, debe ser el remedio más efectivo que existe.»',
+                question: '¿Qué falacia apoya una conclusión basándose únicamente en la popularidad?',
+                options: [
+                    'Ad Populum (Apelación a la Popularidad)',
+                    'Petición de Principio',
+                    'Ad Hominem',
+                    'Causa Falsa'
+                ],
+                correctIndex: 0,
+                hint: '¿Que muchas personas consuman algo prueba científicamente que sea verdadero o efectivo?',
+                explanation: 'Apelación al Pueblo (Ad Populum): Dar por verdadero algo solo porque la mayoría o un grupo numeroso de gente lo apoya o consume.'
+            },
+            {
+                id: 'espejo',
+                number: 8,
+                name: 'Espejo Vintage',
+                svgId: 'obj-espejo',
+                type: 'Prensa de 1952',
+                introText: 'Escrito con pintura en el cristal del espejo antiguo se lee el siguiente razonamiento:',
+                quote: '«Ayer cantó un gallo negro al amanecer e inmediatamente ocurrió el eclipse solar. Por lo tanto, el canto del gallo provocó el eclipse.»',
+                question: '¿Cómo se llama la falacia que asume causalidad solo por sucesión temporal?',
+                options: [
+                    'Causa Falsa (Post Hoc Ergo Propter Hoc)',
+                    'Falso Dilema',
+                    'Hombre de Paja',
+                    'Ad Ignorantiam'
+                ],
+                correctIndex: 0,
+                hint: 'Observa si el único motivo para vincular dos hechos es que uno ocurrió antes que el otro.',
+                explanation: 'Causa Falsa (Post Hoc): Asumir que debido a que un evento ocurrió después de otro, el primero fue la causa directa del segundo.'
+            },
+            {
+                id: 'reloj',
+                number: 9,
+                name: 'Reloj de Pared',
+                svgId: 'obj-reloj',
+                type: 'Desafío Teórico',
+                introText: 'El péndulo del reloj oscila mecánicamente. Detrás de la esfera metálica hay una nota manuscrita:',
+                quote: '«El viaje en el tiempo es totalmente posible porque el Dr. Vance puede viajar a través del tiempo gracias a su máquina temporal.»',
+                question: '¿Qué falacia comete este argumento circular?',
+                options: [
+                    'Petición de Principio (Circularidad)',
+                    'Ad Hominem',
+                    'Ad Populum',
+                    'Pendiente Resbaladiza'
+                ],
+                correctIndex: 0,
+                hint: 'Fíjate si la premisa usada para demostrar la conclusión es exactamente la misma conclusión reescrita.',
+                explanation: 'Petición de Principio: Argumentación circular donde la conclusión se incluye implícitamente en la premisa inicial.'
+            },
+            {
+                id: 'puerta',
+                number: 10,
+                name: 'Puerta de Salida',
+                svgId: 'obj-puerta',
+                type: 'Desafío Final de Escape',
+                introText: 'Llegas finalmente a la pesada puerta de salida. La cerradura electrónica requiere resolver el último enigma para abrir el cerrojo:',
+                quote: '«Conocí a dos científicos de este laboratorio y ambos eran sumamente olvidadizos. Por lo tanto, todos los científicos del mundo son olvidadizos.»',
+                question: '¿Qué falacia consiste en extraer una regla general de una muestra insignificante?',
+                options: [
+                    'Generalización Apresurada',
+                    'Falso Dilema',
+                    'Ad Hominem',
+                    'Petición de Principio'
+                ],
+                correctIndex: 0,
+                hint: '¿Son dos casos particulares una muestra suficiente para juzgar a toda la población mundial de científicos?',
+                explanation: 'Generalización Apresurada: Llegar a una conclusión universal basándose en una muestra demasiado reducida o no representativa.'
+            }
+        ];
+
+        // State Variables
+        let currentStep = 0; // 0 to 9
+        let unlockedObjects = [];
+        let ttsEnabled = true;
+        let fontStep = 0; // -1, 0, +1, +2
+
+        // Clean text for Speech Synthesis so '#' / 'numeral' / 'hashtag' is NEVER read aloud
+        function cleanTextForSpeech(text) {
+            if (!text) return '';
+            return text
+                .replace(/#/g, '')                   // Strips # character
+                .replace(/\bnumeral\b/gi, '')        // Strips word 'numeral'
+                .replace(/\bhashtag\b/gi, '')        // Strips word 'hashtag'
+                .replace(/\s+/g, ' ')                // Clean multiple spaces
+                .trim();
+        }
+
+        function speakText(text) {
+            if (!ttsEnabled) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop ongoing speech
+                const cleanedText = cleanTextForSpeech(text);
+                const utterance = new SpeechSynthesisUtterance(cleanedText);
+                utterance.lang = 'es-ES';
+                utterance.rate = 0.95;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleTTS() {
+            ttsEnabled = !ttsEnabled;
+            const statusElem = document.getElementById('tts-status');
+            const iconElem = document.getElementById('tts-icon');
+            if (ttsEnabled) {
+                statusElem.textContent = 'Voz: On';
+                iconElem.className = 'fa-solid fa-volume-high';
+                speakText('Lectura en voz alta activada.');
+            } else {
+                statusElem.textContent = 'Voz: Off';
+                iconElem.className = 'fa-solid fa-volume-xmark';
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            }
+        }
+
+        // DUA Font Size Changer
+        function changeFontSize(delta) {
+            fontStep = Math.max(-1, Math.min(2, fontStep + delta));
+            const body = document.getElementById('app-body');
+            body.classList.remove('text-xs', 'text-sm', 'text-base', 'text-lg', 'text-xl');
+            
+            if (fontStep === -1) body.classList.add('text-sm');
+            else if (fontStep === 0) body.classList.add('text-base');
+            else if (fontStep === 1) body.classList.add('text-lg');
+            else if (fontStep === 2) body.classList.add('text-xl');
+        }
+
+        // Fullscreen API Toggle
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.warn(`Error attempting fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function startGame() {
+            document.getElementById('screen-intro').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+            document.getElementById('screen-victory').classList.add('hidden');
+            
+            currentStep = 0;
+            unlockedObjects = [];
+            renderStepPills();
+            renderRoomVisuals();
+            
+            const firstObj = roomObjects[0];
+            speakText(`Laboratorio activado. Busca el objeto número 1: ${firstObj.name}.`);
+        }
+
+        function restartGame() {
+            document.getElementById('screen-victory').classList.add('hidden');
+            document.getElementById('screen-intro').classList.remove('hidden');
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        }
+
+        function renderStepPills() {
+            const container = document.getElementById('step-pills');
+            container.innerHTML = '';
+
+            roomObjects.forEach((obj, idx) => {
+                const pill = document.createElement('div');
+                const isDone = unlockedObjects.includes(obj.id);
+                const isCurrent = (idx === currentStep);
+
+                pill.className = `px-2 py-0.5 rounded text-xs font-mono-retro border font-bold flex items-center space-x-1 whitespace-nowrap ${
+                    isDone 
+                        ? 'bg-emerald-950 border-emerald-500 text-emerald-400' 
+                        : isCurrent 
+                            ? 'bg-retroGold text-retroDarkPaper border-retroGold animate-pulse' 
+                            : 'bg-retroBg border-retroGold/20 text-amber-100/40'
+                }`;
+
+                // Clean label without #
+                pill.innerHTML = `<span>Desafío ${obj.number}</span> ${isDone ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}`;
+                container.appendChild(pill);
+            });
+
+            document.getElementById('progress-text').textContent = `${unlockedObjects.length} / 10`;
+        }
+
+        function renderRoomVisuals() {
+            roomObjects.forEach((obj, idx) => {
+                const svgElem = document.getElementById(obj.svgId);
+                const lockElem = document.getElementById(`lock-${obj.id}`);
+                const glowElem = document.getElementById(`glow-${obj.id}`);
+
+                if (!svgElem) return;
+
+                const isUnlocked = unlockedObjects.includes(obj.id);
+                const isCurrent = (idx === currentStep);
+
+                if (isUnlocked) {
+                    svgElem.style.opacity = '1';
+                    svgElem.style.cursor = 'pointer';
+                    if (lockElem) lockElem.style.display = 'none';
+                    if (glowElem) {
+                        glowElem.style.display = 'block';
+                        glowElem.classList.remove('glow-active');
+                        glowElem.style.stroke = '#10b981'; // Green unlocked glow
+                    }
+                } else if (isCurrent) {
+                    svgElem.style.opacity = '1';
+                    svgElem.style.cursor = 'pointer';
+                    if (lockElem) lockElem.style.display = 'none';
+                    if (glowElem) {
+                        glowElem.style.display = 'block';
+                        glowElem.style.stroke = '#d4a359';
+                        glowElem.classList.add('glow-active');
+                    }
+                } else {
+                    svgElem.style.opacity = '0.35';
+                    svgElem.style.cursor = 'not-allowed';
+                    if (lockElem) lockElem.style.display = 'block';
+                    if (glowElem) glowElem.style.display = 'none';
+                }
+            });
+
+            // Status hint
+            const currentObj = roomObjects[currentStep];
+            if (currentObj) {
+                document.getElementById('room-hint-status').textContent = 
+                    `Objeto Activo ${currentObj.number}: Haz clic en "${currentObj.name}" para resolver la falacia.`;
+            }
+        }
+
+        function handleObjectClick(objId) {
+            const objIndex = roomObjects.findIndex(o => o.id === objId);
+            const activeObj = roomObjects[currentStep];
+
+            if (objId !== activeObj.id && !unlockedObjects.includes(objId)) {
+                speakText(`Ese objeto está bloqueado. Debes resolver primero el objeto ${activeObj.number}: ${activeObj.name}.`);
+                return;
+            }
+
+            openModal(roomObjects[objIndex]);
+        }
+
+        function openModal(obj) {
+            document.getElementById('modal-object-number').textContent = `Objeto ${obj.number}`;
+            document.getElementById('modal-object-title').textContent = obj.name;
+            document.getElementById('modal-challenge-type').textContent = obj.type;
+            document.getElementById('modal-intro-text').textContent = obj.introText;
+            document.getElementById('modal-quote-text').textContent = obj.quote;
+            document.getElementById('modal-question').textContent = obj.question;
+
+            // Reset Socratic hint
+            document.getElementById('socratic-box').classList.add('hidden');
+
+            // Render Options
+            const container = document.getElementById('modal-options-container');
+            container.innerHTML = '';
+
+            obj.options.forEach((optText, i) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-retroBg hover:bg-retroGold/20 border border-retroGold/30 p-3 rounded-xl transition text-xs md:text-sm text-amber-100 flex items-center justify-between group";
+                btn.onclick = () => checkAnswer(obj, i);
+                
+                btn.innerHTML = `
+                    <span>${optText}</span>
+                    <i class="fa-solid fa-chevron-right text-retroGold opacity-0 group-hover:opacity-100 transition"></i>
+                `;
+                container.appendChild(btn);
+            });
+
+            document.getElementById('challenge-modal').classList.remove('hidden');
+
+            // Speech readout
+            readCurrentModalText();
+        }
+
+        function closeModal() {
+            document.getElementById('challenge-modal').classList.add('hidden');
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        }
+
+        function readCurrentModalText() {
+            const activeObj = roomObjects[currentStep];
+            if (activeObj) {
+                const textToRead = `Desafío ${activeObj.number}: ${activeObj.name}. ${activeObj.introText} Cita: ${activeObj.quote}. Pregunta: ${activeObj.question}`;
+                speakText(textToRead);
+            }
+        }
+
+        function requestSocraticHint() {
+            const activeObj = roomObjects[currentStep];
+            const socraticBox = document.getElementById('socratic-box');
+            const hintText = document.getElementById('socratic-hint-text');
+
+            hintText.textContent = activeObj.hint;
+            socraticBox.classList.remove('hidden');
+
+            speakText(`Pista Socrática: ${activeObj.hint}`);
+        }
+
+        function checkAnswer(obj, selectedIdx) {
+            if (selectedIdx === obj.correctIndex) {
+                // Correct!
+                if (!unlockedObjects.includes(obj.id)) {
+                    unlockedObjects.push(obj.id);
+                }
+
+                closeModal();
+
+                if (currentStep < roomObjects.length - 1) {
+                    currentStep++;
+                    renderStepPills();
+                    renderRoomVisuals();
+                    const nextObj = roomObjects[currentStep];
+                    speakText(`¡Correcto! ${obj.explanation}. Objeto ${obj.number} superado. Siguiente objetivo número ${nextObj.number}: ${nextObj.name}.`);
+                } else {
+                    // Final Escape (Door #10 solved!)
+                    renderStepPills();
+                    renderRoomVisuals();
+                    document.getElementById('screen-game').classList.add('hidden');
+                    document.getElementById('screen-victory').classList.remove('hidden');
+                    speakText(`¡Felicitaciones! Has superado el desafío de la Puerta número 10. La cerradura electrónica se ha liberado y has escapado del laboratorio de 1952.`);
+                }
+            } else {
+                // Incorrect
+                speakText(`Respuesta incorrecta. Piensa con cuidado. ${obj.hint}`);
+                requestSocraticHint();
+            }
+        }
+
+        // Initialize state on load
+        window.onload = function() {
+            renderStepPills();
+        };
+    </script>
+
+</body></html>

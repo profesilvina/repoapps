@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunicación: Publicidad Gráfica y Estereotipos de Género</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/century-gothic');
+
+        body {
+            font-family: 'Century Gothic', 'CenturyGothic', 'AppleGothic', 'TeX Gyre Adventor', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-size: 16.5px;
+            line-height: 1.6;
+        }
+
+        .heading-font {
+            font-family: 'Century Gothic', 'CenturyGothic', sans-serif;
+            font-weight: 700;
+        }
+
+        .custom-card {
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 4px 6px -2px rgba(15, 23, 42, 0.02);
+            transition: all 0.25s ease-in-out;
+        }
+
+        .btn-option {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-option:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Accessiblity highlighting during speech synthesis */
+        .speaking-highlight {
+            outline: 3px solid #8b5cf6;
+            background-color: #f3e8ff !important;
+            border-radius: 12px;
+        }
+
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 9px;
+            height: 9px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .lightbox-modal {
+            transition: opacity 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-purple-200 selection:text-purple-900">
+
+    <header class="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white shadow-xl sticky top-0 z-50 border-b border-purple-800/40">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3.5">
+                <div class="bg-gradient-to-br from-amber-400 to-amber-500 p-3 rounded-2xl shadow-md text-purple-950 flex items-center justify-center">
+                    <i class="fa-solid fa-bullhorn text-2xl"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-extrabold tracking-widest text-purple-300 uppercase block">Educación Secundaria de Adultos • 2.º Año</span>
+                    <h1 class="text-xl md:text-2xl font-bold leading-tight">Comunicación: Análisis de la Publicidad Gráfica</h1>
+                </div>
+            </div>
+
+            <!-- Panel de Accesibilidad y Lectura Asistida en Voz Alta -->
+            <div class="flex flex-wrap items-center gap-2 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/15">
+                <!-- Carga Masiva de Imágenes -->
+                <label class="bg-amber-400 hover:bg-amber-300 text-purple-950 font-bold px-3 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all shadow cursor-pointer" title="Selecciona tus 6 imágenes guardadas localmente">
+                    <i class="fa-solid fa-folder-open text-purple-900"></i>
+                    <span class="hidden sm:inline">Cargar Imágenes Locales</span>
+                    <input type="file" multiple accept="image/*" class="hidden" onchange="handleBatchImageUpload(event)" />
+                </label>
+
+                <div class="h-6 w-px bg-white/20 mx-1 hidden sm:block"></div>
+
+                <span class="text-xs text-purple-200 font-medium hidden md:inline"><i class="fa-solid fa-volume-high mr-1"></i> Lectura Asistida:</span>
+                
+                <button id="btn-toggle-voice" onclick="toggleGlobalVoice()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-3 py-2 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all shadow border border-purple-400/30">
+                    <i class="fa-solid fa-play" id="voice-icon"></i>
+                    <span id="voice-text">Escuchar Introducción</span>
+                </button>
+                
+                <button onclick="stopSpeech()" class="bg-rose-600 hover:bg-rose-500 text-white p-2 rounded-xl text-xs sm:text-sm transition-all shadow" title="Detener audio">
+                    <i class="fa-solid fa-stop"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+
+        <section id="intro-box" class="custom-card p-6 md:p-8 mb-8 border-l-8 border-purple-600 bg-gradient-to-r from-purple-50/70 via-white to-slate-50">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="space-y-3 max-w-3xl">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-bold uppercase tracking-wide">
+                        <i class="fa-solid fa-graduation-cap"></i> Propuesta Didáctica de Análisis de Medios
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800" id="text-title-welcome">
+                        ¿Estereotipo de Género o Ruptura / Empoderamiento?
+                    </h2>
+                    <p class="text-slate-600 leading-relaxed" id="text-desc-welcome">
+                        Estimados estudiantes: En esta actividad analizaremos seis publicidades gráficas reales de marcas reconocidas. 
+                        A través de cada caso, observaremos cómo se construye el discurso visual y qué rol se le asigna a la mujer: 
+                        <strong>¿Refuerza un estereotipo tradicional de género o plantea una postura de ruptura y empoderamiento?</strong>
+                    </p>
+                    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 pt-1">
+                        <span class="inline-flex items-center gap-1 font-semibold text-purple-700 bg-purple-100/60 px-2.5 py-1 rounded-lg">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Pistas disponibles en cada caso
+                        </span>
+                        <span class="inline-flex items-center gap-1 font-semibold text-purple-700 bg-purple-100/60 px-2.5 py-1 rounded-lg">
+                            <i class="fa-solid fa-pen-to-square text-indigo-500"></i> Espacio para tu reflexión personal
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Indicador de Progreso -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 w-full md:w-64 text-center flex-shrink-0">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Tu Progreso</span>
+                    <div class="text-3xl font-black text-purple-800 my-1"><span id="completed-count">0</span> / 6</div>
+                    <p class="text-xs text-slate-500 mb-3 font-medium">Casos Analizados</p>
+                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                        <div id="progress-bar" class="bg-gradient-to-r from-purple-600 to-indigo-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="flex flex-wrap items-center justify-center gap-2.5 mb-8" id="case-selector-container">
+            <!-- Selector dinámico inyectado por JavaScript -->
+        </div>
+
+        <div id="case-card-display" class="custom-card overflow-hidden transition-all duration-300">
+            <!-- Tarjeta del caso inyectada por JS -->
+        </div>
+
+        <div id="lightbox-modal" class="hidden fixed inset-0 z-50 bg-slate-950/90 flex items-center justify-center p-4 backdrop-blur-md lightbox-modal" onclick="closeLightbox()">
+            <div class="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center justify-center" onclick="event.stopPropagation()">
+                <button onclick="closeLightbox()" class="absolute -top-12 right-0 text-white hover:text-amber-400 text-3xl font-bold transition-all" title="Cerrar ventana">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div id="lightbox-content" class="w-full flex items-center justify-center overflow-auto rounded-xl">
+                    <!-- Imagen o SVG ampliado -->
+                </div>
+                <p class="text-slate-300 text-xs mt-3 text-center font-medium">Haz clic fuera de la imagen o en [X] para volver al análisis.</p>
+            </div>
+        </div>
+
+        <div id="final-summary-card" class="hidden custom-card p-8 text-center bg-gradient-to-b from-purple-900 via-indigo-900 to-slate-900 text-white mt-8 shadow-2xl">
+            <div class="max-w-2xl mx-auto space-y-6">
+                <div class="w-20 h-20 bg-amber-400 text-purple-950 rounded-full flex items-center justify-center mx-auto text-4xl shadow-xl font-bold">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <h2 class="text-3xl font-bold">¡Felicitaciones, Trabajo Completado!</h2>
+                <p class="text-purple-100 text-base leading-relaxed">
+                    Has finalizado el análisis crítico de las 6 publicidades gráficas. Reconocer cómo los medios masivos reproducen estereotipos o impulsan nuevas visiones de equidad es una capacidad fundamental para el desarrollo del pensamiento crítico y la ciudadanía responsable.
+                </p>
+                <div class="p-5 bg-white/10 rounded-2xl border border-white/20 text-left space-y-2">
+                    <h3 class="font-bold text-amber-300 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-lightbulb"></i> Conclusión Pedagógica para el Aula:
+                    </h3>
+                    <p class="text-sm text-purple-100 leading-relaxed">
+                        La publicidad no solo vende productos; difunde modelos culturales y valoraciones de roles socialmente asignados. Cuestionar las representaciones tradicionalmente naturalizadas nos encamina hacia una comunicación más justa, inclusiva y libre de discriminaciones.
+                    </p>
+                </div>
+                <button onclick="restartActivity()" class="bg-amber-400 hover:bg-amber-300 text-purple-950 font-extrabold px-8 py-3.5 rounded-xl shadow-lg transition-all text-base inline-flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> Reiniciar Actividad Didáctica
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-sm">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-3">
+            <p>© Taller de Comunicación • Educación Secundaria de Adultos (EPJA/CENS)</p>
+            <p class="text-xs text-slate-500">Análisis Crítico de la Publicidad Gráfica y Perspectiva de Género</p>
+        </div>
+    </footer>
+
+    <script>
+        const casesData = [
+            {
+                id: 1,
+                title: "Caso 1: Puloil",
+                brand: "Puloil (Limpiador en Polvo)",
+                epoch: "Publicidad Histórica / Gráfica Vintage",
+                altText: "limpieza",
+                imagePaths: [
+                    "https://scontent.faep14-4.fna.fbcdn.net/v/t1.6435-9/87069042_10157817880623950_7047317347278782464_n.jpg?stp=dst-jpg_tt6&cstp=mx960x960&ctp=s960x960&_nc_cat=101&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=9eae26&_nc_ohc=LNr3cZZBiGAQ7kNvwGT3eDi&_nc_oc=AdovOrsWwjbE2eaDln7lG5MuObiiu5BcEpdlTPSfBtMslq2bfRQGhPEHhWLwKcEw7c4&_nc_zt=23&_nc_ht=scontent.faep14-4.fna&_nc_gid=pDWqeW-noJ2Q4YcSWEw9Hw&_nc_ss=7b289&oh=00_AQPFWTO6syp-JF-dW-CMs7LpGe3FSL_cyIicnEiQBhuhRQ&oe=6AE1E4FB",
+                    "Puloi - Caso 1_2.jpg", 
+                    "Puloi - Caso 1.jpg", 
+                    "Caso 1 - Puloil.jpg"
+                ],
+                svgAsset: `
+                    <svg viewBox="0 0 500 650" class="w-full h-auto rounded-xl shadow-inner bg-amber-900">
+                        <rect width="500" height="650" fill="#78350f" />
+                        <circle cx="250" cy="180" r="110" fill="#b45309" opacity="0.6" />
+                        
+                        <!-- Lata de Puloil -->
+                        <rect x="180" y="140" width="140" height="220" fill="#f59e0b" rx="12" stroke="#fef08a" stroke-width="4" />
+                        <rect x="200" y="110" width="100" height="30" fill="#d97706" rx="6" />
+                        <text x="250" y="220" text-anchor="middle" fill="#78350f" font-family="'Century Gothic', sans-serif" font-size="28" font-weight="900">PULOIL</text>
+                        <text x="250" y="250" text-anchor="middle" fill="#ffffff" font-family="'Century Gothic', sans-serif" font-size="14" font-weight="bold">LIMPIA Y BRILLA</text>
+
+                        <text x="250" y="410" text-anchor="middle" fill="#fef3c7" font-family="'Century Gothic', sans-serif" font-size="22" font-weight="900">Publicidad Tradicional de Limpieza</text>
+                        
+                        <rect x="60" y="450" width="380" height="130" fill="#fef3c7" rx="12" />
+                        <text x="250" y="485" text-anchor="middle" fill="#78350f" font-family="'Century Gothic', sans-serif" font-size="14" font-weight="bold">"El aliado indispensable del ama de casa"</text>
+                        <text x="250" y="515" text-anchor="middle" fill="#451a03" font-size="12">Representación histórica de las tareas del hogar</text>
+                        <text x="250" y="535" text-anchor="middle" fill="#451a03" font-size="12">asociadas en exclusiva al rol femenino.</text>
+                    </svg>
+                `,
+                transcription: `
+                    <strong>Texto publicitario presente en la gráfica:</strong><br>
+                    • Producto: <em>Puloil (Limpiador en polvo para ollas y superficies)</em><br>
+                    • Titular / Mensaje: <em>"Puloil deja todo reluciente. El secreto de la mujer para un hogar impecable sin esfuerzo."</em><br>
+                    • Imagen: Ilustración vintage de una ama de casa en la cocina mostrando ollas brillantes.
+                `,
+                hint: "Fíjate a quién se presenta como la única encargada de limpiar y dejar reluciente la cocina. ¿Hay presencia masculina en estas labores cotidianas?",
+                correctCategory: "stereotype",
+                conceptName: "Estereotipo Tradicional (Rol de Ama de Casa)",
+                explanation: `
+                    <strong>Respuesta Correcta: Responde a un Estereotipo de Género.</strong><br><br>
+                    <strong>Explicación Teórica para el Aula:</strong><br>
+                    Las publicidades históricas de productos de limpieza han situado de forma sistemática a la mujer en el ámbito doméstico, naturalizando las tareas de cuidado e higiene del hogar como una responsabilidad biológica o exclusiva del género femenino.
+                `
+            },
+            {
+                id: 2,
+                title: "Caso 2: Dove",
+                brand: "Dove (Cuidado Personal y Jabón)",
+                epoch: "Publicidad Contemporánea (Campaña por la Belleza Real)",
+                altText: "belleza",
+                imagePaths: [
+                    "https://static.latinspots.com/piezas-galeria/vp_dove_2005_2_gal_g.jpg",
+                    "https://i.ytimg.com/vi/XpaOjMXyJGk/maxresdefault.jpg",
+                    "Dove - Caso 2.jpg",
+                    "Caso 2 - Dove.jpg"
+                ],
+                svgAsset: `
+                    <svg viewBox="0 0 500 650" class="w-full h-auto rounded-xl shadow-inner bg-slate-100">
+                        <rect width="500" height="650" fill="#f8fafc" />
+                        <path d="M 220,100 C 240,80 270,80 280,100 C 290,120 260,140 220,100 Z" fill="#3b82f6" />
+                        
+                        <!-- Siluetas Diversas -->
+                        <circle cx="150" cy="220" r="40" fill="#cbd5e1" />
+                        <circle cx="250" cy="200" r="45" fill="#94a3b8" />
+                        <circle cx="350" cy="220" r="38" fill="#cbd5e1" />
+
+                        <text x="250" y="320" text-anchor="middle" fill="#1e3a8a" font-family="'Century Gothic', sans-serif" font-size="34" font-weight="900">Dove</text>
+                        <text x="250" y="355" text-anchor="middle" fill="#0284c7" font-family="'Century Gothic', sans-serif" font-size="16" font-weight="bold" letter-spacing="2">POR LA BELLEZA REAL</text>
+
+                        <rect x="50" y="400" width="400" height="160" fill="#ffffff" rx="16" stroke="#e2e8f0" stroke-width="2" />
+                        <text x="250" y="445" text-anchor="middle" fill="#1e293b" font-family="'Century Gothic', sans-serif" font-size="16" font-weight="bold">"Todas las mujeres son reales y bellas"</text>
+                        <text x="250" y="480" text-anchor="middle" fill="#64748b" font-size="13">Campaña que celebra la diversidad de cuerpos,</text>
+                        <text x="250" y="505" text-anchor="middle" fill="#64748b" font-size="13">edades, tonos de piel y rasgos reales.</text>
+                    </svg>
+                `,
+                transcription: `
+                    <strong>Texto publicitario presente en la gráfica:</strong><br>
+                    • Marca / Mensaje: <em>"Dove - Por la belleza real"</em><br>
+                    • Eslogan: <em>"Cambiemos la definición de belleza. Tu cuerpo, tu piel y tu edad son auténticos."</em><br>
+                    • Imagen: Fotografía de mujeres de diversas edades, etnias y contextos corporales sonriendo juntas en un entorno natural.
+                `,
+                hint: "Compara esta propuesta con el modelo tradicional. ¿Impone un único estándar perfecto o amplía la mirada aceptando y valorando la diversidad?",
+                correctCategory: "empowerment",
+                conceptName: "Ruptura / Empoderamiento (Diversidad y Autoaceptación)",
+                explanation: `
+                    <strong>Respuesta Correcta: Plantea una postura de Ruptura / Empoderamiento.</strong><br><br>
+                    <strong>Explicación Teórica para el Aula:</strong><br>
+                    La campaña 'Belleza Real' de Dove representa un hito en la comunicación publicitaria al cuestionar los cánones estéticos inalcanzables. Promueve la autoaceptación, la diversidad corporal y el empoderamiento de la mujer frente a la presión estética tradicional.
+                `
+            },
+            {
+                id: 3,
+                title: "Caso 3: Quilmes",
+                brand: "Quilmes (Cerveza)",
+                epoch: "Publicidad Gráfica Tradicional de Bebidas",
+                altText: "cerveza",
+                imagePaths: [
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjtWsfAsRGtCYju73AF3Hsv5PVf7h36O_s4AKer2lJpBvgCLAL6jbdAEM&s=10",
+                    "https://i.pinimg.com/736x/8f/33/a1/8f33a1e9bb8dd946116c905f88bc1344.jpg",
+                    "Quilmes - Caso 3.jpg",
+                    "Caso 3 - Quilmes.jpg"
+                ],
+                svgAsset: `
+                    <svg viewBox="0 0 500 650" class="w-full h-auto rounded-xl shadow-inner bg-sky-900">
+                        <rect width="500" height="650" fill="#0f172a" />
+                        <circle cx="250" cy="200" r="140" fill="#1e3a8a" opacity="0.6" />
+                        
+                        <!-- Chopp de Cerveza -->
+                        <rect x="200" y="180" width="100" height="150" fill="#f59e0b" rx="10" stroke="#fef08a" stroke-width="4" />
+                        <rect x="205" y="160" width="90" height="30" fill="#ffffff" rx="8" />
+                        <path d="M 300,210 Q 340,210 340,250 Q 340,290 300,290" stroke="#fef08a" stroke-width="12" fill="none" stroke-linecap="round" />
+
+                        <text x="250" y="390" text-anchor="middle" fill="#ffffff" font-family="'Century Gothic', sans-serif" font-size="32" font-weight="900">Quilmes</text>
+                        <text x="250" y="425" text-anchor="middle" fill="#38bdf8" font-family="'Century Gothic', sans-serif" font-size="20" font-weight="bold">EL SABOR DEL ENCUENTRO</text>
+                        
+                        <rect x="80" y="460" width="340" height="110" fill="#1e293b" rx="12" stroke="#334155" stroke-width="2" />
+                        <text x="250" y="495" text-anchor="middle" fill="#f8fafc" font-size="14" font-weight="bold">¿Un espacio tradicionalmente masculino?</text>
+                        <text x="250" y="525" text-anchor="middle" fill="#94a3b8" font-size="12">Analizando el rol de varones y mujeres en las</text>
+                        <text x="250" y="545" text-anchor="middle" fill="#94a3b8" font-size="12">reuniones de amigos y el consumo de cerveza.</text>
+                    </svg>
+                `,
+                transcription: `
+                    <strong>Texto publicitario presente en la gráfica:</strong><br>
+                    • Marca / Eslogan: <em>"Quilmes. El sabor del encuentro."</em><br>
+                    • Imagen: Grupo de jóvenes compartiendo una cerveza. Históricamente la cerveza estuvo fuertemente asociada a la masculinidad, el fútbol y el ámbito varonil, evolucionando en sus campañas recientes hacia la inclusión equitativa.
+                `,
+                hint: "Evalúa el contexto histórico o actual de la publicidad cervecera. ¿Asocia el disfrute únicamente a los varones en la cancha/bar o integra a las mujeres en un plano de auténtica igualdad y complicidad?",
+                correctCategory: "stereotype",
+                conceptName: "Estereotipo Tradicional / Evolución del Rol de Género en el Consumo",
+                explanation: `
+                    <strong>Respuesta Correcta: Responde a un Estereotipo de Género (en su formato clásico).</strong><br><br>
+                    <strong>Explicación Teórica para el Aula:</strong><br>
+                    Durante décadas, las publicidades de cerveza asociaron el consumo y la camaradería exclusivamente al universo masculino ("amigos, fútbol, asado"), relegando a las mujeres a roles secundarios o de objeto de atracción. Analizar esta marca permite debatir cómo han cambiado estas narrativas en los últimos años hacia el empoderamiento y la equidad.
+                `
+            },
+            {
+                id: 4,
+                title: "Caso 4: Vanish",
+                brand: "Vanish (Quitamanchas y Cuidado de la Ropa)",
+                epoch: "Publicidad Contemporánea de Limpieza",
+                altText: "manchas",
+                imagePaths: [
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwqUU5GzydHGKJ6JzRJboBKTYw1MvhyyarL0WgJAeUMg&s=10",
+                    "Vanish - Caso 4.jpg", 
+                    "Caso 4 - Vanish.jpg", 
+                    "Vanish - Caso 4_2.jpg"
+                ],
+                svgAsset: `
+                    <svg viewBox="0 0 500 650" class="w-full h-auto rounded-xl shadow-inner bg-pink-900">
+                        <rect width="500" height="650" fill="#831843" />
+                        
+                        <!-- Envase Rosa de Vanish -->
+                        <rect x="180" y="120" width="140" height="230" fill="#db2777" rx="20" stroke="#fbcfe8" stroke-width="4" />
+                        <rect x="210" y="80" width="80" height="40" fill="#ffffff" rx="8" />
+                        
+                        <ellipse cx="250" cy="200" rx="50" ry="25" fill="#facc15" />
+                        <text x="250" y="206" text-anchor="middle" fill="#831843" font-family="'Century Gothic', sans-serif" font-size="18" font-weight="900">Vanish</text>
+                        <text x="250" y="240" text-anchor="middle" fill="#ffffff" font-family="'Century Gothic', sans-serif" font-size="12" font-weight="bold">OXI ACTION</text>
+
+                        <text x="250" y="400" text-anchor="middle" fill="#ffffff" font-family="'Century Gothic', sans-serif" font-size="24" font-weight="900">Confianza Absoluta en el Lavado</text>
+                        
+                        <rect x="50" y="440" width="400" height="140" fill="#ffffff" rx="16" />
+                        <text x="250" y="480" text-anchor="middle" fill="#9d174d" font-family="'Century Gothic', sans-serif" font-size="15" font-weight="bold">"El secreto de una mamá experta para mantener</text>
+                        <text x="250" y="505" text-anchor="middle" fill="#9d174d" font-family="'Century Gothic', sans-serif" font-size="15" font-weight="bold">la ropa de toda la familia como nueva"</text>
+                        <text x="250" y="545" text-anchor="middle" fill="#475569" font-size="12">Quita las manchas más difíciles a la primera.</text>
+                    </svg>
+                `,
+                transcription: `
+                    <strong>Texto publicitario presente en la gráfica:</strong><br>
+                    • Marca / Producto: <em>"Vanish Oxi Action"</em><br>
+                    • Mensaje principal: <em>"Confianza absoluta en el lavado... El secreto de una mamá experta para mantener la ropa de toda la familia impecable."</em><br>
+                    • Imagen: Muestra a una mujer/madre sonriente sosteniendo prendas impecables en un entorno doméstico de lavadero.
+                `,
+                hint: "Observa quién aparece como la responsable directa e indiscutible del lavado y eliminación de manchas en la ropa familiar. ¿Se muestran varones compartiendo por igual esta tarea?",
+                correctCategory: "stereotype",
+                conceptName: "Estereotipo Tradicional (Rol de Ama de Casa y Cuidado Familiar)",
+                explanation: `
+                    <strong>Respuesta Correcta: Responde a un Estereotipo de Género.</strong><br><br>
+                    <strong>Explicación Teórica para el Aula:</strong><br>
+                    Los productos de lavandería y limpieza del hogar continúan apelando mayoritariamente a la figura femenina como la "experta del hogar". Esta representación perpetúa el estereotipo de que el cuidado textil y las labores domésticas son responsabilidad exclusiva o natural de las mujeres y madres.
+                `
+            },
+
+            {
+                id: 5,
+                title: "Caso 5: Guantes Picot",
+                brand: "Guantes de Látex Picot",
+                epoch: "Publicidad Histórica (Años 1940 - 1950)",
+                altText: "guantes",
+                imagePaths: [
+                    "https://scontent.faep14-2.fna.fbcdn.net/v/t1.6435-9/89368971_1506637522828449_7793450091120951296_n.jpg?stp=dst-jpg_tt6&cstp=mx469x549&ctp=s469x549&_nc_cat=103&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=833d8c&_nc_ohc=qyNqF06W3ZkQ7kNvwGyW7cQ&_nc_oc=AdqMT0_J-96VuszLH6cU1TAeihn3daCChy-PIDmfpaXKZIFGmTnx_fW-yBGFn9U1xmk&_nc_zt=23&_nc_ht=scontent.faep14-2.fna&_nc_gid=f8jEmmhJ3TCx6du_N5503Q&_nc_ss=7b289&oh=00_AQPTkr_wCEWDLMaGF6G_obl-p7BCmQb4Dz0uWBi4DHz54Q&oe=6AE1CCCF",
+                    "Picot - Caso 5.jpg", 
+                    "Caso 5 - Guantes Picot.jpg", 
+                    "Guantes Picot - Caso 5.jpg"
+                ],
+                svgAsset: `
+                    <svg viewBox="0 0 500 650" class="w-full h-auto rounded-xl shadow-inner bg-amber-100">
+                        <rect width="500" height="650" fill="#fef3c7" stroke="#b45309" stroke-width="4" />
+                        <text x="250" y="70" text-anchor="middle" fill="#78350f" font-family="Georgia, serif" font-size="32" font-weight="bold">Enséñela desde niña...</text>
+
+                        <!-- Ilustración Madre e Hija lavando -->
+                        <circle cx="160" cy="150" r="30" fill="#fde68a" stroke="#78350f" stroke-width="2" />
+                        <path d="M 120,195 Q 160,180 200,195 L 210,330 L 110,330 Z" fill="#78350f" />
+                        <path d="M 130,195 L 190,195 L 180,310 L 140,310 Z" fill="#ffffff" />
+
+                        <circle cx="280" cy="210" r="22" fill="#fde68a" stroke="#78350f" stroke-width="2" />
+                        <path d="M 250,250 Q 280,235 310,250 L 320,360 L 240,360 Z" fill="#92400e" />
+                        <path d="M 260,250 L 300,250 L 295,340 L 255,340 Z" fill="#ffffff" />
+
+                        <text x="250" y="415" text-anchor="middle" fill="#78350f" font-family="'Century Gothic', sans-serif" font-size="16" font-weight="bold">...a proteger sus manos en las labores caseras con</text>
+
+                        <rect x="60" y="440" width="380" height="55" fill="#78350f" rx="6" />
+                        <text x="250" y="478" text-anchor="middle" fill="#ffffff" font-family="'Century Gothic', sans-serif" font-size="24" font-weight="900">GUANTES DE LATEX "PICOT"</text>
+
+                        <text x="250" y="525" text-anchor="middle" fill="#451a03" font-size="11">"Con los Guantes PICOT podrá realizar las más penosas labores del hogar..."</text>
+                        <text x="250" y="548" text-anchor="middle" fill="#451a03" font-size="11">"...protegiendo sus manos para lucir siempre todo el encanto femenino."</text>
+                    </svg>
+                `,
+                transcription: `
+                    <strong>Texto publicitario presente en la gráfica:</strong><br>
+                    • Titular: <em>"Enséñela desde niña... a proteger sus manos, en las labores caseras, con GUANTES DE LATEX 'PICOT'"</em><br>
+                    • Texto explicativo: <em>"Con los Guantes de Latex 'PICOT' podrá realizar las más penosas labores de su hogar... para lucir todo el encanto femenino de sus manos."</em><br>
+                    • Imagen: Ilustra a una madre enseñándole a su pequeña hija a lavar la vajilla en la cocina.
+                `,
+                hint: "Analiza a quién va dirigida la educación y el aprendizaje desde la infancia temprana. ¿Qué destino y tareas sociales se le enseñan a la niña según esta publicidad?",
+                correctCategory: "stereotype",
+                conceptName: "Estereotipo Tradicional (Socialización Temprana Diferenciada por Género)",
+                explanation: `
+                    <strong>Respuesta Correcta: Responde a un Estereotipo de Género.</strong><br><br>
+                    <strong>Explicación Teórica para el Aula:</strong><br>
+                    Esta gráfica histórica visibiliza la <em>socialización temprana de género</em>. Al promover que hay que "enseñar a la niña desde pequeña" el trabajo doméstico, se naturaliza la idea de que la mujer nace destinada al servicio del hogar, moldeando sus aspiraciones desde la infancia.
+                `
+            },
+
+            {
+                id: 6,
+                title: "Caso 6: Miss Dior",
+                brand: "Dior (Perfumería y Moda de Lujo)",
+                epoch: "Publicidad Contemporánea de Lujo",
+                imagePaths: ["https://i.pinimg.com/originals/bf/80/53/bf80536a18aeb52af6a38cdb25e90623.jpg", "Dior - Caso 6_2.jpg", "Dior - Caso 6.jpg", "Caso 6 - Dior.jpg"],
+                svgAsset: `
+                    <svg viewBox="0 0 500 650" class="w-full h-auto rounded-xl shadow-inner bg-pink-100">
+                        <rect width="500" height="650" fill="#fce7f3" />
+                        <circle cx="100" cy="100" r="60" fill="#fbcfe8" opacity="0.5" />
+                        <circle cx="400" cy="150" r="80" fill="#fbcfe8" opacity="0.5" />
+
+                        <circle cx="250" cy="180" r="55" fill="#fbcfe8" />
+                        <path d="M 200,160 C 210,100 290,100 300,160 Z" fill="#451a03" />
+                        
+                        <circle cx="310" cy="190" r="25" fill="#f43f5e" />
+                        <circle cx="310" cy="190" r="18" fill="#fda4af" />
+                        <circle cx="310" cy="190" r="10" fill="#ffffff" />
+
+                        <text x="250" y="320" text-anchor="middle" fill="#0f172a" font-family="Georgia, serif" font-style="italic" font-size="44" font-weight="bold">Miss Dior</text>
+                        <text x="250" y="355" text-anchor="middle" fill="#be185d" font-family="'Century Gothic', sans-serif" font-size="14" font-weight="bold" letter-spacing="4">ROSE N'ROSES</text>
+
+                        <rect x="180" y="390" width="140" height="180" fill="#f43f5e" opacity="0.7" rx="10" stroke="#ffffff" stroke-width="4" />
+                        <rect x="200" y="440" width="100" height="60" fill="#ffffff" rx="4" stroke="#cbd5e1" stroke-width="1" />
+                        <text x="250" y="470" text-anchor="middle" fill="#0f172a" font-family="Georgia, serif" font-style="italic" font-size="14" font-weight="bold">Miss Dior</text>
+                        <text x="250" y="485" text-anchor="middle" fill="#be185d" font-size="8" font-weight="bold">ROSE N'ROSES</text>
+                    </svg>
+                `,
+                transcription: `
+                    <strong>Texto publicitario presente en la gráfica:</strong><br>
+                    • Marca / Perfume: <em>"Miss Dior - ROSE N'ROSES"</em><br>
+                    • Imagen: Primer plano de una figura pública célebre sosteniendo una flor junto a su rostro, con mirada seductora, piel perfecta y un entorno de delicadeza y romanticismo floral.
+                `,
+                hint: "Observa el ideal estético que promueve la marca de lujo. ¿Representa la diversidad real de las mujeres o proyecta un modelo tradicional de belleza inalcanzable, pasividad y delicadeza?",
+                correctCategory: "stereotype",
+                conceptName: "Estereotipo Tradicional (Canon Hegemónico de Belleza y Delicadeza)",
+                explanation: `
+                    <strong>Respuesta Correcta: Responde a un Estereotipo de Género.</strong><br><br>
+                    <strong>Explicación Teórica para el Aula:</strong><br>
+                    A través de una estética romántica y sofisticada, la gráfica reproduce el <em>estereotipo de belleza hegemónica tradicional</em>. Asocia a la mujer con atributos de fragilidad, delicadeza ornamental, pasividad y seducción basada en la juventud y el lujo.
+                `
+            }
+        ];
+
+        let currentCaseIndex = 0;
+        let userAnswers = {};
+        let userNotes = {};
+        let hintsRequested = {};
+        let activeViewMode = {};
+        let customUserImages = {};
+        let synth = window.speechSynthesis;
+        let isSpeaking = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCaseSelectors();
+            renderCurrentCase();
+            updateProgress();
+        });
+
+        function renderCaseSelectors() {
+            const container = document.getElementById('case-selector-container');
+            container.innerHTML = casesData.map((c, index) => {
+                const isCompleted = userAnswers[c.id] !== undefined;
+                const isActive = index === currentCaseIndex;
+                
+                let btnStyle = "bg-white text-slate-700 border-slate-200 hover:bg-purple-50 hover:border-purple-300";
+                if (isActive) {
+                    btnStyle = "bg-purple-800 text-white border-purple-800 shadow-md ring-2 ring-purple-300";
+                } else if (isCompleted) {
+                    btnStyle = "bg-emerald-50 text-emerald-900 border-emerald-300 font-bold";
+                }
+
+                return `
+                    <button onclick="selectCase(${index})" class="px-4 py-2.5 rounded-xl text-sm font-bold border transition-all flex items-center gap-2 ${btnStyle}">
+                        <span>${c.title.split(':')[0]}</span>
+                        ${isCompleted ? '<i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>' : ''}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCase(index) {
+            stopSpeech();
+            currentCaseIndex = index;
+            renderCaseSelectors();
+            renderCurrentCase();
+        }
+
+        function renderCurrentCase() {
+            const c = casesData[currentCaseIndex];
+            const display = document.getElementById('case-card-display');
+            const answered = userAnswers[c.id];
+            const isHintShown = hintsRequested[c.id];
+            const savedNote = userNotes[c.id] || '';
+            const viewMode = activeViewMode[c.id] || 'real';
+            const userUploadedImage = customUserImages[c.id];
+
+            let mediaContent = '';
+            if (viewMode === 'svg') {
+                mediaContent = c.svgAsset;
+            } else {
+                const imgSrc = userUploadedImage || c.imagePaths[0];
+                
+                mediaContent = `
+                    <div class="relative group w-full flex flex-col items-center justify-center">
+                        <img id="case-img-${c.id}" 
+                             src="${imgSrc}" 
+                             alt="${c.altText || c.brand}" 
+                             style="max-width: 100%; height: auto;"
+                             class="max-h-[420px] w-auto max-w-full rounded-xl shadow-md object-contain cursor-zoom-in transition-transform duration-200 hover:scale-[1.01]" 
+                             onclick="openLightbox(this.src)" 
+                             onerror="handleImageError(this, ${c.id})" />
+                        <button onclick="openLightbox(document.getElementById('case-img-${c.id}').src)" class="mt-3 text-xs bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold px-3.5 py-2 rounded-xl flex items-center gap-2 shadow transition">
+                            <i class="fa-solid fa-magnifying-glass-plus text-sm"></i> Ampliar Imagen a Pantalla Completa
+                        </button>
+                    </div>
+                `;
+            }
+
+            display.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
+                    
+                    <!-- Columna Izquierda: Imagen / Vista del Aviso -->
+                    <div class="lg:col-span-5 bg-slate-900 p-6 flex flex-col items-center justify-between border-b lg:border-b-0 lg:border-r border-slate-800">
+                        
+                        <!-- Toggle Real vs SVG -->
+                        <div class="w-full flex items-center justify-center gap-1.5 bg-slate-800 p-1.5 rounded-2xl mb-4 text-xs font-bold border border-slate-700/60">
+                            <button onclick="setViewMode(${c.id}, 'real')" class="flex-1 py-2 px-3 rounded-xl transition ${viewMode === 'real' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}">
+                                <i class="fa-solid fa-image mr-1"></i> Imagen Real
+                            </button>
+                            <button onclick="setViewMode(${c.id}, 'svg')" class="flex-1 py-2 px-3 rounded-xl transition ${viewMode === 'svg' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}">
+                                <i class="fa-solid fa-vector-square mr-1"></i> Esquema SVG
+                            </button>
+                        </div>
+
+                        <!-- Contenedor del Elemento Gráfico -->
+                        <div class="w-full max-w-sm mx-auto flex-grow flex items-center justify-center py-2">
+                            ${mediaContent}
+                        </div>
+
+                        <!-- Botón para Cargar Imagen Local del Usuario -->
+                        <div class="mt-4 w-full text-center border-t border-slate-800 pt-3">
+                            <label class="cursor-pointer inline-flex items-center gap-2 text-xs font-bold text-purple-300 hover:text-purple-200 bg-purple-950/80 border border-purple-700/50 px-3.5 py-2 rounded-xl transition shadow">
+                                <i class="fa-solid fa-file-arrow-up text-amber-400 text-sm"></i>
+                                <span>${userUploadedImage ? 'Reemplazar imagen guardada' : 'Cargar archivo de foto (.JPG / .PNG)'}</span>
+                                <input type="file" accept="image/*" class="hidden" onchange="handleSingleImageUpload(${c.id}, event)" />
+                            </label>
+                        </div>
+
+                        <div class="mt-3 text-center">
+                            <span class="inline-block px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-xs font-semibold uppercase tracking-wider border border-slate-700">
+                                ${c.epoch}
+                            </span>
+                            <h4 class="text-white font-bold text-lg mt-1">${c.brand}</h4>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Análisis Didáctico -->
+                    <div class="lg:col-span-7 p-6 md:p-8 flex flex-col justify-between space-y-6">
+                        
+                        <div>
+                            <!-- Encabezado del Caso -->
+                            <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
+                                <h3 class="text-2xl font-bold text-slate-800" id="case-title-text">${c.title}</h3>
+                                <button onclick="readCaseText()" class="text-xs bg-purple-100 hover:bg-purple-200 text-purple-900 px-3.5 py-2 rounded-xl font-bold flex items-center gap-1.5 transition">
+                                    <i class="fa-solid fa-volume-high text-purple-700"></i> Leer Caso
+                                </button>
+                            </div>
+
+                            <!-- Transcripción del Aviso -->
+                            <div class="bg-slate-50 p-4 rounded-2xl text-slate-700 text-sm border border-slate-200/80 mb-5 leading-relaxed" id="case-transcription-text">
+                                ${c.transcription}
+                            </div>
+
+                            <!-- Botón y Caja de Pista -->
+                            <div class="mb-6">
+                                ${!isHintShown ? `
+                                    <button onclick="showHint(${c.id})" class="text-sm font-bold text-amber-800 bg-amber-50 hover:bg-amber-100/80 border border-amber-200/80 px-4 py-3 rounded-2xl flex items-center gap-2.5 transition w-full justify-center shadow-sm">
+                                        <i class="fa-solid fa-lightbulb text-amber-500 text-lg"></i> ¿Necesitas una pista pedagógica? Haz clic aquí
+                                    </button>
+                                ` : `
+                                    <div class="bg-amber-50/90 border-l-4 border-amber-500 p-4 rounded-r-2xl text-amber-950 text-sm animate-fade-in shadow-sm">
+                                        <strong class="font-bold block mb-1 text-amber-900 flex items-center gap-1.5">
+                                            <i class="fa-solid fa-lightbulb text-amber-600"></i> Pista Orientadora del Docente:
+                                        </strong>
+                                        <p id="case-hint-text">${c.hint}</p>
+                                    </div>
+                                `}
+                            </div>
+
+                            <!-- Pregunta Didáctica Central -->
+                            <div class="space-y-3">
+                                <label class="block font-bold text-slate-800 text-lg">
+                                    ¿Cómo se representa a la mujer en esta publicidad gráfica?
+                                </label>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <button onclick="submitAnswer('stereotype')" 
+                                        class="btn-option p-4 rounded-2xl border-2 text-left font-bold transition-all flex items-start gap-3 ${
+                                            answered === 'stereotype' 
+                                                ? 'border-rose-600 bg-rose-50/80 text-rose-950 ring-2 ring-rose-200 shadow' 
+                                                : 'border-slate-200 bg-white hover:border-rose-300 text-slate-700'
+                                        }">
+                                        <div class="w-6 h-6 rounded-full border-2 border-rose-500 flex items-center justify-center flex-shrink-0 mt-0.5 bg-white">
+                                            ${answered === 'stereotype' ? '<div class="w-3 h-3 bg-rose-600 rounded-full"></div>' : ''}
+                                        </div>
+                                        <div>
+                                            <span class="block text-base">1. Estereotipo Tradicional</span>
+                                            <span class="text-xs font-normal text-slate-500 block mt-0.5">Reproduce un rol fijo o norma rígida de género.</span>
+                                        </div>
+                                    </button>
+
+                                    <button onclick="submitAnswer('empowerment')" 
+                                        class="btn-option p-4 rounded-2xl border-2 text-left font-bold transition-all flex items-start gap-3 ${
+                                            answered === 'empowerment' 
+                                                ? 'border-emerald-600 bg-emerald-50/80 text-emerald-950 ring-2 ring-emerald-200 shadow' 
+                                                : 'border-slate-200 bg-white hover:border-emerald-300 text-slate-700'
+                                        }">
+                                        <div class="w-6 h-6 rounded-full border-2 border-emerald-500 flex items-center justify-center flex-shrink-0 mt-0.5 bg-white">
+                                            ${answered === 'empowerment' ? '<div class="w-3 h-3 bg-emerald-600 rounded-full"></div>' : ''}
+                                        </div>
+                                        <div>
+                                            <span class="block text-base">2. Ruptura / Empoderamiento</span>
+                                            <span class="text-xs font-normal text-slate-500 block mt-0.5">Cuestiona el estereotipo o muestra autonomía/equidad.</span>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Devolución Teórica Docente -->
+                            ${answered ? `
+                                <div class="mt-6 p-5 rounded-2xl border ${answered === c.correctCategory ? 'bg-emerald-50/90 border-emerald-200 text-emerald-950' : 'bg-amber-50/90 border-amber-200 text-amber-950'} transition-all shadow-sm">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-bold text-sm uppercase tracking-wide flex items-center gap-2">
+                                            ${answered === c.correctCategory 
+                                                ? '<i class="fa-solid fa-circle-check text-emerald-600 text-lg"></i> ¡Análisis Correcto!' 
+                                                : '<i class="fa-solid fa-circle-exclamation text-amber-600 text-lg"></i> Revisión Orientadora'}
+                                        </span>
+                                        <button onclick="readFeedbackText()" class="text-xs bg-white shadow-sm border px-3 py-1.5 rounded-xl font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-1">
+                                            <i class="fa-solid fa-volume-high text-purple-700"></i> Escuchar Explicación
+                                        </button>
+                                    </div>
+                                    <div class="text-sm leading-relaxed" id="case-feedback-text">
+                                        ${c.explanation}
+                                    </div>
+
+                                    <!-- Campo para Respuesta/Justificación del Estudiante -->
+                                    <div class="mt-4 pt-4 border-t border-slate-200/80">
+                                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                                            <i class="fa-solid fa-pen-to-square mr-1"></i> Tu Justificación Personal (Escribe tu argumento):
+                                        </label>
+                                        <textarea 
+                                            oninput="saveUserNote(${c.id}, this.value)"
+                                            placeholder="Explica brevemente por qué consideras que esta publicidad pertenece a esta categoría..."
+                                            class="w-full p-3 text-sm rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-600 focus:outline-none bg-white text-slate-800"
+                                            rows="2">${savedNote}</textarea>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                        </div>
+
+                        <!-- Navegación entre Casos -->
+                        <div class="flex items-center justify-between pt-4 border-t border-slate-200">
+                            <button onclick="navigateCase(-1)" ${currentCaseIndex === 0 ? 'disabled class="opacity-40 cursor-not-allowed text-slate-400 font-bold px-4 py-2"' : 'class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition text-sm flex items-center gap-2"'}>
+                                <i class="fa-solid fa-arrow-left"></i> Anterior
+                            </button>
+
+                            <span class="text-xs font-bold text-slate-400">Caso ${currentCaseIndex + 1} de ${casesData.length}</span>
+
+                            <button onclick="navigateCase(1)" ${currentCaseIndex === casesData.length - 1 ? 'disabled class="opacity-40 cursor-not-allowed text-slate-400 font-bold px-4 py-2"' : 'class="bg-purple-800 hover:bg-purple-900 text-white font-bold px-5 py-2.5 rounded-xl transition text-sm flex items-center gap-2 shadow"'}>
+                                Siguiente <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleImageError(imgElem, caseId) {
+            const c = casesData.find(item => item.id === caseId);
+            if (!c) return;
+
+            const currentSrc = imgElem.src;
+            const alt1 = c.imagePaths[1];
+            const alt2 = c.imagePaths[2];
+
+            if (alt1 && !currentSrc.includes(encodeURIComponent(alt1)) && !currentSrc.endsWith(alt1)) {
+                imgElem.src = alt1;
+            } else if (alt2 && !currentSrc.includes(encodeURIComponent(alt2)) && !currentSrc.endsWith(alt2)) {
+                imgElem.src = alt2;
+            } else {
+                activeViewMode[caseId] = 'svg';
+                renderCurrentCase();
+            }
+        }
+
+        function setViewMode(caseId, mode) {
+            activeViewMode[caseId] = mode;
+            renderCurrentCase();
+        }
+
+        function handleSingleImageUpload(caseId, event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    customUserImages[caseId] = e.target.result;
+                    activeViewMode[caseId] = 'real';
+                    renderCurrentCase();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleBatchImageUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            Array.from(files).forEach(file => {
+                const name = file.name.toLowerCase();
+                let targetId = null;
+
+                if (name.includes('puloil') || name.includes('puloi') || name.includes('caso 1') || name.includes('caso1')) targetId = 1;
+                else if (name.includes('dove') || name.includes('caso 2') || name.includes('caso2')) targetId = 2;
+                else if (name.includes('quilmes') || name.includes('caso 3') || name.includes('caso3')) targetId = 3;
+                else if (name.includes('vanish') || name.includes('caso 4') || name.includes('caso4')) targetId = 4;
+                else if (name.includes('picot') || name.includes('caso 5') || name.includes('caso5')) targetId = 5;
+                else if (name.includes('dior') || name.includes('caso 6') || name.includes('caso6')) targetId = 6;
+
+                if (targetId) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        customUserImages[targetId] = e.target.result;
+                        activeViewMode[targetId] = 'real';
+                        if (targetId === casesData[currentCaseIndex].id) {
+                            renderCurrentCase();
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function openLightbox(imgSrc) {
+            const modal = document.getElementById('lightbox-modal');
+            const container = document.getElementById('lightbox-content');
+            container.innerHTML = `<img src="${imgSrc}" class="max-h-[82vh] w-auto max-w-full rounded-xl shadow-2xl object-contain" />`;
+            modal.classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox-modal').classList.add('hidden');
+        }
+
+        function showHint(caseId) {
+            hintsRequested[caseId] = true;
+            renderCurrentCase();
+        }
+
+        function submitAnswer(category) {
+            const currentCase = casesData[currentCaseIndex];
+            userAnswers[currentCase.id] = category;
+            renderCaseSelectors();
+            renderCurrentCase();
+            updateProgress();
+        }
+
+        function saveUserNote(caseId, text) {
+            userNotes[caseId] = text;
+        }
+
+        function navigateCase(direction) {
+            const newIndex = currentCaseIndex + direction;
+            if (newIndex >= 0 && newIndex < casesData.length) {
+                selectCase(newIndex);
+            }
+        }
+
+        function updateProgress() {
+            const completed = Object.keys(userAnswers).length;
+            const total = casesData.length;
+            const percentage = (completed / total) * 100;
+
+            document.getElementById('completed-count').innerText = completed;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+
+            if (completed === total) {
+                document.getElementById('final-summary-card').classList.remove('hidden');
+            }
+        }
+
+        function restartActivity() {
+            userAnswers = {};
+            userNotes = {};
+            hintsRequested = {};
+            currentCaseIndex = 0;
+            document.getElementById('final-summary-card').classList.add('hidden');
+            renderCaseSelectors();
+            renderCurrentCase();
+            updateProgress();
+            stopSpeech();
+        }
+
+        function speakText(text) {
+            if (!('speechSynthesis' in window)) {
+                alert("Tu navegador no soporta el sintetizador de voz.");
+                return;
+            }
+
+            stopSpeech();
+
+            const cleanText = text.replace(/<[^>]*>?/gm, ' ');
+
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.92;
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                updateVoiceButtonUI(false);
+            };
+
+            utterance.onerror = () => {
+                isSpeaking = false;
+                updateVoiceButtonUI(false);
+            };
+
+            isSpeaking = true;
+            updateVoiceButtonUI(true);
+            synth.speak(utterance);
+        }
+
+        function stopSpeech() {
+            if (synth && synth.speaking) {
+                synth.cancel();
+            }
+            isSpeaking = false;
+            updateVoiceButtonUI(false);
+        }
+
+        function updateVoiceButtonUI(speaking) {
+            const icon = document.getElementById('voice-icon');
+            const text = document.getElementById('voice-text');
+            if (speaking) {
+                icon.className = 'fa-solid fa-pause text-white';
+                text.innerText = 'Pausar Lectura';
+            } else {
+                icon.className = 'fa-solid fa-play';
+                text.innerText = 'Escuchar Introducción';
+            }
+        }
+
+        function toggleGlobalVoice() {
+            if (isSpeaking) {
+                stopSpeech();
+            } else {
+                const title = document.getElementById('text-title-welcome').innerText;
+                const desc = document.getElementById('text-desc-welcome').innerText;
+                speakText(`${title}. ${desc}`);
+            }
+        }
+
+        function readCaseText() {
+            const currentCase = casesData[currentCaseIndex];
+            speakText(`${currentCase.title}. ${currentCase.transcription}`);
+        }
+
+        function readFeedbackText() {
+            const currentCase = casesData[currentCaseIndex];
+            speakText(currentCase.explanation);
+        }
+    </script>
+</body>
+</html>

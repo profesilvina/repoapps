@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exploradores del Sistema Solar - 6.° Grado</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        space: {
+                            900: '#0B0D1B',
+                            800: '#151935',
+                            700: '#1F264D',
+                            accent: '#6366F1',
+                            neon: '#38BDF8',
+                            gold: '#F59E0B',
+                            pink: '#EC4899'
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Fredoka', 'sans-serif'],
+                        body: ['Nunito', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'spin-slow': 'spin 20s linear infinite',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                        'shake': 'shake 0.5s ease-in-out'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '1', filter: 'drop-shadow(0 0 10px rgba(56, 189, 248, 0.8))' },
+                            '50%': { opacity: '0.7', filter: 'drop-shadow(0 0 20px rgba(236, 72, 153, 0.9))' }
+                        },
+                        shake: {
+                            '0%, 100%': { transform: 'translateX(0)' },
+                            '20%, 60%': { transform: 'translateX(-8px)' },
+                            '40%, 80%': { transform: 'translateX(8px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #0B0D1B;
+            color: #F3F4F6;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        h1, h2, h3, h4, .font-title {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Animated starry canvas layer */
+        #space-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0D1B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4B5563;
+        }
+
+        /* Custom glassmorphism card styles */
+        .glass-card {
+            background: rgba(21, 25, 53, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .glass-card-interactive {
+            background: rgba(31, 38, 77, 0.65);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            transition: all 0.25s ease;
+        }
+
+        .glass-card-interactive:hover {
+            border-color: rgba(56, 189, 248, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.25);
+        }
+
+        /* Drag and Drop Styling */
+        .draggable-item {
+            cursor: grab;
+            touch-action: none;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+        .drop-target-active {
+            border-color: #38BDF8 !important;
+            background: rgba(56, 189, 248, 0.15) !important;
+        }
+
+        /* Print diploma styling */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #diploma-printable-area, #diploma-printable-area * {
+                visibility: visible;
+            }
+            #diploma-printable-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                color: #000;
+                background: white !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col justify-between relative min-h-screen">
+
+    <canvas id="space-canvas"></canvas>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app" class="relative z-10 flex flex-col min-h-screen">
+
+        <header class="glass-card sticky top-0 z-40 border-b border-indigo-500/20 px-4 py-3">
+            <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+                
+                <!-- Logo / Title -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('welcome')">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                        <i class="fa-solid font-title text-xl text-white">🚀</i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-pink-400">
+                            Exploradores Espaciales
+                        </h1>
+                        <span class="text-xs text-indigo-300 block">6.º Grado - Primaria</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Steps -->
+                <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                    <button id="nav-btn-welcome" onclick="navigateTo('welcome')" class="nav-step-btn px-3 py-1.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 bg-indigo-600/30 text-indigo-200 hover:bg-indigo-600/50">
+                        <i class="fa-solid fa-house"></i> <span>Inicio</span>
+                    </button>
+                    <button id="nav-btn-module1" onclick="navigateTo('module1')" class="nav-step-btn px-3 py-1.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 text-gray-400 hover:text-white hover:bg-white/5">
+                        <i class="fa-solid fa-shapes"></i> <span>Módulo 1: Cuerpos</span>
+                    </button>
+                    <button id="nav-btn-module2" onclick="navigateTo('module2')" class="nav-step-btn px-3 py-1.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 text-gray-400 hover:text-white hover:bg-white/5">
+                        <i class="fa-solid fa-globe"></i> <span>Módulo 2: Planetas</span>
+                    </button>
+                    <button id="nav-btn-module3" onclick="navigateTo('module3')" class="nav-step-btn px-3 py-1.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 text-gray-400 hover:text-white hover:bg-white/5">
+                        <i class="fa-solid fa-arrows-spin"></i> <span>Módulo 3: Movimientos</span>
+                    </button>
+                    <button id="nav-btn-diploma" onclick="navigateTo('diploma')" class="nav-step-btn px-3 py-1.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 text-gray-400 hover:text-white hover:bg-white/5">
+                        <i class="fa-solid fa-award"></i> <span>Diploma</span>
+                    </button>
+                </nav>
+
+                <!-- Points & Sound Toggle -->
+                <div class="flex items-center space-x-3">
+                    <button id="audio-toggle-btn" onclick="toggleAudio()" class="w-10 h-10 rounded-full glass-card hover:bg-indigo-600/30 text-yellow-400 flex items-center justify-center transition border border-indigo-400/30" title="Activar/Desactivar Sonido">
+                        <i id="audio-icon" class="fa-solid fa-volume-high"></i>
+                    </button>
+
+                    <div class="glass-card px-3 py-1.5 rounded-full border border-yellow-500/30 flex items-center space-x-2">
+                        <i class="fa-solid fa-star text-yellow-400 animate-pulse"></i>
+                        <span id="total-score-display" class="font-bold text-yellow-300 text-lg">0</span>
+                        <span class="text-xs text-gray-400">pts</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Mobile Navigation Bar Below -->
+            <div class="md:hidden flex justify-around mt-3 pt-2 border-t border-white/10 text-xs">
+                <button onclick="navigateTo('welcome')" class="p-1 text-center text-gray-300 flex flex-col items-center"><i class="fa-solid fa-house mb-1"></i> Inicio</button>
+                <button onclick="navigateTo('module1')" class="p-1 text-center text-gray-300 flex flex-col items-center"><i class="fa-solid fa-shapes mb-1"></i> Módulo 1</button>
+                <button onclick="navigateTo('module2')" class="p-1 text-center text-gray-300 flex flex-col items-center"><i class="fa-solid fa-globe mb-1"></i> Módulo 2</button>
+                <button onclick="navigateTo('module3')" class="p-1 text-center text-gray-300 flex flex-col items-center"><i class="fa-solid fa-arrows-spin mb-1"></i> Módulo 3</button>
+                <button onclick="navigateTo('diploma')" class="p-1 text-center text-gray-300 flex flex-col items-center"><i class="fa-solid fa-award mb-1"></i> Diploma</button>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto px-4 py-6 max-w-6xl flex flex-col justify-center">
+
+            <!-- ================= PANTALLA 0: BIENVENIDA / INICIO ================= -->
+            <section id="screen-welcome" class="screen-view flex flex-col items-center justify-center text-center space-y-8 py-8">
+                <!-- Orbiting Animated SVG graphic -->
+                <div class="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center my-4">
+                    <div class="absolute inset-0 rounded-full border border-indigo-500/30 animate-spin-slow"></div>
+                    <div class="absolute w-5/6 h-5/6 rounded-full border border-dashed border-cyan-400/40 animate-[spin_15s_linear_infinite_reverse]"></div>
+                    
+                    <!-- Sun SVG center -->
+                    <div class="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gradient-to-tr from-amber-500 via-yellow-400 to-yellow-100 shadow-[0_0_50px_rgba(245,158,11,0.8)] animate-pulse-glow flex items-center justify-center">
+                        <span class="text-4xl">☀️</span>
+                    </div>
+
+                    <!-- Orbiting planets -->
+                    <div class="absolute w-full h-full animate-spin-slow pointer-events-none">
+                        <div class="w-8 h-8 rounded-full bg-blue-500 absolute top-0 left-1/2 -translate-x-1/2 flex items-center justify-center text-xs shadow-[0_0_15px_rgba(59,130,246,0.8)]">🌍</div>
+                        <div class="w-6 h-6 rounded-full bg-red-500 absolute bottom-4 left-10 flex items-center justify-center text-xs shadow-[0_0_15px_rgba(239,68,68,0.8)]">🔴</div>
+                        <div class="w-10 h-10 rounded-full bg-amber-600 absolute bottom-2 right-8 flex items-center justify-center text-xs shadow-[0_0_15px_rgba(217,119,6,0.8)]">🪐</div>
+                    </div>
+                </div>
+
+                <div class="space-y-4 max-w-2xl">
+                    <span class="inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-widest bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 uppercase">
+                        Misión Educativa de Ciencias Naturales
+                    </span>
+                    <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white font-title">
+                        ¡Exploradores del <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-400 to-cyan-400">Sistema Solar</span>!
+                    </h2>
+                    <p class="text-lg md:text-xl text-indigo-200">
+                        ¡Hola, Comandante! Embárcate en un viaje astronómico interactivo. Supera los 3 módulos de entrenamiento, acumula estrellas y obtén tu Diploma Oficial de Exploración Espacial de 6.º Grado.
+                    </p>
+                </div>
+
+                <!-- Features Badges -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl pt-4">
+                    <div class="glass-card p-4 rounded-2xl flex items-center space-x-3 border-l-4 border-cyan-400">
+                        <span class="text-3xl">☄️</span>
+                        <div class="text-left">
+                            <h3 class="font-bold text-white text-sm">1. Cuerpos Celeste</h3>
+                            <p class="text-xs text-gray-400">Empareja conceptos clave</p>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl flex items-center space-x-3 border-l-4 border-indigo-400">
+                        <span class="text-3xl">🪐</span>
+                        <div class="text-left">
+                            <h3 class="font-bold text-white text-sm">2. Los 8 Planetas</h3>
+                            <p class="text-xs text-gray-400">Fichas e interactivo</p>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl flex items-center space-x-3 border-l-4 border-pink-400">
+                        <span class="text-3xl">🌎</span>
+                        <div class="text-left">
+                            <h3 class="font-bold text-white text-sm">3. Movimientos</h3>
+                            <p class="text-xs text-gray-400">Trivia y Estaciones</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button onclick="navigateTo('module1')" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-bold text-xl shadow-xl shadow-indigo-500/30 transform hover:-translate-y-1 transition active:translate-y-0 flex items-center space-x-3">
+                        <span>¡Comenzar Misión!</span>
+                        <i class="fa-solid fa-rocket animate-bounce"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================= MÓDULO 1: CUERPOS DEL UNIVERSO ================= -->
+            <section id="screen-module1" class="screen-view hidden space-y-6">
+                <div class="text-center space-y-2">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 uppercase">
+                        Módulo 1
+                    </span>
+                    <h2 class="text-3xl md:text-4xl font-bold font-title text-white">Cuerpos del Universo</h2>
+                    <p class="text-gray-300 max-w-2xl mx-auto text-sm md:text-base">
+                        Relaciona cada cuerpo celeste con su definición correspondiente. Puedes hacer clic en un concepto y luego en su definición, o arrastrarlos.
+                    </p>
+                </div>
+
+                <!-- Module 1 Game Area -->
+                <div class="glass-card p-4 md:p-6 rounded-3xl space-y-6">
+                    <!-- Scoreboard & Hint banner -->
+                    <div class="flex flex-wrap justify-between items-center bg-space-800/80 p-3 rounded-2xl border border-white/10 gap-2">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-check-circle text-green-400 text-xl"></i>
+                            <span class="text-sm font-semibold text-gray-200">Aciertos: <span id="m1-matches-count" class="text-cyan-300 text-lg font-bold">0</span> / 6</span>
+                        </div>
+                        <div id="m1-hint-box" class="text-xs md:text-sm text-yellow-300 font-medium italic flex items-center space-x-1">
+                            <i class="fa-solid fa-lightbulb text-yellow-400"></i>
+                            <span id="m1-hint-text">¡Haz clic o arrastra un elemento para emparejar!</span>
+                        </div>
+                    </div>
+
+                    <!-- Matching Columns Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Left Column: Terms -->
+                        <div class="space-y-3">
+                            <h3 class="font-bold text-indigo-300 text-sm uppercase tracking-wider mb-2 flex items-center">
+                                <i class="fa-solid fa-meteor mr-2"></i> Conceptos Celestes
+                            </h3>
+                            <div id="m1-terms-container" class="space-y-3">
+                                <!-- Dynamic dynamic terms injected here -->
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Definitions -->
+                        <div class="space-y-3">
+                            <h3 class="font-bold text-cyan-300 text-sm uppercase tracking-wider mb-2 flex items-center">
+                                <i class="fa-solid fa-book-open mr-2"></i> Definiciones
+                            </h3>
+                            <div id="m1-definitions-container" class="space-y-3">
+                                <!-- Dynamic definitions injected here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module 1 Completion Action -->
+                    <div id="m1-success-banner" class="hidden p-4 rounded-2xl bg-green-500/20 border border-green-500/50 text-center space-y-3 animate-fade-in">
+                        <h4 class="text-xl font-bold text-green-300 flex items-center justify-center space-x-2">
+                            <span>🎉 ¡Excelente trabajo astronómico!</span>
+                        </h4>
+                        <p class="text-sm text-green-100">Has dominado todos los conceptos clave de los cuerpos celestes.</p>
+                        <button onclick="navigateTo('module2')" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 font-bold text-white shadow-lg transition">
+                            Avanzar al Módulo 2: Planetas <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= MÓDULO 2: EXPLORADOR DE PLANETAS ================= -->
+            <section id="screen-module2" class="screen-view hidden space-y-8">
+                <div class="text-center space-y-2">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 uppercase">
+                        Módulo 2
+                    </span>
+                    <h2 class="text-3xl md:text-4xl font-bold font-title text-white">Explorador de Planetas</h2>
+                    <p class="text-gray-300 max-w-2xl mx-auto text-sm md:text-base">
+                        Haz clic en cualquiera de los 8 planetas para abrir su Ficha Técnica y aprender sus características.
+                    </p>
+                </div>
+
+                <!-- Planets Carousel / Grid Container -->
+                <div class="glass-card p-6 rounded-3xl space-y-6">
+                    <h3 class="text-lg font-bold text-indigo-300 flex items-center space-x-2">
+                        <i class="fa-solid fa-compass"></i>
+                        <span>El Orden desde el Sol:</span>
+                    </h3>
+
+                    <!-- Horizontal Planet Buttons -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+                        <button onclick="openPlanetModal('mercurio')" class="glass-card-interactive p-3 rounded-2xl text-center flex flex-col items-center space-y-2 group">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-gray-600 to-gray-400 flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition">🪨</div>
+                            <span class="font-bold text-sm text-gray-200">Mercurio</span>
+                            <span class="text-[10px] text-gray-400">1.º del Sol</span>
+                        </button>
+                        
+                        <button onclick="openPlanetModal('venus')" class="glass-card-interactive p-3 rounded-2xl text-center flex flex-col items-center space-y-2 group">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-amber-600 to-yellow-300 flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition">🌟</div>
+                            <span class="font-bold text-sm text-gray-200">Venus</span>
+                            <span class="text-[10px] text-gray-400">2.º del Sol</span>
+                        </button>
+
+                        <button onclick="openPlanetModal('tierra')" class="glass-card-interactive p-3 rounded-2xl text-center flex flex-col items-center space-y-2 group">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-600 to-green-400 flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition">🌎</div>
+                            <span class="font-bold text-sm text-gray-200">Tierra</span>
+                            <span class="text-[10px] text-gray-400">3.º del Sol</span>
+                        </button>
+
+                        <button onclick="openPlanetModal('marte')" class="glass-card-interactive p-3 rounded-2xl text-center flex flex-col items-center space-y-2 group">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-red-700 to-orange-500 flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition">🔴</div>
+                            <span class="font-bold text-sm text-gray-200">Marte</span>
+                            <span class="text-[10px] text-gray-400">4.º del Sol</span>
+                        </button>
+
+                        <button onclick="openPlanetModal('jupiter')" class="glass-card-interactive p-3 rounded-2xl text-center flex flex-col items-center space-y-2 group">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-amber-700 to-amber-300 flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition">🟠</div>
+                            <span class="font-bold text-sm text-gray-200">Júpiter</span>
+                            <span class="text-[10px] text-gray-400">5.º del Sol</span>
+                        </button>
+
+                        <button onclick="openPlanetModal('saturno')" class="glass-card-interactive p-3 rounded-2xl text-center flex flex-col items-center space-y-2 group">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-yellow-700 to-yellow-200 flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition">🪐</div>
+                            <span class="font-bold text-sm text-gray-200">Saturno</span>
+                            <span class="text-[10px] text-gray-400">6.º del Sol</span>
+                        </button>
+
+                        <button onclick="openPlanetModal('urano')" class="glass-card-interactive p-3 rounded-2xl text-center flex flex-col items-center space-y-2 group">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-cyan-600 to-teal-300 flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition">💎</div>
+                            <span class="font-bold text-sm text-gray-200">Urano</span>
+                            <span class="text-[10px] text-gray-400">7.º del Sol</span>
+                        </button>
+
+                        <button onclick="openPlanetModal('neptuno')" class="glass-card-interactive p-3 rounded-2xl text-center flex flex-col items-center space-y-2 group">
+                            <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-blue-800 to-indigo-400 flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition">🔵</div>
+                            <span class="font-bold text-sm text-gray-200">Neptuno</span>
+                            <span class="text-[10px] text-gray-400">8.º del Sol</span>
+                        </button>
+                    </div>
+
+                    <!-- Mini Activity: Ordering Challenge -->
+                    <div class="border-t border-white/10 pt-6 space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                            <div>
+                                <h3 class="text-xl font-bold font-title text-yellow-300 flex items-center space-x-2">
+                                    <i class="fa-solid fa-puzzle-piece"></i>
+                                    <span>Desafío Interactivo: "Ordena los Planetas"</span>
+                                </h3>
+                                <p class="text-xs text-gray-300">Usa las flechas o arrastra para organizar los planetas desde el más cercano al Sol (1.°) al más lejano (8.°).</p>
+                            </div>
+                            <button onclick="checkPlanetOrder()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-gray-900 font-extrabold text-sm shadow-lg shadow-yellow-500/20 transition flex items-center space-x-2">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Verificar Orden</span>
+                            </button>
+                        </div>
+
+                        <!-- Reorderable List Container -->
+                        <div id="reorder-planets-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                            <!-- Injected dynamically for initial shuffle -->
+                        </div>
+
+                        <!-- Ordering Feedback Box -->
+                        <div id="m2-order-feedback" class="hidden p-4 rounded-2xl text-center font-bold transition"></div>
+                    </div>
+
+                    <!-- Next Step Button -->
+                    <div class="flex justify-end pt-4">
+                        <button onclick="navigateTo('module3')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-pink-500 hover:from-indigo-600 hover:to-pink-600 text-white font-bold shadow-lg transition flex items-center space-x-2">
+                            <span>Ir al Módulo 3: Movimientos</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= MÓDULO 3: TRIVIA DE MOVIMIENTOS Y ESTACIONES ================= -->
+            <section id="screen-module3" class="screen-view hidden space-y-6">
+                <div class="text-center space-y-2">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-400/30 uppercase">
+                        Módulo 3
+                    </span>
+                    <h2 class="text-3xl md:text-4xl font-bold font-title text-white">Movimientos Terrestres y Estaciones</h2>
+                    <p class="text-gray-300 max-w-2xl mx-auto text-sm md:text-base">
+                        Pon a prueba tus conocimientos sobre Rotación, Traslación, Solsticios y Equinoccios.
+                    </p>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl space-y-6 max-w-3xl mx-auto">
+                    <!-- Progress Bar for Quiz -->
+                    <div class="flex items-center justify-between text-xs font-bold text-gray-300">
+                        <span>Pregunta <span id="quiz-current-q">1</span> de 4</span>
+                        <span>Aciertos Trivia: <span id="quiz-score" class="text-yellow-400 font-extrabold text-sm">0</span>/4</span>
+                    </div>
+                    <div class="w-full bg-space-800 rounded-full h-2.5 border border-white/10 overflow-hidden">
+                        <div id="quiz-progress-bar" class="bg-gradient-to-r from-pink-500 to-indigo-500 h-2.5 rounded-full transition-all duration-300" style="width: 25%"></div>
+                    </div>
+
+                    <!-- Question Container -->
+                    <div id="quiz-card" class="space-y-6">
+                        <h3 id="quiz-question-text" class="text-xl font-bold text-white leading-relaxed">
+                            <!-- Question text injected here -->
+                        </h3>
+
+                        <!-- Options -->
+                        <div id="quiz-options-container" class="space-y-3">
+                            <!-- Options injected dynamically -->
+                        </div>
+
+                        <!-- Educational Explanation Box -->
+                        <div id="quiz-explanation-box" class="hidden p-4 rounded-2xl bg-indigo-900/50 border border-indigo-400/40 text-sm space-y-2">
+                            <span class="font-bold text-cyan-300 flex items-center space-x-1">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                <span>Explicación Científica:</span>
+                            </span>
+                            <p id="quiz-explanation-text" class="text-gray-200"></p>
+                        </div>
+                    </div>
+
+                    <!-- Next Question Action Button -->
+                    <div class="flex justify-end pt-2">
+                        <button id="quiz-next-btn" onclick="nextQuizQuestion()" disabled class="px-6 py-2.5 rounded-xl bg-indigo-600/50 text-gray-400 font-bold cursor-not-allowed transition flex items-center space-x-2">
+                            <span>Siguiente Pregunta</span>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= PANTALLA FINAL / DIPLOMA ================= -->
+            <section id="screen-diploma" class="screen-view hidden space-y-8">
+                <div class="text-center space-y-2">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-yellow-500/20 text-yellow-300 border border-yellow-400/30 uppercase">
+                        Misión Cumplida
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-extrabold font-title text-white">¡Misión Completada, Comandante!</h2>
+                    <p class="text-gray-300 max-w-2xl mx-auto text-sm md:text-base">
+                        Has explorado el Sistema Solar y demostrado tus conocimientos de astronomía.
+                    </p>
+                </div>
+
+                <!-- Final Score Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                    <div class="glass-card p-4 rounded-2xl text-center space-y-1 border-t-4 border-indigo-400">
+                        <span class="text-xs text-gray-400 uppercase font-bold">Módulo 1: Cuerpos</span>
+                        <div class="text-2xl font-black text-indigo-300" id="summary-m1">0/6</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl text-center space-y-1 border-t-4 border-cyan-400">
+                        <span class="text-xs text-gray-400 uppercase font-bold">Módulo 2: Ordenamiento</span>
+                        <div class="text-2xl font-black text-cyan-300" id="summary-m2">Pendiente</div>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl text-center space-y-1 border-t-4 border-pink-400">
+                        <span class="text-xs text-gray-400 uppercase font-bold">Módulo 3: Trivia</span>
+                        <div class="text-2xl font-black text-pink-300" id="summary-m3">0/4</div>
+                    </div>
+                </div>
+
+                <!-- Student Name Input Control -->
+                <div class="glass-card p-6 rounded-3xl max-w-md mx-auto space-y-3 text-center">
+                    <label for="student-name-input" class="block font-bold text-gray-200 text-sm">
+                        Ingresa tu nombre para personalizar tu Diploma:
+                    </label>
+                    <input type="text" id="student-name-input" placeholder="Escribe tu nombre y apellido..." value="Astronauta Curioso" oninput="updateDiplomaName()" class="w-full px-4 py-2.5 rounded-xl bg-space-900/90 border border-indigo-400/40 text-white text-center font-bold focus:outline-none focus:border-cyan-400 transition">
+                </div>
+
+                <!-- PRINTABLE DIPLOMA CARD -->
+                <div class="max-w-4xl mx-auto">
+                    <div id="diploma-printable-area" class="relative p-8 md:p-12 rounded-3xl bg-gradient-to-br from-space-800 via-indigo-950 to-space-900 border-4 border-yellow-400/80 shadow-2xl space-y-6 text-center overflow-hidden">
+                        
+                        <!-- Decorative Corners -->
+                        <div class="absolute top-3 left-3 text-2xl text-yellow-400">✨</div>
+                        <div class="absolute top-3 right-3 text-2xl text-yellow-400">✨</div>
+                        <div class="absolute bottom-3 left-3 text-2xl text-yellow-400">🛸</div>
+                        <div class="absolute bottom-3 right-3 text-2xl text-yellow-400">🪐</div>
+
+                        <div class="space-y-2">
+                            <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-yellow-400 to-amber-600 flex items-center justify-center text-3xl shadow-lg shadow-yellow-500/40">
+                                🎖️
+                            </div>
+                            <h3 class="text-xs md:text-sm font-bold tracking-widest text-yellow-400 uppercase">
+                                REPÚBLICA ESPACIAL DE CIENCIAS NATURALES
+                            </h3>
+                            <h2 class="text-2xl md:text-4xl font-black font-title text-white tracking-wide">
+                                DIPLOMA DE HONOR
+                            </h2>
+                        </div>
+
+                        <p class="text-sm md:text-base text-gray-300">
+                            Se otorga el presente reconocimiento oficial de exploración espacial a:
+                        </p>
+
+                        <div class="py-2">
+                            <div id="diploma-student-name" class="text-3xl md:text-5xl font-extrabold font-title text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-yellow-200 to-pink-300 border-b-2 border-indigo-400/50 inline-block px-8 py-1">
+                                Astronauta Curioso
+                            </div>
+                        </div>
+
+                        <p class="text-sm md:text-base text-gray-200 max-w-xl mx-auto">
+                            Por haber completado satisfactoriamente los módulos sobre Cuerpos Celestes, los 8 Planetas y los Movimientos Terrestres, consagrándose como:
+                        </p>
+
+                        <div class="py-2">
+                            <span class="px-6 py-2 rounded-full bg-gradient-to-r from-yellow-500/20 to-amber-500/20 border border-yellow-400/50 text-yellow-300 font-bold text-lg md:text-xl inline-block shadow-inner">
+                                🌟 Oficial de Exploración Espacial de 6.º Grado 🚀
+                            </span>
+                        </div>
+
+                        <div class="pt-6 border-t border-white/10 flex flex-wrap justify-between items-center text-xs text-gray-400 gap-4">
+                            <div>
+                                <span class="block font-semibold text-gray-300">Puntuación Total Acumulada:</span>
+                                <span id="diploma-final-score" class="text-yellow-400 font-bold text-base">0 estrellas</span>
+                            </div>
+                            <div>
+                                <span class="block font-semibold text-gray-300">Fecha de Expedición:</span>
+                                <span id="diploma-date" class="text-cyan-300">2026</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="block font-semibold text-gray-300">Comandancia Espacial:</span>
+                                <span class="italic text-indigo-300">Sistema Solar EDU</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons for Printing / Restarting -->
+                <div class="flex flex-wrap justify-center items-center gap-4 pt-4 no-print">
+                    <button onclick="window.print()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-gray-900 font-extrabold shadow-lg transition flex items-center space-x-2">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Imprimir / Guardar Diploma</span>
+                    </button>
+
+                    <button onclick="restartMission()" class="px-6 py-3 rounded-xl glass-card hover:bg-white/10 text-white font-bold transition flex items-center space-x-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Reiniciar Misión</span>
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Planet Detail Modal Window -->
+        <div id="planet-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+            <div class="glass-card max-w-lg w-full rounded-3xl border border-indigo-400/30 p-6 space-y-5 relative shadow-2xl transform scale-95 transition-transform duration-300" id="planet-modal-content">
+                
+                <!-- Close Button -->
+                <button onclick="closePlanetModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+
+                <!-- Modal Header -->
+                <div class="flex items-center space-x-4">
+                    <div id="modal-planet-icon" class="w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-xl flex-shrink-0">
+                        🪐
+                    </div>
+                    <div>
+                        <span id="modal-planet-order" class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-500/20 text-cyan-300 border border-cyan-400/30">
+                            1.º Planeta
+                        </span>
+                        <h3 id="modal-planet-name" class="text-3xl font-extrabold font-title text-white mt-1">
+                            Nombre
+                        </h3>
+                        <span id="modal-planet-type" class="text-xs text-indigo-200 block mt-0.5">
+                            Rocoso
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Info Grid -->
+                <div class="grid grid-cols-2 gap-3 text-xs md:text-sm">
+                    <div class="p-3 rounded-xl bg-space-800/80 border border-white/5 space-y-1">
+                        <span class="text-gray-400 block font-semibold">Lunas / Satélites:</span>
+                        <span id="modal-planet-moons" class="font-bold text-yellow-300 text-base">0</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-space-800/80 border border-white/5 space-y-1">
+                        <span class="text-gray-400 block font-semibold">Curiosidad/Diámetro:</span>
+                        <span id="modal-planet-size" class="font-bold text-cyan-300 text-xs">Información</span>
+                    </div>
+                </div>
+
+                <!-- Main Feature Box -->
+                <div class="p-4 rounded-xl bg-indigo-950/60 border border-indigo-500/30 space-y-1">
+                    <h4 class="font-bold text-sm text-indigo-300 flex items-center space-x-1">
+                        <i class="fa-solid fa-star text-xs"></i>
+                        <span>Característica Principal:</span>
+                    </h4>
+                    <p id="modal-planet-feature" class="text-xs md:text-sm text-gray-200 leading-relaxed"></p>
+                </div>
+
+                <!-- Action Close -->
+                <div class="flex justify-end pt-2">
+                    <button onclick="closePlanetModal()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition">
+                        Entendido, Comandante
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="glass-card border-t border-indigo-500/20 py-3 text-center text-xs text-indigo-300/70">
+            <p>Exploradores del Sistema Solar • Diseñado para 6.º Grado de Educación Primaria</p>
+        </footer>
+    </div>
+
+    <script>
+        /* ================= STATE MANAGEMENT ================= */
+        const gameState = {
+            audioEnabled: true,
+            score: 0,
+            m1Score: 0,
+            m2OrderCorrect: false,
+            m3Score: 0,
+            currentQuizIdx: 0,
+            selectedM1Term: null,
+            selectedM1Def: null,
+            orderPlanets: []
+        };
+
+        /* ================= DATA STRUCTURES ================= */
+        const MODULE1_DATA = [
+            { id: 'sol', term: 'Sol', icon: '☀️', def: 'Estrella central que emite su propia luz y calor.' },
+            { id: 'cometa', term: 'Cometa', icon: '☄️', def: 'Objeto formado por hielo y roca que despliega una cola brillante cerca del Sol.' },
+            { id: 'satelite', term: 'Satélite Natural', icon: '🌕', def: 'Cuerpo celeste que gira alrededor de un planeta (como la Luna).' },
+            { id: 'asteroide', term: 'Asteroide', icon: '🪨', def: 'Fragmento rocoso que gira alrededor del Sol, la mayoría en un cinturón especial.' },
+            { id: 'meteorito', term: 'Meteorito', icon: '🌠', def: 'Roca espacial que entra a la atmósfera e impacta en la superficie.' },
+            { id: 'galaxia', term: 'Galaxia', icon: '🌌', def: 'Enorme conjunto de millones de estrellas, planetas y gas unidos por gravedad.' }
+        ];
+
+        const PLANETS_DATA = {
+            mercurio: {
+                name: 'Mercurio',
+                order: '1.º Planeta desde el Sol',
+                type: 'Planeta Rocoso / Telúrico',
+                moons: '0 lunas',
+                size: '4,880 km de diámetro',
+                feature: 'Es el planeta más cercano al Sol y el más pequeño del Sistema Solar. No tiene atmósfera para retener calor, por lo que pasa de temperaturas hirvientes a extremadamente frías.',
+                bgGradient: 'from-gray-600 to-gray-400',
+                icon: '🪨'
+            },
+            venus: {
+                name: 'Venus',
+                order: '2.º Planeta desde el Sol',
+                type: 'Planeta Rocoso / Telúrico',
+                moons: '0 lunas',
+                size: '12,104 km de diámetro',
+                feature: 'Es el planeta más caliente de todos debido a un denso efecto invernadero. Gira en dirección contraria a la mayoría de los demás planetas.',
+                bgGradient: 'from-amber-600 to-yellow-300',
+                icon: '🌟'
+            },
+            tierra: {
+                name: 'Tierra',
+                order: '3.er Planeta desde el Sol',
+                type: 'Planeta Rocoso / Telúrico',
+                moons: '1 luna (La Luna)',
+                size: '12,742 km de diámetro',
+                feature: 'Nuestro hogar. Es el único planeta conocido con agua líquida en la superficie y vida en abundancia gracias a su atmósfera protectora.',
+                bgGradient: 'from-blue-600 to-green-400',
+                icon: '🌎'
+            },
+            marte: {
+                name: 'Marte',
+                order: '4.º Planeta desde el Sol',
+                type: 'Planeta Rocoso / Telúrico',
+                moons: '2 lunas (Fobos y Deimos)',
+                size: '6,779 km de diámetro',
+                feature: 'Conocido como el "Planeta Rojo" por el óxido de hierro en su suelo. Albergó agua en el pasado y posee el volcán más grande del Sistema Solar (Monte Olimpo).',
+                bgGradient: 'from-red-700 to-orange-500',
+                icon: '🔴'
+            },
+            jupiter: {
+                name: 'Júpiter',
+                order: '5.º Planeta desde el Sol',
+                type: 'Gigante Gaseoso',
+                moons: 'Aproximadamente 95 lunas',
+                size: '139,820 km de diámetro',
+                feature: 'El gigante del Sistema Solar. Cabrían más de 1,300 Tierras dentro. Destaca su "Gran Mancha Roja", una tormenta gigante más grande que nuestro planeta.',
+                bgGradient: 'from-amber-700 to-amber-300',
+                icon: '🟠'
+            },
+            saturno: {
+                name: 'Saturno',
+                order: '6.º Planeta desde el Sol',
+                type: 'Gigante Gaseoso',
+                moons: 'Aproximadamente 146 lunas',
+                size: '116,460 km de diámetro',
+                feature: 'Famoso por su deslumbrante sistema de anillos compuestos por millones de pedazos de hielo, polvo y rocas. Es tan ligero que flotaría en el agua.',
+                bgGradient: 'from-yellow-700 to-yellow-200',
+                icon: '🪐'
+            },
+            urano: {
+                name: 'Urano',
+                order: '7.º Planeta desde el Sol',
+                type: 'Gigante Helado',
+                moons: 'Aproximadamente 28 lunas',
+                size: '50,724 km de diámetro',
+                feature: 'Un planeta helado de color azul verdoso por el metano en su atmósfera. La característica más curiosa es que orbita "inclinado" de lado.',
+                bgGradient: 'from-cyan-600 to-teal-300',
+                icon: '💎'
+            },
+            neptuno: {
+                name: 'Neptuno',
+                order: '8.º Planeta desde el Sol',
+                type: 'Gigante Helado',
+                moons: 'Aproximadamente 16 lunas',
+                size: '49,244 km de diámetro',
+                feature: 'El planeta más lejano del Sol. Posee los vientos más veloces del Sistema Solar (¡hasta 2,000 km/h!) y un intenso color azul profundo.',
+                bgGradient: 'from-blue-800 to-indigo-400',
+                icon: '🔵'
+            }
+        };
+
+        const QUIZ_QUESTIONS = [
+            {
+                question: '¿Qué consecuencia principal tiene el movimiento de Rotación de la Tierra?',
+                options: [
+                    { text: 'Las 4 estaciones del año', correct: false },
+                    { text: 'La sucesión del día y la noche', correct: true },
+                    { text: 'El origen de las galaxias', correct: false }
+                ],
+                explanation: 'La Rotación es el giro de la Tierra sobre su propio eje (dura 24 horas). Al girar, una cara se expone al Sol (día) y la otra queda a oscuras (noche).'
+            },
+            {
+                question: '¿Cuánto tarda la Tierra en dar una vuelta completa alrededor del Sol (Traslación)?',
+                options: [
+                    { text: '24 horas', correct: false },
+                    { text: '365 días y 6 horas', correct: true },
+                    { text: '28 días', correct: false }
+                ],
+                explanation: 'El movimiento de Traslación tarda 365 días y 6 horas. Esas 6 horas acumuladas durante 4 años forman el día extra de los años bisiestos (29 de febrero).'
+            },
+            {
+                question: '¿En qué momentos del año el día y la noche duran exactamente lo mismo (12 horas)?',
+                options: [
+                    { text: 'Solsticios', correct: false },
+                    { text: 'Equinoccios', correct: true },
+                    { text: 'Eclipses', correct: false }
+                ],
+                explanation: 'En los Equinoccios (marzo y septiembre), la luz del Sol cae perpendicularmente sobre el Ecuador, haciendo que el día y la noche duren exactamente 12 horas en todo el planeta.'
+            },
+            {
+                question: 'Si es 21 de diciembre y en el Hemisferio Sur inicia el Verano, ¿qué estación inicia en el Hemisferio Norte?',
+                options: [
+                    { text: 'Invierno', correct: true },
+                    { text: 'Primavera', correct: false },
+                    { text: 'Otoño', correct: false }
+                ],
+                explanation: 'Debido a la inclinación del eje terrestre, las estaciones son opuestas en los dos hemisferios. Cuando en el Sur es Verano (Solsticio de diciembre), en el Norte es Invierno.'
+            }
+        ];
+
+        /* ================= WEB AUDIO SYNTHESIZER ================= */
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+            }
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            }
+            playSuccess() {
+                if (!gameState.audioEnabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now); // C5
+                osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1); // E5
+                osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2); // G5
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            }
+            playError() {
+                if (!gameState.audioEnabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.linearRampToValueAtTime(150, now + 0.2);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+            playVictory() {
+                if (!gameState.audioEnabled) return;
+                this.init();
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const now = this.ctx.currentTime + (idx * 0.12);
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                });
+            }
+        }
+        const sfx = new SoundFX();
+
+        function toggleAudio() {
+            gameState.audioEnabled = !gameState.audioEnabled;
+            const icon = document.getElementById('audio-icon');
+            if (gameState.audioEnabled) {
+                icon.className = 'fa-solid fa-volume-high';
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-gray-500';
+            }
+        }
+
+        /* ================= NAVIGATION ================= */
+        function navigateTo(screenId) {
+            // Hide all views
+            document.querySelectorAll('.screen-view').forEach(el => el.classList.add('hidden'));
+            
+            // Un-highlight nav buttons
+            document.querySelectorAll('.nav-step-btn').forEach(btn => {
+                btn.className = 'nav-step-btn px-3 py-1.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 text-gray-400 hover:text-white hover:bg-white/5';
+            });
+
+            // Show selected view
+            const target = document.getElementById(`screen-${screenId}`);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            // Highlight button
+            const activeBtn = document.getElementById(`nav-btn-${screenId}`);
+            if (activeBtn) {
+                activeBtn.className = 'nav-step-btn px-3 py-1.5 rounded-xl text-sm font-semibold transition flex items-center space-x-2 bg-indigo-600/30 text-indigo-200 border border-indigo-400/40';
+            }
+
+            // Screen specific initialization
+            if (screenId === 'diploma') {
+                updateDiplomaSummary();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateScore(points) {
+            gameState.score += points;
+            document.getElementById('total-score-display').textContent = gameState.score;
+        }
+
+        /* ================= MÓDULO 1: GAME LOGIC ================= */
+        function initModule1() {
+            const termsContainer = document.getElementById('m1-terms-container');
+            const defsContainer = document.getElementById('m1-definitions-container');
+            termsContainer.innerHTML = '';
+            defsContainer.innerHTML = '';
+
+            // Shuffle data copies
+            const shuffledTerms = [...MODULE1_DATA].sort(() => Math.random() - 0.5);
+            const shuffledDefs = [...MODULE1_DATA].sort(() => Math.random() - 0.5);
+
+            shuffledTerms.forEach(item => {
+                const termBtn = document.createElement('div');
+                termBtn.id = `m1-term-${item.id}`;
+                termBtn.draggable = true;
+                termBtn.className = 'm1-item glass-card-interactive p-3 rounded-2xl flex items-center justify-between cursor-pointer border border-indigo-500/30 font-bold text-sm md:text-base select-none';
+                termBtn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">${item.icon}</span>
+                        <span class="text-white">${item.term}</span>
+                    </div>
+                    <i class="fa-solid fa-hand-pointer text-indigo-400 text-xs"></i>
+                `;
+
+                termBtn.onclick = () => selectM1Term(item.id);
+                
+                // Drag events
+                termBtn.ondragstart = (e) => {
+                    e.dataTransfer.setData('text/plain', item.id);
+                    selectM1Term(item.id);
+                };
+
+                termsContainer.appendChild(termBtn);
+            });
+
+            shuffledDefs.forEach(item => {
+                const defBtn = document.createElement('div');
+                defBtn.id = `m1-def-${item.id}`;
+                defBtn.className = 'm1-item glass-card-interactive p-3 rounded-2xl flex items-center justify-between cursor-pointer border border-cyan-500/30 text-xs md:text-sm text-gray-200 select-none';
+                defBtn.innerHTML = `
+                    <span>${item.def}</span>
+                `;
+
+                defBtn.onclick = () => selectM1Def(item.id);
+
+                // Drag and drop targets
+                defBtn.ondragover = (e) => e.preventDefault();
+                defBtn.ondragenter = (e) => {
+                    e.preventDefault();
+                    defBtn.classList.add('drop-target-active');
+                };
+                defBtn.ondragleave = () => defBtn.classList.remove('drop-target-active');
+                defBtn.ondrop = (e) => {
+                    e.preventDefault();
+                    defBtn.classList.remove('drop-target-active');
+                    const termId = e.dataTransfer.getData('text/plain');
+                    if (termId) {
+                        gameState.selectedM1Term = termId;
+                        selectM1Def(item.id);
+                    }
+                };
+
+                defsContainer.appendChild(defBtn);
+            });
+        }
+
+        function selectM1Term(id) {
+            // Remove previous selection styling
+            document.querySelectorAll('#m1-terms-container .m1-item').forEach(el => {
+                el.classList.remove('ring-2', 'ring-yellow-400', 'bg-indigo-600/40');
+            });
+
+            gameState.selectedM1Term = id;
+            const target = document.getElementById(`m1-term-${id}`);
+            if (target) {
+                target.classList.add('ring-2', 'ring-yellow-400', 'bg-indigo-600/40');
+            }
+
+            checkM1Pairing();
+        }
+
+        function selectM1Def(id) {
+            document.querySelectorAll('#m1-definitions-container .m1-item').forEach(el => {
+                el.classList.remove('ring-2', 'ring-yellow-400', 'bg-cyan-600/40');
+            });
+
+            gameState.selectedM1Def = id;
+            const target = document.getElementById(`m1-def-${id}`);
+            if (target) {
+                target.classList.add('ring-2', 'ring-yellow-400', 'bg-cyan-600/40');
+            }
+
+            checkM1Pairing();
+        }
+
+        function checkM1Pairing() {
+            if (!gameState.selectedM1Term || !gameState.selectedM1Def) return;
+
+            const termEl = document.getElementById(`m1-term-${gameState.selectedM1Term}`);
+            const defEl = document.getElementById(`m1-def-${gameState.selectedM1Def}`);
+
+            if (gameState.selectedM1Term === gameState.selectedM1Def) {
+                // Correct match!
+                sfx.playSuccess();
+                updateScore(10);
+                gameState.m1Score++;
+                document.getElementById('m1-matches-count').textContent = gameState.m1Score;
+
+                termEl.className = 'p-3 rounded-2xl bg-green-500/20 border-2 border-green-400 font-bold text-sm text-green-200 flex items-center justify-between pointer-events-none opacity-80';
+                defEl.className = 'p-3 rounded-2xl bg-green-500/20 border-2 border-green-400 text-xs md:text-sm text-green-200 flex items-center justify-between pointer-events-none opacity-80';
+                
+                termEl.innerHTML += '<i class="fa-solid fa-check text-green-400"></i>';
+                defEl.innerHTML += '<i class="fa-solid fa-check text-green-400"></i>';
+
+                document.getElementById('m1-hint-text').textContent = '¡Excelente coincidencia astronómica!';
+                document.getElementById('m1-hint-box').className = 'text-xs md:text-sm text-green-400 font-medium flex items-center space-x-1';
+
+                if (gameState.m1Score === MODULE1_DATA.length) {
+                    sfx.playVictory();
+                    confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                    document.getElementById('m1-success-banner').classList.remove('hidden');
+                }
+            } else {
+                // Wrong match!
+                sfx.playError();
+                termEl.classList.add('animate-shake', 'border-red-500');
+                defEl.classList.add('animate-shake', 'border-red-500');
+
+                const itemData = MODULE1_DATA.find(d => d.id === gameState.selectedM1Term);
+                document.getElementById('m1-hint-text').textContent = `Pista: Revisa la definición de ${itemData.term}. ¡Inténtalo de nuevo!`;
+                document.getElementById('m1-hint-box').className = 'text-xs md:text-sm text-red-400 font-medium flex items-center space-x-1';
+
+                setTimeout(() => {
+                    termEl.classList.remove('animate-shake', 'ring-2', 'ring-yellow-400', 'bg-indigo-600/40', 'border-red-500');
+                    defEl.classList.remove('animate-shake', 'ring-2', 'ring-yellow-400', 'bg-cyan-600/40', 'border-red-500');
+                }, 600);
+            }
+
+            gameState.selectedM1Term = null;
+            gameState.selectedM1Def = null;
+        }
+
+        /* ================= MÓDULO 2: PLANET MODAL & REORDER ================= */
+        function openPlanetModal(planetKey) {
+            const data = PLANETS_DATA[planetKey];
+            if (!data) return;
+
+            document.getElementById('modal-planet-icon').className = `w-20 h-20 rounded-full bg-gradient-to-tr ${data.bgGradient} flex items-center justify-center text-4xl shadow-xl flex-shrink-0`;
+            document.getElementById('modal-planet-icon').textContent = data.icon;
+            document.getElementById('modal-planet-name').textContent = data.name;
+            document.getElementById('modal-planet-order').textContent = data.order;
+            document.getElementById('modal-planet-type').textContent = data.type;
+            document.getElementById('modal-planet-moons').textContent = data.moons;
+            document.getElementById('modal-planet-size').textContent = data.size;
+            document.getElementById('modal-planet-feature').textContent = data.feature;
+
+            const modal = document.getElementById('planet-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('planet-modal-content').classList.remove('scale-95');
+                document.getElementById('planet-modal-content').classList.add('scale-100');
+            }, 10);
+            sfx.playSuccess();
+        }
+
+        function closePlanetModal() {
+            const modal = document.getElementById('planet-modal');
+            modal.classList.add('opacity-0');
+            document.getElementById('planet-modal-content').classList.remove('scale-100');
+            document.getElementById('planet-modal-content').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function initOrderingActivity() {
+            const correctOrderKeys = ['mercurio', 'venus', 'tierra', 'marte', 'jupiter', 'saturno', 'urano', 'neptuno'];
+            // Shuffle
+            gameState.orderPlanets = [...correctOrderKeys].sort(() => Math.random() - 0.5);
+            renderReorderList();
+        }
+
+        function renderReorderList() {
+            const container = document.getElementById('reorder-planets-list');
+            container.innerHTML = '';
+
+            gameState.orderPlanets.forEach((key, idx) => {
+                const p = PLANETS_DATA[key];
+                const card = document.createElement('div');
+                card.className = 'glass-card-interactive p-3 rounded-2xl flex items-center justify-between border border-white/10';
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="font-extrabold text-xs text-indigo-400 w-4">${idx + 1}.</span>
+                        <span class="text-xl">${p.icon}</span>
+                        <span class="font-bold text-sm text-gray-100">${p.name}</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <button onclick="movePlanet(${idx}, -1)" ${idx === 0 ? 'disabled class="opacity-30 p-1"' : 'class="p-1 text-cyan-300 hover:text-white"'}>
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                        <button onclick="movePlanet(${idx}, 1)" ${idx === gameState.orderPlanets.length - 1 ? 'disabled class="opacity-30 p-1"' : 'class="p-1 text-cyan-300 hover:text-white"'}>
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function movePlanet(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= gameState.orderPlanets.length) return;
+
+            const temp = gameState.orderPlanets[index];
+            gameState.orderPlanets[index] = gameState.orderPlanets[newIndex];
+            gameState.orderPlanets[newIndex] = temp;
+
+            renderReorderList();
+        }
+
+        function checkPlanetOrder() {
+            const correctOrderKeys = ['mercurio', 'venus', 'tierra', 'marte', 'jupiter', 'saturno', 'urano', 'neptuno'];
+            const feedbackBox = document.getElementById('m2-order-feedback');
+            
+            let isCorrect = true;
+            for (let i = 0; i < correctOrderKeys.length; i++) {
+                if (gameState.orderPlanets[i] !== correctOrderKeys[i]) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+
+            feedbackBox.classList.remove('hidden');
+            if (isCorrect) {
+                sfx.playVictory();
+                confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+                feedbackBox.className = 'p-4 rounded-2xl bg-green-500/20 border border-green-500 text-green-300 font-bold text-center block animate-bounce';
+                feedbackBox.innerHTML = `
+                    🚀 ¡Excelente, Comandante Espacial! Has ordenado perfectamente los 8 planetas desde el Sol.
+                `;
+                if (!gameState.m2OrderCorrect) {
+                    updateScore(20);
+                    gameState.m2OrderCorrect = true;
+                }
+            } else {
+                sfx.playError();
+                feedbackBox.className = 'p-4 rounded-2xl bg-red-500/20 border border-red-500 text-red-300 font-bold text-center block';
+                feedbackBox.innerHTML = `
+                    ⚠️ Algunos planetas aún no están en su órbita correcta. Pista: Mercurio es el 1.º y Neptuno el 8.º. ¡Sigue intentándolo!
+                `;
+            }
+        }
+
+        /* ================= MÓDULO 3: TRIVIA QUIZ ================= */
+        function loadQuizQuestion() {
+            const q = QUIZ_QUESTIONS[gameState.currentQuizIdx];
+            document.getElementById('quiz-current-q').textContent = gameState.currentQuizIdx + 1;
+            document.getElementById('quiz-question-text').textContent = q.question;
+            
+            // Progress bar update
+            const progressPct = ((gameState.currentQuizIdx + 1) / QUIZ_QUESTIONS.length) * 100;
+            document.getElementById('quiz-progress-bar').style.width = `${progressPct}%`;
+
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+
+            document.getElementById('quiz-explanation-box').classList.add('hidden');
+            const nextBtn = document.getElementById('quiz-next-btn');
+            nextBtn.disabled = true;
+            nextBtn.className = 'px-6 py-2.5 rounded-xl bg-indigo-600/50 text-gray-400 font-bold cursor-not-allowed transition flex items-center space-x-2';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-opt-btn w-full p-4 rounded-2xl glass-card-interactive text-left font-bold text-sm md:text-base text-gray-200 transition flex items-center justify-between';
+                btn.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="w-7 h-7 rounded-full bg-indigo-500/30 text-indigo-300 flex items-center justify-center text-xs font-bold">${String.fromCharCode(65 + idx)}</span>
+                        <span>${opt.text}</span>
+                    </div>
+                    <i class="fa-regular fa-circle text-gray-500 text-lg"></i>
+                `;
+
+                btn.onclick = () => answerQuiz(idx);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function answerQuiz(optionIdx) {
+            const q = QUIZ_QUESTIONS[gameState.currentQuizIdx];
+            const buttons = document.querySelectorAll('.quiz-opt-btn');
+
+            buttons.forEach(btn => btn.style.pointerEvents = 'none');
+
+            const isCorrect = q.options[optionIdx].correct;
+
+            if (isCorrect) {
+                sfx.playSuccess();
+                gameState.m3Score++;
+                updateScore(15);
+                document.getElementById('quiz-score').textContent = gameState.m3Score;
+                
+                buttons[optionIdx].className = 'quiz-opt-btn w-full p-4 rounded-2xl bg-green-500/20 border-2 border-green-400 font-bold text-green-200 flex items-center justify-between';
+                buttons[optionIdx].querySelector('i').className = 'fa-solid fa-circle-check text-green-400 text-xl';
+            } else {
+                sfx.playError();
+                buttons[optionIdx].className = 'quiz-opt-btn w-full p-4 rounded-2xl bg-red-500/20 border-2 border-red-400 font-bold text-red-200 flex items-center justify-between animate-shake';
+                buttons[optionIdx].querySelector('i').className = 'fa-solid fa-circle-xmark text-red-400 text-xl';
+
+                // Highlight correct option
+                q.options.forEach((opt, idx) => {
+                    if (opt.correct) {
+                        buttons[idx].className = 'quiz-opt-btn w-full p-4 rounded-2xl bg-green-500/20 border-2 border-green-400 font-bold text-green-200 flex items-center justify-between';
+                    }
+                });
+            }
+
+            // Show explanation
+            document.getElementById('quiz-explanation-text').textContent = q.explanation;
+            document.getElementById('quiz-explanation-box').classList.remove('hidden');
+
+            // Enable Next Button
+            const nextBtn = document.getElementById('quiz-next-btn');
+            nextBtn.disabled = false;
+            nextBtn.className = 'px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-indigo-500 hover:from-pink-600 hover:to-indigo-600 text-white font-bold transition shadow-lg flex items-center space-x-2';
+        }
+
+        function nextQuizQuestion() {
+            if (gameState.currentQuizIdx < QUIZ_QUESTIONS.length - 1) {
+                gameState.currentQuizIdx++;
+                loadQuizQuestion();
+            } else {
+                // Completed Module 3 -> Go to Diploma
+                sfx.playVictory();
+                confetti({ particleCount: 120, spread: 90, origin: { y: 0.5 } });
+                navigateTo('diploma');
+            }
+        }
+
+        /* ================= DIPLOMA & RESTART ================= */
+        function updateDiplomaSummary() {
+            document.getElementById('summary-m1').textContent = `${gameState.m1Score} / 6`;
+            document.getElementById('summary-m2').textContent = gameState.m2OrderCorrect ? '¡Completado! (+20)' : 'Pendiente';
+            document.getElementById('summary-m3').textContent = `${gameState.m3Score} / 4`;
+
+            document.getElementById('diploma-final-score').textContent = `${gameState.score} Estrellas Espaciales`;
+            const today = new Date();
+            document.getElementById('diploma-date').textContent = today.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function updateDiplomaName() {
+            const inputVal = document.getElementById('student-name-input').value.trim();
+            document.getElementById('diploma-student-name').textContent = inputVal || 'Astronauta Curioso';
+        }
+
+        function restartMission() {
+            gameState.score = 0;
+            gameState.m1Score = 0;
+            gameState.m2OrderCorrect = false;
+            gameState.m3Score = 0;
+            gameState.currentQuizIdx = 0;
+
+            document.getElementById('total-score-display').textContent = '0';
+            document.getElementById('m1-matches-count').textContent = '0';
+            document.getElementById('quiz-score').textContent = '0';
+            document.getElementById('m1-success-banner').classList.add('hidden');
+            document.getElementById('m2-order-feedback').classList.add('hidden');
+
+            initModule1();
+            initOrderingActivity();
+            loadQuizQuestion();
+
+            navigateTo('welcome');
+        }
+
+        /* ================= DYNAMIC CANVAS BACKGROUND ================= */
+        function initSpaceCanvas() {
+            const canvas = document.getElementById('space-canvas');
+            const ctx = canvas.getContext('2d');
+
+            let width = (canvas.width = window.innerWidth);
+            let height = (canvas.height = window.innerHeight);
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            // Generate Stars
+            const stars = Array.from({ length: 150 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 1.5,
+                alpha: Math.random(),
+                speed: Math.random() * 0.02 + 0.005
+            }));
+
+            // Meteors
+            const meteors = [];
+
+            function spawnMeteor() {
+                if (Math.random() < 0.03 && meteors.length < 3) {
+                    meteors.push({
+                        x: Math.random() * width,
+                        y: 0,
+                        length: Math.random() * 80 + 40,
+                        speed: Math.random() * 8 + 4,
+                        alpha: 1
+                    });
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Draw background gradient
+                const grad = ctx.createLinearGradient(0, 0, 0, height);
+                grad.addColorStop(0, '#0B0D1B');
+                grad.addColorStop(1, '#151935');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, width, height);
+
+                // Draw Stars
+                stars.forEach(star => {
+                    star.alpha += star.speed;
+                    if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
+
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
+                    ctx.fill();
+                });
+
+                // Spawn & Draw Meteors
+                spawnMeteor();
+                meteors.forEach((m, idx) => {
+                    m.x += m.speed;
+                    m.y += m.speed;
+                    m.alpha -= 0.01;
+
+                    ctx.beginPath();
+                    ctx.moveTo(m.x, m.y);
+                    ctx.lineTo(m.x - m.length, m.y - m.length);
+                    ctx.strokeStyle = `rgba(56, 189, 248, ${m.alpha})`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    if (m.alpha <= 0 || m.y > height) {
+                        meteors.splice(idx, 1);
+                    }
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        /* ================= ON LOAD INITIALIZATION ================= */
+        window.onload = function () {
+            initSpaceCanvas();
+            initModule1();
+            initOrderingActivity();
+            loadQuizQuestion();
+        };
+    </script>
+</body>
+</html>
