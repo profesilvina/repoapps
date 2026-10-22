@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Escape Room: El Laboratorio del Tiempo 1952</title>
+  <style>
+    /* ==========================================================================
+       RESET & BASE STYLES (DUA & Mobile Fullscreen Optimization)
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --font-scale: 1rem;
+      --bg-wood: #2a1810;
+      --wall-color: #d8c8b0;
+      --accent-gold: #d4af37;
+      --accent-teal: #1a5252;
+      --accent-red: #8b0000;
+      --accent-green: #2e7d32;
+      --panel-bg: rgba(26, 20, 16, 0.95);
+      --text-light: #f5f5f0;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: -webkit-fill-available;
+      overflow: hidden;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: var(--font-scale);
+      background-color: var(--bg-wood);
+      color: var(--text-light);
+    }
+
+    /* Screen Wrapper */
+    .app-viewport {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Accessibility Bar (DUA) */
+    .dua-toolbar {
+      height: 48px;
+      background: #110b08;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 12px;
+      z-index: 100;
+      border-bottom: 2px solid var(--accent-gold);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    .dua-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dua-btn {
+      background: #3a2820;
+      color: var(--accent-gold);
+      border: 1px solid var(--accent-gold);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .dua-btn:active {
+      transform: scale(0.95);
+      background: var(--accent-gold);
+      color: #000;
+    }
+
+    /* Main Container */
+    .game-stage {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Screens */
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease-in-out;
+      padding: 15px;
+    }
+
+    .screen.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ==========================================================================
+       PANTALLA INICIAL (NARRATIVA Y INTRODUCCIÓN)
+       ========================================================================== */
+    #intro-screen {
+      background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)),
+                  radial-gradient(circle, #3a2820 0%, #110b08 100%);
+      text-align: center;
+      z-index: 10;
+    }
+
+    .intro-card {
+      background: rgba(35, 25, 20, 0.9);
+      border: 3px solid var(--accent-gold);
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .intro-card h1 {
+      color: var(--accent-gold);
+      font-size: 1.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 4px #000;
+    }
+
+    .intro-card h2 {
+      color: #8caba8;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    .story-text {
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: #e0d8cc;
+      text-align: justify;
+    }
+
+    .plato-quote {
+      background: rgba(212, 175, 55, 0.1);
+      border-left: 4px solid var(--accent-gold);
+      padding: 10px;
+      font-style: italic;
+      margin: 10px 0;
+      text-align: left;
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, var(--accent-teal), #0f3030);
+      color: var(--accent-gold);
+      border: 2px solid var(--accent-gold);
+      padding: 14px 28px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      text-shadow: 1px 1px 2px #000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      transition: transform 0.2s, box-shadow 0.2s;
+      align-self: center;
+      margin-top: 10px;
+    }
+
+    .btn-start:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--accent-gold);
+    }
+
+    /* ==========================================================================
+       HABITACIÓN DE ESCAPE (VINTAGE 1952 SVG ROOM)
+       ========================================================================== */
+    #room-screen {
+      padding: 0;
+      background: #1a100a;
+    }
+
+    .room-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: 1200px;
+      max-height: 800px;
+      aspect-ratio: 16/9;
+      background: #110805;
+      box-shadow: 0 0 50px rgba(0,0,0,0.9);
+      overflow: hidden;
+    }
+
+    /* SVG Interactive Elements */
+    .interactive-obj {
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .interactive-obj:hover, .interactive-obj:focus {
+      filter: drop-shadow(0px 0px 12px var(--accent-gold)) brightness(1.2);
+    }
+
+    .interactive-obj.solved {
+      filter: drop-shadow(0px 0px 8px var(--accent-green)) opacity(0.8);
+    }
+
+    .interactive-obj.locked {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    /* Status Bar in Room */
+    .room-hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .hud-badge {
+      background: rgba(0,0,0,0.8);
+      border: 1px solid var(--accent-gold);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: var(--accent-gold);
+      pointer-events: auto;
+    }
+
+    /* ==========================================================================
+       MODAL DE DESAFÍO / MULTIPLE CHOICE
+       ========================================================================== */
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      padding: 15px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: #251b14;
+      border: 3px solid var(--accent-gold);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 650px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--accent-gold);
+      padding-bottom: 8px;
+    }
+
+    .modal-title {
+      color: var(--accent-gold);
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .badge-type {
+      background: var(--accent-teal);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+
+    .scenario-box {
+      background: rgba(0,0,0,0.4);
+      border-left: 4px solid var(--accent-teal);
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 1rem;
+      line-height: 1.4;
+      color: #f0e6d2;
+    }
+
+    .news-source {
+      font-size: 0.8rem;
+      color: #8caba8;
+      margin-bottom: 4px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .option-btn {
+      background: #36281e;
+      color: #fff;
+      border: 1px solid #5c4535;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .option-btn:hover {
+      background: #4a382a;
+      border-color: var(--accent-gold);
+    }
+
+    .option-btn.wrong {
+      background: #5a1a1a !important;
+      border-color: #ff4d4d !important;
+    }
+
+    .option-btn.correct {
+      background: #1e5a22 !important;
+      border-color: #4dff4d !important;
+    }
+
+    /* Socratic Feedback Box */
+    .socratic-box {
+      background: rgba(26, 82, 82, 0.3);
+      border: 1px dashed var(--accent-teal);
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: #b2d8d8;
+      display: none;
+    }
+
+    .socratic-box.active {
+      display: block;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .btn-help {
+      background: transparent;
+      color: var(--accent-gold);
+      border: 1px solid var(--accent-gold);
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .btn-help:hover {
+      background: rgba(212, 175, 55, 0.2);
+    }
+
+    .btn-close-modal {
+      background: #4a382a;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       PANTALLA DE VICTORIA
+       ========================================================================== */
+    #victory-screen {
+      background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.95)),
+                  radial-gradient(circle, #1a5252 0%, #0a1f1f 100%);
+      text-align: center;
+      z-index: 100;
+    }
+
+    .victory-card {
+      background: rgba(20, 35, 35, 0.95);
+      border: 3px solid var(--accent-gold);
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 650px;
+      width: 100%;
+      box-shadow: 0 0 50px rgba(212, 175, 55, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .victory-card h1 {
+      color: var(--accent-gold);
+      font-size: 2rem;
+      text-transform: uppercase;
+    }
+
+    .victory-icon {
+      font-size: 4rem;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-height: 600px) {
+      .intro-card, .modal-card, .victory-card {
+        padding: 12px;
+        gap: 8px;
+      }
+      .intro-card h1 { font-size: 1.3rem; }
+      .story-text { font-size: 0.9rem; }
+      .option-btn { padding: 8px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-viewport">
+  
+  <!-- BARRA DUA (ACCESIBILIDAD) -->
+  <header class="dua-toolbar">
+    <div class="dua-group">
+      <span style="font-weight: bold; color: var(--accent-gold); font-size: 0.85rem;">DUA:</span>
+      <button class="dua-btn" onclick="changeFontSize(1)" title="Aumentar texto">A+</button>
+      <button class="dua-btn" onclick="changeFontSize(-1)" title="Disminuir texto">A-</button>
+    </div>
+    <div class="dua-group">
+      <button class="dua-btn" id="btn-tts-toggle" onclick="toggleSpeech()" title="Lectura en voz alta">
+        🔊 <span id="tts-status">Voz: ON</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="game-stage">
+
+    <!-- 1. PANTALLA INICIAL (NARRATIVA CON PLATÓN) -->
+    <section id="intro-screen" class="screen active">
+      <div class="intro-card">
+        <h1>El Laboratorio del Tiempo</h1>
+        <h2>Año 1952 - Misión de Retorno al Presente</h2>
+        
+        <div class="story-text">
+          <p>¡Atención, Científico! Un fallo en el condensador de flujo de tu máquina del tiempo te ha dejado atrapado en una enigmática sala de estar del año 1952.</p>
+          
+          <div class="plato-quote">
+            "Al igual que el prisionero en la Alegoría de la Caverna de Platón, liberado de las sombras del engaño para contemplar la luz de la verdad, debes identificar las ilusiones del pensamiento para poder escapar."
+          </div>
+
+          <p>Para desbloquear la puerta del tiempo y regresar a tu época a divulgar la verdad, deberás explorar los muebles y objetos de la habitación. En 10 de ellos se esconden razonamientos falaces. Resuelve cada uno de los acertijos lógicos para liberar los sellos de la puerta.</p>
+        </div>
+
+        <button class="btn-start" onclick="startGame()">¡Iniciar Misión de Escape!</button>
+      </div>
+    </section>
+
+    <!-- 2. HABITACIÓN DE ESCAPE (VINTAGE 1952 ROOM SVG) -->
+    <section id="room-screen" class="screen">
+      <div class="room-container">
+        
+        <!-- HUD -->
+        <div class="room-hud">
+          <div class="hud-badge" id="hud-progress">Falacias Resueltas: 0 / 10</div>
+          <div class="hud-badge" id="hud-instruction">Selecciona un objeto brillante</div>
+        </div>
+
+        <!-- SALA INTERACTIVA SVG -->
+        <svg viewBox="0 0 1000 562.5" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="wallGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#3d2b1f"/>
+              <stop offset="100%" stop-color="#1f150f"/>
+            </linearGradient>
+            <linearGradient id="floorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#4a2e1b"/>
+              <stop offset="100%" stop-color="#211309"/>
+            </linearGradient>
+            <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#6ba4b8"/>
+              <stop offset="100%" stop-color="#d4e6eb"/>
+            </linearGradient>
+            <radialGradient id="lampGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fff8d6" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#fff8d6" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Pared del fondo -->
+          <rect x="0" y="0" width="1000" height="420" fill="url(#wallGrad)" />
+          
+          <!-- Suelo de madera -->
+          <polygon points="0,420 1000,420 1000,562.5 0,562.5" fill="url(#floorGrad)" />
+          <line x1="0" y1="420" x2="1000" y2="420" stroke="#000" stroke-width="3" />
+
+          <!-- Ventana Enorme al fondo (Paisaje 1950s) -->
+          <g id="window-group">
+            <rect x="350" y="40" width="300" height="240" fill="url(#skyGrad)" stroke="#2a1810" stroke-width="12" />
+            <path d="M 330 30 Q 360 160 330 290 L 350 290 L 370 30 Z" fill="#8b0000" />
+            <path d="M 670 30 Q 640 160 670 290 L 650 290 L 630 30 Z" fill="#8b0000" />
+            <line x1="500" y1="40" x2="500" y2="280" stroke="#2a1810" stroke-width="6" />
+            <line x1="350" y1="160" x2="650" y2="160" stroke="#2a1810" stroke-width="6" />
+          </g>
+
+          <!-- Alfombra Geométrica 50s -->
+          <ellipse cx="500" cy="480" rx="320" ry="60" fill="#8b3a2b" stroke="#d4af37" stroke-width="4" />
+          <ellipse cx="500" cy="480" rx="260" ry="45" fill="#1a5252" />
+
+          <!-- PUERTA DE SALIDA (A la izquierda) -->
+          <g id="obj-door" class="interactive-obj" onclick="selectObject(0)">
+            <rect x="40" y="80" width="140" height="340" fill="#2b1a0e" stroke="#000" stroke-width="4" />
+            <rect x="55" y="95" width="110" height="310" fill="#3d2514" stroke="#d4af37" stroke-width="2" />
+            <circle cx="145" cy="250" r="8" fill="#d4af37" />
+            <circle cx="145" cy="270" r="5" fill="#ff4d4d" id="door-lock-led" />
+            <text x="110" y="70" fill="#d4af37" font-size="14" font-weight="bold" text-anchor="middle">1. PUERTA</text>
+          </g>
+
+          <!-- LÁMPARA DE PIE (A la derecha) -->
+          <g id="obj-lamp" class="interactive-obj" onclick="selectObject(1)">
+            <ellipse cx="880" cy="120" rx="40" ry="25" fill="#d4af37" />
+            <line x1="880" y1="145" x2="880" y2="450" stroke="#d4af37" stroke-width="6" />
+            <polygon points="850,450 910,450 920,470 840,470" fill="#2a1810" />
+            <circle cx="880" cy="180" r="90" fill="url(#lampGlow)" pointer-events="none" />
+            <text x="880" y="80" fill="#d4af37" font-size="14" font-weight="bold" text-anchor="middle">2. LÁMPARA</text>
+          </g>
+
+          <!-- SOFÁ MID-CENTURY -->
+          <g id="obj-sofa" class="interactive-obj" onclick="selectObject(2)">
+            <rect x="380" y="360" width="240" height="90" rx="15" fill="#1a5252" stroke="#0f3030" stroke-width="3"/>
+            <rect x="360" y="340" width="30" height="100" rx="10" fill="#144040" />
+            <rect x="610" y="340" width="30" height="100" rx="10" fill="#144040" />
+            <rect x="395" y="370" width="100" height="60" rx="5" fill="#236b6b"/>
+            <rect x="505" y="370" width="100" height="60" rx="5" fill="#236b6b"/>
+            <text x="500" y="445" fill="#d4af37" font-size="14" font-weight="bold" text-anchor="middle">3. SOFÁ</text>
+          </g>
+
+          <!-- TELEVISOR DE TUBOS 1952 -->
+          <g id="obj-tv" class="interactive-obj" onclick="selectObject(3)">
+            <rect x="210" y="260" width="110" height="110" rx="10" fill="#4a2e1b" stroke="#2a1810" stroke-width="4" />
+            <rect x="220" y="270" width="70" height="65" rx="15" fill="#7a8b8b" stroke="#000" stroke-width="3" />
+            <circle cx="305" cy="285" r="6" fill="#d4af37" />
+            <circle cx="305" cy="305" r="6" fill="#d4af37" />
+            <line x1="220" y1="370" x2="210" y2="410" stroke="#000" stroke-width="5" />
+            <line x1="310" y1="370" x2="320" y2="410" stroke="#000" stroke-width="5" />
+            <text x="265" y="245" fill="#d4af37" font-size="14" font-weight="bold" text-anchor="middle">4. TV</text>
+          </g>
+
+          <!-- RADIO DE VÁLVULAS -->
+          <g id="obj-radio" class="interactive-obj" onclick="selectObject(4)">
+            <rect x="710" y="300" width="80" height="50" rx="5" fill="#8b3a2b" stroke="#2a1810" stroke-width="3" />
+            <circle cx="735" cy="325" r="15" fill="#d4af37" opacity="0.5" />
+            <rect x="760" y="315" width="20" height="20" fill="#110b08" />
+            <text x="750" y="285" fill="#d4af37" font-size="14" font-weight="bold" text-anchor="middle">5. RADIO</text>
+          </g>
+
+          <!-- QUADRO / RETRO PORTRAIT -->
+          <g id="obj-portrait" class="interactive-obj" onclick="selectObject(5)">
+            <rect x="220" y="100" width="80" height="100" fill="#3a2820" stroke="#d4af37" stroke-width="5" />
+            <circle cx="260" cy="140" r="20" fill="#8caba8" />
+            <path d="M 240 180 Q 260 160 280 180" fill="#5c4535" />
+            <text x="260" y="85" fill="#d4af37" font-size="14" font-weight="bold" text-anchor="middle">6. CUADRO</text>
+          </g>
+
+          <!-- BIBLIOTECA / LIBROS -->
+          <g id="obj-bookcase" class="interactive-obj" onclick="selectObject(6)">
+            <rect x="700" y="100" width="120" height="170" fill="#2b1a0e" stroke="#000" stroke-width="4" />
+            <line x1="700" y1="150" x2="820" y2="150" stroke="#4a2e1b" stroke-width="4" />
+            <line x1="700" y1="210" x2="820" y2="210" stroke="#4a2e1b" stroke-width="4" />
+            <rect x="710" y="115" width="12" height="35" fill="#8b0000" />
+            <rect x="724" y="110" width="15" height="40" fill="#1a5252" />
+            <rect x="741" y="120" width="10" height="30" fill="#d4af37" />
+            <rect x="715" y="165" width="18" height="45" fill="#2e7d32" />
+            <rect x="735" y="170" width="14" height="40" fill="#8b3a2b" />
+            <text x="760" y="85" fill="#d4af37" font-size="14" font-weight="bold" text-anchor="middle">7. LIBROS</text>
+          </g>
+
+          <!-- TELÉFONO DE DISCO -->
+          <g id="obj-phone" class="interactive-obj" onclick="selectObject(7)">
+            <rect x="680" y="370" width="50" height="30" rx="5" fill="#111" />
+            <circle cx="705" cy="385" r="10" fill="#fff" stroke="#000" stroke-width="2" />
+            <path d="M 675 375 Q 705 355 735 375" fill="none" stroke="#111" stroke-width="6" stroke-linecap="round" />
+            <text x="705" y="420" fill="#d4af37" font-size="14" font-weight="bold" text-anchor="middle">8. TELÉFONO</text>
+          </g>
+
+          <!-- ESPEJO VINTAGE -->
+          <g id="obj-mirror" class="interactive-obj" onclick="selectObject(8)">
+            <ellipse cx="500" cy="310" rx="25" ry="35" fill="#d4e6eb" stroke="#d4af37" stroke-width="4" opacity="0.8" />
+            <line x1="490" y1="290" x2="510" y2="330" stroke="#fff" stroke-width="2" />
+            <text x="500" y="260" fill="#d4af37" font-size="14" font-weight="bold" text-anchor="middle">9. ESPEJO</text>
+          </g>
+
+          <!-- RELOJ DE PARED -->
+          <g id="obj-clock" class="interactive-obj" onclick="selectObject(9)">
+            <circle cx="500" cy="35" r="22" fill="#fff" stroke="#2a1810" stroke-width="4" />
+            <line x1="500" y1="35" x2="500" y2="22" stroke="#000" stroke-width="2" />
+            <line x1="500" y1="35" x2="510" y2="35" stroke="#000" stroke-width="2" />
+            <text x="500" y="70" fill="#d4af37" font-size="14" font-weight="bold" text-anchor="middle">10. RELOJ</text>
+          </g>
+        </svg>
+
+      </div>
+    </section>
+
+    <!-- 3. MODAL DE DESAFÍO / PREGUNTA -->
+    <div id="challenge-modal" class="modal-overlay">
+      <div class="modal-card">
+        
+        <div class="modal-header">
+          <span class="modal-title" id="modal-title">Desafío #1</span>
+          <span class="badge-type" id="modal-type">Opción Múltiple</span>
+        </div>
+
+        <div class="scenario-box">
+          <div class="news-source" id="modal-source" style="display:none;">Noticia de Prensa (1952)</div>
+          <div id="modal-text">Texto de la falacia...</div>
+        </div>
+
+        <div class="options-grid" id="options-container">
+          <!-- Opciones dinámicas -->
+        </div>
+
+        <div class="socratic-box" id="socratic-hint">
+          <strong>💡 Guía Socrática:</strong> <span id="socratic-text">...</span>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-help" onclick="requestSocraticHelp()">
+            🤔 Pedir Ayuda Socrática
+          </button>
+          <button class="btn-close-modal" onclick="closeModal()">Cerrar</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 4. PANTALLA DE VICTORIA -->
+    <section id="victory-screen" class="screen">
+      <div class="victory-card">
+        <div class="victory-icon">🎓🔓🚪</div>
+        <h1>¡Misión Cumplida!</h1>
+        <h2>Has Escapado del Año 1952</h2>
+        
+        <p class="story-text" style="text-align: center;">
+          Al igual que el filósofo que abandona la caverna de las ilusiones, has demostrado la capacidad analítica para identificar y desmantelar las 10 falacias informales más comunes.
+        </p>
+
+        <p style="color: var(--accent-gold); font-weight: bold;">
+          ¡El portal del tiempo se ha abierto y tu sabiduría científica está lista para iluminar el presente!
+        </p>
+
+        <button class="btn-start" onclick="restartGame()">Jugar de Nuevo</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const FALLACIES_DATA = [
+  {
+    id: 0,
+    objectName: "Puerta de Salida",
+    type: "teorico",
+    title: "Falacia #1: Ataque Personal",
+    text: "En un debate parlamentario, un senador afirma: 'No debemos considerar la ley de vivienda propuesta por el diputado de la oposición, ya que todos sabemos que él fue multado por no pagar sus impuestos personales hace tres años.'",
+    options: [
+      { text: "Argumentum ad Hominem", correct: true },
+      { text: "Falso Dilema", correct: false },
+      { text: "Argumentum ad Populum", correct: false },
+      { text: "Petición de Principio", correct: false }
+    ],
+    hint: "¿Se está analizando el contenido técnico de la propuesta de vivienda o se está atacando la conducta privada del emisor?"
+  },
+  {
+    id: 1,
+    objectName: "Lámpara de Pie",
+    type: "teorico",
+    title: "Falacia #2: Caricaturización",
+    text: "Un concejal propone destinar un 5% más del presupuesto a parques infantiles. Su oponente responde: 'Lo que usted busca es dejar sin recursos a la policía para que los criminales se apoderen de las calles.'",
+    options: [
+      { text: "Pendiente Resbaladiza", correct: false },
+      { text: "Hombre de Paja (Straw Man)", correct: true },
+      { text: "Argumentum ad Ignorantiam", correct: false },
+      { text: "Causa Falsa", correct: false }
+    ],
+    hint: "¿El oponente respondió a la propuesta real o exageró la posición hasta volverla absurda e indefendible?"
+  },
+  {
+    id: 2,
+    objectName: "Sofá Mid-Century",
+    type: "teorico",
+    title: "Falacia #3: Falsa Autoridad",
+    text: "Un famoso actor de cine aparece en un anuncio publicitario diciendo: 'Consuma este suplemento vitamínico diariamente; es la mejor medicina para prevenir problemas cardíacos.'",
+    options: [
+      { text: "Argumentum ad Verecundiam", correct: true },
+      { text: "Argumentum ad Misericordiam", correct: false },
+      { text: "Falso Dilema", correct: false },
+      { text: "Argumentum ad Hominem", correct: false }
+    ],
+    hint: "¿El actor tiene credibilidad profesional comprobada en el área médica o solo prestigio en el entretenimiento?"
+  },
+  {
+    id: 3,
+    objectName: "Televisor de Tubos",
+    type: "teorico",
+    title: "Falacia #4: Apelación a la Mayoría",
+    text: "Un presentador de televisión afirma: 'Esta marca de cigarrillos debe ser completamente inofensiva, ya que es la elegida por más de diez millones de ciudadanos en todo el país.'",
+    options: [
+      { text: "Petición de Principio", correct: false },
+      { text: "Argumentum ad Populum", correct: true },
+      { text: "Causa Falsa", correct: false },
+      { text: "Argumentum ad Ignorantiam", correct: false }
+    ],
+    hint: "¿Que muchas personas compren un producto prueba científicamente que no sea dañino para la salud?"
+  },
+  {
+    id: 4,
+    objectName: "Radio de Válvulas",
+    type: "teorico",
+    title: "Falacia #5: Ausencia de Prueba",
+    text: "Un locutor radiofónico sostiene: 'Es innegable que los objetos voladores no identificados están habitados por seres extraterrestres, pues nadie ha podido probar categóricamente lo contrario.'",
+    options: [
+      { text: "Argumentum ad Ignorantiam", correct: true },
+      { text: "Hombre de Paja", correct: false },
+      { text: "Falso Dilema", correct: false },
+      { text: "Argumentum ad Verecundiam", correct: false }
+    ],
+    hint: "¿La falta de pruebas para desmentir una afirmación convierte automáticamente esa afirmación en una verdad demostrada?"
+  },
+  {
+    id: 5,
+    objectName: "Cuadro / Retrato",
+    type: "prensa",
+    source: "Diario El Clarinete (15 de Mayo de 1952)",
+    title: "Falacia #6: Titular de Prensa",
+    text: "'EL PAÍS EN LA ENCRUCIJADA: O aprobamos la nueva ley de subvenciones industriales de inmediato, o nuestra economía caerá en la ruina y la quiebra absoluta.'",
+    options: [
+      { text: "Falso Dilema", correct: true },
+      { text: "Argumentum ad Hominem", correct: false },
+      { text: "Petición de Principio", correct: false },
+      { text: "Argumentum ad Populum", correct: false }
+    ],
+    hint: "¿Existen únicamente dos caminos extremos o hay opciones intermedias como reformar o posponer la ley?"
+  },
+  {
+    id: 6,
+    objectName: "Biblioteca",
+    type: "prensa",
+    source: "Revista Crónica Urbana (22 de Agosto de 1952)",
+    title: "Falacia #7: Noticia Económica",
+    text: "'Desde que el alcalde asumió el cargo en marzo, las lluvias han disminuido un 30%. Queda demostrado el impacto negativo de su administración en el clima de la región.'",
+    options: [
+      { text: "Post Hoc Ergo Propter Hoc (Causa Falsa)", correct: true },
+      { text: "Pendiente Resbaladiza", correct: false },
+      { text: "Argumentum ad Misericordiam", correct: false },
+      { text: "Hombre de Paja", correct: false }
+    ],
+    hint: "¿El hecho de que un acontecimiento ocurra después de otro prueba que el primero fue la causa directa?"
+  },
+  {
+    id: 7,
+    objectName: "Teléfono de Disco",
+    type: "prensa",
+    source: "El Vocero Político (10 de Septiembre de 1952)",
+    title: "Falacia #8: Editorial de Opinión",
+    text: "'Si permitimos que los estudiantes usen calculadoras en primaria, pronto no aprenderán las tablas, colapsará la enseñanza de la física y la ingeniería del país retrocederá un siglo.'",
+    options: [
+      { text: "Pendiente Resbaladiza (Slippery Slope)", correct: true },
+      { text: "Argumentum ad Ignorantiam", correct: false },
+      { text: "Falso Dilema", correct: false },
+      { text: "Argumentum ad Verecundiam", correct: false }
+    ],
+    hint: "¿Se está demostrando cada paso causal o se está encadenando una serie inevitable de catástrofes sin justificación?"
+  },
+  {
+    id: 8,
+    objectName: "Espejo Vintage",
+    type: "prensa",
+    source: "Boletín Judicial (4 de Noviembre de 1952)",
+    title: "Falacia #9: Declaración Oficial",
+    text: "'El reglamento interno del club es completamente justo y legítimo porque fue redactado respetando la justicia y la legitimidad de nuestras normas.'",
+    options: [
+      { text: "Petición de Principio (Argumento Circular)", correct: true },
+      { text: "Argumentum ad Populum", correct: false },
+      { text: "Hombre de Paja", correct: false },
+      { text: "Causa Falsa", correct: false }
+    ],
+    hint: "¿La premisa utilizada para justificar la regla aporta alguna prueba nueva o sólo repite la conclusión con otras palabras?"
+  },
+  {
+    id: 9,
+    objectName: "Reloj de Pared",
+    type: "prensa",
+    source: "Tribunales de la Capital (12 de Diciembre de 1952)",
+    title: "Falacia #10: Reporte Judicial",
+    text: "'El acusado suplicó al tribunal: Señores jueces, no me condenen por esta irregularidad; piensen en mis ancianos padres y en la profunda tristeza que les causaría ver mi nombre manchado.'",
+    options: [
+      { text: "Argumentum ad Misericordiam (Apelación a la Piedad)", correct: true },
+      { text: "Argumentum ad Hominem", correct: false },
+      { text: "Falso Dilema", correct: false },
+      { text: "Argumentum ad Ignorantiam", correct: false }
+    ],
+    hint: "¿El acusado está presentando evidencias sobre su inocencia o intentando conmover emocionalmente al juzgador?"
+  }
+];
+
+let gameState = {
+  currentChallengeIndex: 0,
+  solvedCount: 0,
+  solvedArray: new Array(10).fill(false),
+  fontSizeScale: 1,
+  ttsEnabled: true
+};
+
+const synth = window.speechSynthesis;
+
+function speakText(text) {
+  if (!gameState.ttsEnabled || !synth) return;
+  synth.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'es-ES';
+  utterance.rate = 1.0;
+  synth.speak(utterance);
+}
+
+function toggleSpeech() {
+  gameState.ttsEnabled = !gameState.ttsEnabled;
+  const statusSpan = document.getElementById('tts-status');
+  if (gameState.ttsEnabled) {
+    statusSpan.textContent = "Voz: ON";
+    speakText("Lectura en voz alta activada");
+  } else {
+    statusSpan.textContent = "Voz: OFF";
+    if (synth) synth.cancel();
+  }
+}
+
+function changeFontSize(delta) {
+  let currentScale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--font-scale')) || 1;
+  let newScale = currentScale + (delta * 0.1);
+  if (newScale >= 0.8 && newScale <= 1.4) {
+    document.documentElement.style.setProperty('--font-scale', newScale + 'rem');
+  }
+}
+
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  if (target) target.classList.add('active');
+}
+
+function startGame() {
+  showScreen('room-screen');
+  updateRoomState();
+  speakText("Has ingresado al laboratorio de 1952. Selecciona los objetos para resolver las falacias.");
+}
+
+function restartGame() {
+  gameState.currentChallengeIndex = 0;
+  gameState.solvedCount = 0;
+  gameState.solvedArray.fill(false);
+  
+  document.querySelectorAll('.interactive-obj').forEach(obj => {
+    obj.classList.remove('solved', 'locked');
+  });
+
+  showScreen('intro-screen');
+}
+
+function updateRoomState() {
+  document.getElementById('hud-progress').textContent = `Falacias Resueltas: ${gameState.solvedCount} / 10`;
+
+  const doorLed = document.getElementById('door-lock-led');
+  if (doorLed) {
+    doorLed.setAttribute('fill', gameState.solvedCount === 10 ? '#2e7d32' : '#ff4d4d');
+  }
+
+  FALLACIES_DATA.forEach((data, index) => {
+    const objSvg = document.getElementById(getSvgIdByIndex(index));
+    if (objSvg) {
+      if (gameState.solvedArray[index]) {
+        objSvg.classList.add('solved');
+        objSvg.classList.remove('locked');
+      } else if (index === gameState.solvedCount) {
+        objSvg.classList.remove('locked');
+      } else {
+        objSvg.classList.add('locked');
+      }
+    }
+  });
+}
+
+function getSvgIdByIndex(index) {
+  const map = ['obj-door', 'obj-lamp', 'obj-sofa', 'obj-tv', 'obj-radio', 'obj-portrait', 'obj-bookcase', 'obj-phone', 'obj-mirror', 'obj-clock'];
+  return map[index];
+}
+
+function selectObject(index) {
+  if (index > gameState.solvedCount) {
+    const msg = `Debes resolver primero el objeto #${gameState.solvedCount + 1} antes de desbloquear este.`;
+    speakText(msg);
+    alert(msg);
+    return;
+  }
+
+  gameState.currentChallengeIndex = index;
+  openChallengeModal(FALLACIES_DATA[index]);
+}
+
+function openChallengeModal(data) {
+  const modal = document.getElementById('challenge-modal');
+  document.getElementById('modal-title').textContent = data.title;
+  document.getElementById('modal-type').textContent = data.type === 'prensa' ? 'Análisis de Prensa' : 'Opción Múltiple';
+  
+  const sourceEl = document.getElementById('modal-source');
+  if (data.type === 'prensa' && data.source) {
+    sourceEl.style.display = 'block';
+    sourceEl.textContent = data.source;
+  } else {
+    sourceEl.style.display = 'none';
+  }
+
+  document.getElementById('modal-text').textContent = data.text;
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+
+  data.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<strong>${String.fromCharCode(65 + idx)})</strong> ${opt.text}`;
+    btn.onclick = () => checkAnswer(opt, btn, data);
+    container.appendChild(btn);
+  });
+
+  const hintBox = document.getElementById('socratic-hint');
+  hintBox.classList.remove('active');
+  document.getElementById('socratic-text').textContent = '';
+
+  modal.classList.add('active');
+
+  speakText(`${data.title}. ${data.text}`);
+}
+
+function closeModal() {
+  document.getElementById('challenge-modal').classList.remove('active');
+  if (synth) synth.cancel();
+}
+
+function requestSocraticHelp() {
+  const data = FALLACIES_DATA[gameState.currentChallengeIndex];
+  const hintBox = document.getElementById('socratic-hint');
+  const hintText = document.getElementById('socratic-text');
+
+  hintText.textContent = data.hint;
+  hintBox.classList.add('active');
+
+  speakText("Pista Socrática: " + data.hint);
+}
+
+function checkAnswer(selectedOption, btnElement, data) {
+  const hintBox = document.getElementById('socratic-hint');
+  const hintText = document.getElementById('socratic-text');
+
+  if (selectedOption.correct) {
+    btnElement.classList.add('correct');
+    speakText("¡Correcto! Has razonado adecuadamente.");
+
+    if (!gameState.solvedArray[data.id]) {
+      gameState.solvedArray[data.id] = true;
+      gameState.solvedCount++;
+      updateRoomState();
+    }
+
+    setTimeout(() => {
+      closeModal();
+      if (gameState.solvedCount === 10) {
+        showScreen('victory-screen');
+        speakText("¡Felicitaciones! Has resuelto las diez falacias y la puerta del tiempo se ha abierto.");
+      }
+    }, 1200);
+
+  } else {
+    btnElement.classList.add('wrong');
+    hintText.textContent = "Respuesta incorrecta. " + data.hint;
+    hintBox.classList.add('active');
+    
+    speakText("Incorrecto. Reflexiona con la siguiente guía socrática: " + data.hint);
+  }
+}
+</script>
+</body>
+</html>
