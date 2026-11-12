@@ -1,97 +1,49 @@
+﻿<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <!DOCTYPE html>
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Repositorio de Aplicaciones Educativas</title>
-  <meta name="description" content="Repositorio de aplicaciones educativas creadas con Vibe coding y enfoque DUA en CABA.">
+  <title>Repositorio apps de Matemática</title>
+  <meta name="description" content="Colección de herramientas y aplicaciones interactivas diseñadas para el aprendizaje matemático.">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
   
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #0b1120 0%, #1e1b4b 50%, #0f172a 100%);
-      --surface-toolbar: rgba(15, 23, 42, 0.88);
-      --surface-filter: rgba(255, 255, 255, 0.08);
-      --filter-border: rgba(255, 255, 255, 0.16);
+      /* Fondo Carmesí / Frambuesa Oscuro */
+      --bg-primary: #B8003C;
+      --bg-gradient: linear-gradient(145deg, #B8003C 0%, #C00A40 45%, #940030 100%);
       
-      --card-bg: #ffffff;
-      --card-bg-hover: #f8fafc;
-      --card-text-title: #0f172a;
-      --card-text-desc: #334155;
-      --card-text-author: #475569;
-      --card-tag-bg: #f1f5f9;
-      --card-tag-border: #e2e8f0;
-      --card-tag-text: #475569;
-      --card-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.35), 0 4px 10px -2px rgba(0, 0, 0, 0.2);
-      --card-shadow-hover: 0 20px 35px -5px rgba(0, 0, 0, 0.45);
+      --surface-toolbar: rgba(138, 0, 45, 0.88);
+      --border-toolbar: rgba(255, 255, 255, 0.22);
       
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
+      --text-hero-title: #ffffff;
+      --text-hero-sub: #ffe5ec;
       
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --accent: #14b8a6;
-      
-      --radius-lg: 20px;
+      --radius-lg: 18px;
       --radius-md: 12px;
       --radius-sm: 8px;
       
-      --font-main: 'Outfit', sans-serif;
+      --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-heading: 'Space Grotesk', sans-serif;
       
       --base-font-size: 16px;
     }
 
     body.high-contrast {
+      --bg-primary: #000000;
       --bg-gradient: #000000;
-      --surface-toolbar: #000000;
-      --surface-filter: #111111;
-      --filter-border: #ffffff;
-      --card-bg: #000000;
-      --card-bg-hover: #111111;
-      --card-text-title: #ffffff;
-      --card-text-desc: #f5f5f5;
-      --card-text-author: #ffff00;
-      --card-tag-bg: #222222;
-      --card-tag-border: #ffffff;
-      --card-tag-text: #ffffff;
-      --text-main: #ffffff;
-      --text-muted: #e5e5e5;
-      --primary: #ffff00;
-      --accent: #00ffff;
-      --card-shadow: 0 0 0 2px #ffffff;
-    }
-
-    body.high-contrast .badge-version-v2 {
-      background: #00ff00 !important;
-      color: #000000 !important;
-      border: 2px solid #ffffff !important;
-      box-shadow: none !important;
-    }
-
-    body.high-contrast .card-improvement-box {
-      background: #111111 !important;
-      color: #ffffff !important;
-      border-color: #ffff00 !important;
-      border-left-color: #00ffff !important;
-    }
-
-    body.high-contrast .card-improvement-box strong {
-      color: #00ffff !important;
-    }
-
-    body.high-contrast .btn-compare {
-      background: #222222 !important;
-      color: #00ffff !important;
-      border-color: #ffffff !important;
+      --surface-toolbar: #111111;
+      --border-toolbar: #ffffff;
+      background: #000000 !important;
+      color: #ffffff;
     }
 
     * {
@@ -109,59 +61,59 @@
       font-family: var(--font-main);
       background: var(--bg-gradient);
       background-attachment: fixed;
-      color: var(--text-main);
+      color: #1e293b;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
       line-height: 1.6;
+      padding-bottom: 70px;
     }
 
-    /* Barra DUA Superior */
-    .dua-toolbar {
+    /* Barra Superior de Accesibilidad */
+    .app-toolbar {
       position: sticky;
       top: 0;
       z-index: 100;
       background: var(--surface-toolbar);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--filter-border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-toolbar);
       padding: 10px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 
-    .dua-brand {
+    .toolbar-brand {
       font-family: var(--font-heading);
       font-weight: 700;
-      font-size: 1.15rem;
-      letter-spacing: -0.02em;
+      font-size: 1.08rem;
+      color: #ffffff;
       display: flex;
       align-items: center;
       gap: 10px;
-      color: #ffffff;
+      letter-spacing: -0.2px;
     }
 
-    .dua-brand i {
-      color: var(--accent);
+    .toolbar-brand i {
+      color: #ffccd9;
     }
 
-    .dua-controls {
+    .toolbar-controls {
       display: flex;
-      align-items: center;
       gap: 8px;
+      align-items: center;
     }
 
-    .btn-dua {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--filter-border);
+    .btn-tool {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       color: #ffffff;
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: var(--radius-sm);
-      font-weight: 600;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
+      font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -169,125 +121,101 @@
       transition: all 0.2s ease;
     }
 
-    .btn-dua:hover {
-      background: rgba(255, 255, 255, 0.2);
+    .btn-tool:hover {
+      background: #ffffff;
+      color: #B8003C;
+      border-color: #ffffff;
       transform: translateY(-1px);
     }
 
-    .btn-dua.active {
-      background: var(--primary);
-      border-color: var(--primary);
+    .btn-tool.active {
+      background: #ffffff;
+      color: #B8003C;
     }
 
+    /* Layout Principal */
     .container {
-      max-width: 1400px;
-      width: 100%;
+      max-width: 1240px;
       margin: 0 auto;
-      padding: 30px 24px 60px;
-      flex: 1;
+      padding: 0 20px;
     }
 
-    /* Banner Histórico a indexOld */
-    .archive-banner {
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.35);
-      border-radius: var(--radius-md);
-      padding: 12px 20px;
-      margin-bottom: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      font-size: 0.92rem;
-    }
-
-    .archive-banner span {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #e0e7ff;
-    }
-
-    .archive-banner a {
-      color: #ffffff;
-      background: #4f46e5;
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.85rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s ease;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .archive-banner a:hover {
-      background: #4338ca;
-      transform: translateY(-1px);
-    }
-
-    /* Hero */
+    /* Hero Header */
     .hero {
+      padding: 42px 0 28px 0;
       text-align: center;
-      margin-bottom: 35px;
     }
 
-    .hero-badge {
-      display: inline-flex;
+    .hero-title-wrapper {
+      display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      background: rgba(99, 102, 241, 0.2);
-      border: 1px solid rgba(99, 102, 241, 0.4);
-      border-radius: 9999px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #a5b4fc;
-      margin-bottom: 14px;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .hero-svg-badge {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+      width: 58px;
+      height: 58px;
+      flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+
+    .hero-svg-badge:hover {
+      transform: scale(1.08) rotate(3deg);
+    }
+
+    .title-svg {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
     }
 
     .hero h1 {
       font-family: var(--font-heading);
-      font-size: clamp(2rem, 4vw, 3rem);
+      font-size: 2.55rem;
       font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 10px;
-      color: #ffffff;
+      line-height: 1.2;
+      color: var(--text-hero-title);
+      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
     }
 
-    .hero .subtitle {
-      font-size: clamp(1.1rem, 2vw, 1.35rem);
-      color: #38bdf8;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .hero .desc {
-      max-width: 820px;
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-hero-sub);
+      max-width: 740px;
       margin: 0 auto;
-      color: var(--text-muted);
-      font-size: 1rem;
-      line-height: 1.6;
+      font-weight: 400;
+      line-height: 1.55;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     }
 
-    /* Filtros y Buscador */
+    /* Panel de Búsqueda y Filtros */
     .filter-panel {
-      background: var(--surface-filter);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--filter-border);
+      background: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: var(--radius-lg);
       padding: 22px 24px;
-      margin-bottom: 35px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      margin-top: 24px;
+      margin-bottom: 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
 
+    /* Buscador en Tiempo Real */
     .search-group {
       position: relative;
-      margin-bottom: 18px;
+      width: 100%;
     }
 
     .search-group i {
@@ -295,37 +223,37 @@
       left: 18px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--text-muted);
+      color: #94a3b8;
       font-size: 1.15rem;
-      pointer-events: none;
     }
 
     .search-input {
       width: 100%;
-      padding: 14px 18px 14px 50px;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid var(--filter-border);
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
       border-radius: var(--radius-md);
-      color: #ffffff;
-      font-size: 1rem;
-      font-family: var(--font-main);
+      padding: 14px 16px 14px 48px;
+      color: #0f172a;
+      font-size: 1.02rem;
+      font-family: inherit;
       outline: none;
       transition: all 0.2s ease;
     }
 
     .search-input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35);
-      background: rgba(15, 23, 42, 0.95);
+      background: #ffffff;
+      border-color: #B8003C;
+      box-shadow: 0 0 0 3px rgba(184, 0, 60, 0.18);
     }
 
     .search-input::placeholder {
-      color: #64748b;
+      color: #94a3b8;
     }
 
+    /* Filtros Desplegables */
     .filters-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
     }
 
@@ -338,173 +266,132 @@
     .select-wrapper label {
       font-size: 0.82rem;
       font-weight: 700;
-      color: #cbd5e1;
+      color: #475569;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      letter-spacing: 0.5px;
     }
 
     .filter-select {
-      width: 100%;
-      padding: 11px 14px;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid var(--filter-border);
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
       border-radius: var(--radius-md);
-      color: #ffffff;
-      font-size: 0.92rem;
-      font-family: var(--font-main);
+      padding: 12px 14px;
+      color: #0f172a;
+      font-size: 0.96rem;
+      font-family: inherit;
       outline: none;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: border-color 0.2s ease;
     }
 
     .filter-select:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35);
+      border-color: #B8003C;
+      background: #ffffff;
     }
 
-    .filter-select option {
-      background: #0f172a;
-      color: #ffffff;
-    }
-
-    /* Contador */
+    /* Barra de Estado */
     .status-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
-      padding: 0 4px;
-      color: var(--text-muted);
-      font-size: 0.92rem;
+      font-size: 0.9rem;
+      color: #64748b;
+      padding-top: 4px;
+      border-top: 1px solid #f1f5f9;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .status-bar strong {
-      color: #38bdf8;
+    .status-count strong {
+      color: #B8003C;
+      font-weight: 700;
     }
 
-    /* Grilla de Tarjetas */
+    /* Grid de Aplicaciones */
     .apps-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
       gap: 26px;
     }
 
-    @media (max-width: 480px) {
-      .apps-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Tarjeta */
+    /* Ficha / Tarjeta de Aplicación en Blanco con Borde de Distinto Color */
     .app-card {
-      background: var(--card-bg);
+      background: #ffffff;
       border-radius: var(--radius-lg);
       padding: 24px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: var(--card-shadow);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
       position: relative;
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.16);
+      border-width: 2px;
+      border-style: solid;
+      border-top-width: 7px;
+      border-color: var(--card-accent, #2563eb);
       overflow: hidden;
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      border-top: 5px solid var(--card-accent, var(--primary));
     }
 
     .app-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--card-shadow-hover);
-      border-color: #cbd5e1;
-    }
-
-    body.high-contrast .app-card {
-      border: 2px solid #ffffff !important;
-      border-top: 6px solid #ffff00 !important;
+      transform: translateY(-6px);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24), 0 0 24px var(--card-accent-glow, rgba(37, 99, 235, 0.28));
     }
 
     .card-badges {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 12px;
+      align-items: center;
+      margin-bottom: 14px;
       flex-wrap: wrap;
+      gap: 8px;
     }
 
     .badge-level {
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      background: #eef2ff;
-      color: #4338ca;
-      border: 1px solid #c7d2fe;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .badge-subject {
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      background: #f1f5f9;
-      color: #334155;
-      border: 1px solid #e2e8f0;
-    }
-
-    .badge-version-v2 {
       font-size: 0.76rem;
       font-weight: 800;
       padding: 4px 10px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: #ffffff;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
-      border: 1px solid #059669;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
     }
 
-    .badge-version-unica {
+    .badge-subject {
       font-size: 0.76rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 20px;
-      background: #ede9fe;
-      color: #5b21b6;
-      border: 1px solid #ddd6fe;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 12px;
+      background: var(--card-accent-soft, rgba(37, 99, 235, 0.1));
+      color: var(--card-accent-text, #1d4ed8);
+      border: 1px solid var(--card-accent, #2563eb);
     }
 
     .card-title {
       font-family: var(--font-heading);
-      font-size: 1.25rem;
+      font-size: 1.26rem;
       font-weight: 700;
-      color: var(--card-text-title);
-      line-height: 1.35;
+      color: #0f172a;
       margin-bottom: 8px;
+      line-height: 1.35;
       display: flex;
       align-items: flex-start;
       gap: 10px;
     }
 
     .card-emoji {
-      font-size: 1.45rem;
-      line-height: 1.2;
+      font-size: 1.6rem;
+      line-height: 1;
       flex-shrink: 0;
+      margin-top: 2px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
     }
 
     .card-author {
-      font-size: 0.86rem;
+      font-size: 0.85rem;
+      color: #64748b;
       font-weight: 600;
-      color: var(--card-text-author);
       margin-bottom: 12px;
       display: flex;
       align-items: center;
@@ -512,169 +399,239 @@
     }
 
     .card-desc {
-      font-size: 0.91rem;
-      color: var(--card-text-desc);
-      line-height: 1.55;
-      margin-bottom: 14px;
-    }
-
-    /* Caja de Mejoras V2 */
-    .card-improvement-box {
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      border-left: 4px solid #10b981;
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-size: 0.84rem;
-      color: #166534;
+      font-size: 0.93rem;
+      color: #334155;
       margin-bottom: 16px;
-      line-height: 1.45;
-    }
-
-    .card-improvement-box strong {
-      display: block;
-      color: #047857;
-      margin-bottom: 3px;
-      font-size: 0.85rem;
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex-grow: 1;
     }
 
     .card-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 18px;
+      margin-bottom: 22px;
     }
 
     .tag {
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       font-weight: 600;
-      background: var(--card-tag-bg);
-      border: 1px solid var(--card-tag-border);
-      color: var(--card-tag-text);
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
-    }
-
-    /* Botones de Acción */
-    .card-actions-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: auto;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      padding: 3px 9px;
+      border-radius: 6px;
     }
 
     .btn-launch {
-      background: var(--card-accent, var(--primary));
       color: #ffffff;
-      padding: 12px 18px;
+      text-decoration: none;
+      padding: 12px 20px;
       border-radius: var(--radius-md);
       font-weight: 700;
       font-size: 0.95rem;
-      text-decoration: none;
+      text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
+      gap: 8px;
+      transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-      transition: all 0.2s ease;
-      border: none;
     }
 
     .btn-launch:hover {
-      filter: brightness(1.1);
+      opacity: 0.92;
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    .btn-compare {
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 8px 14px;
-      border-radius: var(--radius-md);
-      text-align: center;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      transition: all 0.2s ease;
-      background: #f8fafc;
-      color: #475569;
-      border: 1px solid #cbd5e1;
-    }
-
-    .btn-compare:hover {
-      background: #e2e8f0;
-      color: #0f172a;
-      border-color: #94a3b8;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
     }
 
     /* Estado Vacío */
     .empty-state {
       grid-column: 1 / -1;
       text-align: center;
-      padding: 70px 20px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px dashed rgba(255, 255, 255, 0.2);
+      padding: 60px 20px;
+      background: #ffffff;
       border-radius: var(--radius-lg);
-      color: var(--text-muted);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      color: #64748b;
     }
 
     .empty-state i {
       font-size: 3rem;
-      margin-bottom: 16px;
-      opacity: 0.5;
+      color: #B8003C;
+      margin-bottom: 12px;
     }
 
-    /* Footer */
+    .empty-state h3 {
+      font-size: 1.3rem;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+
+    /* Optimización Móvil */
+    @media (max-width: 640px) {
+      .hero h1 {
+        font-size: 1.85rem;
+      }
+      .filter-panel {
+        padding: 16px;
+      }
+      .apps-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-svg-badge {
+        width: 48px;
+        height: 48px;
+      }
+      .title-svg {
+        width: 38px;
+        height: 38px;
+      }
+    }
+
+    /* Pie de página del repositorio */
     .repo-footer {
       margin-top: 60px;
-      border-top: 1px solid var(--filter-border);
-      padding: 30px 20px;
+      padding: 30px 20px 40px;
+      border-top: 1px solid var(--border-color);
       text-align: center;
       color: var(--text-muted);
-      font-size: 0.88rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
     }
 
-    .repo-footer a {
-      color: #38bdf8;
-      text-decoration: underline;
+    .repo-footer-copy {
+      color: var(--text-main);
+      font-weight: 600;
+      margin-bottom: 8px;
     }
 
     .repo-footer-licenses {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin: 10px 0;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+    }
+
+    .repo-footer-licenses a {
+      color: var(--primary);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    .repo-footer-licenses a:hover {
+      color: var(--primary-hover);
+    }
+
+    .repo-footer-licenses .sep {
+      color: var(--text-muted);
+    }
+
+    .repo-footer-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    body.high-contrast .repo-footer {
+      border-top: 2px solid #ffffff;
+      color: #ffffff;
+    }
+
+    body.high-contrast .repo-footer-copy {
+      color: #ffff00;
+    }
+
+    body.high-contrast .repo-footer-licenses a {
+      color: #00ffff;
+    }
+
+    body.high-contrast .repo-footer-note {
+      color: #ffffff;
+    }
+
+    body.high-contrast .btn-launch {
+      border: 2px solid #ffffff !important;
+      color: #ffffff !important;
+      background: #000000 !important;
     }
   </style>
 </head>
 <body>
 
-  <!-- Barra DUA de Accesibilidad -->
-  <header class="dua-toolbar" aria-label="Herramientas de Accesibilidad DUA">
-    <div class="dua-brand">
-      <i class="fa-solid fa-layer-group"></i> Repositorio de Apps Educativas
+  <!-- Barra Superior de Accesibilidad -->
+  <header class="app-toolbar" aria-label="Herramientas de Accesibilidad">
+    <div class="toolbar-brand">
+      <a href="../index.html" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;" title="Volver al aula de EDI 2026">
+        <i class="fa-solid fa-arrow-left"></i> <span>EDI 2026</span>
+      </a>
+      <span style="opacity: 0.5; margin: 0 6px;">|</span>
+      <i class="fa-solid fa-calculator"></i> Repositorio apps de Matemática
     </div>
-    <div class="dua-controls">
-      <button class="btn-dua" id="btn-font-sub" title="Disminuir tamaño de letra" aria-label="Disminuir tamaño de letra">A−</button>
-      <button class="btn-dua" id="btn-font-reset" title="Restablecer tamaño original" aria-label="Restablecer tamaño original">A</button>
-      <button class="btn-dua" id="btn-font-add" title="Aumentar tamaño de letra" aria-label="Aumentar tamaño de letra">A+</button>
-      <button class="btn-dua" id="btn-contrast" title="Alternar modo de alto contraste" aria-label="Alternar modo de alto contraste">
-        <i class="fa-solid fa-circle-half-stroke"></i> Contraste
-      </button>
+    <div class="toolbar-controls">
+      <button class="btn-tool" id="btn-font-sub" title="Disminuir tamaño de letra">A-</button>
+      <button class="btn-tool" id="btn-font-reset" title="Restablecer tamaño de letra">A</button>
+      <button class="btn-tool" id="btn-font-add" title="Aumentar tamaño de letra">A+</button>
+      <button class="btn-tool" id="btn-contrast" title="Alternar Alto Contraste"><i class="fa-solid fa-circle-half-stroke"></i> Contraste</button>
     </div>
   </header>
 
   <div class="container">
-
+    
     <!-- Hero Header -->
     <header class="hero">
-      <h1>Repositorio de Aplicaciones Educativas</h1>
-      <p class="subtitle">Desarrolladas con Vibe Coding y enfoque DUA en CABA (Res. 860/25)</p>
-      <p class="desc">Compilación de mediadores didácticos e interactivos creados por docentes mediante inteligencia artificial. Cada ficha reúne la versión más evolucionada con retroalimentación formativa, pistas socráticas y diseño accesible.</p>
+      <div class="hero-title-wrapper">
+        <!-- Parábola SVG (Lado Izquierdo) -->
+        <div class="hero-svg-badge" title="Parábola matemática">
+          <svg class="title-svg" viewBox="0 0 100 100" aria-label="Parábola matemática">
+            <!-- Eje X con flecha -->
+            <line x1="12" y1="74" x2="88" y2="74" stroke="#94A3B8" stroke-width="3" stroke-linecap="round" />
+            <polyline points="82,70 88,74 82,78" fill="none" stroke="#94A3B8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- Eje Y con flecha -->
+            <line x1="26" y1="88" x2="26" y2="12" stroke="#94A3B8" stroke-width="3" stroke-linecap="round" />
+            <polyline points="22,18 26,12 30,18" fill="none" stroke="#94A3B8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- Curva parábola suave -->
+            <path d="M 22 24 Q 48 84 82 28" fill="none" stroke="#10B981" stroke-width="4.5" stroke-linecap="round" />
+            <!-- Vértice y raíz -->
+            <circle cx="48" cy="54" r="4" fill="#6366F1" />
+            <circle cx="73" cy="38" r="3.5" fill="#F59E0B" />
+          </svg>
+        </div>
+
+        <h1>Repositorio apps de Matemática</h1>
+
+        <!-- Algoritmo de Ruffini SVG (Lado Derecho) -->
+        <div class="hero-svg-badge" title="Regla de Ruffini">
+          <svg class="title-svg" viewBox="0 0 100 100" aria-label="Algoritmo de Ruffini">
+            <!-- Líneas directrices del algoritmo -->
+            <line x1="32" y1="18" x2="32" y2="82" stroke="#6366F1" stroke-width="3.5" stroke-linecap="round" />
+            <line x1="14" y1="62" x2="86" y2="62" stroke="#6366F1" stroke-width="3.5" stroke-linecap="round" />
+            <!-- Raíz / Divisor -->
+            <circle cx="22" cy="44" r="6" fill="#F59E0B" />
+            <!-- Coeficientes del dividendo -->
+            <circle cx="45" cy="34" r="5" fill="#06B6D4" />
+            <circle cx="62" cy="34" r="5" fill="#06B6D4" />
+            <circle cx="78" cy="34" r="5" fill="#06B6D4" />
+            <!-- Cociente y Resto (destacado) -->
+            <circle cx="45" cy="72" r="5" fill="#10B981" />
+            <circle cx="62" cy="72" r="5" fill="#10B981" />
+            <circle cx="78" cy="72" r="6.5" fill="#EC4899" />
+            <!-- Trazo de descenso -->
+            <line x1="45" y1="41" x2="45" y2="60" stroke="#94A3B8" stroke-width="2" stroke-dasharray="2 2" />
+          </svg>
+        </div>
+      </div>
+      <p class="hero-subtitle">
+        Colección de herramientas y aplicaciones interactivas diseñadas para el aprendizaje matemático.
+      </p>
     </header>
 
     <!-- Panel de Búsqueda y Filtros Dinámicos -->
@@ -687,501 +644,281 @@
           type="text" 
           id="search-input" 
           class="search-input" 
-          placeholder="Buscar por título, autor, contenido, materia o palabras clave (ej: DUA, Socrático, Química, Falacias)..."
-          aria-label="Buscar aplicaciones"
+          placeholder="Buscar por tema matemático, concepto o palabra clave (ej: Ruffini, Polinomios, Lógica)..."
+          aria-label="Buscar aplicaciones de matemática"
         >
       </div>
 
       <!-- Filtros por Categoría -->
       <div class="filters-row">
         <div class="select-wrapper">
-          <label for="filter-level"><i class="fa-solid fa-graduation-cap"></i> Nivel Educativo</label>
+          <label for="filter-level">Nivel Educativo</label>
           <select id="filter-level" class="filter-select" aria-label="Filtrar por Nivel Educativo">
             <option value="todos">Todos los Niveles</option>
-            <option value="Inicial">Inicial</option>
-            <option value="Primaria">Primaria</option>
             <option value="Secundaria">Secundaria</option>
-            <option value="Adultos">Adultos / Formación Laboral</option>
+            <option value="Superior">Nivel Superior / Terciario</option>
+            <option value="Formación Docente">Formación Docente</option>
           </select>
         </div>
 
         <div class="select-wrapper">
-          <label for="filter-subject"><i class="fa-solid fa-book-open"></i> Área Curricular / Materia</label>
-          <select id="filter-subject" class="filter-select" aria-label="Filtrar por Materia">
-            <option value="todas">Todas las Materias</option>
-            <option value="Matemática">Matemática</option>
-            <option value="Prácticas del Lenguaje">Prácticas del Lenguaje</option>
-            <option value="Educación Digital">Educación Digital</option>
-            <option value="Educación Tecnológica">Educación Tecnológica</option>
-            <option value="Educación Plástica">Educación Plástica / Visual</option>
-            <option value="Educación Artística - Danza">Educación Artística (Danza / Corporal)</option>
-            <option value="Educación Musical">Educación Musical</option>
-            <option value="Ciencias Naturales">Ciencias Naturales</option>
-            <option value="Química">Química</option>
-            <option value="Físico-Química">Físico-Química</option>
-            <option value="Historia">Historia / Ciencias Sociales</option>
-            <option value="Educación Ciudadana">Educación Ciudadana</option>
-            <option value="Comunicación">Comunicación</option>
-            <option value="Filosofía">Filosofía</option>
-            <option value="Inglés">Inglés</option>
+          <label for="filter-topic">Eje Temático</label>
+          <select id="filter-topic" class="filter-select" aria-label="Filtrar por Eje Temático">
+            <option value="todos">Todos los Ejes</option>
+            <option value="Álgebra y Polinomios">Álgebra y Polinomios</option>
+            <option value="Geometría y Magnitudes">Geometría y Magnitudes</option>
+            <option value="Geometría y Trigonometría">Geometría y Trigonometría</option>
+            <option value="Números y Operaciones">Números y Operaciones</option>
+            <option value="Lógica Proposicional">Lógica Proposicional</option>
+            <option value="Funciones y Análisis">Funciones y Análisis</option>
+            <option value="Probabilidad y Estadística">Probabilidad y Estadística</option>
           </select>
         </div>
       </div>
+
+      <div class="status-bar">
+        <span id="status-count" class="status-count">Cargando aplicaciones...</span>
+        <span style="font-size: 0.85rem; color: #64748b;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Catálogo interactivo</span>
+      </div>
+
     </section>
 
-    <!-- Barra de Estado / Contador -->
-    <div class="status-bar" aria-live="polite">
-      <span id="status-count">Cargando aplicaciones...</span>
-      <span><i class="fa-solid fa-wand-magic-sparkles text-emerald-400"></i> Colección de mediadores interactivos DUA</span>
-    </div>
+    <!-- Grid de Aplicaciones -->
+    <main class="apps-grid" id="apps-grid" aria-label="Catálogo de Aplicaciones de Matemática">
+      <!-- Las tarjetas se generan dinámicamente desde el array JavaScript de abajo -->
+    </main>
 
-    <!-- Grilla de Aplicaciones -->
-    <main class="apps-grid" id="apps-grid" aria-label="Listado de aplicaciones educativas"></main>
-
-    <!-- Footer -->
-    <footer class="repo-footer">
-      <p>© 2026 <strong>Repositorio de aplicaciones educativas</strong> · Compilación y coordinación pedagógica: <strong>Prof. Silvina Elena Busto</strong></p>
-      <p class="repo-footer-licenses">
-        <span><i class="fa-solid fa-code"></i> Código fuente bajo <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU AGPL v3</a></span>
-        <span>·</span>
-        <span><i class="fa-brands fa-creative-commons"></i> Contenidos didácticos bajo <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></span>
-        <span>·</span>
-        <span><a href="indexOld.html"><i class="fa-solid fa-clock-rotate-left"></i> Archivo Histórico</a></span>
-      </p>
-      <p style="margin-top: 6px; font-size: 0.82rem; opacity: 0.85;">
-        Desarrollado con metodología Vibe Coding y asistencia de <strong>Antigravity CLI</strong> y <strong>Google Gemini</strong>.
-      </p>
+    <!-- Pie de Página Legal y Licenciamiento Abierto -->
+    <footer class="repo-footer" role="contentinfo">
+      <div class="repo-footer-content">
+        <p class="repo-footer-copy">© 2026 <strong>Repositorio de aplicaciones de Matemática</strong> · Desarrollo y coordinación: <strong>Prof. Silvina Elena Busto</strong> · Asistencia técnica con <strong>Antigravity CLI</strong></p>
+        <p class="repo-footer-licenses">
+          <span><i class="fa-solid fa-code"></i> Código fuente bajo <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU AGPL v3</a></span>
+          <span class="sep">·</span>
+          <span><i class="fa-brands fa-creative-commons"></i> Contenidos didácticos bajo <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons CC BY-SA 4.0</a></span>
+        </p>
+        <p class="repo-footer-note">Herramientas y mediadores didácticos abiertos para la comunidad docente y estudiantil (Recursos Educativos Abiertos - REA).</p>
+      </div>
     </footer>
 
   </div>
 
   <script>
     /* ==========================================================================
-       CATÁLOGO DE APLICACIONES EDUCATIVAS
+       CATÁLOGO DE APLICACIONES DE MATEMÁTICA
+       Cada ficha cuenta con:
+       - id: identificador único
+       - emoji: emoticón temático representativo que antecede al título
+       - titulo: nombre visible de la aplicación
+       - autor: docente creador/a
+       - nivel: "Secundaria", "Superior", "Formación Docente"
+       - materia: área temática curricular
+       - eje: eje conceptual
+       - color: color hexadecimal distintivo para el borde y acentos
+       - url: ruta relativa al archivo HTML
+       - tags: etiquetas clave de búsqueda
+       - descripcion: síntesis didáctica del recurso
        ========================================================================== */
 
-    const REPOSITORIO_APPS = [
+    const REPOSITORIO_MATE = [
       {
-        id: "app-1",
+        id: "mate-1",
+        emoji: "➗",
+        titulo: "Mediador Didáctico: Regla de Ruffini",
+        autor: "Silvina Busto",
+        descripcion: "Aplicación interactiva que andamia la división de polinomios casilla a casilla mediante impulsos socráticos, pistas graduadas y apoyos interactivos (A+/A-, Lectura en Voz Alta y Contraste).",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Álgebra y Polinomios",
+        color: "#2563eb", // Azul royal
+        url: "app_ruffini_dua.html",
+        tags: ["Socrático", "Ruffini", "Polinomios", "Pistas", "Álgebra", "División"]
+      },
+      {
+        id: "mate-2",
         emoji: "🧮",
-        titulo: "Mediador Didáctico: Regla de Ruffini (DUA)",
-        autor: "Silvina Elena Busto",
-        descripcion: "Aplicación interactiva que andamia la división de polinomios casilla a casilla mediante impulsos socráticos, pistas graduadas y apoyos DUA (A+/A-, Lectura en Voz Alta y Contraste).",
+        titulo: "Calculadora y Algoritmo de Ruffini (DUA)",
+        autor: "Silvina Busto",
+        descripcion: "Herramienta interactiva y accesible con apoyos DUA para resolver divisiones polinómicas paso a paso por el método de Ruffini con reconstrucción del cociente y resto.",
         nivel: "Secundaria",
         materia: "Matemática",
-        color: "#0284c7",
-        url: "app-ruffini-dua.htm",
-        version: "v2",
-        tags: ["DUA", "Socrático", "Matemática", "Pistas", "Polinomios", "Res. 860/25"]
+        eje: "Álgebra y Polinomios",
+        color: "#059669", // Esmeralda
+        url: "app_ruffini_dua.html",
+        tags: ["Algoritmo", "Matemática", "Paso a Paso", "Polinomios", "Cálculo", "DUA"]
       },
       {
-        id: "app-4-v2",
-        emoji: "🇬🇧",
-        titulo: "Present Simple Practice & Grammar Lab (DUA)",
-        autor: "Silvina Valla",
-        descripcion: "Laboratorio gramatical interactivo de inglés con diseño responsivo adaptativo, selectores gramaticales de tercera persona con retroalimentación formativa inmediata y barra de accesibilidad DUA con controles de escalado tipográfico y botones adaptables.",
-        nivel: "Secundaria",
-        materia: "Inglés",
-        color: "#1d4ed8",
-        url: "appf2/Valla_SilvinaValeria_Present_Simple_V3.html",
-        version: "v2",
-        mejoras: "Interfaz adaptativa, botones de escala DUA (font-scale, btn-scale), nuevos ejercicios de tercera persona con feedback en tiempo real y compatibilidad multiplataforma.",
-        tags: ["Inglés", "Gramática", "Present Simple", "DUA", "Escala DUA", "Secundaria"]
-      },
-      {
-        id: "app-5-v2",
-        emoji: "🎵",
-        titulo: "Laboratorio del Compás: Lenguaje Musical y Web Audio (DUA)",
-        autor: "Fernando Vater",
-        descripcion: "Experiencia sensorial y sonora interactiva con Web Audio API, desafíos interactivos de compás (2/4, 3/4 y 4/4), pistas auditivas, modo alto contraste DUA y metrónomo visual.",
-        nivel: "Secundaria",
-        materia: "Educación Musical",
-        color: "#b45309",
-        url: "appf2/Vater_Fernando_figurasmusicales_v2.html",
-        version: "v2",
-        mejoras: "Web Audio API optimizado, metrónomo visual interactivo, desafíos secuenciados de compás, pistas socráticas musicales y soporte DUA completo.",
-        tags: ["Educación Musical", "DUA", "Audio", "Compás", "Web Audio"]
-      },
-      {
-        id: "app-6-v2",
-        emoji: "🛡️",
-        titulo: "Ciudadanía Digital: Dilemas Éticos y Legales (DUA)",
-        autor: "Mariana Lagomarsino",
-        descripcion: "Simulador interactivo con dilemas éticos y legales sobre ciudadanía digital, barra de accesibilidad DUA completa (modo alto contraste y escala de fuentes), barra de avance paso a paso, marco normativo argentino y pistas socráticas formativas.",
-        nivel: "Secundaria",
-        materia: "Educación Ciudadana",
-        color: "#10b981",
-        url: "appf2/Lagomarsino_Mariana_ciudadaniadigital_v2.html",
-        version: "v2",
-        mejoras: "Barra DUA de alto contraste y tamaño de fuente, barra de progreso por etapas, fundamentación jurídica ampliada y retroalimentación argumentada.",
-        tags: ["Educación Ciudadana", "Ciudadanía Digital", "DUA", "Marco Legal", "Alto Contraste"]
-      },
-      {
-        id: "app-7-v2",
-        emoji: "💻",
-        titulo: "Ciberseguridad y Respuesta a Incidentes en SI (DUA)",
-        autor: "Iris Dree",
-        descripcion: "Simulador interactivo para 4.° año técnico en Administración de gestión de riesgos y respuesta a incidentes (Ransomware, Phishing, Ingeniería Social) con pistas reflexivas, modo alto contraste DUA y síntesis de voz (TTS).",
-        nivel: "Secundaria",
-        materia: "Educación Tecnológica",
-        color: "#0284c7",
-        url: "appf2/Iris Dree seguridad de la informacion v2.html",
-        version: "v2",
-        mejoras: "Pistas socráticas graduadas ante respuestas erróneas, ampliación de escenarios de ataque, refinamiento en síntesis TTS y tipografía DUA adaptable.",
-        tags: ["Educación Tecnológica", "Educación Digital", "Ciberseguridad", "DUA", "Ransomware", "Phishing", "TTS"]
-      },
-      {
-        id: "app-8-v2",
-        emoji: "🎨",
-        titulo: "Laboratorio del Color: Paletas Cálidas y Frías (DUA)",
-        autor: "Lorena Confeggi",
-        descripcion: "Laboratorio interactivo de artes visuales diseñado con Tailwind CSS, paleta interactiva de colores cálidos y fríos, tres modos visuales (Claro, Oscuro y Alto Contraste DUA), tipografía Fredoka y Nunito, y diario interactivo del artista.",
-        nivel: "Primaria",
-        materia: "Educación Plástica",
-        color: "#ea580c",
-        url: "appf2/lorena_confeggi_lab(v2).html",
-        version: "v2",
-        mejoras: "Rediseño completo con Tailwind CSS, modos Claro / Oscuro / Alto Contraste DUA, paleta interactiva cálida y fría, tipografía Fredoka y diario de reflexiones plásticas.",
-        tags: ["Educación Plástica", "DUA", "Color", "Primaria", "Tailwind", "Alto Contraste"]
-      },
-      {
-        id: "app-9-v2",
-        emoji: "🧪",
-        titulo: "Misión Fórmula: Nomenclatura y Compuestos Inorgánicos (DUA)",
-        autor: "Gustavo Maximiliano Kocsis",
-        descripcion: "Laboratorio interactivo para 5.° año de secundaria centrado en la formulación y nomenclatura de óxidos, hidróxidos, ácidos y sales con pistas graduadas, feedback formativo DUA y modo lectura.",
-        nivel: "Secundaria",
-        materia: "Química",
-        color: "#059669",
-        url: "appf2/KocsisGustavo-Mision Formula Quimica 5to-V2.html",
-        version: "v2",
-        mejoras: "Refinamiento de pistas socráticas por niveles, opciones DUA ampliadas (lectura por voz, opción oral), feedback explicativo inmediato y ajuste de nomenclatura IUPAC y tradicional.",
-        tags: ["Química", "DUA", "Fórmulas", "Nomenclatura", "Secundaria", "Metacognición"]
-      },
-      {
-        id: "app-10-v2",
-        emoji: "🩰",
-        titulo: "Bailemos juntos: Posiciones de Ballet y Danza Clásica (DUA)",
-        autor: "Florencia Guglielmotti",
-        descripcion: "Guía interactiva de danza para Nivel Primario de las 5 posiciones del ballet, pistas auditivas, Memotest multimodal (pies, brazos y mixto), mascota animada y panel DUA con lectura TTS y modo accesible.",
-        nivel: "Primaria",
-        materia: "Educación Artística - Danza",
-        color: "#db2777",
-        url: "appf2/guglielmotti_florencia_danza_V2.html",
-        version: "v2",
-        mejoras: "Ampliación del sistema de pistas con feedback animado, nuevos niveles en el Memotest de posiciones, compatibilidad con lectores de pantalla y soporte DUA.",
-        tags: ["Danza", "Educación Artística", "DUA", "Ballet", "Memotest", "Primaria", "TTS"]
-      },
-      {
-        id: "app-11-v2",
-        emoji: "🏛️",
-        titulo: "Mi Primer Museo Interactivo y Taller de Arte (DUA)",
-        autor: "Mariela Fernández",
-        descripcion: "Museo virtual interactivo con modo «Taller de Dibujo Creativo» con lienzo digital, paleta de colores y grosores de pincel. Mantiene los 3 salones temáticos con 12 obras vectoriales, lupa interactiva de detective, audio-guía con voz TTS y pistas socráticas.",
-        nivel: "Primaria",
-        materia: "Educación Plástica",
-        color: "#9333ea",
-        url: "appf2/Fernandez Mariela museo interactivo_v2.html",
-        version: "v2",
-        mejoras: "Modo interactivo 'Taller de Arte y Dibujo' con lienzo digital, paleta cromática inspirada en las obras, lupa de detective optimizada y navegación fluida entre salones.",
-        tags: ["Educación Plástica", "Artes Visuales", "DUA", "Museo", "Taller de Dibujo", "Canvas", "TTS"]
-      },
-      {
-        id: "app-12",
-        emoji: "🕰️",
-        titulo: "Escape Room: El Laboratorio del Tiempo 1952 (Filosofía y Falacias)",
-        autor: "Diego Bernardo",
-        descripcion: "Aventura inmersiva de Filosofía y Lógica. Un fallo en el condensador de flujo de tu máquina del tiempo te deja atrapado en una sala de 1952; para liberar los sellos de la puerta y regresar al presente, debes explorar los objetos de la habitación e identificar falacias informales a la luz de la Alegoría de la Caverna de Platón en un entorno gráfico SVG interactivo con lector TTS y diseño DUA.",
-        nivel: "Secundaria",
-        materia: "Filosofía",
-        color: "#d97706",
-        url: "appf2/Bernardo_Diego_Filosofia_v2.html",
-        version: "v2",
-        mejoras: "Escape room retro interactivo en SVG con 10 acertijos sobre objetos vintage, marco platónico de la Caverna, pistas socráticas graduadas y sintetizador de voz DUA.",
-        tags: ["Filosofía", "Lógica", "Falacias", "DUA", "Alegoría de la Caverna", "Escape Room", "SVG", "TTS", "Secundaria", "Pensamiento Crítico"]
-      },
-      {
-        id: "app-35",
-        emoji: "🚀",
-        titulo: "Exploradores del Sistema Solar: Ciencias Naturales (6.° Grado)",
-        autor: "Mariana Santillan",
-        descripcion: "Entorno interactivo gamificado para 6.° grado con misiones planetarias, animaciones espaciales, biblioteca de astros, confeti y trivias formativas con andamiaje DUA.",
-        nivel: "Primaria",
-        materia: "Ciencias Naturales",
-        color: "#4f46e5",
-        url: "appf2/Santillan Mariana exploradores_del_sistema_solar.html",
-        version: "v2",
-        mejoras: "Animaciones orbitales interactivas, biblioteca multimodal del sistema solar, trivias de autoevaluación y diseño espacial responsivo.",
-        tags: ["Ciencias Naturales", "Sistema Solar", "Planetas", "Primaria", "6.° Grado", "Gamificación", "DUA"]
-      },
-      {
-        id: "app-14-v2",
-        emoji: "🕵️‍♂️",
-        titulo: "Detective de Imágenes: Fotos Reales vs. Creaciones de IA (DUA)",
-        autor: "Agustina Andrés",
-        descripcion: "Entorno interactivo con dos modalidades lúdicas (Modo Historia interactivo y Modo Clasificar con Drag & Drop táctil), sistema de pistas socráticas con lupa flotante, barra de accesibilidad DUA (A+/A-, alto contraste y narración TTS) y feedback formativo adaptativo.",
-        nivel: "Inicial",
-        materia: "Educación Digital",
-        color: "#22c55e",
-        url: "appf2/andres_agustina_proteccion digital_v2.html",
-        version: "v2",
-        mejoras: "Dos modos de interacción (Historia y Clasificación Drag & Drop táctil), pistas socráticas dinámicas con lupa flotante, barra DUA completa y diseño responsivo.",
-        tags: ["Educación Digital", "Nivel Inicial", "DUA", "Inteligencia Artificial", "Imágenes Reales vs IA", "Drag and Drop", "TTS"]
-      },
-      {
-        id: "app-15",
-        emoji: "🐍",
-        titulo: "Python Zero: Aprendé a programar desde cero",
-        autor: "Graciela Sánchez",
-        descripcion: "Entorno interactivo para dar los primeros pasos en programación con Python. Incluye conceptos básicos paso a paso, laboratorio de código en vivo en el navegador y sistema de insignias.",
-        nivel: "Secundaria",
-        materia: "Educación Digital",
-        color: "#0d9488",
-        url: "appf2/Graciela Noemí Sánchez-programación en Python.html",
-        version: "v2",
-        tags: ["Educación Digital", "Programación", "Python", "Código en Vivo", "Laboratorio"]
-      },
-      {
-        id: "app-16",
-        emoji: "🔬",
-        titulo: "Lab Quirúrgico de Reacciones Químicas (DUA)",
-        autor: "Martín Portillo",
-        descripcion: "Laboratorio socio-cognitivo para 3.° año de secundaria centrado en reactivos y transformaciones químicas. Incorpora pistas microscópicas, cierre metacognitivo y panel DUA con TTS.",
-        nivel: "Secundaria",
-        materia: "Físico-Química",
-        color: "#65a30d",
-        url: "appf2/PortilloMartin_fisicoquimica_dua.html",
-        version: "v2",
-        tags: ["Físico-Química", "Química", "DUA", "Reacciones Químicas", "TTS", "Metacognición"]
-      },
-      {
-        id: "app-17",
-        emoji: "📜",
-        titulo: "Los Agregados Obreros: Diplomacia y Batalla Cultural (DUA)",
-        autor: "Marcelo Rest",
-        descripcion: "Entorno interactivo de Historia Argentina para 3.° año sobre la diplomacia obrera (1946-1955) en la Guerra Fría. Estética de época, método socrático con pistas y herramientas DUA completas.",
-        nivel: "Secundaria",
-        materia: "Historia",
-        color: "#ca8a04",
-        url: "appf2/rest_marcelo_AgregadosObreros.html",
-        version: "v2",
-        tags: ["Historia", "Ciencias Sociales", "DUA", "Diplomacia", "Socrático", "TTS", "Secundaria"]
-      },
-      {
-        id: "app-18",
-        emoji: "🕵️",
-        titulo: "Expedientes del Detective: Razonamiento Lógico (DUA)",
-        autor: "Gabriela Cecilia Dimas",
-        descripcion: "Laboratorio de deducción e investigación criminal con 3 enigmas policiales clásicos. Trabaja pensamiento inductivo y deductivo, discriminación de pistas falsas, análisis de coartadas, matriz lógica y accesibilidad DUA con síntesis de voz.",
-        nivel: "Secundaria",
-        materia: "Prácticas del Lenguaje",
-        color: "#be123c",
-        url: "appf2/Dimas_Gabriela_Género Policial y Pensamiento Lógico.html",
-        version: "v2",
-        tags: ["Prácticas del Lenguaje", "Filosofía", "Lógica", "DUA", "Policial de Enigma", "Deducción", "TTS", "Secundaria"]
-      },
-      {
-        id: "app-19-v2",
-        emoji: "🔤",
-        titulo: "Aventura de las Vocales: Fonología y DUA",
-        autor: "Milena Reyser",
-        descripcion: "Laboratorio interactivo de artes visuales diseñado con Tailwind CSS y tipografía Fredoka. Integra colores temáticos específicos por vocal, botones con pronunciación fonológica TTS y modo de alto contraste DUA.",
-        nivel: "Inicial",
-        materia: "Prácticas del Lenguaje",
-        color: "#f97316",
-        url: "appf2/REYSER_MILENA_AventuradeVocales V2.html",
-        version: "v2",
-        mejoras: "Diseño renovado con Tailwind y fuente Fredoka, paleta cromática diferenciada por vocal, síntesis de voz TTS optimizada y modo de alto contraste.",
-        tags: ["Nivel Inicial", "Alfabetización", "Vocales", "DUA", "Fredoka", "Alto Contraste", "TTS"]
-      },
-      {
-        id: "app-20",
-        emoji: "🔊",
-        titulo: "Sonidos en Juego: Conciencia Fonológica y Escritura (DUA)",
-        autor: "Beatriz Verteramo",
-        descripcion: "Aplicación interactiva de conciencia fonológica y lectoescritura con apoyo visual, síntesis de voz nativa, teclado en pantalla y diseño inclusivo bajo normas WCAG AAA y tipografía Lexend para segmentar y escribir.",
-        nivel: "Primaria",
-        materia: "Prácticas del Lenguaje",
-        color: "#0284c7",
-        url: "appf2/beatriz_verteramo_escucho y escribo.html",
-        version: "v2",
-        tags: ["Prácticas del Lenguaje", "Conciencia Fonológica", "Alfabetización", "DUA", "Lexend", "TTS", "Primaria"]
-      },
-      {
-        id: "app-21-v2",
-        emoji: "📢",
-        titulo: "Publicidad Gráfica y Estereotipos de Género (DUA)",
-        autor: "Denise Wieckiewicz",
-        descripcion: "Laboratorio de análisis crítico de medios con 6 casos reales de publicidad gráfica, clasificación de estereotipos de género vs. empoderamiento, justificación argumentada y síntesis de voz TTS.",
-        nivel: "Secundaria",
-        materia: "Comunicación",
-        color: "#4f46e5",
-        url: "appf2/Denise Wieckiewicz an_lisis_cr_tico_de_medios_publicidad_y_estereotipos_de_g_nero.html",
-        version: "v2",
-        mejoras: "Diseño renovado con Tailwind CSS y tipografía Century Gothic, 6 casos de análisis publicitario, retroalimentación formativa y lector de voz TTS.",
-        tags: ["Comunicación", "Educación Ciudadana", "Publicidad", "Estereotipos de Género", "DUA", "TTS", "Secundaria"]
-      },
-      {
-        id: "app-22-v2",
-        emoji: "📈",
-        titulo: "Función Lineal: El Viaje en Automóvil (DUA y Andamiaje)",
-        autor: "Denise Pedrotti",
-        descripcion: "Laboratorio interactivo de matemática con contextualización cotidiana («El Viaje en Automóvil»). Incluye simulación gráfica cartesiana, 5 fases de andamiaje cognitivo, resolución de viaje misterioso con pistas socráticas graduadas y cierre metacognitivo.",
-        nivel: "Secundaria",
-        materia: "Matemática",
-        color: "#0284c7",
-        url: "appf2/pedrotti_denise_funcionlineal_V2.html",
-        version: "v2",
-        mejoras: "Contextualización cotidiana narrativa ('Viaje en Automóvil'), 5 fases secuenciadas de andamiaje, tabla del viaje misterioso con pistas socráticas graduadas y cierre metacognitivo.",
-        tags: ["Matemática", "Función Lineal", "Andamiaje", "DUA", "TTS", "Viaje en Auto", "Sliders", "Secundaria"]
-      },
-      {
-        id: "app-23",
-        emoji: "💧",
-        titulo: "Trivia Interactiva del Ciclo del Agua",
-        autor: "Romina Piacquadio",
-        descripcion: "Trivia didáctica e interactiva para 4.° grado sobre las etapas del ciclo hidrológico (evaporación, condensación, precipitación e infiltración) con retroalimentación inmediata explicativa, contador de puntaje y sistema de insignias.",
-        nivel: "Primaria",
-        materia: "Ciencias Naturales",
-        color: "#0284c7",
-        url: "appf2/piacquadio_romina_ciclo_del_agua.html",
-        version: "v2",
-        tags: ["Ciencias Naturales", "Ciclo del Agua", "Primaria", "4° Grado", "Trivia", "Insignias", "Feedback Inmediato"]
-      },
-      {
-        id: "app-24-v2",
-        emoji: "🎲",
-        titulo: "Exploradores del Movimiento: Expresión Corporal Lúdica (DUA)",
-        autor: "Vilma Santacruz",
-        descripcion: "Entorno interactivo y lúdico con biblioteca de movimientos expresivos, dados corporales, desafíos guiados, lectura en voz alta (TTS) y modo adaptado para dislexia.",
-        nivel: "Primaria",
-        materia: "Educación Artística - Danza",
-        color: "#6d28d9",
-        url: "appf2/santacruz_vilma_expresioncorporal_V2.html",
-        version: "v2",
-        mejoras: "Integración de nuevos desafíos motores, dados interactivos de movimiento, mejoras en la síntesis de voz Text-to-Speech y fuente OpenDyslexic / alto contraste.",
-        tags: ["Educación Artística - Danza", "Expresión Corporal", "DUA", "Movimiento", "Primer Ciclo", "TTS", "Dislexia"]
-      },
-      {
-        id: "app-25-v2",
-        emoji: "🕵️‍♂️",
-        titulo: "Detectives de Algoritmos: Pensamiento Computacional (DUA)",
-        autor: "Daniela Savastano",
-        descripcion: "Laboratorio interactivo de pensamiento computacional con 5 misiones para investigar algoritmos desordenados, instrucciones ambiguas, pistas socráticas graduadas y panel DUA.",
-        nivel: "Primaria",
-        materia: "Educación Tecnológica",
-        color: "#0d9488",
-        url: "appf2/detectives de algoritmos-daniela savastanoV2.htm",
-        version: "v2",
-        mejoras: "Optimización de la interfaz táctil y de teclado, ampliación de las misiones lógicas, retroalimentación socrática paso a paso y diseño visual accesible.",
-        tags: ["Educación Tecnológica", "Educación Digital", "Pensamiento Computacional", "Algoritmos", "Primaria", "DUA", "Socrático", "TTS"]
-      },
-      {
-        id: "app-26",
-        emoji: "🛠️",
-        titulo: "EduLaboral PWA: Oficios y Empleabilidad (DUA)",
-        autor: "Susana Sanabria",
-        descripcion: "Aplicación interactiva tipo PWA para Primaria de Jóvenes y Adultos. Incluye guías interactivas de medidas (cm/pulgadas), ensambles y lijado, calculadora de presupuestos de materiales y generador de CV con lectura en voz alta y panel DUA.",
-        nivel: "Adultos",
-        materia: "Educación Tecnológica",
-        color: "#0d9488",
-        url: "appf2/edulaboral_primaria_adultosSusanaSanabria.html",
-        version: "v2",
-        tags: ["Primaria de Adultos", "Educación Laboral", "Oficios", "Presupuestos", "CV", "DUA", "Herramientas", "Seguridad"]
-      },
-      {
-        id: "app-27-v2",
-        emoji: "🚂",
-        titulo: "El Tren de los Números: Serie Numérica y Conteo (DUA)",
-        autor: "Paula Kemerer",
-        descripcion: "Entorno interactivo de serie numérica y conteo con Tailwind CSS, tipografía Fredoka y Atkinson Hyperlegible, síntesis de audio nativa, modo de alto contraste DUA y nuevos vagones interactivos de conteo.",
-        nivel: "Inicial",
-        materia: "Matemática",
-        color: "#f59e0b",
-        url: "appf2/Kemerer_Paula_Matematica_V2.html",
-        version: "v2",
-        mejoras: "Diseño renovado con Tailwind, doble tipografía accesible (Fredoka y Atkinson), escalado de fuente DUA, audio nativo y nuevos desafíos de conteo.",
-        tags: ["Nivel Inicial", "Sala de 4", "Matemática", "Conteo", "Serie Numérica", "DUA", "Fredoka", "Atkinson Hyperlegible"]
-      },
-      {
-        id: "app-29",
-        emoji: "✖️",
-        titulo: "Aventura de la Multiplicación (3.er Grado)",
-        autor: "Liliana Giubbani",
-        descripcion: "Entorno interactivo y gamificado para 3.er grado de primaria que introduce las tablas de multiplicar mediante misiones lúdicas, apoyos visuales y refuerzos positivos.",
-        nivel: "Primaria",
-        materia: "Matemática",
-        color: "#10b981",
-        url: "appf2/giubbani_liliana_aventura_de_la_multiplicaci_n.html",
-        version: "v2",
-        tags: ["Matemática", "Multiplicación", "Tablas", "Primaria", "3er Grado", "Gamificación", "Lúdico"]
-      },
-      {
-        id: "app-30",
-        emoji: "🧩",
-        titulo: "Exploradores de Fracciones: Representación y Niveles (DUA)",
-        autor: "Magalí Schumann",
-        descripcion: "Laboratorio interactivo de fracciones para 4.° grado en 3 niveles (Partes fijas, Dividir el entero y Fracciones y enteros). Incluye barra de accesibilidad DUA con lector TTS en voz alta, ajuste tipográfico, alto contraste y retroalimentación formativa ante el error.",
-        nivel: "Primaria",
-        materia: "Matemática",
-        color: "#0d9488",
-        url: "appf2/Magali_Schumann_fracciones_dua.html",
-        version: "v2",
-        tags: ["Matemática", "Fracciones", "Primaria", "4.° Grado", "DUA", "TTS", "Alto Contraste", "Niveles", "Res. 860/25"]
-      },
-      {
-        id: "app-31",
-        emoji: "🏔️",
-        titulo: "EcoQuest: Comparatives & Superlatives (DUA)",
-        autor: "Ivana Choque",
-        descripcion: "Laboratorio interactivo de inglés para ejercitar adjetivos comparativos y superlativos explorando los Parques Nacionales y Glaciares de Argentina (Perito Moreno y Fitz Roy). Incluye tarjetas de datos, barra de accesibilidad DUA (audio TTS, alto contraste, tamaño de fuente), pistas graduadas y reflexión metacognitiva.",
-        nivel: "Secundaria",
-        materia: "Inglés",
-        color: "#0ea5e9",
-        url: "appf2/glacier_national_parks_scaffolding_app.html",
-        version: "v2",
-        tags: ["Inglés", "Comparativos", "Superlativos", "DUA", "TTS", "Glaciares", "Parques Nacionales", "Andamiaje", "Secundaria"]
-      },
-      {
-        id: "app-32",
-        emoji: "🕵️",
-        titulo: "Expediente Nº 16: La misteriosa lapicera de la directora",
-        autor: "Luciana Martiarena",
-        descripcion: "Juego de rol y misterio deductivo para 7.° grado (Escuela 16 D.E. 9). Los estudiantes analizan coartadas, interrogan sospechosos y recolectan pistas para resolver la desaparición de la lapicera, con 3 niveles de pistas socráticas y andamiaje para la lectoescritura.",
-        nivel: "Primaria",
-        materia: "Prácticas del Lenguaje",
-        color: "#4f46e5",
-        url: "appf2/Luciana_Martiarena_cuentopolicial.html",
-        version: "v2",
-        tags: ["Prácticas del Lenguaje", "Cuento Policial", "Pensamiento Lógico", "Pistas Socráticas", "7.° Grado", "Primaria", "Misterio", "Deducción"]
-      },
-      {
-        id: "app-33-v2",
+        id: "mate-3",
         emoji: "⚖️",
-        titulo: "Práctico de Álgebra: Ecuaciones de Primer Grado (DUA)",
-        autor: "Silvana Rodríguez",
-        descripcion: "Laboratorio interactivo de álgebra con 3 niveles de dificultad seleccionables (Fácil, Intermedio y Avanzado con paréntesis), pizarra borrador digital interactiva, sistema de rachas y temporizador, pistas dinámicas y reporte final detallado con soluciones paso a paso en KaTeX e impresión.",
-        nivel: "Secundaria",
+        titulo: "Actividad Interactiva: Tablas de Verdad",
+        autor: "Silvina Busto",
+        descripcion: "Aplicación interactiva para resolver, autoevaluar y clasificar tablas de verdad (Tautología, Contradicción y Contingencia) con soporte para 2 y 3 variables, retroalimentación inmediata y puntaje.",
+        nivel: "Superior",
         materia: "Matemática",
-        color: "#4338ca",
-        url: "appf2/Rodriguez silvana practica algebra.html",
-        version: "v2",
-        mejoras: "3 niveles de dificultad graduados, pizarra digital interactiva de borrador sobre canvas, sistema de racha y cronómetro, reporte imprimible de resultados y soluciones detalladas paso a paso con KaTeX.",
-        tags: ["Matemática", "Ecuaciones", "Álgebra", "KaTeX", "Pizarra Digital", "Niveles", "DUA", "Secundaria"]
+        eje: "Lógica Proposicional",
+        color: "#7c3aed", // Violeta
+        url: "actividad_tablas_verdad.html",
+        tags: ["Lógica", "Tablas de Verdad", "Tautología", "Proposiciones", "Autoevaluación"]
       },
       {
-        id: "app-34-v2",
-        emoji: "🌸",
-        titulo: "Detectives de Flores: Botánica Visual Interactiva (DUA)",
-        autor: "María Paz Montivero",
-        descripcion: "Entorno botánico interactivo para Sala de 5. Resuelve la identificación botánica mediante imágenes reales de flores (evitando consignas textuales circulares), facilitando la discriminación visual en niños no lectores.",
-        nivel: "Inicial",
-        materia: "Ciencias Naturales",
-        color: "#d946ef",
-        url: "appf2/montivero_paz_detectives_flores_v2.html",
-        version: "v2",
-        mejoras: "Reemplazo de botones de solo texto por imágenes representativas de flores, consignas didácticas reformuladas para Sala de 5 y diseño visual alegre.",
-        tags: ["Nivel Inicial", "Sala de 5", "Ciencias Naturales", "Botánica", "Flores", "Discriminación Visual"]
+        id: "mate-4",
+        emoji: "🎨",
+        titulo: "Arte y Matemática: Explorador Didáctico SVG",
+        autor: "Silvina Busto",
+        descripcion: "Galería interactiva STEAM que explora geometría, proporciones, teselaciones y transformaciones geométricas mediante obras generadas en SVG con cuadrícula interactiva e inspección de código.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Geometría y Trigonometría",
+        color: "#d97706", // Ámbar cálido
+        url: "arte_matematica.html",
+        tags: ["Geometría", "STEAM", "Arte", "SVG", "Teselaciones", "Proporciones"]
+      },
+      {
+        id: "mate-5",
+        emoji: "🕹️",
+        titulo: "Escape Geométrico: La Cámara del Tiempo",
+        autor: "Silvina Busto",
+        descripcion: "Escape room gamificado con estética retro pixel art. Los estudiantes resuelven problemas de geometría plana (perímetros, áreas y figuras) contra reloj para descubrir las 4 cifras del código secreto y desactivar la cámara temporal.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Geometría y Trigonometría",
+        color: "#0891b2", // Cian brillante / retro
+        url: "escape_geometrico.html",
+        tags: ["Escape Room", "Geometría", "Gamificación", "Perímetro", "Área", "Pixel Art", "Retro", "Desafíos"]
+      },
+      {
+        id: "mate-6",
+        emoji: "📦",
+        titulo: "Eco-Diseño 3D: el desafío del envase sostenible",
+        autor: "Alicia Astigarraga",
+        descripcion: "Simulador interactivo 3D para modelizar y comparar envases cilíndricos, prismas cuadrangulares y prismas triangulares. Permite experimentar en tiempo real con el volumen y el área superficial para diseñar envases sostenibles optimizando el uso de material.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Geometría y Magnitudes",
+        color: "#16a34a", // Verde esmeralda ecológico
+        url: "alicia.html",
+        tags: ["Geometría", "Cuerpos 3D", "Volumen", "Área Superficial", "Envases", "Optimización", "Cilindro", "Prismas"]
+      },
+      {
+        id: "mate-7",
+        emoji: "🍰",
+        titulo: "La merienda cambia: fracciones equivalentes",
+        autor: "Cintia Marcaccio",
+        descripcion: "Simulador interactivo con accesibilidad DUA (alto contraste, lectura en voz alta y tamaño tipográfico) y dinámicas de gamificación. Permite explorar el reparto equitativo de meriendas, comparar porciones y descubrir fracciones equivalentes a través de misiones y logros.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Números y Operaciones",
+        color: "#ea580c", // Naranja cálido
+        url: "cintia.html",
+        tags: ["Fracciones", "Equivalencias", "Reparto", "DUA", "Gamificación", "Simulador", "Merienda"]
+      },
+      {
+        id: "mate-8",
+        emoji: "🔋",
+        titulo: "Misión Batería: ¡Que no se apague! + Creador de Afiches y Flyers",
+        autor: "Marisa Sierra",
+        descripcion: "Proyecto integral que articula dos herramientas didácticas con accesibilidad DUA: 1) Simulador y juego de estrategia por equipos para optimizar el consumo de batería calculando porcentajes y promedios; y 2) Creador dinámico de afiches y flyers escolares con tablas, gráficos estadísticos y exportación lista para imprimir en A3/A4.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Números y Operaciones",
+        color: "#16804a", // Verde batería
+        url: "marisa.html",
+        acciones: [
+          { texto: "Abrir Juego y Simulador", url: "marisa.html", icono: "fa-solid fa-gamepad" },
+          { texto: "Abrir Creador de Afiches / Flyers (2.ª app)", url: "marisa_afiche.html", icono: "fa-solid fa-bullhorn" }
+        ],
+        tags: ["Porcentajes", "Promedios", "Números racionales", "Gamificación", "DUA", "Batería", "Afiche", "Flyers", "Estadística"]
+      },
+      {
+        id: "mate-9",
+        emoji: "🔺",
+        titulo: "Estudio InfinitA: Arte, Geometría y Transformaciones",
+        autor: "Vanina Malatesta",
+        descripcion: "Entorno interactivo integral con diseño universal para el aprendizaje (DUA). Articula la modelización de la razón áurea y grillas proporcionales en GeoGebra, un Escape Room cubista de transformaciones geométricas en el plano por equipos y un quiz de acreditación diagnóstica.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Geometría y Trigonometría",
+        color: "#0f766e", // Verde azulado / teal profundo
+        url: "vanina.html",
+        tags: ["Geometría", "Transformaciones", "Razón áurea", "GeoGebra", "Escape Room", "DUA", "Arte", "STEAM", "Proporciones"]
+      },
+      {
+        id: "mate-10",
+        emoji: "🐔",
+        titulo: "El Gallinero Matemático: Área, Perímetro y Ecuaciones",
+        autor: "Verónica Oliva",
+        descripcion: "Simulador interactivo y laboratorio de optimización geométrica. Permite modelizar el cerramiento de un gallinero escolar variando dimensiones y cercas para analizar la relación entre perímetro, área y funciones cuadráticas con desafíos interactivos y accesibilidad DUA.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Geometría y Magnitudes",
+        color: "#d97706",
+        url: "veronica.html",
+        tags: ["Geometría", "Área y Perímetro", "Ecuaciones Cuadráticas", "Optimización", "DUA", "Secundaria", "Modelización", "ABP"]
+      },
+      {
+        id: "mate-11",
+        emoji: "⚡",
+        titulo: "Misión Energía: Código Verde — Simulador de Consumo Eléctrico",
+        autor: "Karen Salinas",
+        descripcion: "Simulador interactivo con accesibilidad DUA, síntesis de voz (TTS) y representaciones múltiples (numérica, tabular, gráfica en Chart.js y simbólica). Permite modificar artefactos, potencia y horas de uso para modelizar el consumo energético escolar y proyectar medidas de ahorro.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Funciones y Análisis",
+        color: "#2563eb",
+        url: "karen.html",
+        tags: ["Consumo Eléctrico", "Funciones", "Proporcionalidad", "Estadística", "DUA", "TTS", "Chart.js", "Secundaria", "Eficiencia Energética", "ABP"]
+      },
+      {
+        id: "mate-12",
+        emoji: "🐝",
+        titulo: "Pioneras de la Geometría y el Enigma del Panal",
+        autor: "Ángel Viegas",
+        descripcion: "Escape room gamificado con accesibilidad DUA, lector por voz y candados interactivos. Los estudiantes resuelven 6 estaciones sobre polígonos, ángulos interiores, economía de cera, áreas compuestas y escalas técnicas junto a destacadas científicas de la historia para obtener la Licencia de Diseñador Geométrico.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Geometría y Magnitudes",
+        color: "#b45309", // Ámbar / miel apícola
+        url: "viegas.html",
+        tags: ["Escape Room", "Geometría", "Polígonos", "Áreas", "DUA", "Pioneras", "Huerta", "Ángulos", "ABP"]
+      },
+      {
+        id: "mate-13",
+        emoji: "📐",
+        titulo: "Misión Triángulos: Desigualdad Triangular y Determinación",
+        autor: "Enzo y Alberto (2.° año Enseñar con Tecnología)",
+        descripcion: "Laboratorio interactivo y simulador geométrico con accesibilidad DUA. Permite explorar con deslizadores cuándo es posible construir un triángulo verificando las tres desigualdades en tiempo real, contrastar con arcos de compás y analizar la suficiencia de datos con dos lados fijos y ángulo variable.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Geometría y Trigonometría",
+        color: "#1d4ed8", // Azul real geométrico
+        url: "mision_triangulos.html",
+        tags: ["Triángulos", "Desigualdad Triangular", "Geometría", "GeoGebra", "DUA", "Construcción", "Enseñar con Tecnología", "ABP"]
+      },
+      {
+        id: "mate-14",
+        emoji: "🧊",
+        titulo: "Escape Room: Muestra Virtual de Cuerpos Geométricos",
+        autor: "Gabriel D'Amelia y Ana Lía Solores (2.° año Enseñar con Tecnología)",
+        descripcion: "Escape room interactivo 3D diseñado para 1.° año de secundaria (DGCyE). Propone 4 salas con visualizador táctil 3D, adivinanzas de elementos (caras, aristas, vértices), verificación de la relación de Euler (C + V = A + 2), sólidos platónicos, cuerpos redondos y escáner clasificador.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Geometría y Magnitudes",
+        color: "#0891b2", // Cian brillante 3D
+        url: "escape_cuerpos_geometricos.html",
+        tags: ["Cuerpos 3D", "Poliedros", "Fórmula de Euler", "Sólidos Platónicos", "Escape Room", "Gamificación", "Enseñar con Tecnología"]
+      },
+      {
+        id: "mate-15",
+        emoji: "🏀",
+        titulo: "El Tiro Perfecto PRO: Laboratorio de Lanzamiento Parabólico",
+        autor: "Fabricio Rebolledo",
+        descripcion: "Versión PRO del simulador físico-matemático con accesibilidad DUA. Permite modelizar en tiempo real el tiro al aro mediante funciones cuadráticas, analizando la parábola ideal frente a la trayectoria física con rebotes, cálculo del vértice, 4 misiones con obstáculo defensor y preguntas de indagación ABP.",
+        nivel: "Secundaria",
+        materia: "Matemática",
+        eje: "Funciones y Análisis",
+        color: "#ea580c", // Naranja básquet
+        url: "fabricio.html",
+        tags: ["Versión PRO", "Función Cuadrática", "Parábola", "Vértice", "Básquet", "Física", "DUA", "Simulador", "ABP"]
       }
     ];
 
@@ -1189,49 +926,40 @@
     const appsGrid = document.getElementById('apps-grid');
     const searchInput = document.getElementById('search-input');
     const filterLevel = document.getElementById('filter-level');
-    const filterSubject = document.getElementById('filter-subject');
+    const filterTopic = document.getElementById('filter-topic');
     const statusCount = document.getElementById('status-count');
 
-    // Función principal para renderizar las tarjetas
     function renderApps() {
       const searchTerm = searchInput.value.toLowerCase().trim();
       const selectedLevel = filterLevel.value;
-      const selectedSubject = filterSubject.value;
+      const selectedTopic = filterTopic.value;
 
-      // Filtrar el array de apps
-      const filtradas = REPOSITORIO_APPS.filter(app => {
+      // Filtrar el array
+      const filtradas = REPOSITORIO_MATE.filter(app => {
         const matchSearch = 
           app.titulo.toLowerCase().includes(searchTerm) ||
           (app.autor && app.autor.toLowerCase().includes(searchTerm)) ||
           app.descripcion.toLowerCase().includes(searchTerm) ||
-          app.materia.toLowerCase().includes(searchTerm) ||
-          (app.mejoras && app.mejoras.toLowerCase().includes(searchTerm)) ||
+          app.eje.toLowerCase().includes(searchTerm) ||
           app.tags.some(tag => tag.toLowerCase().includes(searchTerm));
 
-        const matchLevel = (selectedLevel === 'todos') || 
-          (app.nivel === selectedLevel) || 
-          (selectedLevel === 'Adultos' && app.nivel.toLowerCase().includes('adulto')) || 
-          (selectedLevel === 'Primaria' && app.nivel.toLowerCase().includes('primaria'));
+        const matchLevel = (selectedLevel === 'todos') || (app.nivel === selectedLevel);
+        const matchTopic = (selectedTopic === 'todos') || (app.eje === selectedTopic);
 
-        const matchSubject = (selectedSubject === 'todas') || 
-          (app.materia === selectedSubject) || 
-          (app.tags && app.tags.some(tag => tag.toLowerCase() === selectedSubject.toLowerCase())) ||
-          (selectedSubject === 'Educación Digital' && (app.materia === 'Educación Tecnológica' || (app.tags && app.tags.includes('Ciberseguridad'))));
-
-        return matchSearch && matchLevel && matchSubject;
+        return matchSearch && matchLevel && matchTopic;
       });
 
       // Actualizar contador
-      statusCount.innerHTML = `Mostrando <strong>${filtradas.length}</strong> de <strong>${REPOSITORIO_APPS.length}</strong> aplicaciones seleccionadas`;
+      statusCount.innerHTML = `Mostrando <strong>${filtradas.length}</strong> de <strong>${REPOSITORIO_MATE.length}</strong> aplicaciones`;
 
       // Limpiar contenedor
       appsGrid.innerHTML = '';
 
-      // Mostrar mensaje de estado vacío si no hay coincidencias
+      // Estado vacío
       if (filtradas.length === 0) {
         appsGrid.innerHTML = `
           <div class="empty-state">
-            <i class="fa-solid fa-folder-open"></i>
+            <i class="fa-solid fa-shapes"></i>
             <h3>No se encontraron aplicaciones</h3>
             <p>Intenta con otros términos de búsqueda o selecciona otros filtros.</p>
           </div>
@@ -1239,12 +967,13 @@
         return;
       }
 
-      // Renderizar cada tarjeta con su color y emoji
+      // Renderizar tarjetas con su color distintivo y emoji
       filtradas.forEach(app => {
         const card = document.createElement('article');
         card.className = 'app-card';
 
-        const accentColor = app.color || '#6366f1';
+        // Inyectar variables de color de la ficha
+        const accentColor = app.color || '#2563eb';
         card.style.setProperty('--card-accent', accentColor);
         card.style.setProperty('--card-accent-soft', accentColor + '18');
         card.style.setProperty('--card-accent-glow', accentColor + '35');
@@ -1253,56 +982,55 @@
         const tagsHTML = app.tags.map(t => `<span class="tag">#${t}</span>`).join('');
         const autorHTML = app.autor ? `<div class="card-author"><i class="fa-solid fa-user-pen"></i> por: ${app.autor}</div>` : '';
 
-        // Bloque explicativo de mejoras en V2
-        let mejorasHTML = '';
-        if (app.mejoras) {
-          mejorasHTML = `
-            <div class="card-improvement-box">
-              <strong><i class="fa-solid fa-wand-magic-sparkles"></i> Características destacadas DUA:</strong>
-              <span>${app.mejoras}</span>
+        // Botones de acción (uno o múltiples según la aplicación)
+        let actionsHTML = '';
+        if (app.acciones && Array.isArray(app.acciones) && app.acciones.length > 0) {
+          actionsHTML = `
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto;">
+              ${app.acciones.map((ac, idx) => `
+                <a href="${ac.url}" class="btn-launch" style="background: ${idx === 0 ? accentColor : 'transparent'}; ${idx > 0 ? 'border: 2px solid ' + accentColor + '; color: ' + accentColor + ';' : ''}" target="_blank" aria-label="${ac.texto}">
+                  <i class="${ac.icono || 'fa-solid fa-arrow-up-right-from-square'}"></i> ${ac.texto}
+                </a>
+              `).join('')}
             </div>
+          `;
+        } else {
+          actionsHTML = `
+            <a href="${app.url}" class="btn-launch" style="background: ${accentColor}; margin-top: auto;" target="_blank" aria-label="Abrir aplicación ${app.titulo}">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir Aplicación
+            </a>
           `;
         }
 
-        // Botón de acción único
-        const actionsHTML = `
-          <div class="card-actions-group">
-            <a href="${app.url}" class="btn-launch" target="_blank" rel="noopener noreferrer" aria-label="Abrir aplicación ${app.titulo}">
-              <i class="fa-solid fa-rocket"></i> Abrir Aplicación
-            </a>
-          </div>
-        `;
-
         card.innerHTML = `
-          <div>
-            <div class="card-badges">
-              <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+          <div style="display: flex; flex-direction: column; height: 100%;">
+            <div>
+              <div class="card-badges">
                 <span class="badge-level">${app.nivel}</span>
-                <span class="badge-subject">${app.materia}</span>
+                <span class="badge-subject">${app.eje}</span>
               </div>
+              <h2 class="card-title">
+                <span class="card-emoji" aria-hidden="true">${app.emoji}</span>
+                <span>${app.titulo}</span>
+              </h2>
+              ${autorHTML}
+              <p class="card-desc">${app.descripcion}</p>
+              <div class="card-tags">${tagsHTML}</div>
             </div>
-            <h2 class="card-title">
-              <span class="card-emoji" aria-hidden="true">${app.emoji}</span>
-              <span>${app.titulo}</span>
-            </h2>
-            ${autorHTML}
-            <p class="card-desc">${app.descripcion}</p>
-            ${mejorasHTML}
-            <div class="card-tags">${tagsHTML}</div>
+            ${actionsHTML}
           </div>
-          ${actionsHTML}
         `;
 
         appsGrid.appendChild(card);
       });
     }
 
-    // Escuchadores de eventos para filtrado dinámico en tiempo real
+    // Eventos de filtrado
     searchInput.addEventListener('input', renderApps);
     filterLevel.addEventListener('change', renderApps);
-    filterSubject.addEventListener('change', renderApps);
+    filterTopic.addEventListener('change', renderApps);
 
-    // --- HERRAMIENTAS DUA ACCESIBILIDAD ---
+    // --- HERRAMIENTAS DE ACCESIBILIDAD ---
     let baseFontSize = 16;
     const btnFontAdd = document.getElementById('btn-font-add');
     const btnFontSub = document.getElementById('btn-font-sub');
@@ -1333,7 +1061,7 @@
       btnContrast.classList.toggle('active');
     });
 
-    // Carga inicial
+    // Inicializar catálogo
     renderApps();
   </script>
 </body>
